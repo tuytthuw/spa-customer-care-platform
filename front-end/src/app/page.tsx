@@ -101,11 +101,3 @@ export default function Home() {
     </div>
   );
 }
-
-//test
-//test
-//test tin
-//sửa code
-//hihii
-//làm tính năng test1
-//test2
