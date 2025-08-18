@@ -7,7 +7,7 @@ import { createContext, useContext, useState, ReactNode } from "react";
 interface User {
   name: string;
   email: string;
-  // Thêm các thuộc tính khác nếu cần, ví dụ: role
+  role: "ADMIN" | "CLIENT";
 }
 
 // Định nghĩa những gì Context sẽ cung cấp
