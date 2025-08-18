@@ -3,7 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useRouter } from "next/navigation";
+
+
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -18,22 +20,32 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation"; // Import useRouter
+import { useAuth } from "@/contexts/auth-context"; // 2. Import useAuth hook
+import { login as loginAction } from "@/actions/auth";
 
+// 1. Định nghĩa quy tắc validation cho form bằng Zod
 const formSchema = z.object({
   email: z.string().email({
-    message: "Email không hợp lệ.",
+    message: "Địa chỉ email không hợp lệ.",
   }),
   password: z.string().min(1, {
-    message: "Vui lòng nhập mật khẩu.",
+    message: "Mật khẩu không được để trống.",
   }),
 });
 
 export function LoginForm() {
-  const router = useRouter();
+  const router = useRouter(); // 2. Khởi tạo router
+  const { login } = useAuth(); // 2. Lấy hàm login từ context
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null); // State để lưu lỗi
+
+  // 2. Thiết lập form với react-hook-form
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -42,60 +54,53 @@ export function LoginForm() {
     },
   });
 
+  // 3. Hàm xử lý khi người dùng nhấn nút Đăng nhập
+  // 3. Cập nhật hàm onSubmit để gọi action
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+    setIsLoading(true);
+    setError(null);
 
     try {
-      // Gọi đến API đăng nhập của backend
-      const response = await fetch(`${backendUrl}/api/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
+      const result = await loginAction(values); // Đổi tên `login` thành `loginAction` để tránh trùng lặp
 
-      if (!response.ok) {
-        alert("Email hoặc mật khẩu không chính xác.");
-        return;
-      }
+      if (result.success) {
+        // 3. Gọi hàm login của context để lưu thông tin user
+        login(result.user);
 
-      // Nhận và xử lý token từ backend
-      const data = await response.json();
-      const { token } = data;
-
-      if (token) {
-        // Lưu token vào localStorage để sử dụng cho các lần gọi API sau
-        localStorage.setItem("authToken", token);
-
-        // Chuyển hướng về trang chủ
-        router.push("/");
+        // Chuyển hướng đến trang dashboard
+        router.push("/dashboard");
       } else {
-        alert("Đăng nhập thất bại, không nhận được token.");
+        setError(result.error);
       }
-    } catch (error) {
-      console.error("Lỗi khi đăng nhập:", error);
-      alert("Đã có lỗi xảy ra. Vui lòng thử lại.");
+    } catch (err) {
+      setError("Đã có lỗi xảy ra. Vui lòng thử lại.");
+    } finally {
+      setIsLoading(false);
     }
   }
-
-  // TODO: Xử lý logic cho nút Đăng nhập với Google
+  // 1. (Thêm mới) Hàm xử lý khi nhấn nút Google
   const handleGoogleLogin = () => {
-    // Logic này sẽ phụ thuộc vào cách backend của bạn xử lý OAuth2
-    // Thường là mở một cửa sổ popup đến backend endpoint, ví dụ:
-    // window.open(`${backendUrl}/api/auth/google`, '_self');
-    alert("Chức năng đăng nhập Google sẽ được kết nối với backend sau.");
+    const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    const redirectUri = `${window.location.origin}/auth/callback/google`;
+
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${redirectUri}&response_type=code&scope=email profile openid&prompt=consent`;
+
+    window.location.href = googleAuthUrl;
   };
 
+  // 4. Kết nối form với giao diện JSX
   return (
-    <Card className="w-full max-w-md">
+    <Card>
       <CardHeader>
-        <CardTitle>Đăng nhập</CardTitle>
+        <CardTitle>Chào mừng trở lại</CardTitle>
         <CardDescription>
-          Chào mừng trở lại! Vui lòng nhập thông tin của bạn.
+          Nhập thông tin để truy cập vào tài khoản của bạn.
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <CardContent className="space-y-4">
+
             <FormField
               control={form.control}
               name="email"
@@ -103,7 +108,8 @@ export function LoginForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="example@email.com" {...field} />
+                    <Input placeholder="email@example.com" {...field} />
+
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -116,24 +122,40 @@ export function LoginForm() {
                 <FormItem>
                   <FormLabel>Mật khẩu</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="******" {...field} />
+                    <Input type="password" {...field} />
                   </FormControl>
-                  <div className="text-right mt-2">
-                    <Link href="/forgot-password" className="text-sm underline">
-                      Quên mật khẩu?
-                    </Link>
-                  </div>
+
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
-              Đăng nhập
+            {/* 4. Hiển thị thông báo lỗi */}
+            {error && (
+              <p className="text-sm font-medium text-destructive">{error}</p>
+            )}{" "}
+            {/* 2. Cập nhật CardFooter */}
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Đang xử lý..." : "Đăng Nhập"}
             </Button>
-          </form>
-        </Form>
+          </CardContent>
+          <CardFooter className="flex flex-col gap-4">
+            <p className="text-sm text-muted-foreground text-center">
+              Chưa có tài khoản?{" "}
+              <a
+                className="text-primary hover:underline font-medium"
+                href="/auth/register"
+              >
+                Đăng ký tại đây
+              </a>
+            </p>
+          </CardFooter>
+        </form>
+      </Form>
 
-        <div className="relative my-4">
+      {/* PHẦN ĐĂNG NHẬP GOOGLE - ĐÃ ĐƯỢC DI CHUYỂN RA NGOÀI */}
+      <CardContent className="pt-0">
+        <div className="relative">
+
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t" />
           </div>
@@ -145,18 +167,13 @@ export function LoginForm() {
         </div>
         <Button
           variant="outline"
-          className="w-full"
+          className="w-full mt-4"
+          type="button"
           onClick={handleGoogleLogin}
         >
-          Đăng nhập với Google
+          Google
         </Button>
 
-        <div className="mt-4 text-center text-sm">
-          Chưa có tài khoản?{" "}
-          <Link href="/register" className="underline">
-            Đăng ký
-          </Link>
-        </div>
       </CardContent>
     </Card>
   );
