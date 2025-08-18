@@ -1,4 +1,5 @@
 // src/components/auth/register-form.tsx
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,6 +7,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+
 
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +33,7 @@ import { register } from "@/actions/auth"; // Sẽ tạo ở bước sau
 const formSchema = z.object({
   name: z.string().min(1, { message: "Họ và tên không được để trống." }),
   email: z.string().email({ message: "Email không hợp lệ." }),
+
   password: z.string().min(6, { message: "Mật khẩu phải có ít nhất 6 ký tự." }),
 });
 
@@ -75,6 +78,7 @@ export function RegisterForm() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className="space-y-4">
+
             <FormField
               control={form.control}
               name="name"
@@ -96,6 +100,7 @@ export function RegisterForm() {
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input placeholder="email@example.com" {...field} />
+
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -109,6 +114,7 @@ export function RegisterForm() {
                   <FormLabel>Mật khẩu</FormLabel>
                   <FormControl>
                     <Input type="password" {...field} />
+
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -134,6 +140,7 @@ export function RegisterForm() {
           </CardFooter>
         </form>
       </Form>
+
     </Card>
   );
 }

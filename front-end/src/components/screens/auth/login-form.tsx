@@ -4,6 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
+
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -98,6 +100,7 @@ export function LoginForm() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className="space-y-4">
+
             <FormField
               control={form.control}
               name="email"
@@ -106,6 +109,7 @@ export function LoginForm() {
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input placeholder="email@example.com" {...field} />
+
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -120,6 +124,7 @@ export function LoginForm() {
                   <FormControl>
                     <Input type="password" {...field} />
                   </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -150,6 +155,7 @@ export function LoginForm() {
       {/* PHẦN ĐĂNG NHẬP GOOGLE - ĐÃ ĐƯỢC DI CHUYỂN RA NGOÀI */}
       <CardContent className="pt-0">
         <div className="relative">
+
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t" />
           </div>
@@ -167,6 +173,7 @@ export function LoginForm() {
         >
           Google
         </Button>
+
       </CardContent>
     </Card>
   );
