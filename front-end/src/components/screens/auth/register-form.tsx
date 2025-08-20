@@ -1,13 +1,12 @@
-// src/components/auth/register-form.tsx
+// src/components/screens/auth/register-form.tsx
 
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-
 
 import { Button } from "@/components/ui/button";
 import {
@@ -27,23 +26,23 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { register } from "@/actions/auth"; // Sẽ tạo ở bước sau
+import { register as registerAction } from "@/actions/auth"; // Import action đăng ký
 
-// 1. Định nghĩa quy tắc validation cho form đăng ký
-const formSchema = z.object({
-  name: z.string().min(1, { message: "Họ và tên không được để trống." }),
-  email: z.string().email({ message: "Email không hợp lệ." }),
-
+// Zod schema để validation
+const registerSchema = z.object({
+  name: z.string().min(1, { message: "Tên không được để trống." }),
+  email: z.string().email({ message: "Địa chỉ email không hợp lệ." }),
   password: z.string().min(6, { message: "Mật khẩu phải có ít nhất 6 ký tự." }),
 });
 
 export function RegisterForm() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -51,42 +50,51 @@ export function RegisterForm() {
     },
   });
 
-  // 2. Hàm xử lý khi người dùng nhấn nút Đăng ký
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true);
+  // Hàm xử lý khi submit form
+  const onSubmit = (values: z.infer<typeof registerSchema>) => {
     setError(null);
+    setSuccess(null);
 
-    const result = await register(values); // Sẽ tạo ở bước sau
+    startTransition(() => {
+      registerAction(values).then((result) => {
+        if (result.error) {
+          setError(result.error);
+        }
 
-    if (result.success) {
-      alert("Đăng ký thành công! Vui lòng đăng nhập.");
-      router.push("/auth/login");
-    } else {
-      setError(result.error);
-    }
-    setIsLoading(false);
-  }
+        if (result.success) {
+          setSuccess(result.success + " Sẽ chuyển đến trang xác thực OTP.");
+          // Chuyển hướng đến trang OTP với email trên URL
+          setTimeout(() => {
+            router.push(`/auth/verify-otp?email=${values.email}`);
+          }, 1500);
+        }
+      });
+    });
+  };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Bắt đầu</CardTitle>
+        <CardTitle>Tạo tài khoản</CardTitle>
         <CardDescription>
-          Tạo tài khoản mới để bắt đầu sử dụng dịch vụ.
+          Bắt đầu hành trình chăm sóc của bạn ngay hôm nay.
         </CardDescription>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className="space-y-4">
-
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Họ và tên</FormLabel>
+                  <FormLabel>Họ và Tên</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nguyễn Văn A" {...field} />
+                    <Input
+                      placeholder="Nguyễn Văn A"
+                      {...field}
+                      disabled={isPending}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -99,8 +107,11 @@ export function RegisterForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="email@example.com" {...field} />
-
+                    <Input
+                      placeholder="email@example.com"
+                      {...field}
+                      disabled={isPending}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -113,22 +124,27 @@ export function RegisterForm() {
                 <FormItem>
                   <FormLabel>Mật khẩu</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
-
+                    <Input type="password" {...field} disabled={isPending} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            {/* Hiển thị thông báo */}
             {error && (
               <p className="text-sm font-medium text-destructive">{error}</p>
             )}
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Đang tạo tài khoản..." : "Tạo Tài Khoản"}
+            {success && (
+              <p className="text-sm font-medium text-emerald-500">{success}</p>
+            )}
+
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending ? "Đang xử lý..." : "Tạo tài khoản"}
             </Button>
           </CardContent>
-          <CardFooter className="flex flex-col gap-4">
-            <p className="text-sm text-muted-foreground text-center">
+          <CardFooter>
+            <p className="text-sm text-muted-foreground text-center w-full">
               Đã có tài khoản?{" "}
               <a
                 className="text-primary hover:underline font-medium"
@@ -140,7 +156,6 @@ export function RegisterForm() {
           </CardFooter>
         </form>
       </Form>
-
     </Card>
   );
 }
