@@ -28,6 +28,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { FcGoogle } from "react-icons/fc";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -180,6 +181,7 @@ export function LoginForm() {
           onClick={handleGoogleLogin}
           disabled={isPending} // Vô hiệu hóa cả nút Google
         >
+          <FcGoogle className="size-5" aria-hidden="true" />
           Google
         </Button>
       </CardContent>
