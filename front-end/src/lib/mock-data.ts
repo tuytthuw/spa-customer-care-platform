@@ -34,3 +34,47 @@ export const mockServices: Service[] = [
   },
   // Thêm các dịch vụ khác nếu bạn muốn
 ];
+
+export const mockAppointments = [
+  {
+    id: "1",
+    serviceName: "Chăm sóc da mặt chuyên sâu",
+    customerName: "Nguyễn Văn A", // Thêm tên khách hàng
+    technician: "Trần Thị B",
+    technicianId: "tech-01", // Thêm ID kỹ thuật viên
+    date: "2025-09-15",
+    time: "14:00",
+    status: "completed",
+  },
+  {
+    id: "2",
+    serviceName: "Massage thư giãn toàn thân",
+    customerName: "Lê Thị C", // Thêm tên khách hàng
+    technician: "Trần Thị B",
+    technicianId: "tech-01", // Thêm ID kỹ thuật viên
+    date: "2025-09-20",
+    time: "10:30",
+    status: "upcoming",
+  },
+  {
+    id: "3",
+    serviceName: "Triệt lông công nghệ cao",
+    customerName: "Phạm Văn D", // Thêm tên khách hàng
+    technician: "Nguyễn Văn E",
+    technicianId: "tech-02", // Kỹ thuật viên khác
+    date: "2025-09-20",
+    time: "11:30",
+    status: "upcoming",
+  },
+  // Thêm một vài lịch hẹn nữa cho ngày 20 để danh sách dài hơn
+  {
+    id: "4",
+    serviceName: "Chăm sóc móng tay",
+    customerName: "Đặng Thị F",
+    technician: "Trần Thị B",
+    technicianId: "tech-01",
+    date: "2025-09-20",
+    time: "14:00",
+    status: "upcoming",
+  },
+];

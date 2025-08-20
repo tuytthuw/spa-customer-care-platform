@@ -1,37 +1,60 @@
 // src/contexts/auth-context.tsx
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 
-// Định nghĩa kiểu dữ liệu cho người dùng
-interface User {
+// 1. Thêm 'id' vào interface User
+export interface User {
+  id: string; // Bắt buộc phải có id
   name: string;
   email: string;
-  role: "ADMIN" | "CLIENT";
+  role: "customer" | "technician" | "receptionist" | "manager";
+  phone?: string;
 }
 
-// Định nghĩa những gì Context sẽ cung cấp
+// Định nghĩa này đã đúng
 interface AuthContextType {
   user: User | null;
   login: (userData: User) => void;
   logout: () => void;
 }
 
-// Tạo Context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Tạo Provider component
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
+  // Thêm useEffect để lấy thông tin user từ localStorage khi tải lại trang
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error("Failed to parse user from localStorage", error);
+        localStorage.removeItem("user");
+      }
+    }
+  }, []);
+
+  // 2. Sửa hàm login để nhận vào một đối tượng User đầy đủ
   const login = (userData: User) => {
     setUser(userData);
-    // Ở đây có thể thêm logic lưu vào localStorage để duy trì đăng nhập
+    localStorage.setItem("user", JSON.stringify(userData));
   };
 
+  // 3. Hoàn thiện hàm logout
   const logout = () => {
     setUser(null);
-    // Xóa thông tin trong localStorage
+    localStorage.removeItem("user");
+    // Điều hướng người dùng về trang đăng nhập
+    window.location.href = "/auth/login";
   };
 
   return (
@@ -41,7 +64,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// Tạo custom hook để dễ dàng sử dụng Context
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
