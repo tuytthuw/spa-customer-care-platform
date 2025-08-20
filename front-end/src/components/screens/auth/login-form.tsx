@@ -5,9 +5,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useState, useTransition } from "react"; // 1. Import thêm useTransition
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/auth-context";
+// 1. Import thêm kiểu 'User' từ context
+import { useAuth, User as AuthContextUser } from "@/contexts/auth-context";
 import { login as loginAction } from "@/actions/auth";
 
 import { Button } from "@/components/ui/button";
@@ -41,10 +42,10 @@ const formSchema = z.object({
 
 export function LoginForm() {
   const router = useRouter();
-  const { login: setAuthUser } = useAuth(); // Đổi tên để rõ ràng hơn
-  const [isPending, startTransition] = useTransition(); // 2. Sử dụng useTransition
+  const { login: setAuthUser } = useAuth();
+  const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null); // Thêm state cho thông báo thành công
+  const [success, setSuccess] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -54,7 +55,6 @@ export function LoginForm() {
     },
   });
 
-  // 3. Hàm xử lý khi submit, sử dụng startTransition
   function onSubmit(values: z.infer<typeof formSchema>) {
     setError(null);
     setSuccess(null);
@@ -63,13 +63,35 @@ export function LoginForm() {
       loginAction(values).then((result) => {
         if (result.error) {
           setError(result.error);
+          return; // Dừng lại nếu có lỗi
         }
 
         if (result.success && result.user) {
-          setSuccess(result.success);
-          setAuthUser(result.user); // Cập nhật thông tin user vào context
+          // 2. ÁNH XẠ VAI TRÒ TẠI ĐÂY
+          const backendUser = result.user;
+          let mappedRole: AuthContextUser["role"] = "customer"; // Mặc định là customer
 
-          // Chuyển hướng đến trang dashboard
+          // Chuyển đổi vai trò từ backend sang vai trò của frontend context
+          if (backendUser.role === "CLIENT") {
+            mappedRole = "customer";
+          } else if (backendUser.role === "ADMIN") {
+            mappedRole = "manager";
+          }
+          // Bạn có thể thêm các trường hợp khác nếu backend có thêm vai trò
+          // else if (backendUser.role === 'TECHNICIAN_ROLE_FROM_BACKEND') {
+          //   mappedRole = 'technician';
+          // }
+
+          // Tạo một đối tượng user mới với vai trò đã được ánh xạ
+          const userForContext: AuthContextUser = {
+            ...backendUser,
+            role: mappedRole,
+          };
+
+          setSuccess(result.success);
+          // 3. Truyền đối tượng user đã được chỉnh sửa vào context
+          setAuthUser(userForContext);
+
           router.push("/dashboard");
         }
       });
@@ -104,7 +126,7 @@ export function LoginForm() {
                     <Input
                       placeholder="email@example.com"
                       {...field}
-                      disabled={isPending} // 4. Vô hiệu hóa khi đang chờ
+                      disabled={isPending}
                     />
                   </FormControl>
                   <FormMessage />
@@ -126,25 +148,18 @@ export function LoginForm() {
                     </a>
                   </div>
                   <FormControl>
-                    <Input
-                      type="password"
-                      {...field}
-                      disabled={isPending} // 4. Vô hiệu hóa khi đang chờ
-                    />
+                    <Input type="password" {...field} disabled={isPending} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
-            {/* 5. Hiển thị thông báo Lỗi hoặc Thành công */}
             {error && (
               <p className="text-sm font-medium text-destructive">{error}</p>
             )}
             {success && (
               <p className="text-sm font-medium text-emerald-500">{success}</p>
             )}
-
             <Button type="submit" className="w-full" disabled={isPending}>
               {isPending ? "Đang xử lý..." : "Đăng Nhập"}
             </Button>
@@ -162,7 +177,6 @@ export function LoginForm() {
           </CardFooter>
         </form>
       </Form>
-
       <CardContent className="pt-0">
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
@@ -179,7 +193,7 @@ export function LoginForm() {
           className="w-full mt-4"
           type="button"
           onClick={handleGoogleLogin}
-          disabled={isPending} // Vô hiệu hóa cả nút Google
+          disabled={isPending}
         >
           <FcGoogle className="size-5" aria-hidden="true" />
           Google
