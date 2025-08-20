@@ -35,46 +35,104 @@ export const mockServices: Service[] = [
   // Thêm các dịch vụ khác nếu bạn muốn
 ];
 
-export const mockAppointments = [
+// src/lib/mock-data.ts (thêm vào cuối file)
+import { Technician } from "@/types/technician";
+
+export const mockTechnicians: Technician[] = [
   {
-    id: "1",
-    serviceName: "Chăm sóc da mặt chuyên sâu",
-    customerName: "Nguyễn Văn A", // Thêm tên khách hàng
-    technician: "Trần Thị B",
-    technicianId: "tech-01", // Thêm ID kỹ thuật viên
-    date: "2025-09-15",
-    time: "14:00",
+    id: "tech-1",
+    name: "Nguyễn Thu An",
+    specialty: "Chăm sóc da mặt",
+    avatarUrl: "/images/avatars/avatar-1.jpg",
+  },
+  {
+    id: "tech-2",
+    name: "Trần Minh Huy",
+    specialty: "Massage trị liệu",
+    avatarUrl: "/images/avatars/avatar-2.jpg",
+  },
+  {
+    id: "tech-3",
+    name: "Lê Ngọc Bích",
+    specialty: "Triệt lông & Laser",
+    avatarUrl: "/images/avatars/avatar-3.jpg",
+  },
+];
+
+// src/lib/mock-data.ts (thêm vào cuối file)
+import { Appointment } from "@/types/appointment";
+
+export const mockAppointments: Appointment[] = [
+  {
+    id: "appt-1",
+    serviceId: "1", // Chăm sóc da mặt chuyên sâu
+    technicianId: "tech-1",
+    date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 ngày nữa
+    status: "upcoming",
+  },
+  {
+    id: "appt-2",
+    serviceId: "2", // Massage thư giãn toàn thân
+    date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 1 tuần nữa
+    status: "upcoming",
+  },
+  {
+    id: "appt-3",
+    serviceId: "3", // Triệt lông
+    technicianId: "tech-3",
+    date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 ngày trước
     status: "completed",
   },
   {
-    id: "2",
-    serviceName: "Massage thư giãn toàn thân",
-    customerName: "Lê Thị C", // Thêm tên khách hàng
-    technician: "Trần Thị B",
-    technicianId: "tech-01", // Thêm ID kỹ thuật viên
-    date: "2025-09-20",
-    time: "10:30",
-    status: "upcoming",
+    id: "appt-4",
+    serviceId: "1",
+    date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(), // 10 ngày trước
+    status: "cancelled",
+  },
+];
+
+// src/lib/mock-data.ts (thêm vào cuối file)
+export const mockUser = {
+  id: "user-1",
+  name: "Nguyễn Văn A",
+  email: "nguyenvana@email.com",
+  phone: "0987654321",
+};
+
+// src/lib/mock-data.ts (thêm vào cuối file)
+import { Customer } from "@/types/customer";
+
+export const mockCustomers: Customer[] = [
+  {
+    id: "cus-1",
+    name: "Trần Thị Bích Hằng",
+    email: "bichhang@example.com",
+    phone: "0912345678",
+    totalAppointments: 5,
+    lastVisit: "2025-08-15T14:00:00.000Z",
   },
   {
-    id: "3",
-    serviceName: "Triệt lông công nghệ cao",
-    customerName: "Phạm Văn D", // Thêm tên khách hàng
-    technician: "Nguyễn Văn E",
-    technicianId: "tech-02", // Kỹ thuật viên khác
-    date: "2025-09-20",
-    time: "11:30",
-    status: "upcoming",
+    id: "cus-2",
+    name: "Lê Minh Tuấn",
+    email: "minhtuan@example.com",
+    phone: "0987654321",
+    totalAppointments: 2,
+    lastVisit: "2025-08-18T10:30:00.000Z",
   },
-  // Thêm một vài lịch hẹn nữa cho ngày 20 để danh sách dài hơn
   {
-    id: "4",
-    serviceName: "Chăm sóc móng tay",
-    customerName: "Đặng Thị F",
-    technician: "Trần Thị B",
-    technicianId: "tech-01",
-    date: "2025-09-20",
-    time: "14:00",
-    status: "upcoming",
+    id: "cus-3",
+    name: "Phạm Hoài An",
+    email: "hoaian@example.com",
+    phone: "0905112233",
+    totalAppointments: 8,
+    lastVisit: "2025-07-30T16:00:00.000Z",
+  },
+  {
+    id: "cus-4",
+    name: "Võ Hoàng Yến",
+    email: "hoangyen@example.com",
+    phone: "0934567890",
+    totalAppointments: 1,
+    lastVisit: "2025-08-20T09:00:00.000Z",
   },
 ];

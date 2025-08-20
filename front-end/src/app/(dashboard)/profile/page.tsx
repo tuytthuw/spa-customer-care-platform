@@ -1,50 +1,27 @@
-// src/app/(dashboard)/profile/page.tsx
-"use client";
+// Trong thực tế, trang này cần 'use client' để lấy dữ liệu từ context
+// Nhưng để đơn giản, ta sẽ dùng Server Component với dữ liệu giả
+import ProfileForm from "@/components/screens/profile/profile-form";
+import { mockUser } from "@/lib/mock-data";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/contexts/auth-context";
-
-const ProfilePage = () => {
-  const { user } = useAuth();
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Hồ Sơ Của Tôi</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {/* Sử dụng user? để đảm bảo user không phải là null */}
-        <form className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="fullName">Họ và Tên</Label>
-              <Input id="fullName" defaultValue={user?.name || ""} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                defaultValue={user?.email || ""}
-                disabled
-              />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="phone">Số điện thoại</Label>
-            {/* Sửa dòng này: Dùng user?.phone và cung cấp giá trị rỗng nếu không tồn tại */}
-            <Input id="phone" defaultValue={user?.phone || ""} />
-          </div>
-          <div className="flex justify-end">
-            <Button type="submit">Lưu Thay Đổi</Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
-  );
+// Mô phỏng việc lấy dữ liệu người dùng hiện tại
+const getCurrentUser = async () => {
+  // Thay thế bằng logic lấy user từ session hoặc context
+  return Promise.resolve(mockUser);
 };
 
-export default ProfilePage;
+export default async function ProfilePage() {
+  const user = await getCurrentUser();
+
+  return (
+    <div>
+      <h1 className="text-2xl font-bold mb-6">Hồ sơ của tôi</h1>
+      <ProfileForm
+        defaultValues={{
+          name: user.name,
+          email: user.email,
+          phone: user.phone || "",
+        }}
+      />
+    </div>
+  );
+}

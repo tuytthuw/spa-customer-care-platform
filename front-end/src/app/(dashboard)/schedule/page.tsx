@@ -1,118 +1,170 @@
-// src/app/(dashboard)/schedule/page.tsx
 "use client";
 
 import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Calendar } from "@/components/ui/calendar";
-import { useAuth } from "@/contexts/auth-context";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
 import { mockAppointments } from "@/lib/mock-data";
-import { Clock, User, Scissors } from "lucide-react";
+import { mockServices } from "@/lib/mock-data";
+import { mockUser } from "@/lib/mock-data"; // Giả sử đây là khách hàng
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import Link from "next/link";
 
-// Định nghĩa kiểu dữ liệu cho một lịch hẹn (để code chặt chẽ hơn)
-type Appointment = (typeof mockAppointments)[0];
+// --- Bổ sung kiểu dữ liệu cho Event ---
+interface CalendarEvent {
+  id: string;
+  title: string;
+  start: string;
+  extendedProps: {
+    [key: string]: any;
+  };
+}
 
-const SchedulePage = () => {
-  // Giả sử user đã đăng nhập và là kỹ thuật viên
-  // Trong thực tế, bạn sẽ lấy user từ useAuth()
-  const mockTechnician = { id: "tech-01", name: "Trần Thị B" };
-
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    new Date()
+export default function SchedulePage() {
+  const [appointments, setAppointments] = useState(mockAppointments);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
+    null
   );
+  const [notes, setNotes] = useState("");
 
-  // Lọc các lịch hẹn của kỹ thuật viên này
-  const technicianAppointments = mockAppointments.filter(
-    (app) => app.technicianId === mockTechnician.id
-  );
+  // --- Cập nhật logic để lọc và map appointments ---
+  const calendarEvents = appointments
+    .filter((appt) => appt.status === "upcoming")
+    .map((appt) => {
+      const service = mockServices.find((s) => s.id === appt.serviceId);
+      return {
+        id: appt.id,
+        title: service?.name || "Dịch vụ không xác định",
+        start: appt.date,
+        extendedProps: {
+          ...appt,
+          serviceName: service?.name,
+          customerName: mockUser.name,
+          customerId: mockUser.id, // Thêm customerId để link
+        },
+      };
+    });
 
-  // Lọc các lịch hẹn cho ngày đã chọn
-  const appointmentsForSelectedDay = technicianAppointments.filter((app) => {
-    if (!selectedDate) return false;
-    const appointmentDate = new Date(app.date);
-    // So sánh ngày, tháng, năm (bỏ qua giờ)
-    return (
-      appointmentDate.getDate() === selectedDate.getDate() &&
-      appointmentDate.getMonth() === selectedDate.getMonth() &&
-      appointmentDate.getFullYear() === selectedDate.getFullYear()
+  const handleEventClick = (clickInfo: any) => {
+    setSelectedEvent(clickInfo.event as CalendarEvent);
+    setNotes(""); // Reset ghi chú mỗi khi mở dialog
+    setIsModalOpen(true);
+  };
+
+  const handleCompleteService = () => {
+    if (!selectedEvent) return;
+
+    // 1. Gọi API để cập nhật trạng thái và lưu ghi chú
+    console.log(`Hoàn thành lịch hẹn ID: ${selectedEvent.id}`);
+    console.log(`Ghi chú: ${notes}`);
+
+    // 2. Cập nhật state ở frontend để giao diện thay đổi
+    setAppointments((currentAppointments) =>
+      currentAppointments.map((appt) =>
+        appt.id === selectedEvent.id ? { ...appt, status: "completed" } : appt
+      )
     );
-  });
 
-  // Component nhỏ để hiển thị chi tiết một lịch hẹn
-  const AppointmentItem = ({ appointment }: { appointment: Appointment }) => (
-    <div className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-      <div className="flex justify-between items-center">
-        <div className="font-semibold">{appointment.serviceName}</div>
-        <div className="text-sm font-medium text-primary">
-          {appointment.time}
-        </div>
-      </div>
-      <div className="text-sm text-muted-foreground mt-2 space-y-1">
-        <div className="flex items-center">
-          <User className="w-4 h-4 mr-2" />
-          Khách hàng: {appointment.customerName}
-        </div>
-      </div>
-    </div>
-  );
+    // 3. Đóng modal
+    setIsModalOpen(false);
+    setSelectedEvent(null);
+  };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {/* Cột Lịch */}
-      <div className="md:col-span-1">
-        <Card>
-          <CardHeader>
-            <CardTitle>Lịch của bạn</CardTitle>
-            <CardDescription>Chọn một ngày để xem chi tiết.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Calendar
-              mode="single"
-              selected={selectedDate}
-              onSelect={setSelectedDate}
-              className="rounded-md border p-0"
-            />
-          </CardContent>
-        </Card>
+    <div>
+      <h1 className="text-2xl font-bold mb-6">Lịch làm việc của tôi</h1>
+      <div className="p-4 bg-card rounded-lg">
+        <FullCalendar
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          initialView="timeGridWeek"
+          headerToolbar={{
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,timeGridDay",
+          }}
+          events={calendarEvents}
+          eventClick={handleEventClick}
+          locale="vi"
+          buttonText={{
+            today: "Hôm nay",
+            month: "Tháng",
+            week: "Tuần",
+            day: "Ngày",
+          }}
+          allDayText="Cả ngày"
+          slotMinTime="08:00:00"
+          slotMaxTime="21:00:00"
+        />
       </div>
 
-      {/* Cột Danh sách Lịch hẹn */}
-      <div className="md:col-span-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>
-              Lịch hẹn ngày{" "}
-              {selectedDate ? selectedDate.toLocaleDateString("vi-VN") : ""}
-            </CardTitle>
-            <CardDescription>
-              Bạn có {appointmentsForSelectedDay.length} cuộc hẹn trong ngày
-              này.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {appointmentsForSelectedDay.length > 0 ? (
-              <div className="space-y-4">
-                {appointmentsForSelectedDay
-                  .sort((a, b) => a.time.localeCompare(b.time)) // Sắp xếp theo giờ
-                  .map((app) => (
-                    <AppointmentItem key={app.id} appointment={app} />
-                  ))}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {selectedEvent?.extendedProps.serviceName}
+            </DialogTitle>
+            <DialogDescription>Chi tiết lịch hẹn</DialogDescription>
+          </DialogHeader>
+          {selectedEvent && (
+            <div className="space-y-4 mt-4">
+              <div>
+                <Label>Khách hàng</Label>
+                <p className="font-medium">
+                  {selectedEvent.extendedProps.customerName}
+                </p>
               </div>
-            ) : (
-              <p className="text-center text-muted-foreground py-8">
-                Không có lịch hẹn nào trong ngày này.
-              </p>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+              <div>
+                <Label>Thời gian</Label>
+                <p className="font-medium">
+                  {new Date(selectedEvent.start).toLocaleString("vi-VN", {
+                    timeStyle: "short",
+                  })}
+                </p>
+              </div>
+              <div>
+                <Label htmlFor="notes">Ghi chú sau dịch vụ</Label>
+                <Textarea
+                  id="notes"
+                  placeholder="Nhập ghi chú về tình trạng da, sản phẩm đã dùng..."
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                />
+              </div>
+            </div>
+          )}
+          <DialogFooter className="mt-6 sm:justify-between">
+            {/* Nút xem hồ sơ sẽ điều hướng đến trang chi tiết khách hàng */}
+            <Button variant="outline" asChild>
+              <Link
+                href={`/customers/${selectedEvent?.extendedProps.customerId}`}
+              >
+                Xem hồ sơ khách hàng
+              </Link>
+            </Button>
+            <div className="flex gap-2">
+              <DialogClose asChild>
+                <Button variant="ghost">Đóng</Button>
+              </DialogClose>
+              <Button onClick={handleCompleteService}>
+                Hoàn thành dịch vụ
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
-};
-
-export default SchedulePage;
+}
