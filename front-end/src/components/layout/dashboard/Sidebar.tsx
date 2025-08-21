@@ -1,87 +1,127 @@
-// src/components/layout/dashboard/Sidebar.tsx
 "use client";
 
-import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
+import { cn } from "@/lib/utils";
 import {
-  Home,
-  User,
+  LayoutDashboard,
   Calendar,
-  Settings,
+  User,
   Users,
+  ClipboardList,
+  Settings,
+  CalendarDays,
+  LucideIcon,
   Briefcase,
-  DollarSign,
-} from "lucide-react"; // Các icon cho menu
+} from "lucide-react";
 
-// Định nghĩa các link cho từng vai trò
-const navLinks = {
-  customer: [
-    { href: "/dashboard/profile", label: "Hồ Sơ Của Tôi", icon: User },
-    {
-      href: "/dashboard/appointments",
-      label: "Lịch Hẹn Của Tôi",
-      icon: Calendar,
-    },
-  ],
-  technician: [
-    { href: "/dashboard/schedule", label: "Lịch Làm Việc", icon: Calendar },
-  ],
-  receptionist: [
-    {
-      href: "/dashboard/manage-appointments",
-      label: "Quản Lý Lịch Hẹn",
-      icon: Calendar,
-    },
-    { href: "/dashboard/customers", label: "Quản Lý Khách Hàng", icon: Users },
-  ],
-  manager: [
-    { href: "/dashboard/overview", label: "Tổng Quan", icon: Home },
-    {
-      href: "/dashboard/manage-users",
-      label: "Quản Lý Tài Khoản",
-      icon: Users,
-    },
-    {
-      href: "/dashboard/manage-services",
-      label: "Quản Lý Dịch Vụ",
-      icon: Briefcase,
-    },
-    { href: "/dashboard/finance", label: "Tài Chính", icon: DollarSign },
-  ],
-};
+// Định nghĩa cấu trúc của một link điều hướng
+interface NavLink {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+}
 
-const Sidebar = () => {
+// Định nghĩa các bộ link cho từng vai trò
+const customerLinks: NavLink[] = [
+  { href: "/dashboard", label: "Tổng quan", icon: LayoutDashboard },
+  { href: "/appointments", label: "Lịch hẹn của tôi", icon: Calendar },
+  { href: "/profile", label: "Hồ sơ", icon: User },
+];
+
+const technicianLinks: NavLink[] = [
+  { href: "/dashboard", label: "Tổng quan", icon: LayoutDashboard },
+  { href: "/schedule", label: "Lịch làm việc", icon: CalendarDays },
+  { href: "/profile", label: "Hồ sơ", icon: User },
+];
+
+const receptionistLinks: NavLink[] = [
+  { href: "/dashboard", label: "Tổng quan", icon: LayoutDashboard },
+  {
+    href: "/appointments-management",
+    label: "Quản lý Lịch hẹn",
+    icon: Calendar,
+  },
+  { href: "/customers", label: "Quản lý Khách hàng", icon: Users },
+  { href: "/profile", label: "Hồ sơ", icon: User },
+];
+
+const managerLinks: NavLink[] = [
+  { href: "/dashboard", label: "Tổng quan", icon: LayoutDashboard },
+  {
+    href: "/appointments-management",
+    label: "Quản lý Lịch hẹn",
+    icon: Calendar,
+  },
+  { href: "/customers", label: "Quản lý Khách hàng", icon: Users },
+  {
+    href: "/services-management",
+    label: "Quản lý Dịch vụ",
+    icon: ClipboardList,
+  },
+  { href: "/staff-management", label: "Quản lý Nhân viên", icon: Briefcase },
+  {
+    href: "/work-schedule-management",
+    label: "Cấu hình Lịch làm việc",
+    icon: Settings,
+  },
+];
+
+export default function Sidebar() {
+  const pathname = usePathname();
   const { user } = useAuth();
-  // Giả sử vai trò là 'customer' nếu chưa có user thật
-  const role = user?.role || "customer";
 
-  // Lấy danh sách link dựa trên vai trò
-  const links = navLinks[role as keyof typeof navLinks] || [];
+  // Chọn bộ link phù hợp dựa trên vai trò của người dùng
+  let navLinks: NavLink[] = [];
+  switch (user?.role) {
+    case "customer":
+      navLinks = customerLinks;
+      break;
+    case "technician":
+      navLinks = technicianLinks;
+      break;
+    case "receptionist":
+      navLinks = receptionistLinks;
+      break;
+    case "manager":
+      navLinks = managerLinks;
+      break;
+    default:
+      // Mặc định là link của khách hàng nếu không có vai trò
+      navLinks = customerLinks;
+      break;
+  }
 
   return (
-    <aside className="w-64 bg-white text-gray-800 p-4 shadow-md">
-      <div className="text-2xl font-bold mb-8">Spa Platform</div>
-      <nav>
-        <ul>
-          {links.map((link) => {
-            const Icon = link.icon;
-            return (
-              <li key={link.href} className="mb-4">
+    <aside className="hidden border-r bg-muted/40 md:block">
+      <div className="flex h-full max-h-screen flex-col gap-2">
+        <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+          <Link href="/" className="flex items-center gap-2 font-semibold">
+            <span className="">MySpa Platform</span>
+          </Link>
+        </div>
+        <div className="flex-1">
+          <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href;
+              return (
                 <Link
+                  key={link.href}
                   href={link.href}
-                  className="flex items-center p-2 rounded-lg hover:bg-gray-200 transition-colors"
+                  className={cn(
+                    "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
+                    isActive && "bg-muted text-primary"
+                  )}
                 >
-                  <Icon className="w-5 h-5 mr-3" />
+                  <link.icon className="h-4 w-4" />
                   {link.label}
                 </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+              );
+            })}
+          </nav>
+        </div>
+      </div>
     </aside>
   );
-};
-
-export default Sidebar;
+}
