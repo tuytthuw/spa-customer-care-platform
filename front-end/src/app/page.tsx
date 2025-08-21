@@ -1,6 +1,6 @@
-import FeaturedServices from "@/components/screens/langding/HeroSection";
-import HeroSection from "@/components/screens/langding/FeaturedServices";
-import TestimonialsSection from "@/components/screens/langding/TestimonialsSection";
+import FeaturedServices from "@/components/screens/landing/FeaturedServices";
+import HeroSection from "@/components/screens/landing/HeroSection";
+import TestimonialsSection from "@/components/screens/landing/TestimonialsSection";
 
 export default function HomePage() {
   return (

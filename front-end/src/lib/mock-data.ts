@@ -173,3 +173,32 @@ export const mockStaff: Staff[] = [
     status: "inactive",
   },
 ];
+
+import { WorkSchedule } from "@/types/work-schedule";
+
+export const mockWorkSchedules: WorkSchedule[] = [
+  {
+    staffId: "tech-1",
+    schedule: {
+      monday: { isActive: true, startTime: "09:00", endTime: "18:00" },
+      tuesday: { isActive: true, startTime: "09:00", endTime: "18:00" },
+      wednesday: { isActive: true, startTime: "09:00", endTime: "18:00" },
+      thursday: { isActive: false, startTime: "", endTime: "" },
+      friday: { isActive: true, startTime: "09:00", endTime: "18:00" },
+      saturday: { isActive: true, startTime: "10:00", endTime: "19:00" },
+      sunday: { isActive: false, startTime: "", endTime: "" },
+    },
+  },
+  {
+    staffId: "tech-2",
+    schedule: {
+      monday: { isActive: false, startTime: "", endTime: "" },
+      tuesday: { isActive: true, startTime: "10:00", endTime: "19:00" },
+      wednesday: { isActive: true, startTime: "10:00", endTime: "19:00" },
+      thursday: { isActive: true, startTime: "10:00", endTime: "19:00" },
+      friday: { isActive: true, startTime: "10:00", endTime: "19:00" },
+      saturday: { isActive: false, startTime: "", endTime: "" },
+      sunday: { isActive: true, startTime: "10:00", endTime: "17:00" },
+    },
+  },
+];
