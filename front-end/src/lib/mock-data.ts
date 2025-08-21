@@ -136,3 +136,40 @@ export const mockCustomers: Customer[] = [
     lastVisit: "2025-08-20T09:00:00.000Z",
   },
 ];
+
+import { Staff } from "@/types/staff";
+
+export const mockStaff: Staff[] = [
+  {
+    id: "tech-1",
+    name: "Nguyễn Thu An",
+    email: "thuan@myspa.com",
+    phone: "0911223344",
+    role: "technician",
+    status: "active",
+  },
+  {
+    id: "tech-2",
+    name: "Trần Minh Huy",
+    email: "minhhuy@myspa.com",
+    phone: "0922334455",
+    role: "technician",
+    status: "active",
+  },
+  {
+    id: "rec-1",
+    name: "Phạm Kiều Trang",
+    email: "kieutrang@myspa.com",
+    phone: "0933445566",
+    role: "receptionist",
+    status: "active",
+  },
+  {
+    id: "mana-1",
+    name: "Lê Anh Tuấn",
+    email: "anhtuan@myspa.com",
+    phone: "0944556677",
+    role: "manager",
+    status: "inactive",
+  },
+];
