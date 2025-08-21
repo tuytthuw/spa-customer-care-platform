@@ -26,7 +26,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { register as registerAction } from "@/actions/auth"; // Import action đăng ký
+import { register as registerAction } from "@/services/authService"; // Import action đăng ký
 
 // Zod schema để validation
 const registerSchema = z.object({

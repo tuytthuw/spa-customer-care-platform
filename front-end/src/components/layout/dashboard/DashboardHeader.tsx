@@ -2,7 +2,7 @@
 "use client";
 
 import React from "react";
-import { useAuth } from "@/contexts/auth-context";
+import { useAuth } from "@/contexts/AuthContexts";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 

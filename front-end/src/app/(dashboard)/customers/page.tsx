@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import AddCustomerForm from "@/components/screens/customers/AddCustomerForm";
+import AddCustomerForm from "@/components/forms/AddCustomerForm";
 
 // Định nghĩa kiểu dữ liệu cho form values
 interface CustomerFormValues {

@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import AddServiceForm from "@/components/screens/services-management/AddServiceForm";
+import AddServiceForm from "@/components/forms/AddServiceForm";
 
 // Định nghĩa kiểu dữ liệu cho form values
 interface ServiceFormValues {
