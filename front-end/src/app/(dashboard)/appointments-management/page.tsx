@@ -13,7 +13,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import CreateAppointmentForm from "@/components/screens/appointments-management/CreateAppointmentForm";
+import CreateAppointmentForm from "@/components/forms/CreateAppointmentForm";
 import { Appointment } from "@/types/appointment";
 
 export default function AppointmentsManagementPage() {

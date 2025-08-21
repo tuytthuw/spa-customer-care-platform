@@ -2,7 +2,7 @@
 "use client"; // Header cần là Client Component để dùng hook
 
 import Link from "next/link";
-import { useAuth } from "@/contexts/auth-context"; // 1. Import useAuth
+import { useAuth } from "@/contexts/AuthContexts"; // 1. Import useAuth
 import { Button } from "../ui/button";
 
 export default function Header() {

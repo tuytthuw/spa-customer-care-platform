@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import ScheduleForm from "@/components/screens/work-schedule-management/ScheduleForm";
+import ScheduleForm from "@/components/forms/ScheduleForm";
 import { WorkSchedule } from "@/types/work-schedule";
 
 export default function WorkScheduleManagementPage() {

@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import AddStaffForm from "@/components/screens/staff-management/AddStaffForm";
+import AddStaffForm from "@/components/forms/AddStaffForm";
 
 interface StaffFormValues {
   name: string;

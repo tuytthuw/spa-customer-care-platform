@@ -8,8 +8,8 @@ import * as z from "zod";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 // 1. Import thêm kiểu 'User' từ context
-import { useAuth, User as AuthContextUser } from "@/contexts/auth-context";
-import { login as loginAction } from "@/actions/auth";
+import { useAuth, User as AuthContextUser } from "@/contexts/AuthContexts";
+import { login as loginAction } from "@/services/authService";
 
 import { Button } from "@/components/ui/button";
 import {
