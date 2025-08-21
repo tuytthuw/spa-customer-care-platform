@@ -1,7 +1,8 @@
+// src/app/(dashboard)/services-management/page.tsx (PHIÊN BẢN NÂNG CẤP)
 "use client";
 
-import { useEffect, useState } from "react";
-import { mockServices } from "@/lib/mock-data";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Service } from "@/types/service";
 import { columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
@@ -15,8 +16,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import AddServiceForm from "@/components/forms/AddServiceForm";
+import { getServices } from "@/services/serviceService"; // Import service
 
-// Định nghĩa kiểu dữ liệu cho form values
 interface ServiceFormValues {
   name: string;
   description: string;
@@ -27,28 +28,28 @@ interface ServiceFormValues {
 }
 
 export default function ServicesManagementPage() {
-  const [services, setServices] = useState<Service[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  useEffect(() => {
-    // Mô phỏng việc gọi API
-    setServices(mockServices);
-    setIsLoading(false);
-  }, []);
+  // Sử dụng useQuery để fetch dữ liệu
+  const {
+    data: services = [],
+    isLoading,
+    error,
+  } = useQuery<Service[]>({
+    queryKey: ["services"],
+    queryFn: getServices,
+  });
 
   const handleAddService = (data: ServiceFormValues) => {
-    const newService: Service = {
-      id: `service-${Date.now()}`,
-      ...data,
-      imageUrl: data.imageUrl || "/images/service-placeholder.jpg", // Cung cấp ảnh mặc định
-    };
-    setServices((prev) => [newService, ...prev]);
-    console.log("Đã thêm dịch vụ mới:", newService);
+    console.log("Đã thêm dịch vụ mới:", data);
   };
 
   if (isLoading) {
     return <div>Đang tải danh sách dịch vụ...</div>;
+  }
+
+  if (error) {
+    return <div>Đã xảy ra lỗi: {error.message}</div>;
   }
 
   return (

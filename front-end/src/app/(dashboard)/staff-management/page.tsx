@@ -1,7 +1,8 @@
+// src/app/(dashboard)/staff-management/page.tsx (PHIÊN BẢN NÂNG CẤP)
 "use client";
 
-import { useEffect, useState } from "react";
-import { mockStaff } from "@/lib/mock-data";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Staff } from "@/types/staff";
 import { columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
@@ -15,6 +16,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import AddStaffForm from "@/components/forms/AddStaffForm";
+import { getStaff } from "@/services/staffService"; // Import service
 
 interface StaffFormValues {
   name: string;
@@ -24,27 +26,29 @@ interface StaffFormValues {
 }
 
 export default function StaffManagementPage() {
-  const [staff, setStaff] = useState<Staff[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  useEffect(() => {
-    setStaff(mockStaff);
-    setIsLoading(false);
-  }, []);
+  // Sử dụng useQuery để fetch dữ liệu
+  const {
+    data: staff = [],
+    isLoading,
+    error,
+  } = useQuery<Staff[]>({
+    queryKey: ["staff"],
+    queryFn: getStaff,
+  });
 
   const handleAddStaff = (data: StaffFormValues) => {
-    const newStaff: Staff = {
-      id: `staff-${Date.now()}`,
-      ...data,
-      status: "active",
-    };
-    setStaff((prev) => [newStaff, ...prev]);
-    console.log("Đã thêm nhân viên mới:", newStaff);
+    // Tạm thời giữ lại, sẽ nâng cấp với useMutation
+    console.log("Đã thêm nhân viên mới:", data);
   };
 
   if (isLoading) {
     return <div>Đang tải danh sách nhân viên...</div>;
+  }
+
+  if (error) {
+    return <div>Đã xảy ra lỗi: {error.message}</div>;
   }
 
   return (

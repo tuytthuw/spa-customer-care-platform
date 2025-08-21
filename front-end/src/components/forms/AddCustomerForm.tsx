@@ -26,11 +26,13 @@ type CustomerFormValues = z.infer<typeof customerFormSchema>;
 interface AddCustomerFormProps {
   onFormSubmit: (data: CustomerFormValues) => void;
   onClose: () => void;
+  isSubmitting?: boolean; // Thêm prop này
 }
 
 export default function AddCustomerForm({
   onFormSubmit,
   onClose,
+  isSubmitting,
 }: AddCustomerFormProps) {
   const form = useForm<CustomerFormValues>({
     resolver: zodResolver(customerFormSchema),
@@ -89,10 +91,17 @@ export default function AddCustomerForm({
           )}
         />
         <div className="flex justify-end gap-2">
-          <Button type="button" variant="ghost" onClick={onClose}>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={onClose}
+            disabled={isSubmitting}
+          >
             Hủy
           </Button>
-          <Button type="submit">Lưu khách hàng</Button>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Đang lưu..." : "Lưu khách hàng"}
+          </Button>
         </div>
       </form>
     </Form>

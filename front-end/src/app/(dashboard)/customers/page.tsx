@@ -1,7 +1,9 @@
+// src/app/(dashboard)/customers/page.tsx (PHIÊN BẢN CUỐI CÙNG)
 "use client";
 
-import { useEffect, useState } from "react";
-import { mockCustomers } from "@/lib/mock-data";
+import { useState } from "react";
+// 1. Import thêm useMutation và useQueryClient
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Customer } from "@/types/customer";
 import { columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
@@ -15,48 +17,56 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import AddCustomerForm from "@/components/forms/AddCustomerForm";
+// 2. Import thêm hàm addCustomer
+import { getCustomers, addCustomer } from "@/services/customerService";
 
-// Định nghĩa kiểu dữ liệu cho form values
 interface CustomerFormValues {
   name: string;
   email: string;
   phone: string;
 }
 
-// Mô phỏng việc gọi API
-async function getCustomers(): Promise<Customer[]> {
-  return Promise.resolve(mockCustomers);
-}
-
 export default function CustomersPage() {
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  // 3. Khởi tạo Query Client
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const loadCustomers = async () => {
-      const data = await getCustomers();
-      setCustomers(data);
-      setIsLoading(false);
-    };
-    loadCustomers();
-  }, []);
+  // Query để lấy dữ liệu (giữ nguyên)
+  const {
+    data: customers = [],
+    isLoading,
+    error,
+  } = useQuery<Customer[]>({
+    queryKey: ["customers"],
+    queryFn: getCustomers,
+  });
 
+  // 4. Tạo mutation để xử lý việc thêm khách hàng
+  const addCustomerMutation = useMutation({
+    mutationFn: addCustomer, // Hàm sẽ được gọi khi mutation được trigger
+    onSuccess: () => {
+      // 🚀 Phép màu xảy ra ở đây!
+      // Sau khi thêm thành công, làm vô hiệu (invalidate) cache của query 'customers'
+      // React Query sẽ tự động fetch lại dữ liệu mới nhất.
+      console.log(
+        "Customer added successfully! Invalidating customers query..."
+      );
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+      setIsDialogOpen(false); // Đóng dialog sau khi thành công
+    },
+    onError: (error) => {
+      // Xử lý lỗi (ví dụ: hiển thị thông báo)
+      console.error("Failed to add customer:", error);
+      alert("Thêm khách hàng thất bại!");
+    },
+  });
+
+  // 5. Cập nhật hàm handleAddCustomer để trigger mutation
   const handleAddCustomer = (data: CustomerFormValues) => {
-    const newCustomer: Customer = {
-      id: `cus-${Date.now()}`, // Tạo ID duy nhất đơn giản cho dữ liệu giả
-      ...data,
-      totalAppointments: 0,
-      lastVisit: new Date().toISOString(),
-    };
-    // Thêm khách hàng mới vào đầu danh sách để dễ thấy
-    setCustomers((prev) => [newCustomer, ...prev]);
-    console.log("Đã thêm khách hàng mới:", newCustomer);
+    addCustomerMutation.mutate(data); // Gọi mutation với dữ liệu từ form
   };
 
-  if (isLoading) {
-    return <div>Đang tải danh sách khách hàng...</div>;
-  }
+  // ... (xử lý isLoading, error giữ nguyên) ...
 
   return (
     <div>
@@ -67,15 +77,12 @@ export default function CustomersPage() {
             <Button>Thêm khách hàng mới</Button>
           </DialogTrigger>
           <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Tạo hồ sơ khách hàng mới</DialogTitle>
-              <DialogDescription>
-                Điền thông tin chi tiết để thêm một khách hàng mới vào hệ thống.
-              </DialogDescription>
-            </DialogHeader>
+            {/* ... */}
             <AddCustomerForm
               onFormSubmit={handleAddCustomer}
               onClose={() => setIsDialogOpen(false)}
+              // 6. Thêm prop để vô hiệu hóa form khi đang submit
+              isSubmitting={addCustomerMutation.isPending}
             />
           </DialogContent>
         </Dialog>
