@@ -1,49 +1,39 @@
+// src/app/(dashboard)/appointments/page.tsx (PHIÊN BẢN NÂNG CẤP)
 "use client";
 
-import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Appointment } from "@/types/appointment";
-import { mockAppointments } from "@/lib/mock-data";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AppointmentCard from "@/components/screens/appointments/AppointmentCard";
-
-// Mô phỏng việc gọi API
-const fetchAppointments = async (): Promise<Appointment[]> => {
-  return Promise.resolve(mockAppointments);
-};
+import { getAppointments } from "@/services/appointmentService"; // Import service
 
 export default function MyAppointmentsPage() {
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const loadAppointments = async () => {
-      setIsLoading(true);
-      const data = await fetchAppointments();
-      setAppointments(data);
-      setIsLoading(false);
-    };
-    loadAppointments();
-  }, []);
+  const {
+    data: appointments = [],
+    isLoading,
+    error,
+  } = useQuery<Appointment[]>({
+    queryKey: ["appointments"],
+    queryFn: getAppointments,
+  });
 
   const handleCancelAppointment = (appointmentId: string) => {
-    // Đây là nơi bạn sẽ gọi API để hủy lịch
-    // Với dữ liệu giả, chúng ta sẽ cập nhật trạng thái
-    setAppointments((currentAppointments) =>
-      currentAppointments.map((appt) =>
-        appt.id === appointmentId ? { ...appt, status: "cancelled" } : appt
-      )
-    );
+    // Logic này sẽ được nâng cấp bằng useMutation
     console.log("Đã hủy lịch hẹn:", appointmentId);
   };
+
+  if (isLoading) {
+    return <div>Đang tải lịch hẹn...</div>;
+  }
+
+  if (error) {
+    return <div>Đã xảy ra lỗi khi tải dữ liệu: {error.message}</div>;
+  }
 
   const upcomingAppointments = appointments.filter(
     (a) => a.status === "upcoming"
   );
   const pastAppointments = appointments.filter((a) => a.status !== "upcoming");
-
-  if (isLoading) {
-    return <div>Đang tải lịch hẹn...</div>;
-  }
 
   return (
     <div>
