@@ -15,18 +15,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-// Schema để validation
+// Schema: KHÔNG dùng coerce / preprocess để tránh mismatch input/output
 const serviceFormSchema = z.object({
-  name: z.string().min(3, "Tên dịch vụ phải có ít nhất 3 ký tự."),
-  description: z.string().min(10, "Mô tả phải có ít nhất 10 ký tự."),
-  category: z.string().min(2, "Danh mục không được để trống."),
-  price: z.coerce.number().min(0, "Giá phải là một số dương."),
-  duration: z.coerce.number().int().min(5, "Thời lượng phải ít nhất 5 phút."),
+  name: z.string().trim().min(3, "Tên dịch vụ phải có ít nhất 3 ký tự."),
+  description: z.string().trim().min(10, "Mô tả phải có ít nhất 10 ký tự."),
+  category: z.string().trim().min(2, "Danh mục không được để trống."),
+  price: z.number().min(0, "Giá phải là một số dương."),
+  duration: z.number().int().min(5, "Thời lượng phải ít nhất 5 phút."),
+  // Cho phép "" hoặc URL hợp lệ, và có thể bỏ qua
   imageUrl: z
-    .string()
-    .url("URL hình ảnh không hợp lệ.")
-    .optional()
-    .or(z.literal("")),
+    .union([z.string().url("URL hình ảnh không hợp lệ."), z.literal("")])
+    .optional(),
 });
 
 type ServiceFormValues = z.infer<typeof serviceFormSchema>;
@@ -40,7 +39,7 @@ export default function AddServiceForm({
   onFormSubmit,
   onClose,
 }: AddServiceFormProps) {
-  const form = useForm({
+  const form = useForm<ServiceFormValues>({
     resolver: zodResolver(serviceFormSchema),
     defaultValues: {
       name: "",
@@ -53,6 +52,8 @@ export default function AddServiceForm({
   });
 
   function onSubmit(data: ServiceFormValues) {
+    // nếu bạn muốn gửi undefined thay vì "", có thể map:
+    // const payload = { ...data, imageUrl: data.imageUrl ? data.imageUrl : undefined };
     onFormSubmit(data);
     onClose();
   }
@@ -73,6 +74,7 @@ export default function AddServiceForm({
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="description"
@@ -86,6 +88,7 @@ export default function AddServiceForm({
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="category"
@@ -99,6 +102,7 @@ export default function AddServiceForm({
             </FormItem>
           )}
         />
+
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -109,19 +113,26 @@ export default function AddServiceForm({
                 <FormControl>
                   <Input
                     type="number"
-                    placeholder="0"
+                    inputMode="numeric"
+                    min={0}
+                    step="0.01"
                     {...field}
-                    // SỬA LỖI: Chuyển đổi giá trị sang số một cách an toàn
-                    onChange={(event) =>
-                      field.onChange(event.target.valueAsNumber || 0)
+                    onChange={(e) => {
+                      const n = e.currentTarget.valueAsNumber;
+                      field.onChange(Number.isFinite(n) ? n : 0); // chống NaN
+                    }}
+                    value={
+                      Number.isFinite(field.value as number)
+                        ? (field.value as number)
+                        : 0
                     }
-                    value={field.value ?? ""}
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="duration"
@@ -131,13 +142,19 @@ export default function AddServiceForm({
                 <FormControl>
                   <Input
                     type="number"
-                    placeholder="30"
+                    inputMode="numeric"
+                    min={5}
+                    step="1"
                     {...field}
-                    // SỬA LỖI: Chuyển đổi giá trị sang số một cách an toàn
-                    onChange={(event) =>
-                      field.onChange(event.target.valueAsNumber || 0)
+                    onChange={(e) => {
+                      const n = e.currentTarget.valueAsNumber;
+                      field.onChange(Number.isFinite(n) ? n : 5);
+                    }}
+                    value={
+                      Number.isFinite(field.value as number)
+                        ? (field.value as number)
+                        : 30
                     }
-                    value={field.value ?? ""}
                   />
                 </FormControl>
                 <FormMessage />
@@ -145,6 +162,7 @@ export default function AddServiceForm({
             )}
           />
         </div>
+
         <FormField
           control={form.control}
           name="imageUrl"
@@ -158,6 +176,7 @@ export default function AddServiceForm({
             </FormItem>
           )}
         />
+
         <div className="flex justify-end gap-2 pt-4">
           <Button type="button" variant="ghost" onClick={onClose}>
             Hủy
