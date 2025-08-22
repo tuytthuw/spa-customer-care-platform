@@ -1,5 +1,5 @@
 // src/app/auth/login/page.tsx
-import { LoginForm } from "@/components/screens/auth/login-form";
+import { LoginForm } from "@/features/auth/login-form";
 import Link from "next/link";
 
 export default function LoginPage() {

@@ -1,7 +1,7 @@
 // src/app/services/page.tsx
 import { mockServices } from "@/lib/mock-data";
 import { Service } from "@/types/service";
-import ServiceCard from "@/components/screens/services/service-card";
+import ServiceCard from "@/features/services/service-card";
 import { Input } from "@/components/ui/input";
 
 // Mô phỏng việc gọi API
