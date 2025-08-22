@@ -5,24 +5,10 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { mockAppointments } from "@/lib/mock-data";
-import { mockServices } from "@/lib/mock-data";
-import { mockUser } from "@/lib/mock-data"; // Giả sử đây là khách hàng
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
+import { mockAppointments, mockServices, mockUser } from "@/lib/mock-data";
+import { AppointmentDetailsModal } from "@/features/schedule/AppointmentDetailsModal";
 
-// --- Bổ sung kiểu dữ liệu cho Event ---
+// Định nghĩa kiểu dữ liệu cho sự kiện trên lịch
 interface CalendarEvent {
   id: string;
   title: string;
@@ -40,7 +26,7 @@ export default function SchedulePage() {
   );
   const [notes, setNotes] = useState("");
 
-  // --- Cập nhật logic để lọc và map appointments ---
+  // Chuyển đổi dữ liệu lịch hẹn sang định dạng mà FullCalendar có thể đọc
   const calendarEvents = appointments
     .filter((appt) => appt.status === "upcoming")
     .map((appt) => {
@@ -53,32 +39,33 @@ export default function SchedulePage() {
           ...appt,
           serviceName: service?.name,
           customerName: mockUser.name,
-          customerId: mockUser.id, // Thêm customerId để link
+          customerId: mockUser.id,
         },
       };
     });
 
+  // Xử lý khi người dùng nhấp vào một sự kiện trên lịch
   const handleEventClick = (clickInfo: any) => {
     setSelectedEvent(clickInfo.event as CalendarEvent);
     setNotes(""); // Reset ghi chú mỗi khi mở dialog
     setIsModalOpen(true);
   };
 
+  // Xử lý khi hoàn thành một dịch vụ
   const handleCompleteService = () => {
     if (!selectedEvent) return;
 
-    // 1. Gọi API để cập nhật trạng thái và lưu ghi chú
     console.log(`Hoàn thành lịch hẹn ID: ${selectedEvent.id}`);
     console.log(`Ghi chú: ${notes}`);
 
-    // 2. Cập nhật state ở frontend để giao diện thay đổi
+    // Cập nhật trạng thái của lịch hẹn trong state
     setAppointments((currentAppointments) =>
       currentAppointments.map((appt) =>
         appt.id === selectedEvent.id ? { ...appt, status: "completed" } : appt
       )
     );
 
-    // 3. Đóng modal
+    // Đóng modal
     setIsModalOpen(false);
     setSelectedEvent(null);
   };
@@ -110,61 +97,15 @@ export default function SchedulePage() {
         />
       </div>
 
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {selectedEvent?.extendedProps.serviceName}
-            </DialogTitle>
-            <DialogDescription>Chi tiết lịch hẹn</DialogDescription>
-          </DialogHeader>
-          {selectedEvent && (
-            <div className="space-y-4 mt-4">
-              <div>
-                <Label>Khách hàng</Label>
-                <p className="font-medium">
-                  {selectedEvent.extendedProps.customerName}
-                </p>
-              </div>
-              <div>
-                <Label>Thời gian</Label>
-                <p className="font-medium">
-                  {new Date(selectedEvent.start).toLocaleString("vi-VN", {
-                    timeStyle: "short",
-                  })}
-                </p>
-              </div>
-              <div>
-                <Label htmlFor="notes">Ghi chú sau dịch vụ</Label>
-                <Textarea
-                  id="notes"
-                  placeholder="Nhập ghi chú về tình trạng da, sản phẩm đã dùng..."
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                />
-              </div>
-            </div>
-          )}
-          <DialogFooter className="mt-6 sm:justify-between">
-            {/* Nút xem hồ sơ sẽ điều hướng đến trang chi tiết khách hàng */}
-            <Button variant="outline" asChild>
-              <Link
-                href={`/customers/${selectedEvent?.extendedProps.customerId}`}
-              >
-                Xem hồ sơ khách hàng
-              </Link>
-            </Button>
-            <div className="flex gap-2">
-              <DialogClose asChild>
-                <Button variant="ghost">Đóng</Button>
-              </DialogClose>
-              <Button onClick={handleCompleteService}>
-                Hoàn thành dịch vụ
-              </Button>
-            </div>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Render component Modal đã được tách ra */}
+      <AppointmentDetailsModal
+        isOpen={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        selectedEvent={selectedEvent}
+        notes={notes}
+        setNotes={setNotes}
+        onComplete={handleCompleteService}
+      />
     </div>
   );
 }

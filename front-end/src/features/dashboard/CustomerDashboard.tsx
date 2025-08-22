@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Appointment } from "@/types/appointment";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import AppointmentCard from "@/features/appointments/AppointmentCard";
+import AppointmentCard from "@/features/appointment/AppointmentCard";
 import { getAppointments } from "@/services/appointmentService";
 
 export default function CustomerDashboard() {
