@@ -82,7 +82,8 @@ export default function AddStaffForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Họ và tên <span className="text-neutral-500">(bắt buộc)</span>
+                  Họ và tên{" "}
+                  <span className="text-muted-foreground">(bắt buộc)</span>
                 </FormLabel>
                 <FormControl>
                   <Input {...field} />
@@ -97,7 +98,8 @@ export default function AddStaffForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Email <span className="text-neutral-500">(bắt buộc)</span>
+                  Email{" "}
+                  <span className="text-muted-foreground">(bắt buộc)</span>
                 </FormLabel>
                 <FormControl>
                   <Input type="email" {...field} />
@@ -113,7 +115,7 @@ export default function AddStaffForm({
               <FormItem>
                 <FormLabel>
                   Số điện thoại{" "}
-                  <span className="text-neutral-500">(bắt buộc)</span>
+                  <span className="text-muted-foreground">(bắt buộc)</span>
                 </FormLabel>
                 <FormControl>
                   <Input {...field} />
@@ -128,7 +130,8 @@ export default function AddStaffForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Vai trò <span className="text-neutral-500">(bắt buộc)</span>
+                  Vai trò{" "}
+                  <span className="text-muted-foreground">(bắt buộc)</span>
                 </FormLabel>
                 <Select
                   onValueChange={field.onChange}
@@ -219,14 +222,14 @@ export default function AddStaffForm({
                       type="radio"
                       id="statusActive"
                       name="status"
-                      className="h-4 w-4 text-black border-neutral-300"
+                      className="h-4 w-4 text-primary border-border"
                       value="active"
                       onChange={field.onChange}
                       checked={field.value === "active"}
                     />
                     <label
                       htmlFor="statusActive"
-                      className="ml-2 text-sm text-neutral-700"
+                      className="ml-2 text-sm text-foreground"
                     >
                       Đang hoạt động
                     </label>
@@ -236,14 +239,14 @@ export default function AddStaffForm({
                       type="radio"
                       id="statusInactive"
                       name="status"
-                      className="h-4 w-4 text-black border-neutral-300"
+                      className="h-4 w-4 text-primary border-border"
                       value="inactive"
                       onChange={field.onChange}
                       checked={field.value === "inactive"}
                     />
                     <label
                       htmlFor="statusInactive"
-                      className="ml-2 text-sm text-neutral-700"
+                      className="ml-2 text-sm text-foreground"
                     >
                       Tạm nghỉ
                     </label>
@@ -256,27 +259,27 @@ export default function AddStaffForm({
           {/* Hình ảnh */}
           <div>
             <FormLabel>Ảnh đại diện</FormLabel>
-            <div className="mt-1 border-2 border-dashed border-neutral-300 rounded-md p-6 flex flex-col items-center justify-center">
-              <div className="text-neutral-500 text-center">
+            <div className="mt-1 border-2 border-dashed border-border rounded-md p-6 flex flex-col items-center justify-center">
+              <div className="text-muted-foreground text-center">
                 <UploadCloud className="text-3xl mb-2 mx-auto" />
                 <p>Kéo và thả hình ảnh vào đây hoặc</p>
                 <Button type="button" variant="secondary" className="mt-2">
                   Chọn tệp
                 </Button>
               </div>
-              <p className="text-xs text-neutral-500 mt-2">
+              <p className="text-xs text-muted-foreground mt-2">
                 PNG, JPG, GIF tối đa 2MB
               </p>
             </div>
           </div>
         </div>
-        <div className="flex justify-end gap-2 p-4 border-t border-neutral-200">
+        <div className="flex justify-end gap-2 p-4 border-t border-border">
           <Button type="button" variant="ghost" onClick={onClose}>
             Hủy
           </Button>
           <Button
             type="submit"
-            className="bg-black text-white hover:bg-neutral-800"
+            className="bg-primary text-primary-foreground hover:bg-primary/90"
           >
             Lưu nhân viên
           </Button>

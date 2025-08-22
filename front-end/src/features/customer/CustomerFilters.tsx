@@ -14,7 +14,7 @@ import { Search, Filter } from "lucide-react";
 
 export const CustomerFilters = () => {
   return (
-    <div className="bg-white p-4 rounded border border-neutral-200 mb-6">
+    <div className="bg-card p-4 rounded border border-border mb-6">
       <div className="flex flex-wrap items-center gap-4">
         <div className="flex-1 min-w-[250px]">
           <div className="relative">
@@ -23,7 +23,7 @@ export const CustomerFilters = () => {
               placeholder="Tìm kiếm khách hàng..."
               className="pl-10"
             />
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-neutral-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           </div>
         </div>
         <Select>
@@ -42,7 +42,7 @@ export const CustomerFilters = () => {
             <SelectItem value="all">Tất cả dịch vụ</SelectItem>
           </SelectContent>
         </Select>
-        <Button variant="outline" className="bg-neutral-100 text-neutral-700">
+        <Button variant="outline" className="bg-muted text-foreground">
           <Filter className="mr-2 h-4 w-4" /> Lọc
         </Button>
       </div>

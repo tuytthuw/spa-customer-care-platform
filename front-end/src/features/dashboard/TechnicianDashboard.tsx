@@ -23,33 +23,39 @@ export default function TechnicianDashboard() {
   ).length;
 
   return (
-    <main className="bg-neutral-50 min-h-screen -m-6 p-6">
+    <main className="bg-muted min-h-screen -m-6 p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl text-neutral-900">Lịch Hẹn Hôm Nay</h2>
-              <div className="text-lg text-neutral-600">{dateString}</div>
+              <h2 className="text-xl text-foreground">Lịch Hẹn Hôm Nay</h2>
+              <div className="text-lg text-muted-foreground">{dateString}</div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              <div className="bg-neutral-50 rounded-lg p-4 text-center">
-                <div className="text-2xl text-neutral-600">
+              <div className="bg-muted rounded-lg p-4 text-center">
+                <div className="text-2xl text-muted-foreground">
                   {totalCustomers}
                 </div>
-                <div className="text-sm text-neutral-600">Tổng khách hàng</div>
+                <div className="text-sm text-muted-foreground">
+                  Tổng khách hàng
+                </div>
               </div>
-              <div className="bg-neutral-50 rounded-lg p-4 text-center">
-                <div className="text-2xl text-neutral-600">
+              <div className="bg-muted rounded-lg p-4 text-center">
+                <div className="text-2xl text-muted-foreground">
                   {inProgressCount}
                 </div>
-                <div className="text-sm text-neutral-600">Đang thực hiện</div>
+                <div className="text-sm text-muted-foreground">
+                  Đang thực hiện
+                </div>
               </div>
-              <div className="bg-neutral-50 rounded-lg p-4 text-center">
-                <div className="text-2xl text-neutral-600">
+              <div className="bg-muted rounded-lg p-4 text-center">
+                <div className="text-2xl text-muted-foreground">
                   {completedCount}
                 </div>
-                <div className="text-sm text-neutral-600">Đã hoàn thành</div>
+                <div className="text-sm text-muted-foreground">
+                  Đã hoàn thành
+                </div>
               </div>
             </div>
           </div>

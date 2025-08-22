@@ -68,7 +68,9 @@ export const columns: ColumnDef<Staff>[] = [
               <DropdownMenuLabel>Hành động</DropdownMenuLabel>
               <DropdownMenuItem>Chỉnh sửa</DropdownMenuItem>
               <DropdownMenuItem>Đổi trạng thái</DropdownMenuItem>
-              <DropdownMenuItem className="text-red-500">Xóa</DropdownMenuItem>
+              <DropdownMenuItem className="text-destructive">
+                Xóa
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

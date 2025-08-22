@@ -45,12 +45,12 @@ export default function CustomersPage() {
   if (error) return <div>Đã xảy ra lỗi: {error.message}</div>;
 
   return (
-    <div className="p-6 bg-neutral-50 min-h-full">
+    <div className="p-6 bg-muted min-h-full">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Quản lý khách hàng</h2>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-neutral-800 text-white px-4 py-2 rounded flex items-center">
+            <Button className="bg-primary text-primary-foreground px-4 py-2 rounded flex items-center">
               <Plus className="mr-2 h-4 w-4" />
               Thêm khách hàng
             </Button>

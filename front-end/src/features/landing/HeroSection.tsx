@@ -3,9 +3,9 @@ import Link from "next/link";
 
 export default function HeroSection() {
   return (
-    <section className="relative h-[60vh] md:h-[80vh] flex items-center justify-center text-white">
+    <section className="relative h-[60vh] md:h-[80vh] flex items-center justify-center text-foreground">
       {/* Lớp phủ màu tối để làm nổi bật chữ */}
-      <div className="absolute inset-0 bg-black opacity-50 z-10"></div>
+      <div className="absolute inset-0 bg-background opacity-50 z-10"></div>
 
       {/* Ảnh nền */}
       <div

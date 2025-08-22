@@ -14,38 +14,38 @@ export const StatisticsSidebar = () => {
   });
 
   return (
-    <div className="w-64 bg-neutral-50 border-r border-neutral-200 p-4">
+    <div className="w-64 bg-muted border-r border-border p-4">
       <div className="mb-6">
         <h2 className="text-lg font-semibold mb-2">Hôm nay</h2>
-        <p className="text-neutral-500">{dateString}</p>
+        <p className="text-muted-foreground">{dateString}</p>
       </div>
 
       <div className="mb-6">
-        <h3 className="text-sm uppercase text-neutral-500 mb-2 font-semibold">
+        <h3 className="text-sm uppercase text-muted-foreground mb-2 font-semibold">
           Thống kê
         </h3>
         <div className="grid grid-cols-2 gap-2">
-          <div className="bg-white p-3 rounded border border-neutral-200">
-            <p className="text-sm text-neutral-500">Tổng lịch hẹn</p>
+          <div className="bg-card p-3 rounded border border-border">
+            <p className="text-sm text-muted-foreground">Tổng lịch hẹn</p>
             <p className="text-xl font-bold">12</p>
           </div>
-          <div className="bg-white p-3 rounded border border-neutral-200">
-            <p className="text-sm text-neutral-500">Đã check-in</p>
+          <div className="bg-card p-3 rounded border border-border">
+            <p className="text-sm text-muted-foreground">Đã check-in</p>
             <p className="text-xl font-bold">5</p>
           </div>
-          <div className="bg-white p-3 rounded border border-neutral-200">
-            <p className="text-sm text-neutral-500">Đang chờ</p>
+          <div className="bg-card p-3 rounded border border-border">
+            <p className="text-sm text-muted-foreground">Đang chờ</p>
             <p className="text-xl font-bold">4</p>
           </div>
-          <div className="bg-white p-3 rounded border border-neutral-200">
-            <p className="text-sm text-neutral-500">Hoàn tất</p>
+          <div className="bg-card p-3 rounded border border-border">
+            <p className="text-sm text-muted-foreground">Hoàn tất</p>
             <p className="text-xl font-bold">3</p>
           </div>
         </div>
       </div>
 
       <div>
-        <h3 className="text-sm uppercase text-neutral-500 mb-2 font-semibold">
+        <h3 className="text-sm uppercase text-muted-foreground mb-2 font-semibold">
           Nhân viên
         </h3>
         <div className="space-y-2">
@@ -53,7 +53,7 @@ export const StatisticsSidebar = () => {
             <div key={staff.id} className="flex items-center">
               <div
                 className={`w-2 h-2 rounded-full mr-2 ${
-                  staff.status === "active" ? "bg-green-500" : "bg-neutral-300"
+                  staff.status === "active" ? "bg-green-500" : "bg-muted"
                 }`}
               ></div>
               <Image
@@ -65,7 +65,7 @@ export const StatisticsSidebar = () => {
               />
               <span
                 className={`text-sm ${
-                  staff.status === "active" ? "" : "text-neutral-500"
+                  staff.status === "active" ? "" : "text-muted-foreground"
                 }`}
               >
                 {staff.name}

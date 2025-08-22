@@ -11,16 +11,19 @@ interface CustomerCardProps {
 const getStatusInfo = (status: string) => {
   switch (status) {
     case "waiting":
-      return { text: "Đang chờ", className: "bg-neutral-100 text-neutral-800" };
+      return { text: "Đang chờ", className: "bg-muted text-foreground" };
     case "in_service":
-      return { text: "Đang phục vụ", className: "bg-neutral-800 text-white" };
+      return {
+        text: "Đang phục vụ",
+        className: "bg-primary text-primary-foreground",
+      };
     case "completed":
       return {
         text: "Đã hoàn tất",
-        className: "bg-white border border-neutral-300 text-neutral-700",
+        className: "bg-card border border-border text-foreground",
       };
     default:
-      return { text: "Không xác định", className: "bg-gray-100 text-gray-800" };
+      return { text: "Không xác định", className: "bg-muted text-foreground" };
   }
 };
 
@@ -31,7 +34,7 @@ export default function CustomerCard({ customer }: CustomerCardProps) {
   const staff = mockStaff[0];
 
   return (
-    <div className="bg-white p-4 rounded border border-neutral-200 shadow-sm">
+    <div className="bg-card p-4 rounded border border-border shadow-sm">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center">
           <Image
@@ -43,7 +46,7 @@ export default function CustomerCard({ customer }: CustomerCardProps) {
           />
           <div>
             <h4>{customer.name}</h4>
-            <p className="text-sm text-neutral-500">{customer.phone}</p>
+            <p className="text-sm text-muted-foreground">{customer.phone}</p>
           </div>
         </div>
         <span className={`px-2 py-1 rounded text-sm ${statusInfo.className}`}>
@@ -53,28 +56,28 @@ export default function CustomerCard({ customer }: CustomerCardProps) {
 
       <div className="space-y-2 mb-4">
         <div className="flex justify-between text-sm">
-          <span className="text-neutral-500">Dịch vụ:</span>
+          <span className="text-muted-foreground">Dịch vụ:</span>
           <span>{service.name}</span>
         </div>
         <div className="flex justify-between text-sm">
-          <span className="text-neutral-500">Thời gian:</span>
+          <span className="text-muted-foreground">Thời gian:</span>
           <span>9:00 - 10:00</span>
         </div>
         <div className="flex justify-between text-sm">
-          <span className="text-neutral-500">Nhân viên:</span>
+          <span className="text-muted-foreground">Nhân viên:</span>
           <span>{staff.name}</span>
         </div>
       </div>
 
       <div className="flex space-x-2">
-        <Button className="flex-1 bg-neutral-800 text-white py-2 px-3 rounded text-sm">
+        <Button className="flex-1 bg-primary text-primary-foreground py-2 px-3 rounded text-sm">
           <Check className="mr-1 h-4 w-4" />
           Check-in
         </Button>
         <Button
           variant="outline"
           size="icon"
-          className="px-3 py-2 border border-neutral-300 rounded text-sm"
+          className="px-3 py-2 border border-border rounded text-sm"
         >
           <MoreVertical className="h-4 w-4" />
         </Button>

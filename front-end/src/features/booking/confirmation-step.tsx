@@ -25,20 +25,20 @@ export default function ConfirmationStep({
         <Button
           variant="ghost"
           onClick={onPrevStep}
-          className="text-neutral-700"
+          className="text-foreground"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Quay lại chọn thời gian
         </Button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
-        <h2 className="text-2xl mb-6 text-neutral-800">Xác nhận đặt lịch</h2>
+      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+        <h2 className="text-2xl mb-6 text-foreground">Xác nhận đặt lịch</h2>
 
         {/* Service Details */}
         <div className="mb-8">
           <h3 className="text-lg mb-4">Chi tiết dịch vụ</h3>
-          <div className="bg-neutral-50 p-4 rounded-lg border border-neutral-200">
+          <div className="bg-muted p-4 rounded-lg border border-border">
             <div className="flex items-start">
               <div className="relative h-24 w-24 rounded-md mr-4 overflow-hidden">
                 <Image
@@ -50,10 +50,10 @@ export default function ConfirmationStep({
               </div>
               <div>
                 <h4 className="text-lg">{service.name}</h4>
-                <p className="text-neutral-600 mb-1">
+                <p className="text-muted-foreground mb-1">
                   Thời gian: {service.duration} phút
                 </p>
-                <p className="text-neutral-800">
+                <p className="text-foreground">
                   Giá: {new Intl.NumberFormat("vi-VN").format(service.price)}{" "}
                   VNĐ
                 </p>
@@ -65,9 +65,9 @@ export default function ConfirmationStep({
         {/* Selected Time */}
         <div className="mb-8">
           <h3 className="text-lg mb-4">Thời gian đã chọn</h3>
-          <div className="bg-neutral-50 p-4 rounded-lg border border-neutral-200">
+          <div className="bg-muted p-4 rounded-lg border border-border">
             <div className="flex items-center">
-              <CalendarDays className="text-neutral-600 text-xl mr-3" />
+              <CalendarDays className="text-muted-foreground text-xl mr-3" />
               <div>
                 <p>Ngày: {date.toLocaleDateString("vi-VN")}</p>
                 <p>Giờ: {time}</p>
@@ -121,7 +121,7 @@ export default function ConfirmationStep({
         <div className="mb-4">
           <div className="flex items-center">
             <Checkbox id="terms" />
-            <label htmlFor="terms" className="ml-2 text-neutral-700 text-sm">
+            <label htmlFor="terms" className="ml-2 text-foreground text-sm">
               Tôi đồng ý với{" "}
               <span className="underline cursor-pointer">
                 điều khoản dịch vụ
@@ -136,7 +136,7 @@ export default function ConfirmationStep({
 
         <Button
           onClick={onConfirm}
-          className="w-full py-3 bg-neutral-800 text-white hover:bg-neutral-700"
+          className="w-full py-3 bg-primary text-primary-foreground hover:bg-primary/90"
         >
           Xác nhận đặt lịch
         </Button>
