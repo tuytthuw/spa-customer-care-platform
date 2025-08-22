@@ -1,47 +1,50 @@
 // src/components/layout/Header.tsx (phiên bản cập nhật)
-"use client"; // Header cần là Client Component để dùng hook
+"use client";
 
 import Link from "next/link";
-import { useAuth } from "@/contexts/AuthContexts"; // 1. Import useAuth
+import { useAuth } from "@/contexts/AuthContexts";
 import { Button } from "../ui/button";
+import { Sparkles, Phone, User } from "lucide-react"; // Import icons
 
 export default function Header() {
-  const { user, logout } = useAuth(); // 2. Lấy user và hàm logout từ context
+  const { user, logout } = useAuth();
 
   return (
-    <header className="bg-white shadow-md sticky top-0 z-50">
-      <nav className="container mx-auto px-4 py-3 flex justify-between items-center">
-        <Link href="/" className="text-2xl font-bold text-primary">
-          MySpa
-        </Link>
-        <div className="hidden md:flex items-center space-x-6">
-          <Link href="/" className="hover:text-primary transition-colors">
-            Trang chủ
-          </Link>
-          <Link
-            href="/services"
-            className="hover:text-primary transition-colors"
-          >
-            Dịch vụ
-          </Link>
-          {/* Thêm các link khác nếu cần */}
-        </div>
-        <div className="flex items-center space-x-2">
-          {/* 3. Hiển thị có điều kiện */}
-          {user ? (
-            <>
-              <span>Chào, {user.name}!</span>
-              <Button variant="outline" onClick={logout}>
-                Đăng xuất
-              </Button>
-            </>
-          ) : (
-            <Button asChild>
-              <Link href="/auth/login">Đăng nhập</Link>
+    <header className="w-full bg-white border-b border-neutral-200 py-4 px-6 flex items-center justify-between sticky top-0 z-50">
+      <Link href="/" className="flex items-center">
+        <Sparkles className="text-neutral-800 text-2xl mr-3" />
+        <h1 className="text-xl text-neutral-800 font-semibold">Serenity Spa</h1>
+      </Link>
+      <div className="flex items-center space-x-4">
+        <Button
+          variant="outline"
+          className="border-neutral-300 text-neutral-700"
+        >
+          <Phone className="mr-2 h-4 w-4" />
+          Liên hệ
+        </Button>
+        {user ? (
+          <>
+            <span className="text-neutral-700">Chào, {user.name}!</span>
+            <Button
+              onClick={logout}
+              className="bg-neutral-800 text-white hover:bg-neutral-700"
+            >
+              Đăng xuất
             </Button>
-          )}
-        </div>
-      </nav>
+          </>
+        ) : (
+          <Button
+            asChild
+            className="bg-neutral-800 text-white hover:bg-neutral-700"
+          >
+            <Link href="/auth/login">
+              <User className="mr-2 h-4 w-4" />
+              Đăng nhập
+            </Link>
+          </Button>
+        )}
+      </div>
     </header>
   );
 }

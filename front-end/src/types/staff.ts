@@ -5,4 +5,5 @@ export interface Staff {
   phone: string;
   role: "technician" | "receptionist" | "manager";
   status: "active" | "inactive";
+  password?: string;
 }

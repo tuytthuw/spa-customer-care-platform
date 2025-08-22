@@ -1,60 +1,104 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import DateTimeStep from "@/components/screens/booking/date-time-step";
-import TechnicianStep from "@/components/screens/booking/technician-step";
 import ConfirmationStep from "@/components/screens/booking/confirmation-step";
-import { Card, CardContent } from "@/components/ui/card";
+import ServiceSelectionStep from "@/components/screens/booking/ServiceSelectionStep";
+import BookingSuccessStep from "@/components/screens/booking/BookingSuccessStep";
+import { Service } from "@/types/service";
+
+// Component hiển thị các bước (Stepper)
+const BookingSteps = ({ currentStep }: { currentStep: number }) => {
+  const steps = ["Chọn dịch vụ", "Chọn ngày/giờ", "Xác nhận"];
+  return (
+    <div className="flex items-center justify-center mb-8">
+      {steps.map((label, index) => {
+        const stepNumber = index + 1;
+        const isActive = currentStep === stepNumber;
+        const isCompleted = currentStep > stepNumber;
+
+        return (
+          <React.Fragment key={stepNumber}>
+            <div className="flex items-center">
+              <div
+                className={`w-10 h-10 rounded-full flex items-center justify-center
+                                ${isActive ? "bg-neutral-800 text-white" : ""}
+                                ${
+                                  isCompleted ? "bg-neutral-800 text-white" : ""
+                                }
+                                ${
+                                  !isActive && !isCompleted
+                                    ? "bg-neutral-300 text-neutral-600"
+                                    : ""
+                                }
+                                `}
+              >
+                {isCompleted ? "✓" : stepNumber}
+              </div>
+              <div
+                className={`ml-2 ${
+                  isActive || isCompleted
+                    ? "text-neutral-800"
+                    : "text-neutral-500"
+                }`}
+              >
+                {label}
+              </div>
+            </div>
+            {index < steps.length - 1 && (
+              <div
+                className={`w-16 h-1 mx-3 ${
+                  currentStep > stepNumber ? "bg-neutral-800" : "bg-neutral-300"
+                }`}
+              ></div>
+            )}
+          </React.Fragment>
+        );
+      })}
+    </div>
+  );
+};
 
 export default function BookingPage() {
   const searchParams = useSearchParams();
   const serviceId = searchParams.get("serviceId");
 
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(serviceId ? 2 : 1);
   const [bookingDetails, setBookingDetails] = useState({
-    serviceId: serviceId,
+    service: null as Service | null,
     date: new Date(),
     time: "",
-    technicianId: undefined as string | undefined,
   });
 
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => prev - 1);
+
+  const handleServiceSelect = (service: Service) => {
+    setBookingDetails((prev) => ({ ...prev, service }));
+    nextStep();
+  };
 
   const handleDateTimeSelect = (date: Date, time: string) => {
     setBookingDetails((prev) => ({ ...prev, date, time }));
     nextStep();
   };
 
-  const handleTechnicianSelect = (technicianId?: string) => {
-    setBookingDetails((prev) => ({ ...prev, technicianId }));
-    nextStep();
-  };
-
   const handleConfirmBooking = () => {
-    // Đây là nơi bạn sẽ gọi API để gửi dữ liệu lên server
     console.log("Dữ liệu đặt lịch cuối cùng:", bookingDetails);
-    alert("Đặt lịch thành công! Cảm ơn bạn.");
-    // Chuyển hướng người dùng đến trang "Lịch hẹn của tôi"
-    // router.push('/appointments');
-    setStep(4); // Chuyển sang bước thành công
+    setStep(4);
   };
 
   const renderStep = () => {
     switch (step) {
       case 1:
+        return <ServiceSelectionStep onServiceSelect={handleServiceSelect} />;
+      case 2:
         return (
           <DateTimeStep
             onNextStep={handleDateTimeSelect}
-            initialData={bookingDetails}
-          />
-        );
-      case 2:
-        return (
-          <TechnicianStep
-            onNextStep={handleTechnicianSelect}
-            onPrevStep={prevStep}
+            onPrevStep={() => setStep(1)}
+            bookingDetails={bookingDetails}
           />
         );
       case 3:
@@ -66,31 +110,16 @@ export default function BookingPage() {
           />
         );
       case 4:
-        return (
-          <div className="text-center">
-            <h2 className="text-2xl font-semibold text-green-600 mb-4">
-              Đặt lịch thành công!
-            </h2>
-            <p>Cảm ơn bạn đã tin tưởng dịch vụ của MySpa.</p>
-            <p>Chúng tôi đã gửi thông tin xác nhận đến email của bạn.</p>
-          </div>
-        );
+        return <BookingSuccessStep bookingDetails={bookingDetails} />;
       default:
-        return (
-          <DateTimeStep
-            onNextStep={handleDateTimeSelect}
-            initialData={bookingDetails}
-          />
-        );
+        return <ServiceSelectionStep onServiceSelect={handleServiceSelect} />;
     }
   };
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold text-center mb-8">Đặt Lịch Hẹn</h1>
-      <Card className="max-w-2xl mx-auto shadow-lg">
-        <CardContent className="p-8">{renderStep()}</CardContent>
-      </Card>
-    </div>
+    <main className="max-w-6xl mx-auto py-8 px-4">
+      {step < 4 && <BookingSteps currentStep={step} />}
+      {renderStep()}
+    </main>
   );
 }

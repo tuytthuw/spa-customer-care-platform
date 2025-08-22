@@ -2,7 +2,7 @@
 import React from "react";
 import Sidebar from "@/components/layout/dashboard/DashboardSidebar";
 import Header from "@/components/layout/dashboard/DashboardHeader";
-import { AuthProvider } from "@/contexts/AuthContexts"; // Đảm bảo bọc trong AuthProvider
+import { AuthProvider } from "@/contexts/AuthContexts";
 
 export default function DashboardLayout({
   children,
@@ -11,11 +11,16 @@ export default function DashboardLayout({
 }) {
   return (
     <AuthProvider>
-      <div className="flex h-screen bg-gray-100">
+      <div className="flex h-screen bg-neutral-50">
+        {/* Sidebar chính (menu điều hướng) */}
         <Sidebar />
-        <div className="flex flex-col flex-1">
+        <div className="flex flex-col flex-1 overflow-hidden">
+          {/* Header mới */}
           <Header />
-          <main className="flex-1 p-6 overflow-y-auto">{children}</main>
+          {/* Main content sẽ chiếm phần còn lại */}
+          <main className="flex-1 overflow-x-hidden overflow-y-auto">
+            {children}
+          </main>
         </div>
       </div>
     </AuthProvider>

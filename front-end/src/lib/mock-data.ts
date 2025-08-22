@@ -147,6 +147,7 @@ export const mockStaff: Staff[] = [
     phone: "0911223344",
     role: "technician",
     status: "active",
+    password: "password",
   },
   {
     id: "tech-2",
@@ -155,6 +156,7 @@ export const mockStaff: Staff[] = [
     phone: "0922334455",
     role: "technician",
     status: "active",
+    password: "password",
   },
   {
     id: "rec-1",
@@ -163,6 +165,7 @@ export const mockStaff: Staff[] = [
     phone: "0933445566",
     role: "receptionist",
     status: "active",
+    password: "password",
   },
   {
     id: "mana-1",
@@ -171,6 +174,7 @@ export const mockStaff: Staff[] = [
     phone: "0944556677",
     role: "manager",
     status: "inactive",
+    password: "password",
   },
 ];
 

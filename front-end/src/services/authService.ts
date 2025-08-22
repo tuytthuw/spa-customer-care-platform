@@ -1,26 +1,28 @@
-// src/actions/auth.ts
+// src/services/authService.ts
 "use server";
 
 import { z } from "zod";
 import { cookies } from "next/headers";
-import crypto from "crypto"; // Dùng để tạo ID ngẫu nhiên
+import crypto from "crypto";
+import { mockStaff, mockCustomers } from "@/lib/mock-data";
 
-// 1. Định nghĩa kiểu User, đảm bảo mọi User đều có id
+// Định nghĩa lại User để bao gồm password và tất cả các vai trò
 interface User {
   id: string;
   name: string;
   email: string;
-  role: "ADMIN" | "CLIENT";
+  role: "ADMIN" | "CLIENT" | "technician" | "receptionist" | "manager";
+  password?: string;
 }
 
-// 2. Định nghĩa kiểu trả về thống nhất cho các action
+// Kiểu trả về thống nhất cho các action
 type ActionResult = {
   success?: string;
   error?: string;
-  user?: User;
+  user?: Omit<User, "password">; // Trả về user không có mật khẩu
 };
 
-// 3. Định nghĩa Zod schema cho các form
+// Zod schema cho các form
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1),
@@ -32,15 +34,25 @@ const registerSchema = z.object({
   password: z.string().min(6),
 });
 
-// Giả lập cơ sở dữ liệu người dùng (đã thêm id)
+// Giả lập cơ sở dữ liệu người dùng
 const mockUsers: User[] = [
-  { id: "1", name: "Admin", email: "admin@gmail.com", role: "ADMIN" },
-  { id: "2", name: "Tuyet Thu", email: "client@gmail.com", role: "CLIENT" },
+  {
+    id: "1",
+    name: "Admin",
+    email: "admin@gmail.com",
+    role: "ADMIN",
+    password: "password",
+  },
+  {
+    id: "2",
+    name: "Tuyet Thu",
+    email: "client@gmail.com",
+    role: "CLIENT",
+    password: "password",
+  },
 ];
 
-// --- Server Actions ---
-
-// Action Đăng nhập
+// Action Đăng nhập (ĐÃ SỬA LỖI)
 export const login = async (
   values: z.infer<typeof loginSchema>
 ): Promise<ActionResult> => {
@@ -51,25 +63,34 @@ export const login = async (
     }
     const { email, password } = validatedFields.data;
 
-    // Giả lập gọi API (bạn có thể thay thế bằng logic gọi API thật)
-    const user = mockUsers.find(
-      (u) => u.email === email /* && u.password === password */
+    // Gán vai trò cho khách hàng và gộp tất cả người dùng
+    const customersWithRole = mockCustomers.map((c) => ({
+      ...c,
+      role: "CLIENT" as const,
+    }));
+    const allUsers: User[] = [...mockUsers, ...mockStaff, ...customersWithRole];
+
+    // Kiểm tra thông tin đăng nhập
+    const user = allUsers.find(
+      (u) => u.email === email && u.password === password
     );
 
     if (!user) {
       return { error: "Email hoặc mật khẩu không chính xác!" };
     }
 
-    // Lưu token vào cookies
     (cookies() as any).set("accessToken", "mock-access-token", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",
     });
 
+    // Loại bỏ mật khẩu trước khi gửi về client
+    const { password: _, ...userWithoutPassword } = user;
+
     return {
       success: "Đăng nhập thành công!",
-      user: user,
+      user: userWithoutPassword,
     };
   } catch (error) {
     return { error: "Đã có lỗi xảy ra. Vui lòng thử lại." };
@@ -88,13 +109,14 @@ export async function register(
   }
 
   const newUser: User = {
-    id: crypto.randomUUID(), // Tạo ID ngẫu nhiên
+    id: crypto.randomUUID(),
     ...values,
     role: "CLIENT",
   };
   mockUsers.push(newUser);
 
-  return { success: "Đăng ký thành công!", user: newUser };
+  const { password: _, ...userWithoutPassword } = newUser;
+  return { success: "Đăng ký thành công!", user: userWithoutPassword };
 }
 
 // Action Đăng nhập bằng Google
@@ -102,7 +124,6 @@ export async function loginWithGoogle(code: string): Promise<ActionResult> {
   await new Promise((resolve) => setTimeout(resolve, 1500));
 
   if (code) {
-    // Giả lập trả về một người dùng sau khi đăng nhập Google thành công
     const googleUser: User = {
       id: crypto.randomUUID(),
       name: "Google User",
