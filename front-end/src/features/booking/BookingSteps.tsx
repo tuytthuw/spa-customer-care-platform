@@ -20,13 +20,19 @@ export const BookingSteps = ({ currentStep }: BookingStepsProps) => {
             <div className="flex items-center">
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center
-                                ${isActive ? "bg-neutral-800 text-white" : ""}
                                 ${
-                                  isCompleted ? "bg-neutral-800 text-white" : ""
+                                  isActive
+                                    ? "bg-primary text-primary-foreground"
+                                    : ""
+                                }
+                                ${
+                                  isCompleted
+                                    ? "bg-primary text-primary-foreground"
+                                    : ""
                                 }
                                 ${
                                   !isActive && !isCompleted
-                                    ? "bg-neutral-300 text-neutral-600"
+                                    ? "bg-muted text-muted-foreground"
                                     : ""
                                 }
                                 `}
@@ -36,8 +42,8 @@ export const BookingSteps = ({ currentStep }: BookingStepsProps) => {
               <div
                 className={`ml-2 ${
                   isActive || isCompleted
-                    ? "text-neutral-800"
-                    : "text-neutral-500"
+                    ? "text-foreground"
+                    : "text-muted-foreground"
                 }`}
               >
                 {label}
@@ -46,7 +52,7 @@ export const BookingSteps = ({ currentStep }: BookingStepsProps) => {
             {index < steps.length - 1 && (
               <div
                 className={`w-16 h-1 mx-3 ${
-                  currentStep > stepNumber ? "bg-neutral-800" : "bg-neutral-300"
+                  currentStep > stepNumber ? "bg-primary" : "bg-muted"
                 }`}
               ></div>
             )}

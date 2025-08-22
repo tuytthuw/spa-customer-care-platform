@@ -4,7 +4,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContexts"; // 1. Import AuthProvider
 import Link from "next/link";
-import Header from "@/components/layout/Header"; // Import component Header
 import ReactQueryProvider from "@/components/providers/ReactQueryProvider"; // 1. Import provider mới
 
 const inter = Inter({ subsets: ["latin"] });
@@ -26,7 +25,6 @@ export default function RootLayout({
           {" "}
           {/* 2. Bọc ngoài cùng */}
           <AuthProvider>
-            <Header />
             <main>{children}</main>
           </AuthProvider>
         </ReactQueryProvider>

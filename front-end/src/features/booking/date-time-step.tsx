@@ -44,15 +44,15 @@ export default function DateTimeStep({
         <Button
           variant="ghost"
           onClick={onPrevStep}
-          className="text-neutral-700"
+          className="text-foreground"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Quay lại chọn dịch vụ
         </Button>
         {bookingDetails.service && (
-          <div className="p-3 bg-white rounded-lg border border-neutral-200 shadow-sm text-right">
+          <div className="p-3 bg-card rounded-lg border border-border shadow-sm text-right">
             <h3 className="text-lg">{bookingDetails.service.name}</h3>
-            <p className="text-neutral-600">
+            <p className="text-muted-foreground">
               {bookingDetails.service.duration} phút -{" "}
               {new Intl.NumberFormat("vi-VN").format(
                 bookingDetails.service.price
@@ -63,8 +63,8 @@ export default function DateTimeStep({
         )}
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
-        <h2 className="text-2xl mb-6 text-neutral-800">Chọn ngày và giờ</h2>
+      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+        <h2 className="text-2xl mb-6 text-foreground">Chọn ngày và giờ</h2>
         <div className="flex flex-col md:flex-row gap-6">
           {/* Calendar */}
           <div className="w-full md:w-1/2">
@@ -92,9 +92,7 @@ export default function DateTimeStep({
                   variant={selectedTime === time ? "default" : "outline"}
                   onClick={() => setSelectedTime(time)}
                   className={`${
-                    selectedTime === time
-                      ? "bg-neutral-800 border-neutral-800"
-                      : ""
+                    selectedTime === time ? "bg-primary border-primary" : ""
                   }`}
                 >
                   {time}
@@ -104,7 +102,7 @@ export default function DateTimeStep({
                 <Button
                   key={time}
                   disabled
-                  className="cursor-not-allowed bg-neutral-100 text-neutral-400"
+                  className="cursor-not-allowed bg-muted text-muted-foreground"
                 >
                   {time} (Đã đặt)
                 </Button>
@@ -114,7 +112,7 @@ export default function DateTimeStep({
               <Button
                 onClick={handleNext}
                 disabled={!date || !selectedTime}
-                className="w-full py-3 bg-neutral-800 text-white hover:bg-neutral-700"
+                className="w-full py-3 bg-primary text-primary-foreground hover:bg-primary/90"
               >
                 Tiếp tục
               </Button>

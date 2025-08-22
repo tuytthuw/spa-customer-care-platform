@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContexts";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { Sparkles, Phone, User } from "lucide-react"; // Import icons
 
 export default function Header() {

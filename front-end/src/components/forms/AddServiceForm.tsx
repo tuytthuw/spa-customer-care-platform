@@ -162,7 +162,7 @@ export default function AddServiceForm({
           />
         </div>
 
-        {/* Hình ảnh dịch vụ (Giao diện mẫu) */}
+        {/* Hình ảnh dịch vụ */}
         <div>
           <FormLabel>Hình ảnh dịch vụ</FormLabel>
           <div className="mt-1 border-2 border-dashed border-neutral-300 rounded-md p-6 flex flex-col items-center justify-center">

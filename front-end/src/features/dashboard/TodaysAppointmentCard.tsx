@@ -57,14 +57,14 @@ export default function TodaysAppointmentCard({
         return {
           text: "Chờ thực hiện",
           icon: <Clock className="mr-2" />,
-          color: "bg-neutral-100 text-neutral-800",
+          color: "bg-muted text-foreground",
         };
     }
   };
   const statusInfo = getStatusInfo();
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+    <div className="bg-card rounded-lg shadow-sm border border-border p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-4">
           <Image
@@ -75,8 +75,8 @@ export default function TodaysAppointmentCard({
             className="w-16 h-16 rounded-full"
           />
           <div>
-            <h3 className="text-xl text-neutral-900">{customer.name}</h3>
-            <p className="text-lg text-neutral-600">{customer.phone}</p>
+            <h3 className="text-xl text-foreground">{customer.name}</h3>
+            <p className="text-lg text-muted-foreground">{customer.phone}</p>
           </div>
         </div>
         <div className="flex items-center space-x-3">
@@ -87,30 +87,32 @@ export default function TodaysAppointmentCard({
             {statusInfo.text}
           </span>
           <div className="text-right">
-            <p className="text-lg text-neutral-900">
+            <p className="text-lg text-foreground">
               {start} - {end}
             </p>
-            <p className="text-sm text-neutral-500">{service.duration} phút</p>
+            <p className="text-sm text-muted-foreground">
+              {service.duration} phút
+            </p>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <h4 className="text-lg text-neutral-900 mb-3">Dịch vụ</h4>
+          <h4 className="text-lg text-foreground mb-3">Dịch vụ</h4>
           <div className="space-y-2">
-            <div className="flex justify-between items-center p-3 bg-neutral-50 rounded-lg">
-              <span className="text-base text-neutral-900">{service.name}</span>
-              <span className="text-base text-neutral-900">
+            <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
+              <span className="text-base text-foreground">{service.name}</span>
+              <span className="text-base text-foreground">
                 {service.duration} phút
               </span>
             </div>
           </div>
         </div>
         <div>
-          <h4 className="text-lg text-neutral-900 mb-3">Ghi chú</h4>
-          <div className="p-4 bg-neutral-50 rounded-lg">
-            <p className="text-base text-neutral-700">
+          <h4 className="text-lg text-foreground mb-3">Ghi chú</h4>
+          <div className="p-4 bg-muted rounded-lg">
+            <p className="text-base text-muted-foreground">
               Khách hàng có da nhạy cảm, tránh sử dụng tinh dầu mạnh. Ưu tiên
               massage nhẹ nhàng.
             </p>
@@ -120,7 +122,7 @@ export default function TodaysAppointmentCard({
 
       <div className="flex justify-end space-x-3 mt-6">
         {appointment.status === "upcoming" && (
-          <Button className="px-6 py-3 bg-neutral-600 text-white rounded-lg text-base hover:bg-neutral-700">
+          <Button className="px-6 py-3 bg-primary text-primary-foreground rounded-lg text-base hover:bg-primary/90">
             <Play className="mr-2 h-4 w-4" />
             Bắt đầu
           </Button>
@@ -133,7 +135,7 @@ export default function TodaysAppointmentCard({
             >
               Tạm dừng
             </Button>
-            <Button className="px-6 py-3 bg-neutral-600 text-white rounded-lg text-base hover:bg-neutral-700">
+            <Button className="px-6 py-3 bg-primary text-primary-foreground rounded-lg text-base hover:bg-primary/90">
               <Check className="mr-2 h-4 w-4" />
               Hoàn thành
             </Button>

@@ -56,7 +56,7 @@ export default function AppointmentCard({
         );
       case "cancelled":
         return (
-          <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-red-600 bg-red-200">
+          <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-destructive bg-destructive/20">
             Đã hủy
           </span>
         );
