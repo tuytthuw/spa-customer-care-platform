@@ -30,7 +30,7 @@ import {
   CalendarPlus,
   BarChart,
 } from "lucide-react";
-import CustomerCard from "@/components/screens/customers/CustomerCard"; // Component mới
+import CustomerCard from "@/features/customers/CustomerCard"; // Component mới
 
 interface CustomerFormValues {
   name: string;

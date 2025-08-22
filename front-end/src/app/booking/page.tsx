@@ -2,10 +2,10 @@
 
 import React, { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import DateTimeStep from "@/components/screens/booking/date-time-step";
-import ConfirmationStep from "@/components/screens/booking/confirmation-step";
-import ServiceSelectionStep from "@/components/screens/booking/ServiceSelectionStep";
-import BookingSuccessStep from "@/components/screens/booking/BookingSuccessStep";
+import DateTimeStep from "@/features/booking/date-time-step";
+import ConfirmationStep from "@/features/booking/confirmation-step";
+import ServiceSelectionStep from "@/features/booking/ServiceSelectionStep";
+import BookingSuccessStep from "@/features/booking/BookingSuccessStep";
 import { Service } from "@/types/service";
 
 // Component hiển thị các bước (Stepper)

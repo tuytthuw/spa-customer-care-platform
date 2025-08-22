@@ -5,9 +5,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { OverviewChart } from "@/components/screens/dashboard/OverviewChart";
-import { UpcomingAppointments } from "@/components/screens/dashboard/UpcomingAppointments";
-import { StatsCard } from "@/components/screens/dashboard/StatsCard";
+import { OverviewChart } from "@/features/dashboard/OverviewChart";
+import { UpcomingAppointments } from "@/features/dashboard/UpcomingAppointments";
+import { StatsCard } from "@/features/dashboard/StatsCard";
 import { Activity, CalendarCheck, DollarSign, Users } from "lucide-react";
 
 export default function ManagerDashboard() {

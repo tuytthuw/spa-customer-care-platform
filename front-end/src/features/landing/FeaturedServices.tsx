@@ -1,4 +1,4 @@
-import ServiceCard from "@/components/screens/services/service-card";
+import ServiceCard from "@/features/services/service-card";
 import { Button } from "@/components/ui/button";
 import { mockServices } from "@/lib/mock-data";
 import { Service } from "@/types/service";
