@@ -5,4 +5,6 @@ export interface Customer {
   phone: string;
   totalAppointments: number;
   lastVisit: string; // ISO date string
+  password?: string;
+  role?: "CLIENT";
 }

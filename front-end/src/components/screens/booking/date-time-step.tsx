@@ -3,6 +3,7 @@
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { ArrowLeft } from "lucide-react";
 
 const availableTimes = [
   "09:00",
@@ -10,28 +11,23 @@ const availableTimes = [
   "10:00",
   "10:30",
   "11:00",
+  "11:30",
+  "13:00",
+  "13:30",
   "14:00",
   "14:30",
-  "15:00",
-  "16:30",
-  "17:00",
+  "15:30",
 ];
-
-interface DateTimeStepProps {
-  onNextStep: (date: Date, time: string) => void;
-  initialData: {
-    date: Date;
-    time: string;
-  };
-}
+const bookedTimes = ["12:00", "12:30", "15:00"];
 
 export default function DateTimeStep({
   onNextStep,
-  initialData,
-}: DateTimeStepProps) {
-  const [date, setDate] = useState<Date | undefined>(initialData.date);
+  onPrevStep,
+  bookingDetails,
+}: any) {
+  const [date, setDate] = useState<Date | undefined>(bookingDetails.date);
   const [selectedTime, setSelectedTime] = useState<string | null>(
-    initialData.time || null
+    bookingDetails.time || null
   );
 
   const handleNext = () => {
@@ -44,39 +40,87 @@ export default function DateTimeStep({
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">1. Chọn ngày và giờ</h2>
-      <div className="grid md:grid-cols-2 gap-8">
-        <div className="flex justify-center">
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={setDate}
-            className="rounded-md border"
-            disabled={(day) =>
-              day < new Date(new Date().setDate(new Date().getDate() - 1))
-            }
-          />
-        </div>
+      <div className="flex justify-between items-center mb-6">
+        <Button
+          variant="ghost"
+          onClick={onPrevStep}
+          className="text-neutral-700"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Quay lại chọn dịch vụ
+        </Button>
+        {bookingDetails.service && (
+          <div className="p-3 bg-white rounded-lg border border-neutral-200 shadow-sm text-right">
+            <h3 className="text-lg">{bookingDetails.service.name}</h3>
+            <p className="text-neutral-600">
+              {bookingDetails.service.duration} phút -{" "}
+              {new Intl.NumberFormat("vi-VN").format(
+                bookingDetails.service.price
+              )}{" "}
+              VNĐ
+            </p>
+          </div>
+        )}
+      </div>
 
-        <div>
-          <h3 className="font-medium mb-4">Chọn khung giờ:</h3>
-          <div className="grid grid-cols-3 gap-2">
-            {availableTimes.map((time) => (
+      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+        <h2 className="text-2xl mb-6 text-neutral-800">Chọn ngày và giờ</h2>
+        <div className="flex flex-col md:flex-row gap-6">
+          {/* Calendar */}
+          <div className="w-full md:w-1/2">
+            <h3 className="text-lg mb-3">Chọn ngày</h3>
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={setDate}
+              className="rounded-md border"
+              disabled={(day) =>
+                day < new Date(new Date().setDate(new Date().getDate() - 1))
+              }
+            />
+          </div>
+
+          {/* Time Slots */}
+          <div className="w-full md:w-1/2">
+            <h3 className="text-lg mb-3">
+              Chọn giờ - {date?.toLocaleDateString("vi-VN")}
+            </h3>
+            <div className="grid grid-cols-2 gap-3">
+              {availableTimes.map((time) => (
+                <Button
+                  key={time}
+                  variant={selectedTime === time ? "default" : "outline"}
+                  onClick={() => setSelectedTime(time)}
+                  className={`${
+                    selectedTime === time
+                      ? "bg-neutral-800 border-neutral-800"
+                      : ""
+                  }`}
+                >
+                  {time}
+                </Button>
+              ))}
+              {bookedTimes.map((time) => (
+                <Button
+                  key={time}
+                  disabled
+                  className="cursor-not-allowed bg-neutral-100 text-neutral-400"
+                >
+                  {time} (Đã đặt)
+                </Button>
+              ))}
+            </div>
+            <div className="mt-6">
               <Button
-                key={time}
-                variant={selectedTime === time ? "default" : "outline"}
-                onClick={() => setSelectedTime(time)}
+                onClick={handleNext}
+                disabled={!date || !selectedTime}
+                className="w-full py-3 bg-neutral-800 text-white hover:bg-neutral-700"
               >
-                {time}
+                Tiếp tục
               </Button>
-            ))}
+            </div>
           </div>
         </div>
-      </div>
-      <div className="mt-8 flex justify-end">
-        <Button onClick={handleNext} disabled={!date || !selectedTime}>
-          Tiếp theo
-        </Button>
       </div>
     </div>
   );
