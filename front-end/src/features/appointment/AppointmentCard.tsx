@@ -1,137 +1,112 @@
 "use client";
 
+import { useState } from "react";
 import { Appointment } from "@/types/appointment";
-import { mockServices } from "@/lib/mock-data";
-import { mockTechnicians } from "@/lib/mock-data";
+import { mockServices, mockStaff } from "@/lib/mock-data";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Calendar, User, Tag, BadgeCheck, XCircle } from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import CancelAppointmentModal from "./CancelAppointmentModal";
 
 interface AppointmentCardProps {
   appointment: Appointment;
-  onCancel: (appointmentId: string) => void;
+  onCancel: (id: string, reason: string) => void;
 }
 
-export default function AppointmentCard({
-  appointment,
-  onCancel,
-}: AppointmentCardProps) {
+const AppointmentCard = ({ appointment, onCancel }: AppointmentCardProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const service = mockServices.find((s) => s.id === appointment.serviceId);
-  const technician = mockTechnicians.find(
-    (t) => t.id === appointment.technicianId
-  );
+  const technician = mockStaff.find((t) => t.id === appointment.technicianId);
 
-  if (!service) return null;
+  if (!service) {
+    return null;
+  }
 
-  const getStatusBadge = () => {
-    switch (appointment.status) {
+  // === SỬA LỖI Ở ĐÂY: SỬ DỤNG VARIANT CÓ SẴN ===
+  const getStatusVariant = (status: string) => {
+    switch (status) {
       case "upcoming":
-        return (
-          <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200">
-            Sắp tới
-          </span>
-        );
+        return "default";
       case "completed":
-        return (
-          <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-green-600 bg-green-200">
-            Đã hoàn thành
-          </span>
-        );
+        return "secondary"; // Sử dụng "secondary" thay vì "success"
       case "cancelled":
-        return (
-          <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-destructive bg-destructive/20">
-            Đã hủy
-          </span>
-        );
+        return "destructive";
+      default:
+        return "secondary";
     }
   };
 
+  const handleConfirmCancel = (reason: string) => {
+    onCancel(appointment.id, reason);
+  };
+
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex justify-between items-start">
-          <CardTitle className="text-lg">{service.name}</CardTitle>
-          {getStatusBadge()}
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-3 text-sm text-muted-foreground">
-        <div className="flex items-center gap-2">
-          <Calendar className="w-4 h-4" />
-          <span>
-            {new Date(appointment.date).toLocaleString("vi-VN", {
-              dateStyle: "full",
-              timeStyle: "short",
-            })}
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <User className="w-4 h-4" />
-          <span>Kỹ thuật viên: {technician?.name || "Hệ thống sắp xếp"}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Tag className="w-4 h-4" />
-          <span className="font-semibold text-primary">
-            {new Intl.NumberFormat("vi-VN", {
-              style: "currency",
-              currency: "VND",
-            }).format(service.price)}
-          </span>
-        </div>
-      </CardContent>
-      {appointment.status === "upcoming" && (
-        <CardFooter className="flex justify-end">
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="destructive">
-                <XCircle className="w-4 h-4 mr-2" />
-                Hủy lịch
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>
-                  Bạn có chắc chắn muốn hủy lịch hẹn?
-                </AlertDialogTitle>
-                <AlertDialogDescription>
-                  Hành động này không thể hoàn tác. Lịch hẹn của bạn sẽ bị hủy
-                  vĩnh viễn.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Không</AlertDialogCancel>
-                <AlertDialogAction onClick={() => onCancel(appointment.id)}>
-                  Vâng, hủy lịch
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </CardFooter>
-      )}
-      {appointment.status === "completed" && (
-        <CardFooter className="flex justify-end">
-          <Button variant="outline">
-            <BadgeCheck className="w-4 h-4 mr-2" />
-            Đánh giá
-          </Button>
-        </CardFooter>
-      )}
-    </Card>
+    <>
+      <Card>
+        <CardHeader>
+          <div className="flex justify-between items-start">
+            <div>
+              <CardTitle>{service.name}</CardTitle>
+              <CardDescription>
+                {new Date(appointment.date).toLocaleDateString("vi-VN", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </CardDescription>
+            </div>
+            {/* Bỏ class màu tùy chỉnh */}
+            <Badge variant={getStatusVariant(appointment.status)}>
+              {appointment.status === "upcoming" && "Sắp tới"}
+              {appointment.status === "completed" && "Đã hoàn thành"}
+              {appointment.status === "cancelled" && "Đã hủy"}
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="col-span-1">
+            <Image
+              src={service.imageUrl}
+              alt={service.name}
+              width={200}
+              height={200}
+              className="rounded-lg object-cover w-full h-auto"
+            />
+          </div>
+          <div className="col-span-1 md:col-span-2">
+            <p className="font-semibold">Kỹ thuật viên:</p>
+            <p>{technician ? technician.name : "Chưa xác định"}</p>
+            <p className="font-semibold mt-2">Thời gian:</p>
+            <p>10:00 - 11:00 (Ví dụ)</p>
+          </div>
+        </CardContent>
+        {appointment.status === "upcoming" && (
+          <CardFooter className="flex justify-end">
+            <Button variant="destructive" onClick={() => setIsModalOpen(true)}>
+              Hủy lịch
+            </Button>
+          </CardFooter>
+        )}
+      </Card>
+
+      <CancelAppointmentModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleConfirmCancel}
+      />
+    </>
   );
-}
+};
+
+export default AppointmentCard;

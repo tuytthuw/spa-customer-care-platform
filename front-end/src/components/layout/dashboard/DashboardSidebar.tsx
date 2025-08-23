@@ -14,6 +14,8 @@ import {
   CalendarDays,
   LucideIcon,
   Briefcase,
+  Star,
+  Package,
 } from "lucide-react";
 
 // Định nghĩa cấu trúc của một link điều hướng
@@ -26,8 +28,10 @@ interface NavLink {
 // Định nghĩa các bộ link cho từng vai trò
 const customerLinks: NavLink[] = [
   { href: "/dashboard", label: "Tổng quan", icon: LayoutDashboard },
-  { href: "/appointments", label: "Lịch hẹn của tôi", icon: Calendar },
   { href: "/profile", label: "Hồ sơ", icon: User },
+  { href: "/appointments", label: "Lịch hẹn của tôi", icon: Calendar },
+  { href: "/treatments", label: "Liệu trình của tôi", icon: Package },
+  { href: "/reviews", label: "Đánh giá dịch vụ", icon: Star },
 ];
 
 const technicianLinks: NavLink[] = [

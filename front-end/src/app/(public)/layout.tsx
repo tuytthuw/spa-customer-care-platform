@@ -1,6 +1,7 @@
 // src/app/(public)/layout.tsx
 import Header from "@/components/layout/public/PublicHeader";
 import React from "react";
+import Chatbot from "@/components/chatbot/Chatbot";
 
 export default function PublicLayout({
   children,
@@ -8,10 +9,10 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <Header />
       <main>{children}</main>
-      {/* Bạn cũng có thể thêm Footer chung ở đây nếu muốn */}
+      <Chatbot />
     </div>
   );
 }

@@ -36,28 +36,6 @@ export const mockServices: Service[] = [
 ];
 
 // src/lib/mock-data.ts (thêm vào cuối file)
-import { Technician } from "@/types/technician";
-
-export const mockTechnicians: Technician[] = [
-  {
-    id: "tech-1",
-    name: "Nguyễn Thu An",
-    specialty: "Chăm sóc da mặt",
-    avatarUrl: "/images/avatars/avatar-1.jpg",
-  },
-  {
-    id: "tech-2",
-    name: "Trần Minh Huy",
-    specialty: "Massage trị liệu",
-    avatarUrl: "/images/avatars/avatar-2.jpg",
-  },
-  {
-    id: "tech-3",
-    name: "Lê Ngọc Bích",
-    specialty: "Triệt lông & Laser",
-    avatarUrl: "/images/avatars/avatar-3.jpg",
-  },
-];
 
 // src/lib/mock-data.ts (thêm vào cuối file)
 import { Appointment } from "@/types/appointment";
@@ -204,5 +182,86 @@ export const mockWorkSchedules: WorkSchedule[] = [
       saturday: { isActive: false, startTime: "", endTime: "" },
       sunday: { isActive: true, startTime: "10:00", endTime: "17:00" },
     },
+  },
+];
+
+import { TreatmentPackage } from "@/types/treatment";
+
+export const mockTreatmentPackages: TreatmentPackage[] = [
+  {
+    id: "tp-1",
+    customerId: "user-1", // ID của mockUser
+    serviceId: "1", // Chăm sóc da mặt chuyên sâu
+    totalSessions: 10,
+    completedSessions: 4,
+    purchaseDate: "2025-07-15T10:00:00.000Z",
+    sessions: [
+      {
+        id: "s1",
+        date: "2025-07-20T14:00:00.000Z",
+        technicianId: "tech-1",
+        notes: "Buổi 1 ok.",
+        status: "completed",
+      },
+      {
+        id: "s2",
+        date: "2025-07-27T14:00:00.000Z",
+        technicianId: "tech-1",
+        notes: "Da có cải thiện.",
+        status: "completed",
+      },
+      {
+        id: "s3",
+        date: "2025-08-03T14:00:00.000Z",
+        technicianId: "tech-2",
+        notes: "Khách hàng hài lòng.",
+        status: "completed",
+      },
+      {
+        id: "s4",
+        date: "2025-08-10T14:00:00.000Z",
+        technicianId: "tech-1",
+        notes: "",
+        status: "completed",
+      },
+      {
+        id: "s5",
+        date: "2025-08-17T14:00:00.000Z",
+        technicianId: "tech-1",
+        notes: "",
+        status: "upcoming",
+      },
+    ],
+  },
+  {
+    id: "tp-2",
+    customerId: "user-1",
+    serviceId: "3", // Triệt lông công nghệ cao
+    totalSessions: 8,
+    completedSessions: 2,
+    purchaseDate: "2025-08-01T11:30:00.000Z",
+    sessions: [
+      {
+        id: "s6",
+        date: "2025-08-05T10:00:00.000Z",
+        technicianId: "tech-2",
+        notes: "Buổi đầu tiên.",
+        status: "completed",
+      },
+      {
+        id: "s7",
+        date: "2025-08-19T10:00:00.000Z",
+        technicianId: "tech-2",
+        notes: "",
+        status: "completed",
+      },
+      {
+        id: "s8",
+        date: "2025-09-02T10:00:00.000Z",
+        technicianId: "tech-2",
+        notes: "",
+        status: "upcoming",
+      },
+    ],
   },
 ];
