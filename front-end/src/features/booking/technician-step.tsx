@@ -1,16 +1,24 @@
 "use client";
 
+import { useState } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { mockTechnicians } from "@/lib/mock-data";
-import { Technician } from "@/types/technician";
-import Image from "next/image";
-import { useState } from "react";
+import { cn } from "@/lib/utils";
+
+// 1. Sửa lại import để dùng mockStaff và type Staff
+import { mockStaff } from "@/lib/mock-data";
+import { Staff } from "@/types/staff";
 
 interface TechnicianStepProps {
   onNextStep: (technicianId?: string) => void;
   onPrevStep: () => void;
 }
+
+// 2. Lọc ra danh sách chỉ gồm các kỹ thuật viên từ mockStaff
+const technicians: Staff[] = mockStaff.filter(
+  (staff) => staff.role === "technician"
+);
 
 export default function TechnicianStep({
   onNextStep,
@@ -18,8 +26,14 @@ export default function TechnicianStep({
 }: TechnicianStepProps) {
   const [selectedTech, setSelectedTech] = useState<string | null>(null);
 
-  // Trong thực tế, bạn sẽ gọi API để lấy danh sách KTV phù hợp
-  const technicians: Technician[] = mockTechnicians;
+  const handleSelect = (techId: string) => {
+    // Cho phép chọn và bỏ chọn
+    if (selectedTech === techId) {
+      setSelectedTech(null);
+    } else {
+      setSelectedTech(techId);
+    }
+  };
 
   return (
     <div>
@@ -34,18 +48,21 @@ export default function TechnicianStep({
         {technicians.map((tech) => (
           <Card
             key={tech.id}
-            className={`cursor-pointer transition-all ${
+            onClick={() => handleSelect(tech.id)}
+            className={cn(
+              "cursor-pointer transition-all hover:shadow-md",
               selectedTech === tech.id
                 ? "border-primary ring-2 ring-primary"
                 : ""
-            }`}
-            onClick={() =>
-              setSelectedTech(tech.id === selectedTech ? null : tech.id)
-            }
+            )}
           >
             <CardContent className="p-4 flex items-center gap-4">
               <Image
-                src={tech.avatarUrl}
+                // 3. Sửa lại thuộc tính ảnh và thêm ảnh dự phòng
+                src={
+                  tech.avatar ||
+                  `https://api.dicebear.com/7.x/notionists/svg?seed=${tech.id}`
+                }
                 alt={tech.name}
                 width={60}
                 height={60}
@@ -53,8 +70,9 @@ export default function TechnicianStep({
               />
               <div>
                 <p className="font-semibold">{tech.name}</p>
-                <p className="text-sm text-muted-foreground">
-                  {tech.specialty}
+                {/* 4. Bỏ thuộc tính "specialty" không tồn tại */}
+                <p className="text-sm text-muted-foreground capitalize">
+                  {tech.role}
                 </p>
               </div>
             </CardContent>
@@ -65,6 +83,7 @@ export default function TechnicianStep({
         <Button variant="outline" onClick={onPrevStep}>
           Quay lại
         </Button>
+        {/* Cho phép đi tiếp ngay cả khi không chọn KTV */}
         <Button onClick={() => onNextStep(selectedTech || undefined)}>
           Tiếp theo
         </Button>

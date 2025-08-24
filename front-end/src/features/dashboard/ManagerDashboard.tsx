@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -5,9 +7,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { OverviewChart } from "@/features/dashboard/OverviewChart";
+// GIỮ LẠI CÁC COMPONENT GỐC
+import { StatsCard } from "@/features/reports/StatsCard";
 import { UpcomingAppointments } from "@/features/dashboard/UpcomingAppointments";
-import { StatsCard } from "@/features/dashboard/StatsCard";
+
+// THÊM CÁC BIỂU ĐỒ MỚI TỪ TRANG REPORTS
+import RevenueChart from "@/features/reports/RevenueChart";
+import ServiceBreakdownChart from "@/features/reports/ServiceBreakdownChart";
+
 import { Activity, CalendarCheck, DollarSign, Users } from "lucide-react";
 
 export default function ManagerDashboard() {
@@ -17,7 +24,7 @@ export default function ManagerDashboard() {
         <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
       </div>
       <div className="space-y-4">
-        {/* Các thẻ thống kê */}
+        {/* Giữ nguyên các thẻ thống kê gốc của bạn */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatsCard
             title="Doanh thu hôm nay"
@@ -45,20 +52,21 @@ export default function ManagerDashboard() {
           />
         </div>
 
-        {/* Biểu đồ và Lịch hẹn sắp tới */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-          <Card className="col-span-4">
-            <CardHeader>
-              <CardTitle>Tổng quan</CardTitle>
-              <CardDescription>Số lịch hẹn trong tuần này.</CardDescription>
-            </CardHeader>
-            <CardContent className="pl-2">
-              <OverviewChart />
-            </CardContent>
-          </Card>
-          <div className="col-span-4 lg:col-span-3">
-            <UpcomingAppointments />
+        {/* THAY THẾ VÀ BỔ SUNG BIỂU ĐỒ MỚI */}
+        <div className="grid gap-4 lg:grid-cols-5">
+          {/* Biểu đồ doanh thu mới */}
+          <div className="col-span-1 lg:col-span-3">
+            <RevenueChart />
           </div>
+          {/* Biểu đồ tỉ trọng dịch vụ mới */}
+          <div className="col-span-1 lg:col-span-2">
+            <ServiceBreakdownChart />
+          </div>
+        </div>
+
+        {/* Giữ nguyên Lịch hẹn sắp tới */}
+        <div>
+          <UpcomingAppointments />
         </div>
       </div>
     </div>
