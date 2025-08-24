@@ -1,7 +1,7 @@
 export interface DaySchedule {
   isActive: boolean;
-  startTime: string; // e.g., "09:00"
-  endTime: string; // e.g., "18:00"
+  startTime: string;
+  endTime: string;
 }
 
 export interface WorkSchedule {
@@ -15,4 +15,7 @@ export interface WorkSchedule {
     saturday: DaySchedule;
     sunday: DaySchedule;
   };
+  // Thêm các trường mới để quản lý đăng ký
+  weekOf?: string; // Ví dụ: "2025-08-25" (Ngày đầu tuần)
+  status?: "pending" | "approved" | "rejected";
 }

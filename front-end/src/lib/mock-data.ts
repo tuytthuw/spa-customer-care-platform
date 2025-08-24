@@ -344,3 +344,35 @@ export const mockConversations: Conversation[] = [
     ],
   },
 ];
+
+// Add this new export to the end of the file
+export const mockScheduleRequests: WorkSchedule[] = [
+  {
+    staffId: "tech-1", // Nguyễn Thu An
+    weekOf: "2025-09-01",
+    status: "pending",
+    schedule: {
+      monday: { isActive: true, startTime: "08:00", endTime: "17:00" },
+      tuesday: { isActive: true, startTime: "08:00", endTime: "17:00" },
+      wednesday: { isActive: true, startTime: "08:00", endTime: "12:00" },
+      thursday: { isActive: false, startTime: "", endTime: "" },
+      friday: { isActive: true, startTime: "13:00", endTime: "17:00" },
+      saturday: { isActive: true, startTime: "08:00", endTime: "17:00" },
+      sunday: { isActive: false, startTime: "", endTime: "" },
+    },
+  },
+  {
+    staffId: "tech-2", // Trần Minh Huy
+    weekOf: "2025-09-01",
+    status: "pending",
+    schedule: {
+      monday: { isActive: false, startTime: "", endTime: "" },
+      tuesday: { isActive: true, startTime: "13:00", endTime: "17:00" },
+      wednesday: { isActive: true, startTime: "08:00", endTime: "17:00" },
+      thursday: { isActive: true, startTime: "08:00", endTime: "17:00" },
+      friday: { isActive: false, startTime: "", endTime: "" },
+      saturday: { isActive: false, startTime: "", endTime: "" },
+      sunday: { isActive: true, startTime: "08:00", endTime: "12:00" },
+    },
+  },
+];
