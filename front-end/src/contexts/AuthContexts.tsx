@@ -1,4 +1,3 @@
-// src/contexts/auth-context.tsx
 "use client";
 
 import {
@@ -8,20 +7,19 @@ import {
   ReactNode,
   useEffect,
 } from "react";
+import { Permission } from "@/types/permissions";
+import { Staff } from "@/types/staff";
+import { mockRoles } from "@/lib/mock-data"; // <-- 1. THÊM IMPORT CÒN THIẾU
 
-// 1. Thêm 'id' vào interface User
-export interface User {
-  id: string; // Bắt buộc phải có id
-  name: string;
-  email: string;
-  role: "customer" | "technician" | "receptionist" | "manager";
-  phone?: string;
+interface User extends Omit<Staff, "password" | "role"> {
+  permissions: Permission[];
+  role: "customer" | "receptionist" | "technician" | "manager";
 }
 
-// Định nghĩa này đã đúng
+// 2. Sửa lại type của hàm login để nhất quán
 interface AuthContextType {
   user: User | null;
-  login: (userData: User) => void;
+  login: (userData: Staff) => void; // Login sẽ nhận vào Staff data
   logout: () => void;
 }
 
@@ -30,7 +28,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
-  // Thêm useEffect để lấy thông tin user từ localStorage khi tải lại trang
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -43,17 +40,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // 2. Sửa hàm login để nhận vào một đối tượng User đầy đủ
-  const login = (userData: User) => {
-    setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData));
+  const getPermissionsForRole = (
+    role: "customer" | "receptionist" | "technician" | "manager"
+  ): Permission[] => {
+    const rolePermissions = mockRoles.find((r) => r.id === role);
+    return rolePermissions ? rolePermissions.permissions : [];
   };
 
-  // 3. Hoàn thiện hàm logout
+  const login = (userData: Staff) => {
+    const permissions = getPermissionsForRole(userData.role);
+    const userToStore: User = {
+      ...userData,
+      permissions,
+    };
+    setUser(userToStore);
+    localStorage.setItem("user", JSON.stringify(userToStore));
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
-    // Điều hướng người dùng về trang đăng nhập
     window.location.href = "/auth/login";
   };
 
