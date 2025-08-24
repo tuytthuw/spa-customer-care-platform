@@ -376,3 +376,65 @@ export const mockScheduleRequests: WorkSchedule[] = [
     },
   },
 ];
+
+// Thêm vào cuối file mock-data.ts
+import { Role, PERMISSIONS } from "@/types/permissions";
+
+export const mockRoles: Role[] = [
+  {
+    id: "customer",
+    name: "Khách hàng",
+    permissions: [
+      PERMISSIONS.VIEW_APPOINTMENTS,
+      PERMISSIONS.VIEW_TREATMENTS,
+      PERMISSIONS.VIEW_REVIEWS,
+    ],
+  },
+  {
+    id: "receptionist",
+    name: "Lễ tân",
+    permissions: [PERMISSIONS.MANAGE_APPOINTMENTS, PERMISSIONS.VIEW_INBOX],
+  },
+  {
+    id: "technician",
+    name: "Kỹ thuật viên",
+    permissions: [PERMISSIONS.VIEW_SCHEDULE],
+  },
+  {
+    id: "manager",
+    name: "Quản lý",
+    permissions: [
+      PERMISSIONS.VIEW_REPORTS,
+      PERMISSIONS.MANAGE_USERS,
+      PERMISSIONS.MANAGE_PRODUCTS,
+      PERMISSIONS.MANAGE_SERVICES,
+      PERMISSIONS.MANAGE_SCHEDULES,
+      PERMISSIONS.MANAGE_PERMISSIONS,
+    ],
+  },
+];
+
+// Thêm vào cuối file mock-data.ts
+import { TreatmentPlan } from "@/types/treatmentPlan";
+
+export const mockTreatmentPlans: TreatmentPlan[] = [
+  {
+    id: "plan-1",
+    name: "Liệu trình Triệt lông Nách vĩnh viễn",
+    description:
+      "Gói 10 buổi triệt lông bằng công nghệ Diode Laser, bảo hành 5 năm.",
+    serviceIds: ["3"], // ID của dịch vụ "Triệt lông công nghệ cao"
+    price: 8000000,
+    totalSessions: 10,
+    imageUrl: "/images/service-3.jpg",
+  },
+  {
+    id: "plan-2",
+    name: "Gói Phục hồi da chuyên sâu",
+    description: "Liệu trình 5 buổi chăm sóc da mặt chuyên sâu.",
+    serviceIds: ["1"], // ID của dịch vụ "Chăm sóc da mặt chuyên sâu"
+    price: 2200000,
+    totalSessions: 5,
+    imageUrl: "/images/service-1.jpg",
+  },
+];
