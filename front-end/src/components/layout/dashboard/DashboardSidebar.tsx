@@ -16,6 +16,8 @@ import {
   Briefcase,
   Star,
   Package,
+  Inbox,
+  UserCog,
 } from "lucide-react";
 
 // Định nghĩa cấu trúc của một link điều hướng
@@ -41,7 +43,11 @@ const technicianLinks: NavLink[] = [
 ];
 
 const receptionistLinks: NavLink[] = [
-  { href: "/dashboard", label: "Tổng quan", icon: LayoutDashboard },
+  {
+    href: "/dashboard/inbox",
+    label: "Hộp thư",
+    icon: Inbox,
+  },
   {
     href: "/appointments-management",
     label: "Quản lý Lịch hẹn",
@@ -66,8 +72,13 @@ const managerLinks: NavLink[] = [
   },
   { href: "/staff-management", label: "Quản lý Nhân viên", icon: Briefcase },
   {
+    href: "/dashboard/manage-users",
+    label: "Quản lý người dùng",
+    icon: UserCog,
+  },
+  {
     href: "/work-schedule-management",
-    label: "Cấu hình Lịch làm việc",
+    label: "Quản lý Lịch làm việc",
     icon: Settings,
   },
 ];

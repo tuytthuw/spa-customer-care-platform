@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Send } from "lucide-react";
+import { Send, User } from "lucide-react"; // Import icon User
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState } from "react";
+import { Separator } from "@/components/ui/separator"; // Import Separator
 
 interface Message {
   text: string;
@@ -28,7 +29,6 @@ const ChatWindow = () => {
   const handleSend = () => {
     if (input.trim()) {
       setMessages([...messages, { text: input, sender: "user" }]);
-      // Mock bot response
       setTimeout(() => {
         setMessages((prev) => [
           ...prev,
@@ -40,6 +40,16 @@ const ChatWindow = () => {
       }, 1000);
       setInput("");
     }
+  };
+
+  const handleRequestAgent = () => {
+    setMessages((prev) => [
+      ...prev,
+      {
+        text: "Yêu cầu của bạn đã được gửi đến nhân viên tư vấn. Vui lòng chờ trong giây lát.",
+        sender: "bot",
+      },
+    ]);
   };
 
   return (
@@ -54,7 +64,6 @@ const ChatWindow = () => {
         <CardHeader>
           <CardTitle>Hỗ trợ trực tuyến</CardTitle>
         </CardHeader>
-        {/* === THAY ĐỔI Ở ĐÂY === */}
         <CardContent className="flex-grow overflow-hidden">
           <ScrollArea className="h-full pr-4">
             <div className="flex flex-col gap-3">
@@ -79,6 +88,16 @@ const ChatWindow = () => {
             </div>
           </ScrollArea>
         </CardContent>
+        {/* Thêm nút gặp nhân viên */}
+        <div className="p-2 border-t">
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={handleRequestAgent}
+          >
+            <User className="mr-2 h-4 w-4" /> Gặp nhân viên tư vấn
+          </Button>
+        </div>
         <CardFooter>
           <div className="flex w-full items-center space-x-2">
             <Input

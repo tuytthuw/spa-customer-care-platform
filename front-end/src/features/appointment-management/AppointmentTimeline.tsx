@@ -4,10 +4,52 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Check, MoreVertical } from "lucide-react";
 import { mockAppointments, mockCustomers, mockServices } from "@/lib/mock-data";
+import { Appointment, AppointmentStatus } from "@/types/appointment";
+import { cn } from "@/lib/utils";
 
-export const AppointmentTimeline = () => {
-  // Giả lập các khung giờ
-  const timeSlots = ["9:00", "10:00", "11:00", "12:00", "13:00"];
+interface AppointmentTimelineProps {
+  appointments: Appointment[];
+  selectedAppointmentId?: string;
+  onSelectAppointment: (appointment: Appointment) => void;
+  onStatusChange: (id: string, status: AppointmentStatus) => void;
+}
+
+export const AppointmentTimeline = ({
+  appointments,
+  selectedAppointmentId,
+  onSelectAppointment,
+  onStatusChange,
+}: AppointmentTimelineProps) => {
+  const timeSlots = [
+    "9:00",
+    "10:00",
+    "11:00",
+    "12:00",
+    "13:00",
+    "14:00",
+    "15:00",
+    "16:00",
+    "17:00",
+    "18:00",
+    "19:00",
+    "20:00",
+    "21:00",
+    "22:00",
+  ];
+  const getStatusTextAndColor = (status: AppointmentStatus) => {
+    switch (status) {
+      case "upcoming":
+        return { text: "Chờ", color: "border-yellow-500" };
+      case "checked-in":
+        return { text: "Đã đến", color: "border-primary" };
+      case "in-progress":
+        return { text: "Đang làm", color: "border-blue-500" };
+      case "completed":
+        return { text: "Hoàn thành", color: "border-green-500" };
+      default:
+        return { text: "Đã hủy", color: "border-destructive" };
+    }
+  };
 
   return (
     <div className="flex-1 p-6 overflow-auto">

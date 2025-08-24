@@ -3,8 +3,14 @@
 import React from "react";
 import { mockStaff } from "@/lib/mock-data";
 import Image from "next/image";
+import { Appointment } from "@/types/appointment"; // Import type
 
-export const StatisticsSidebar = () => {
+// Component nhận props từ cha
+interface StatisticsSidebarProps {
+  appointments: Appointment[];
+}
+
+export const StatisticsSidebar = ({ appointments }: StatisticsSidebarProps) => {
   const today = new Date();
   const dateString = today.toLocaleDateString("vi-VN", {
     weekday: "long",
@@ -12,6 +18,18 @@ export const StatisticsSidebar = () => {
     month: "numeric",
     day: "numeric",
   });
+
+  // --- Tính toán thống kê động ---
+  const total = appointments.length;
+  const checkedIn = appointments.filter(
+    (app) => app.status === "checked-in" || app.status === "in-progress"
+  ).length;
+  const waiting = appointments.filter(
+    (app) => app.status === "upcoming"
+  ).length;
+  const completed = appointments.filter(
+    (app) => app.status === "completed"
+  ).length;
 
   return (
     <div className="w-64 bg-muted border-r border-border p-4">
@@ -27,19 +45,19 @@ export const StatisticsSidebar = () => {
         <div className="grid grid-cols-2 gap-2">
           <div className="bg-card p-3 rounded border border-border">
             <p className="text-sm text-muted-foreground">Tổng lịch hẹn</p>
-            <p className="text-xl font-bold">12</p>
+            <p className="text-xl font-bold">{total}</p>
           </div>
           <div className="bg-card p-3 rounded border border-border">
             <p className="text-sm text-muted-foreground">Đã check-in</p>
-            <p className="text-xl font-bold">5</p>
+            <p className="text-xl font-bold">{checkedIn}</p>
           </div>
           <div className="bg-card p-3 rounded border border-border">
             <p className="text-sm text-muted-foreground">Đang chờ</p>
-            <p className="text-xl font-bold">4</p>
+            <p className="text-xl font-bold">{waiting}</p>
           </div>
           <div className="bg-card p-3 rounded border border-border">
             <p className="text-sm text-muted-foreground">Hoàn tất</p>
-            <p className="text-xl font-bold">3</p>
+            <p className="text-xl font-bold">{completed}</p>
           </div>
         </div>
       </div>

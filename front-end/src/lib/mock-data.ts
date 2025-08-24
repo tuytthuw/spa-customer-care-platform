@@ -265,3 +265,82 @@ export const mockTreatmentPackages: TreatmentPackage[] = [
     ],
   },
 ];
+
+import { Product } from "@/types/product";
+
+export const mockProducts: Product[] = [
+  {
+    id: "prod-1",
+    name: "Serum dưỡng ẩm Hyaluronic Acid",
+    price: 750000,
+    stock: 50,
+    imageUrl: "/images/product-1.jpg",
+  },
+  {
+    id: "prod-2",
+    name: "Kem chống nắng SPF 50+",
+    price: 550000,
+    stock: 100,
+    imageUrl: "/images/product-2.jpg",
+  },
+  {
+    id: "prod-3",
+    name: "Mặt nạ đất sét làm sạch sâu",
+    price: 450000,
+    stock: 75,
+    imageUrl: "/images/product-3.jpg",
+  },
+];
+
+import { Conversation } from "@/types/conversation";
+
+export const mockConversations: Conversation[] = [
+  {
+    id: "conv-1",
+    customerId: "cus-1", // Trần Thị Bích Hằng
+    lastMessage: "Chào bạn, mình muốn hỏi về liệu trình triệt lông.",
+    lastMessageTimestamp: new Date().toISOString(),
+    isRead: false,
+    messages: [
+      {
+        id: "msg-1",
+        sender: "bot",
+        text: "Xin chào! Tôi có thể giúp gì cho bạn?",
+        timestamp: "2025-08-25T10:00:00Z",
+      },
+      {
+        id: "msg-2",
+        sender: "customer",
+        text: "Chào bạn, mình muốn hỏi về liệu trình triệt lông.",
+        timestamp: "2025-08-25T10:01:00Z",
+      },
+    ],
+  },
+  {
+    id: "conv-2",
+    customerId: "cus-2", // Lê Minh Tuấn
+    lastMessage: "Cảm ơn bạn nhiều nhé!",
+    lastMessageTimestamp: "2025-08-24T15:30:00Z",
+    isRead: true,
+    messages: [
+      {
+        id: "msg-3",
+        sender: "customer",
+        text: "Lịch hẹn của tôi đã được xác nhận chưa?",
+        timestamp: "2025-08-24T15:28:00Z",
+      },
+      {
+        id: "msg-4",
+        sender: "staff",
+        text: "Chào anh Tuấn, lịch hẹn của mình đã được xác nhận ạ.",
+        timestamp: "2025-08-24T15:29:00Z",
+      },
+      {
+        id: "msg-5",
+        sender: "customer",
+        text: "Cảm ơn bạn nhiều nhé!",
+        timestamp: "2025-08-24T15:30:00Z",
+      },
+    ],
+  },
+];
