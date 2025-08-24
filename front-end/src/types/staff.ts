@@ -6,4 +6,5 @@ export interface Staff {
   role: "technician" | "receptionist" | "manager";
   status: "active" | "inactive";
   password?: string;
+  avatar?: string;
 }
