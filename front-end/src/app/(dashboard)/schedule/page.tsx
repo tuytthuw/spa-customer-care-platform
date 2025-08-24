@@ -1,110 +1,98 @@
 "use client";
 
 import { useState } from "react";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
-import { mockAppointments, mockServices, mockUser } from "@/lib/mock-data";
+import { Calendar } from "@/components/ui/calendar";
+import { mockAppointments as initialAppointments } from "@/lib/mock-data";
+import { Appointment } from "@/types/appointment";
 import { AppointmentDetailsModal } from "@/features/schedule/AppointmentDetailsModal";
-
-// Định nghĩa kiểu dữ liệu cho sự kiện trên lịch
-interface CalendarEvent {
-  id: string;
-  title: string;
-  start: string;
-  extendedProps: {
-    [key: string]: any;
-  };
-}
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function SchedulePage() {
-  const [appointments, setAppointments] = useState(mockAppointments);
+  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [appointments, setAppointments] =
+    useState<Appointment[]>(initialAppointments);
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<Appointment | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
-    null
-  );
-  const [notes, setNotes] = useState("");
 
-  // Chuyển đổi dữ liệu lịch hẹn sang định dạng mà FullCalendar có thể đọc
-  const calendarEvents = appointments
-    .filter((appt) => appt.status === "upcoming")
-    .map((appt) => {
-      const service = mockServices.find((s) => s.id === appt.serviceId);
-      return {
-        id: appt.id,
-        title: service?.name || "Dịch vụ không xác định",
-        start: appt.date,
-        extendedProps: {
-          ...appt,
-          serviceName: service?.name,
-          customerName: mockUser.name,
-          customerId: mockUser.id,
-        },
-      };
-    });
+  // Lọc các lịch hẹn cho KTV này và ngày đã chọn
+  const technicianId = "tech-1"; // Giả sử đây là KTV đang đăng nhập
+  const dailyAppointments = appointments.filter((app) => {
+    const appDate = new Date(app.date);
+    const selectedDate = date || new Date();
+    return (
+      app.technicianId === technicianId &&
+      appDate.toDateString() === selectedDate.toDateString()
+    );
+  });
 
-  // Xử lý khi người dùng nhấp vào một sự kiện trên lịch
-  const handleEventClick = (clickInfo: any) => {
-    setSelectedEvent(clickInfo.event as CalendarEvent);
-    setNotes(""); // Reset ghi chú mỗi khi mở dialog
+  const handleAppointmentClick = (appointment: Appointment) => {
+    setSelectedAppointment(appointment);
     setIsModalOpen(true);
   };
 
-  // Xử lý khi hoàn thành một dịch vụ
-  const handleCompleteService = () => {
-    if (!selectedEvent) return;
-
-    console.log(`Hoàn thành lịch hẹn ID: ${selectedEvent.id}`);
-    console.log(`Ghi chú: ${notes}`);
-
-    // Cập nhật trạng thái của lịch hẹn trong state
-    setAppointments((currentAppointments) =>
-      currentAppointments.map((appt) =>
-        appt.id === selectedEvent.id ? { ...appt, status: "completed" } : appt
+  // Hàm xử lý cập nhật
+  const handleUpdateAppointment = (
+    id: string,
+    notes: string,
+    status: "completed"
+  ) => {
+    console.log(
+      `Updating appointment ${id} with notes: "${notes}" and status: ${status}`
+    );
+    setAppointments((current) =>
+      current.map((app) =>
+        app.id === id ? { ...app, technicianNotes: notes, status: status } : app
       )
     );
-
-    // Đóng modal
-    setIsModalOpen(false);
-    setSelectedEvent(null);
   };
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-6">Lịch làm việc của tôi</h1>
-      <div className="p-4 bg-card rounded-lg">
-        <FullCalendar
-          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-          initialView="timeGridWeek"
-          headerToolbar={{
-            left: "prev,next today",
-            center: "title",
-            right: "dayGridMonth,timeGridWeek,timeGridDay",
-          }}
-          events={calendarEvents}
-          eventClick={handleEventClick}
-          locale="vi"
-          buttonText={{
-            today: "Hôm nay",
-            month: "Tháng",
-            week: "Tuần",
-            day: "Ngày",
-          }}
-          allDayText="Cả ngày"
-          slotMinTime="08:00:00"
-          slotMaxTime="21:00:00"
-        />
+    <div className="container mx-auto p-4 md:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="lg:col-span-1">
+        <Card>
+          <CardContent className="p-0">
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={setDate}
+              className="p-3"
+            />
+          </CardContent>
+        </Card>
       </div>
-
-      {/* Render component Modal đã được tách ra */}
+      <div className="lg:col-span-2">
+        <h2 className="text-2xl font-bold mb-4">
+          Lịch hẹn ngày {date ? date.toLocaleDateString("vi-VN") : ""}
+        </h2>
+        <div className="space-y-4">
+          {dailyAppointments.length > 0 ? (
+            dailyAppointments.map((app) => (
+              <button
+                key={app.id}
+                onClick={() => handleAppointmentClick(app)}
+                className="w-full text-left"
+              >
+                <Card className="hover:bg-muted/50 transition-colors">
+                  <CardContent className="p-4">
+                    <p className="font-semibold">10:00 - Chăm sóc da</p>
+                    <p className="text-sm text-muted-foreground">
+                      Khách hàng: Nguyễn Thị A
+                    </p>
+                  </CardContent>
+                </Card>
+              </button>
+            ))
+          ) : (
+            <p>Không có lịch hẹn nào trong ngày này.</p>
+          )}
+        </div>
+      </div>
       <AppointmentDetailsModal
         isOpen={isModalOpen}
-        onOpenChange={setIsModalOpen}
-        selectedEvent={selectedEvent}
-        notes={notes}
-        setNotes={setNotes}
-        onComplete={handleCompleteService}
+        onClose={() => setIsModalOpen(false)}
+        appointment={selectedAppointment}
+        onUpdateAppointment={handleUpdateAppointment}
       />
     </div>
   );

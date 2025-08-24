@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,85 +8,98 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-  DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
-
-interface CalendarEvent {
-  id: string;
-  title: string;
-  start: string;
-  extendedProps: { [key: string]: any };
-}
+import { Appointment } from "@/types/appointment";
+import { mockCustomers, mockServices } from "@/lib/mock-data";
+import { User, NotebookPen } from "lucide-react"; // Import icon mới
+import CustomerProfileModal from "../technician/CustomerProfileModal";
+import LogStatusModal from "../technician/LogStatusModal"; // Import modal ghi chú
 
 interface AppointmentDetailsModalProps {
   isOpen: boolean;
-  onOpenChange: (isOpen: boolean) => void;
-  selectedEvent: CalendarEvent | null;
-  notes: string;
-  setNotes: (notes: string) => void;
-  onComplete: () => void;
+  onClose: () => void;
+  appointment: Appointment | null;
+  // Thêm hàm để cập nhật ghi chú và trạng thái
+  onUpdateAppointment: (id: string, notes: string, status: "completed") => void;
 }
 
 export const AppointmentDetailsModal = ({
   isOpen,
-  onOpenChange,
-  selectedEvent,
-  notes,
-  setNotes,
-  onComplete,
+  onClose,
+  appointment,
+  onUpdateAppointment,
 }: AppointmentDetailsModalProps) => {
-  if (!selectedEvent) return null;
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isLogModalOpen, setIsLogModalOpen] = useState(false); // State cho modal ghi chú
+
+  if (!appointment) return null;
+
+  const service = mockServices.find((s) => s.id === appointment.serviceId);
+  const customer = mockCustomers.find((c) =>
+    c.id.includes(appointment.id.slice(-1))
+  );
+
+  const handleSaveLog = (appointmentId: string, notes: string) => {
+    onUpdateAppointment(appointmentId, notes, "completed");
+  };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{selectedEvent.extendedProps.serviceName}</DialogTitle>
-          <DialogDescription>Chi tiết lịch hẹn</DialogDescription>
-        </DialogHeader>
-        <div className="space-y-4 mt-4">
-          <div>
-            <Label>Khách hàng</Label>
-            <p className="font-medium">
-              {selectedEvent.extendedProps.customerName}
+    <>
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{service?.name}</DialogTitle>
+            <DialogDescription>
+              Lịch hẹn vào lúc {"10:00"} ngày{" "}
+              {new Date(appointment.date).toLocaleDateString("vi-VN")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            <p>
+              <strong>Khách hàng:</strong> {customer?.name}
+            </p>
+            <p>
+              <strong>Trạng thái:</strong>{" "}
+              <span className="capitalize">
+                {appointment.status.replace("-", " ")}
+              </span>
             </p>
           </div>
-          <div>
-            <Label>Thời gian</Label>
-            <p className="font-medium">
-              {new Date(selectedEvent.start).toLocaleString("vi-VN", {
-                timeStyle: "short",
-              })}
-            </p>
-          </div>
-          <div>
-            <Label htmlFor="notes">Ghi chú sau dịch vụ</Label>
-            <Textarea
-              id="notes"
-              placeholder="Nhập ghi chú về tình trạng da, sản phẩm đã dùng..."
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-            />
-          </div>
-        </div>
-        <DialogFooter className="mt-6 sm:justify-between">
-          <Button variant="outline" asChild>
-            <Link href={`/customers/${selectedEvent.extendedProps.customerId}`}>
-              Xem hồ sơ khách hàng
-            </Link>
-          </Button>
-          <div className="flex gap-2">
-            <DialogClose asChild>
-              <Button variant="ghost">Đóng</Button>
-            </DialogClose>
-            <Button onClick={onComplete}>Hoàn thành dịch vụ</Button>
-          </div>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          <DialogFooter className="flex-wrap justify-between gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setIsProfileModalOpen(true)}
+            >
+              <User className="mr-2 h-4 w-4" />
+              Xem hồ sơ
+            </Button>
+            {/* Nút Ghi nhận & Hoàn thành */}
+            {appointment.status === "in-progress" && (
+              <Button onClick={() => setIsLogModalOpen(true)}>
+                <NotebookPen className="mr-2 h-4 w-4" />
+                Ghi nhận & Hoàn thành
+              </Button>
+            )}
+            <Button onClick={onClose} className="ml-auto">
+              Đóng
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Các modal con */}
+      <CustomerProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        customerId={customer?.id || null}
+      />
+      <LogStatusModal
+        isOpen={isLogModalOpen}
+        onClose={() => setIsLogModalOpen(false)}
+        appointment={appointment}
+        onSave={handleSaveLog}
+      />
+    </>
   );
 };
