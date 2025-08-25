@@ -1,51 +1,59 @@
 // src/services/customerService.ts
-import { mockCustomers } from "@/lib/mock-data";
 import { Customer } from "@/types/customer";
-import { v4 as uuidv4 } from "uuid"; // Cài đặt uuid để tạo ID giả
 
-// --- Thêm định nghĩa kiểu cho dữ liệu form ---
+// URL API bạn đã copy ở bước 3
+const CUSTOMERS_API_URL =
+  "https://68ab3267909a5835049dfccd.mockapi.io/customers";
+
+// --- Hàm lấy danh sách khách hàng đã được cập nhật ---
+export const getCustomers = async (): Promise<Customer[]> => {
+  console.log("Fetching customers from API...");
+  try {
+    const response = await fetch(CUSTOMERS_API_URL, {
+      // Bỏ qua cache để luôn lấy dữ liệu mới nhất từ mockAPI
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch customers from the API.");
+    }
+
+    const customers: Customer[] = await response.json();
+    return customers;
+  } catch (error) {
+    console.error("Error fetching customers:", error);
+    // Trả về mảng rỗng nếu có lỗi để ứng dụng không bị crash
+    return [];
+  }
+};
+
+// --- Bạn có thể giữ lại hoặc cập nhật hàm addCustomer tương tự ---
 interface AddCustomerData {
   name: string;
   email: string;
   phone: string;
 }
 
-// Mô phỏng việc gọi API để lấy danh sách khách hàng
-export const getCustomers = async (): Promise<Customer[]> => {
-  console.log("Fetching customers from service..."); // Thêm log để dễ theo dõi
-
-  // Giả lập độ trễ của mạng (giống như đang gọi API thật)
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  // Khi có backend, bạn chỉ cần thay đổi logic ở đây để gọi API thật bằng fetch() hoặc axios
-  return Promise.resolve(mockCustomers);
-};
-
-// --- Hàm mới để thêm khách hàng ---
 export const addCustomer = async (
   newCustomerData: AddCustomerData
 ): Promise<Customer> => {
-  console.log("Adding new customer...", newCustomerData);
-  await new Promise((resolve) => setTimeout(resolve, 1000)); // Giả lập độ trễ mạng
+  console.log("Adding new customer via API...", newCustomerData);
 
-  // Khi có backend, đây sẽ là lệnh fetch POST
-  // const response = await fetch('/api/customers', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify(newCustomerData),
-  // });
-  // if (!response.ok) throw new Error("Failed to add customer");
-  // return response.json();
+  const response = await fetch(CUSTOMERS_API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      ...newCustomerData,
+      // mockAPI thường tự tạo các trường còn lại,
+      // nhưng bạn có thể thêm giá trị mặc định nếu cần
+      totalAppointments: 0,
+      lastVisit: new Date().toISOString(),
+    }),
+  });
 
-  // Logic giả lập: tạo khách hàng mới và thêm vào mảng mock
-  const newCustomer: Customer = {
-    id: uuidv4(), // Tạo ID ngẫu nhiên
-    totalAppointments: 0,
-    lastVisit: new Date().toISOString(),
-    ...newCustomerData,
-  };
+  if (!response.ok) {
+    throw new Error("Failed to add customer");
+  }
 
-  mockCustomers.unshift(newCustomer); // Thêm vào đầu mảng để dễ thấy
-  return Promise.resolve(newCustomer);
+  return response.json();
 };
-// export const addCustomer = async (newCustomerData: Omit<Customer, 'id'>): Promise<Customer> => { ... };

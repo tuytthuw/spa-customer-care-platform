@@ -1,14 +1,8 @@
 // src/app/services/page.tsx
-import { mockServices } from "@/lib/mock-data";
 import { Service } from "@/types/service";
 import ServiceCard from "@/features/service/service-card";
 import { Input } from "@/components/ui/input";
-
-// Mô phỏng việc gọi API
-const getServices = async (): Promise<Service[]> => {
-  // Trong tương lai, bạn sẽ thay thế dòng này bằng lệnh fetch tới API backend
-  return Promise.resolve(mockServices);
-};
+import { getServices } from "@/services/serviceService";
 
 export default async function ServicesPage() {
   const services = await getServices();
