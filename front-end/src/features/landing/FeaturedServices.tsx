@@ -1,15 +1,14 @@
 import ServiceCard from "@/features/service/service-card";
 import { Button } from "@/components/ui/button";
-import { mockServices } from "@/lib/mock-data";
 import { Service } from "@/types/service";
 import Link from "next/link";
+import { getServices } from "@/services/serviceService";
 
-// Mô phỏng việc gọi API để lấy các dịch vụ nổi bật
+// hàm getFeaturedServices
 const getFeaturedServices = async (): Promise<Service[]> => {
-  // Lấy 3 dịch vụ đầu tiên làm dịch vụ nổi bật
-  return Promise.resolve(mockServices.slice(0, 3));
+  const allServices = await getServices(); // Gọi hàm thật
+  return allServices.slice(0, 3); // Lấy 3 dịch vụ đầu tiên
 };
-
 export default async function FeaturedServices() {
   const featuredServices = await getFeaturedServices();
 

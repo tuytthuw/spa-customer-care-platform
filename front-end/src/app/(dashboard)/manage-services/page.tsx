@@ -15,31 +15,26 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import AddServiceForm from "@/components/forms/AddServiceForm";
-// Giả lập service để code chạy được, bạn sẽ thay bằng API thật
-import { mockServices, mockTreatmentPlans } from "@/lib/mock-data";
+import { mockTreatmentPlans } from "@/lib/mock-data";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { treatmentPlanColumns } from "./treatment-plan-columns"; // Import columns cho liệu trình
+import { treatmentPlanColumns } from "./treatment-plan-columns";
+import { getServices } from "@/services/serviceService"; // Import hàm gọi API
 
 // --- SỬA LỖI Ở ĐÂY ---
 interface ServiceFormValues {
   name: string;
-  description?: string; // Thêm dấu '?' để cho phép description là optional
+  description?: string;
   category: string;
   price: number;
   duration: number;
   imageUrl?: string;
 }
 
-// Giả lập hàm getServices
-const getServices = async (): Promise<Service[]> => {
-  return new Promise((resolve) => setTimeout(() => resolve(mockServices), 500));
-};
-
 export default function ServicesManagementPage() {
   const [isServiceDialogOpen, setIsServiceDialogOpen] = useState(false);
   const [isPlanDialogOpen, setIsPlanDialogOpen] = useState(false);
 
-  // Sử dụng useQuery để fetch dữ liệu dịch vụ lẻ
+  // ✅ CHỈ GỌI useQuery MỘT LẦN, BÊN TRONG COMPONENT
   const {
     data: services = [],
     isLoading,
@@ -51,13 +46,11 @@ export default function ServicesManagementPage() {
 
   const handleAddService = (data: ServiceFormValues) => {
     console.log("Đã thêm dịch vụ mới:", data);
-    // Ở đây bạn sẽ gọi mutation để thêm service và invalidate query "services"
     setIsServiceDialogOpen(false);
   };
 
   const handleAddPlan = (data: any) => {
     console.log("Đã thêm liệu trình mới:", data);
-    // Ở đây bạn sẽ gọi mutation để thêm plan và invalidate query "treatment_plans"
     setIsPlanDialogOpen(false);
   };
 
@@ -81,7 +74,6 @@ export default function ServicesManagementPage() {
           <TabsTrigger value="treatment_plans">Liệu trình</TabsTrigger>
         </TabsList>
 
-        {/* Tab 1: Quản lý Dịch vụ lẻ */}
         <TabsContent value="services" className="mt-4">
           <div className="text-right mb-4">
             <Dialog
@@ -109,7 +101,6 @@ export default function ServicesManagementPage() {
           <DataTable columns={serviceColumns} data={services} />
         </TabsContent>
 
-        {/* Tab 2: Quản lý Liệu trình */}
         <TabsContent value="treatment_plans" className="mt-4">
           <div className="text-right mb-4">
             <Button
