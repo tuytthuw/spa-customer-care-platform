@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -21,20 +21,26 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { mockServices } from "@/lib/mock-data"; // Lấy danh sách dịch vụ
-import { UploadCloud } from "lucide-react";
+import { mockServices } from "@/lib/mock-data";
+import { UploadCloud, File as FileIcon, X } from "lucide-react";
+import { useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 
 const ROLES = ["technician", "receptionist", "manager"] as const;
 const STATUSES = ["active", "inactive"] as const;
 
-// Zod schema mới
 const staffFormSchema = z.object({
   name: z.string().min(3, "Tên phải có ít nhất 3 ký tự."),
   email: z.string().email("Email không hợp lệ."),
-  phone: z.string().min(10, "Số điện thoại không hợp lệ."),
+  phone: z
+    .string()
+    .regex(/(0[3|5|7|8|9])+([0-9]{8})\b/, {
+      message: "Số điện thoại không hợp lệ.",
+    }),
   role: z.enum(ROLES, { message: "Vui lòng chọn vai trò." }),
   status: z.enum(STATUSES, { message: "Vui lòng chọn trạng thái." }),
-  serviceIds: z.array(z.string()).optional(), // Mảng chứa ID các dịch vụ
+  serviceIds: z.array(z.string()).optional(),
+  avatar: z.any().optional(),
 });
 
 type StaffFormValues = z.infer<typeof staffFormSchema>;
@@ -48,6 +54,10 @@ export default function AddStaffForm({
   onFormSubmit,
   onClose,
 }: AddStaffFormProps) {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+
   const form = useForm<StaffFormValues>({
     resolver: zodResolver(staffFormSchema),
     defaultValues: {
@@ -57,16 +67,53 @@ export default function AddStaffForm({
       role: "technician",
       status: "active",
       serviceIds: [],
+      avatar: undefined,
     },
   });
 
   const selectedRole = form.watch("role");
 
+  const handleFileSelect = (file: File | undefined) => {
+    if (file) {
+      setSelectedFile(file);
+      form.setValue("avatar", file, { shouldValidate: true });
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    handleFileSelect(event.target.files?.[0]);
+  };
+
+  const handleRemoveFile = () => {
+    setSelectedFile(null);
+    form.setValue("avatar", undefined, { shouldValidate: true });
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragging(false);
+    const file = event.dataTransfer.files?.[0];
+    handleFileSelect(file);
+  };
+
   function onSubmit(data: StaffFormValues) {
-    // Nếu không phải KTV, xóa danh sách dịch vụ để tránh gửi dữ liệu thừa
     if (data.role !== "technician") {
       data.serviceIds = [];
     }
+    console.log("Submitting staff data:", data);
     onFormSubmit(data);
     onClose();
   }
@@ -75,7 +122,7 @@ export default function AddStaffForm({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
-          {/* ... các trường name, email, phone giữ nguyên ... */}
+          {/* ... các trường khác giữ nguyên ... */}
           <FormField
             control={form.control}
             name="name"
@@ -153,7 +200,6 @@ export default function AddStaffForm({
             )}
           />
 
-          {/* Hiển thị danh sách dịch vụ khi vai trò là Kỹ thuật viên */}
           {selectedRole === "technician" && (
             <FormField
               control={form.control}
@@ -209,7 +255,6 @@ export default function AddStaffForm({
             />
           )}
 
-          {/* Trạng thái */}
           <FormField
             control={form.control}
             name="status"
@@ -259,30 +304,58 @@ export default function AddStaffForm({
           {/* Hình ảnh */}
           <div>
             <FormLabel>Ảnh đại diện</FormLabel>
-            <div className="mt-1 border-2 border-dashed border-border rounded-md p-6 flex flex-col items-center justify-center">
-              <div className="text-muted-foreground text-center">
-                <UploadCloud className="text-3xl mb-2 mx-auto" />
-                <p>Kéo và thả hình ảnh vào đây hoặc</p>
-                <Button type="button" variant="secondary" className="mt-2">
-                  Chọn tệp
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              className="hidden"
+              accept="image/png, image/jpeg, image/gif"
+            />
+            {!selectedFile ? (
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                className={cn(
+                  "mt-1 border-2 border-dashed border-border rounded-md p-6 flex flex-col items-center justify-center cursor-pointer hover:bg-muted/50 transition-colors",
+                  isDragging && "border-primary bg-muted/50"
+                )}
+              >
+                <div className="text-muted-foreground text-center">
+                  <UploadCloud className="text-3xl mb-2 mx-auto" />
+                  <p>Nhấp để chọn ảnh hoặc kéo thả vào đây</p>
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  PNG, JPG, GIF tối đa 2MB
+                </p>
+              </div>
+            ) : (
+              <div className="mt-2 flex items-start justify-between p-3 border rounded-md bg-muted/50">
+                <div className="flex items-start gap-2 min-w-0">
+                  <FileIcon className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
+                  <span className="text-sm font-medium break-all">
+                    {selectedFile.name}
+                  </span>
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6 flex-shrink-0"
+                  onClick={handleRemoveFile}
+                >
+                  <X className="h-4 w-4" />
                 </Button>
               </div>
-              <p className="text-xs text-muted-foreground mt-2">
-                PNG, JPG, GIF tối đa 2MB
-              </p>
-            </div>
+            )}
           </div>
         </div>
         <div className="flex justify-end gap-2 p-4 border-t border-border">
           <Button type="button" variant="ghost" onClick={onClose}>
             Hủy
           </Button>
-          <Button
-            type="submit"
-            className="bg-primary text-primary-foreground hover:bg-primary/90"
-          >
-            Lưu nhân viên
-          </Button>
+          <Button type="submit">Lưu nhân viên</Button>
         </div>
       </form>
     </Form>

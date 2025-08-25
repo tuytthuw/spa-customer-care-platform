@@ -1,15 +1,21 @@
 "use client";
 
-import { useState } from "react"; // Thêm useState
-import { mockAppointments as initialAppointments } from "@/lib/mock-data";
+import { useQuery } from "@tanstack/react-query";
 import { Appointment } from "@/types/appointment";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AppointmentCard from "@/features/appointment/AppointmentCard";
+import { getAppointments } from "@/services/appointmentService";
 
 export default function AppointmentsPage() {
   // Dùng state để quản lý danh sách lịch hẹn
-  const [appointments, setAppointments] =
-    useState<Appointment[]>(initialAppointments);
+  const {
+    data: appointments = [],
+    isLoading,
+    error,
+  } = useQuery<Appointment[]>({
+    queryKey: ["appointments"], // Khóa để cache dữ liệu
+    queryFn: getAppointments, // Hàm sẽ được gọi để fetch data
+  });
 
   const upcomingAppointments = appointments.filter(
     (a) => a.status === "upcoming"
@@ -24,13 +30,19 @@ export default function AppointmentsPage() {
   // Hàm xử lý khi hủy lịch hẹn
   const handleCancelAppointment = (id: string, reason: string) => {
     console.log(`Cancelling appointment ${id} for reason: ${reason}`);
-    setAppointments((currentAppointments) =>
-      currentAppointments.map((app) =>
-        app.id === id ? { ...app, status: "cancelled" } : app
-      )
-    );
-    // Ở ứng dụng thực tế, bạn sẽ gọi API để cập nhật trạng thái ở đây
+    // Chú ý: Ở ứng dụng thật, bạn sẽ dùng useMutation ở đây để gọi API
+    // và sau đó vô hiệu hóa query "appointments" để nó tự fetch lại.
+    // Tạm thời chúng ta chưa xử lý cập nhật giao diện ngay lập tức.
   };
+
+  // 3. Thêm trạng thái loading và error
+  if (isLoading) {
+    return <div className="p-8">Đang tải lịch hẹn của bạn...</div>;
+  }
+
+  if (error) {
+    return <div className="p-8">Đã xảy ra lỗi khi tải dữ liệu.</div>;
+  }
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">

@@ -4,6 +4,8 @@ import { Service } from "@/types/service";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Clock, Check, Play } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { VariantProps } from "class-variance-authority";
 
 interface TodaysAppointmentCardProps {
   appointment: Appointment;
@@ -11,7 +13,6 @@ interface TodaysAppointmentCardProps {
   service: Service;
 }
 
-// Hàm để lấy thời gian bắt đầu và kết thúc
 const getAppointmentTimes = (date: string, duration: number) => {
   const startTime = new Date(date);
   const endTime = new Date(startTime.getTime() + duration * 60000);
@@ -38,26 +39,27 @@ export default function TodaysAppointmentCard({
       case "upcoming":
         return {
           text: "Chờ thực hiện",
-          icon: <Clock className="mr-2" />,
-          color: "bg-yellow-100 text-yellow-800",
+          variant: "default" as const,
         };
       case "completed":
         return {
           text: "Đã hoàn thành",
-          icon: <Check className="mr-2" />,
-          color: "bg-green-100 text-green-800",
+          variant: "secondary" as const,
         };
-      case "cancelled": // Giả sử có trạng thái "Đang thực hiện"
+      case "in-progress":
         return {
           text: "Đang thực hiện",
-          icon: <Clock className="mr-2" />,
-          color: "bg-blue-100 text-blue-800",
+          variant: "default" as const, // You might want a different color, e.g., a blue one
+        };
+      case "cancelled":
+        return {
+          text: "Đã hủy",
+          variant: "destructive" as const,
         };
       default:
         return {
           text: "Chờ thực hiện",
-          icon: <Clock className="mr-2" />,
-          color: "bg-muted text-foreground",
+          variant: "secondary" as const,
         };
     }
   };
@@ -80,12 +82,7 @@ export default function TodaysAppointmentCard({
           </div>
         </div>
         <div className="flex items-center space-x-3">
-          <span
-            className={`inline-flex items-center px-4 py-2 rounded-full text-sm ${statusInfo.color}`}
-          >
-            {statusInfo.icon}
-            {statusInfo.text}
-          </span>
+          <Badge variant={statusInfo.variant}>{statusInfo.text}</Badge>
           <div className="text-right">
             <p className="text-lg text-foreground">
               {start} - {end}
@@ -122,20 +119,15 @@ export default function TodaysAppointmentCard({
 
       <div className="flex justify-end space-x-3 mt-6">
         {appointment.status === "upcoming" && (
-          <Button className="px-6 py-3 bg-primary text-primary-foreground rounded-lg text-base hover:bg-primary/90">
+          <Button>
             <Play className="mr-2 h-4 w-4" />
             Bắt đầu
           </Button>
         )}
-        {appointment.status === "cancelled" && (
+        {appointment.status === "in-progress" && (
           <>
-            <Button
-              variant="outline"
-              className="px-6 py-3 rounded-lg text-base"
-            >
-              Tạm dừng
-            </Button>
-            <Button className="px-6 py-3 bg-primary text-primary-foreground rounded-lg text-base hover:bg-primary/90">
+            <Button variant="outline">Tạm dừng</Button>
+            <Button>
               <Check className="mr-2 h-4 w-4" />
               Hoàn thành
             </Button>

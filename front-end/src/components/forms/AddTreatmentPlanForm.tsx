@@ -18,47 +18,44 @@ import { UploadCloud, File as FileIcon, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
-// 1. Sửa lại schema để xử lý đối tượng File
-const serviceFormSchema = z.object({
-  name: z.string().trim().min(3, "Tên dịch vụ phải có ít nhất 3 ký tự."),
+// Schema validation cho liệu trình
+const treatmentPlanFormSchema = z.object({
+  name: z.string().trim().min(3, "Tên liệu trình phải có ít nhất 3 ký tự."),
   description: z
     .string()
     .trim()
     .min(10, "Mô tả phải có ít nhất 10 ký tự.")
     .optional(),
-  category: z.string().trim().min(2, "Danh mục không được để trống."),
   price: z.number().min(0, "Giá phải là một số dương."),
-  duration: z.number().int().min(5, "Thời lượng phải ít nhất 5 phút."),
+  totalSessions: z.number().int().min(1, "Số buổi phải ít nhất là 1."),
   imageFile: z.any().optional(),
 });
 
-type ServiceFormValues = z.infer<typeof serviceFormSchema>;
+type TreatmentPlanFormValues = z.infer<typeof treatmentPlanFormSchema>;
 
-interface AddServiceFormProps {
-  onFormSubmit: (data: ServiceFormValues) => void;
+interface AddTreatmentPlanFormProps {
+  onFormSubmit: (data: TreatmentPlanFormValues) => void;
   onClose: () => void;
   isSubmitting?: boolean;
 }
 
-export default function AddServiceForm({
+export default function AddTreatmentPlanForm({
   onFormSubmit,
   onClose,
   isSubmitting,
-}: AddServiceFormProps) {
+}: AddTreatmentPlanFormProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
-  // 2. Thêm state để quản lý giá trị hiển thị cho ô giá tiền
   const [displayPrice, setDisplayPrice] = useState("");
 
-  const form = useForm<ServiceFormValues>({
-    resolver: zodResolver(serviceFormSchema),
+  const form = useForm<TreatmentPlanFormValues>({
+    resolver: zodResolver(treatmentPlanFormSchema),
     defaultValues: {
       name: "",
       description: "",
-      category: "",
       price: 0,
-      duration: 30,
+      totalSessions: 5,
       imageFile: undefined,
     },
   });
@@ -100,19 +97,14 @@ export default function AddServiceForm({
     handleFileSelect(file);
   };
 
-  // 3. Logic xử lý định dạng giá tiền
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const rawValue = e.target.value.replace(/[^0-9]/g, ""); // Chỉ giữ lại số
+    const rawValue = e.target.value.replace(/[^0-9]/g, "");
     const numberValue = parseInt(rawValue, 10) || 0;
-
-    // Cập nhật giá trị thật cho form (nhân với 1000)
     form.setValue("price", numberValue * 1000, { shouldValidate: true });
-
-    // Cập nhật giá trị hiển thị đã được định dạng
     setDisplayPrice(new Intl.NumberFormat("vi-VN").format(numberValue));
   };
 
-  function onSubmit(data: ServiceFormValues) {
+  function onSubmit(data: TreatmentPlanFormValues) {
     onFormSubmit(data);
     onClose();
   }
@@ -121,18 +113,20 @@ export default function AddServiceForm({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-4">
         <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto -m-6">
-          {/* ... các trường khác giữ nguyên ... */}
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Tên dịch vụ{" "}
+                  Tên liệu trình{" "}
                   <span className="text-muted-foreground">(bắt buộc)</span>
                 </FormLabel>
                 <FormControl>
-                  <Input placeholder="Nhập tên dịch vụ" {...field} />
+                  <Input
+                    placeholder="Ví dụ: Liệu trình triệt lông vĩnh viễn"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -146,26 +140,7 @@ export default function AddServiceForm({
                 <FormLabel>Mô tả</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Nhập mô tả chi tiết về dịch vụ"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="category"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  Danh mục{" "}
-                  <span className="text-muted-foreground">(bắt buộc)</span>
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Ví dụ: Chăm sóc da, Massage..."
+                    placeholder="Nhập mô tả chi tiết về liệu trình"
                     {...field}
                   />
                 </FormControl>
@@ -174,27 +149,26 @@ export default function AddServiceForm({
             )}
           />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* 4. Cập nhật trường giá dịch vụ */}
             <FormField
               control={form.control}
               name="price"
-              render={({ field }) => (
+              render={() => (
                 <FormItem>
                   <FormLabel>
-                    Giá dịch vụ{" "}
+                    Giá liệu trình{" "}
                     <span className="text-muted-foreground">(bắt buộc)</span>
                   </FormLabel>
                   <div className="relative">
                     <FormControl>
                       <Input
-                        placeholder="Nhập giá"
+                        placeholder="Nhập giá (ví dụ: 500 cho 500.000đ)"
                         className="pr-12"
                         value={displayPrice}
                         onChange={handlePriceChange}
                       />
                     </FormControl>
                     <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                      <span className="text-muted-foreground">.000 VND</span>
+                      <span className="text-muted-foreground">VND</span>
                     </div>
                   </div>
                   <FormMessage />
@@ -203,30 +177,24 @@ export default function AddServiceForm({
             />
             <FormField
               control={form.control}
-              name="duration"
+              name="totalSessions"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Thời lượng{" "}
+                    Tổng số buổi{" "}
                     <span className="text-muted-foreground">(bắt buộc)</span>
                   </FormLabel>
-                  <div className="relative">
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="0"
-                        className="pr-14"
-                        {...field}
-                        onChange={(e) => {
-                          const value = e.target.valueAsNumber;
-                          field.onChange(isNaN(value) ? 0 : value);
-                        }}
-                      />
-                    </FormControl>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                      <span className="text-muted-foreground">phút</span>
-                    </div>
-                  </div>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="0"
+                      {...field}
+                      onChange={(e) => {
+                        const value = e.target.valueAsNumber;
+                        field.onChange(isNaN(value) ? 0 : value);
+                      }}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -234,7 +202,7 @@ export default function AddServiceForm({
           </div>
 
           <div>
-            <FormLabel>Hình ảnh dịch vụ</FormLabel>
+            <FormLabel>Hình ảnh liệu trình</FormLabel>
             <input
               type="file"
               ref={fileInputRef}
@@ -281,41 +249,6 @@ export default function AddServiceForm({
               </div>
             )}
           </div>
-
-          <div>
-            <FormLabel>Trạng thái</FormLabel>
-            <div className="flex items-center space-x-4 mt-1">
-              <div className="flex items-center">
-                <input
-                  type="radio"
-                  id="statusActive"
-                  name="status"
-                  className="h-4 w-4 text-primary border-border"
-                  defaultChecked
-                />
-                <label
-                  htmlFor="statusActive"
-                  className="ml-2 text-sm text-foreground"
-                >
-                  Hiện
-                </label>
-              </div>
-              <div className="flex items-center">
-                <input
-                  type="radio"
-                  id="statusHidden"
-                  name="status"
-                  className="h-4 w-4 text-primary border-border"
-                />
-                <label
-                  htmlFor="statusHidden"
-                  className="ml-2 text-sm text-foreground"
-                >
-                  Ẩn
-                </label>
-              </div>
-            </div>
-          </div>
         </div>
         <div className="flex justify-end gap-2 pt-4 border-t border-border">
           <Button
@@ -327,7 +260,7 @@ export default function AddServiceForm({
             Hủy
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Đang lưu..." : "Lưu dịch vụ"}
+            {isSubmitting ? "Đang lưu..." : "Lưu liệu trình"}
           </Button>
         </div>
       </form>

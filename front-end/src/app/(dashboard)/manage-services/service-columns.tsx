@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
+import Image from "next/image"; // 1. Import component Image
 
 // Hàm định dạng tiền tệ
 const formatCurrency = (amount: number) => {
@@ -25,6 +26,22 @@ export const columns: ColumnDef<Service>[] = [
   {
     accessorKey: "name",
     header: "Tên dịch vụ",
+    // 2. Thêm hàm `cell` để tùy chỉnh cách hiển thị
+    cell: ({ row }) => {
+      const service = row.original;
+      return (
+        <div className="flex items-center gap-4">
+          <Image
+            src={service.imageUrl || "/images/product-placeholder.png"}
+            alt={service.name}
+            width={40}
+            height={40}
+            className="rounded-md object-cover"
+          />
+          <span className="font-medium">{service.name}</span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "category",
