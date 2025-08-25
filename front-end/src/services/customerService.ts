@@ -1,9 +1,7 @@
 // src/services/customerService.ts
 import { Customer } from "@/types/customer";
-
-// URL API bạn đã copy ở bước 3
-const CUSTOMERS_API_URL =
-  "https://68ab3267909a5835049dfccd.mockapi.io/customers";
+import { v4 as uuidv4 } from "uuid";
+const CUSTOMERS_API_URL = "http://localhost:3001/customers";
 
 // --- Hàm lấy danh sách khách hàng đã được cập nhật ---
 export const getCustomers = async (): Promise<Customer[]> => {
@@ -32,20 +30,19 @@ interface AddCustomerData {
   name: string;
   email: string;
   phone: string;
+  notes?: string;
 }
-
 export const addCustomer = async (
   newCustomerData: AddCustomerData
 ): Promise<Customer> => {
-  console.log("Adding new customer via API...", newCustomerData);
+  console.log("Sending new customer to API...", newCustomerData);
 
   const response = await fetch(CUSTOMERS_API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
+      id: uuidv4(), // Tạo ID duy nhất ở phía client
       ...newCustomerData,
-      // mockAPI thường tự tạo các trường còn lại,
-      // nhưng bạn có thể thêm giá trị mặc định nếu cần
       totalAppointments: 0,
       lastVisit: new Date().toISOString(),
     }),

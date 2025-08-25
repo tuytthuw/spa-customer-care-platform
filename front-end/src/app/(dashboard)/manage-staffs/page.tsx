@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Staff } from "@/types/staff";
 import { columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
@@ -16,17 +16,21 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import AddStaffForm from "@/components/forms/AddStaffForm";
-import { getStaff } from "@/services/staffService"; // Import service
+import { getStaff, addStaff } from "@/services/staffService";
 
-interface StaffFormValues {
+type StaffFormValues = {
   name: string;
   email: string;
   phone: string;
   role: "technician" | "receptionist" | "manager";
-}
+  status: "active" | "inactive";
+  serviceIds?: string[];
+  avatar?: any;
+};
 
 export default function StaffManagementPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   // Sử dụng useQuery để fetch dữ liệu
   const {
@@ -38,18 +42,25 @@ export default function StaffManagementPage() {
     queryFn: getStaff,
   });
 
+  const addStaffMutation = useMutation({
+    mutationFn: addStaff,
+    onSuccess: () => {
+      console.log("Staff added successfully! Refetching list...");
+      queryClient.invalidateQueries({ queryKey: ["staffs"] });
+      setIsDialogOpen(false);
+    },
+    onError: (error) => {
+      console.error("Error adding staff:", error);
+      alert("Thêm nhân viên thất bại!");
+    },
+  });
+
   const handleAddStaff = (data: StaffFormValues) => {
-    // Tạm thời giữ lại, sẽ nâng cấp với useMutation
-    console.log("Đã thêm nhân viên mới:", data);
+    addStaffMutation.mutate(data);
   };
 
-  if (isLoading) {
-    return <div>Đang tải danh sách nhân viên...</div>;
-  }
-
-  if (error) {
-    return <div>Đã xảy ra lỗi: {error.message}</div>;
-  }
+  if (isLoading) return <div>Đang tải danh sách khách hàng...</div>;
+  if (error) return <div>Đã xảy ra lỗi: {error.message}</div>;
 
   return (
     <div>

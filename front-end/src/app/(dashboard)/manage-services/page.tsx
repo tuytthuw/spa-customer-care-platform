@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Service } from "@/types/service";
-import { columns as serviceColumns } from "./columns";
+import { TreatmentPlan } from "@/types/treatmentPlan";
+import { columns as serviceColumns } from "./service-columns";
 import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,51 +16,86 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import AddServiceForm from "@/components/forms/AddServiceForm";
-import { mockTreatmentPlans } from "@/lib/mock-data";
+import AddTreatmentPlanForm from "@/components/forms/AddTreatmentPlanForm"; // 1. Import form mới
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { treatmentPlanColumns } from "./treatment-plan-columns";
-import { getServices } from "@/services/serviceService"; // Import hàm gọi API
+import { getServices, addService } from "@/services/serviceService";
+import {
+  getTreatmentPlans,
+  addTreatmentPlan,
+} from "@/services/treatmentPlanService"; // 2. Import service mới
 
-// --- SỬA LỖI Ở ĐÂY ---
-interface ServiceFormValues {
+type ServiceFormValues = {
   name: string;
   description?: string;
   category: string;
   price: number;
   duration: number;
-  imageUrl?: string;
-}
+  imageFile?: any;
+};
+type TreatmentPlanFormValues = {
+  name: string;
+  description?: string;
+  price: number;
+  totalSessions: number;
+  imageFile?: any;
+};
 
 export default function ServicesManagementPage() {
   const [isServiceDialogOpen, setIsServiceDialogOpen] = useState(false);
   const [isPlanDialogOpen, setIsPlanDialogOpen] = useState(false);
+  const queryClient = useQueryClient();
 
-  // ✅ CHỈ GỌI useQuery MỘT LẦN, BÊN TRONG COMPONENT
-  const {
-    data: services = [],
-    isLoading,
-    error,
-  } = useQuery<Service[]>({
+  // Query cho dịch vụ lẻ
+  const { data: services = [], isLoading: isLoadingServices } = useQuery<
+    Service[]
+  >({
     queryKey: ["services"],
     queryFn: getServices,
   });
 
+  // 3. Query cho liệu trình
+  const { data: treatmentPlans = [], isLoading: isLoadingPlans } = useQuery<
+    TreatmentPlan[]
+  >({
+    queryKey: ["treatmentPlans"],
+    queryFn: getTreatmentPlans,
+  });
+
+  // Mutation cho dịch vụ lẻ
+  const addServiceMutation = useMutation({
+    mutationFn: addService,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["services"] });
+      setIsServiceDialogOpen(false);
+    },
+    onError: (err) => {
+      alert("Thêm dịch vụ thất bại!");
+    },
+  });
+
+  // 4. Mutation cho liệu trình
+  const addPlanMutation = useMutation({
+    mutationFn: addTreatmentPlan,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["treatmentPlans"] });
+      setIsPlanDialogOpen(false);
+    },
+    onError: (err) => {
+      alert("Thêm liệu trình thất bại!");
+    },
+  });
+
   const handleAddService = (data: ServiceFormValues) => {
-    console.log("Đã thêm dịch vụ mới:", data);
-    setIsServiceDialogOpen(false);
+    addServiceMutation.mutate(data);
   };
 
-  const handleAddPlan = (data: any) => {
-    console.log("Đã thêm liệu trình mới:", data);
-    setIsPlanDialogOpen(false);
+  const handleAddPlan = (data: TreatmentPlanFormValues) => {
+    addPlanMutation.mutate(data);
   };
 
-  if (isLoading) {
-    return <div>Đang tải danh sách dịch vụ...</div>;
-  }
-
-  if (error) {
-    return <div>Đã xảy ra lỗi: {error.message}</div>;
+  if (isLoadingServices || isLoadingPlans) {
+    return <div>Đang tải dữ liệu...</div>;
   }
 
   return (
@@ -86,14 +122,11 @@ export default function ServicesManagementPage() {
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Tạo dịch vụ mới</DialogTitle>
-                  <DialogDescription>
-                    Điền thông tin chi tiết để thêm một dịch vụ mới vào hệ
-                    thống.
-                  </DialogDescription>
                 </DialogHeader>
                 <AddServiceForm
                   onFormSubmit={handleAddService}
                   onClose={() => setIsServiceDialogOpen(false)}
+                  isSubmitting={addServiceMutation.isPending}
                 />
               </DialogContent>
             </Dialog>
@@ -101,15 +134,26 @@ export default function ServicesManagementPage() {
           <DataTable columns={serviceColumns} data={services} />
         </TabsContent>
 
+        {/* 5. Cập nhật Tab Liệu trình */}
         <TabsContent value="treatment_plans" className="mt-4">
           <div className="text-right mb-4">
-            <Button
-              onClick={() => alert("Form thêm liệu trình chưa được tạo!")}
-            >
-              Thêm Liệu trình mới
-            </Button>
+            <Dialog open={isPlanDialogOpen} onOpenChange={setIsPlanDialogOpen}>
+              <DialogTrigger asChild>
+                <Button>Thêm Liệu trình mới</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Tạo liệu trình mới</DialogTitle>
+                </DialogHeader>
+                <AddTreatmentPlanForm
+                  onFormSubmit={handleAddPlan}
+                  onClose={() => setIsPlanDialogOpen(false)}
+                  isSubmitting={addPlanMutation.isPending}
+                />
+              </DialogContent>
+            </Dialog>
           </div>
-          <DataTable columns={treatmentPlanColumns} data={mockTreatmentPlans} />
+          <DataTable columns={treatmentPlanColumns} data={treatmentPlans} />
         </TabsContent>
       </Tabs>
     </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Customer } from "@/types/customer";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,7 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import AddCustomerForm from "@/components/forms/AddCustomerForm";
-import { getCustomers } from "@/services/customerService";
+import { getCustomers, addCustomer } from "@/services/customerService";
 import { Plus } from "lucide-react";
 import CustomerCard from "@/features/customer/CustomerCard";
 import { QuickActions } from "@/features/customer/QuickActions";
@@ -26,7 +26,7 @@ interface CustomerFormValues {
 
 export default function CustomersPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
+  const queryClient = useQueryClient();
   const {
     data: customers = [],
     isLoading,
@@ -36,9 +36,24 @@ export default function CustomersPage() {
     queryFn: getCustomers,
   });
 
+  const addCustomerMutation = useMutation({
+    mutationFn: addCustomer, // Hàm sẽ được gọi để thực hiện mutation
+    onSuccess: () => {
+      // 5. Khi thành công, vô hiệu hóa query "customers"
+      // Điều này sẽ khiến useQuery tự động fetch lại dữ liệu mới
+      console.log("Customer added successfully! Refetching list...");
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+      setIsDialogOpen(false); // Đóng dialog lại
+    },
+    onError: (error) => {
+      // Xử lý lỗi (ví dụ: hiển thị thông báo)
+      console.error("Error adding customer:", error);
+      alert("Thêm khách hàng thất bại!");
+    },
+  });
+
   const handleAddCustomer = (data: CustomerFormValues) => {
-    console.log("Adding customer:", data);
-    setIsDialogOpen(false);
+    addCustomerMutation.mutate(data);
   };
 
   if (isLoading) return <div>Đang tải danh sách khách hàng...</div>;
@@ -62,6 +77,7 @@ export default function CustomersPage() {
             <AddCustomerForm
               onFormSubmit={handleAddCustomer}
               onClose={() => setIsDialogOpen(false)}
+              isSubmitting={addCustomerMutation.isPending}
             />
           </DialogContent>
         </Dialog>

@@ -1,0 +1,166 @@
+{
+  "customers": [
+    {
+      "id": "cus-1",
+      "name": "Trần Thị Bích Hằng",
+      "email": "bichhang@example.com",
+      "phone": "0912345678",
+      "totalAppointments": 5,
+      "lastVisit": "2025-08-15T14:00:00.000Z"
+    },
+    {
+      "id": "cus-2",
+      "name": "Lê Minh Tuấn",
+      "email": "minhtuan@example.com",
+      "phone": "0987654321",
+      "totalAppointments": 2,
+      "lastVisit": "2025-08-18T10:30:00.000Z"
+    },
+    {
+      "id": "3a8cf840-8008-4d1e-a3fb-9aaed3dacdce",
+      "name": "Áo phông basic",
+      "email": "Tinvg2918@gmail.com",
+      "phone": "rgdhjrtdhyjugki",
+      "notes": "ưertyujkil",
+      "totalAppointments": 0,
+      "lastVisit": "2025-08-25T11:57:10.270Z"
+    },
+    {
+      "id": "e41e073e-dfd0-4c04-bbc3-5bbb8e97ffc8",
+      "name": "Quần dài",
+      "email": "Tinvg2918@gmail.com",
+      "phone": "0926630480",
+      "notes": "rgsdfbhb",
+      "avatar": {},
+      "totalAppointments": 0,
+      "lastVisit": "2025-08-25T12:40:24.195Z"
+    }
+  ],
+  "services": [
+    {
+      "id": "1",
+      "name": "Chăm sóc da mặt chuyên sâu",
+      "description": "Liệu trình làm sạch, tẩy tế bào chết, massage và đắp mặt nạ, giúp da sáng khỏe và mịn màng.",
+      "price": 500000,
+      "duration": 60,
+      "category": "Chăm sóc da",
+      "imageUrl": "/images/service-1.jpg"
+    },
+    {
+      "id": "2",
+      "name": "Massage thư giãn toàn thân",
+      "description": "Sử dụng tinh dầu thiên nhiên kết hợp các động tác massage chuyên nghiệp giúp giảm căng thẳng, mệt mỏi.",
+      "price": 700000,
+      "duration": 90,
+      "category": "Massage",
+      "imageUrl": "/images/service-2.jpg"
+    },
+    {
+      "id": "c4a7bba9-5b3a-4b05-b717-89a1c520e124",
+      "name": "Áo sơ mi",
+      "description": "g=ưeugsdugagujkdufs",
+      "category": "eawshwkuhrw",
+      "price": 2000,
+      "duration": 30,
+      "imageUrl": "/images/service-2.jpg"
+    }
+  ],
+  "staff": [
+    {
+      "id": "tech-1",
+      "name": "Nguyễn Thu An",
+      "email": "thuan@myspa.com",
+      "phone": "0911223344",
+      "role": "technician",
+      "status": "active",
+      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=tech-1"
+    },
+    {
+      "id": "rec-1",
+      "name": "Phạm Kiều Trang",
+      "email": "kieutrang@myspa.com",
+      "phone": "0933445566",
+      "role": "receptionist",
+      "status": "active",
+      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=rec-1"
+    },
+    {
+      "id": "fbc7dddb-9628-4673-a827-860e6d119301",
+      "name": "Áo phông basic",
+      "email": "Tinvg2918@gmail.com",
+      "phone": "0926630480",
+      "role": "receptionist",
+      "status": "inactive",
+      "serviceIds": [],
+      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Áo phông basic"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "appt-1",
+      "serviceId": "1",
+      "technicianId": "tech-1",
+      "date": "2025-08-28T10:00:00.000Z",
+      "status": "upcoming"
+    },
+    {
+      "id": "appt-2",
+      "serviceId": "2",
+      "date": "2025-09-01T14:30:00.000Z",
+      "status": "upcoming"
+    }
+  ],
+  "treatmentPlans": [
+    {
+      "id": "plan-1",
+      "name": "Liệu trình Triệt lông Nách vĩnh viễn",
+      "description": "Gói 10 buổi triệt lông bằng công nghệ Diode Laser an toàn và hiệu quả, cam kết bảo hành 5 năm.",
+      "serviceIds": [
+        "3"
+      ],
+      "price": 8000000,
+      "totalSessions": 10,
+      "imageUrl": "/images/service-3.jpg"
+    },
+    {
+      "id": "plan-2",
+      "name": "Gói Phục hồi da chuyên sâu 5 buổi",
+      "description": "Liệu trình 5 buổi chăm sóc da mặt chuyên sâu, giúp tái tạo làn da, mang lại vẻ sáng khỏe và mịn màng.",
+      "serviceIds": [
+        "1"
+      ],
+      "price": 2200000,
+      "totalSessions": 5,
+      "imageUrl": "/images/service-1.jpg"
+    },
+    {
+      "id": "plan-3",
+      "name": "Gói Massage thư giãn trị liệu",
+      "description": "Combo 5 buổi massage toàn thân với tinh dầu thiên nhiên, giúp giảm căng thẳng, mệt mỏi và phục hồi năng lượng.",
+      "serviceIds": [
+        "2"
+      ],
+      "price": 3000000,
+      "totalSessions": 5,
+      "imageUrl": "/images/service-2.jpg"
+    },
+    {
+      "id": "28865856-d222-4192-af2a-d6e242986a25",
+      "name": "fgthyuyil",
+      "description": "étdufilgkhgfds",
+      "price": 777777000,
+      "totalSessions": 5,
+      "serviceIds": [],
+      "imageUrl": "/images/service-3.jpg"
+    },
+    {
+      "id": "86213d84-eac3-43ab-b1d1-a86de4cb8843",
+      "name": "qửetyuil",
+      "description": "4568hgfgjhjghfgdfsd",
+      "price": 555000,
+      "totalSessions": 5,
+      "serviceIds": [],
+      "imageUrl": "/images/service-2.jpg"
+    }
+  ]
+}
