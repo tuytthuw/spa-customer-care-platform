@@ -6,7 +6,8 @@
       "email": "bichhang@example.com",
       "phone": "0912345678",
       "totalAppointments": 5,
-      "lastVisit": "2025-08-15T14:00:00.000Z"
+      "lastVisit": "2025-08-15T14:00:00.000Z",
+      "status": "inactive"
     },
     {
       "id": "cus-2",
@@ -14,16 +15,8 @@
       "email": "minhtuan@example.com",
       "phone": "0987654321",
       "totalAppointments": 2,
-      "lastVisit": "2025-08-18T10:30:00.000Z"
-    },
-    {
-      "id": "3a8cf840-8008-4d1e-a3fb-9aaed3dacdce",
-      "name": "Áo phông basic",
-      "email": "Tinvg2918@gmail.com",
-      "phone": "rgdhjrtdhyjugki",
-      "notes": "ưertyujkil",
-      "totalAppointments": 0,
-      "lastVisit": "2025-08-25T11:57:10.270Z"
+      "lastVisit": "2025-08-18T10:30:00.000Z",
+      "status": "active"
     },
     {
       "id": "e41e073e-dfd0-4c04-bbc3-5bbb8e97ffc8",
@@ -33,7 +26,29 @@
       "notes": "rgsdfbhb",
       "avatar": {},
       "totalAppointments": 0,
-      "lastVisit": "2025-08-25T12:40:24.195Z"
+      "lastVisit": "2025-08-25T12:40:24.195Z",
+      "status": "active"
+    },
+    {
+      "id": "b45685e3-2104-48cd-bfac-d89cd0e06d94",
+      "name": "Áo sơ mi",
+      "email": "Tinvg2918@gmail.com",
+      "phone": "0926630480",
+      "notes": "gfghjk",
+      "avatar": {},
+      "totalAppointments": 0,
+      "lastVisit": "2025-08-25T14:58:26.226Z"
+    },
+    {
+      "id": "7e4e54b8-8ae3-45a6-a76c-cbce09f919a7",
+      "name": "yuio",
+      "email": "Tinvg2918@gmail.com",
+      "phone": "0926630480",
+      "notes": "6yhgj",
+      "avatar": {},
+      "totalAppointments": 0,
+      "lastVisit": "2025-08-26T10:07:55.594Z",
+      "status": "active"
     }
   ],
   "services": [
@@ -73,7 +88,8 @@
       "phone": "0911223344",
       "role": "technician",
       "status": "active",
-      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=tech-1"
+      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=tech-1",
+      "serviceIds": []
     },
     {
       "id": "rec-1",
@@ -81,7 +97,7 @@
       "email": "kieutrang@myspa.com",
       "phone": "0933445566",
       "role": "receptionist",
-      "status": "active",
+      "status": "inactive",
       "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=rec-1"
     },
     {

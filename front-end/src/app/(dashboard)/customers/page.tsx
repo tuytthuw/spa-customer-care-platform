@@ -12,21 +12,33 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import AddCustomerForm from "@/components/forms/AddCustomerForm";
-import { getCustomers, addCustomer } from "@/services/customerService";
+import EditCustomerForm from "@/components/forms/EditCustomerForm"; // 1. Import form chỉnh sửa
+import {
+  getCustomers,
+  addCustomer,
+  updateCustomerStatus,
+  updateCustomer,
+} from "@/services/customerService"; // 2. Import hàm updateCustomer
 import { Plus } from "lucide-react";
-import CustomerCard from "@/features/customer/CustomerCard";
-import { QuickActions } from "@/features/customer/QuickActions";
-import { CustomerFilters } from "@/features/customer/CustomerFilters"; // Import component mới
+import { columns } from "./columns";
+import { DataTable } from "@/components/ui/data-table";
 
-interface CustomerFormValues {
+// Lấy type từ Zod schema
+type CustomerFormValues = {
   name: string;
   email: string;
   phone: string;
-}
+  notes?: string;
+};
 
 export default function CustomersPage() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  // 3. Thêm state để quản lý dialog chỉnh sửa và khách hàng đang được sửa
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
+
   const queryClient = useQueryClient();
+
   const {
     data: customers = [],
     isLoading,
@@ -36,24 +48,75 @@ export default function CustomersPage() {
     queryFn: getCustomers,
   });
 
+  // Mutation để thêm
   const addCustomerMutation = useMutation({
-    mutationFn: addCustomer, // Hàm sẽ được gọi để thực hiện mutation
+    mutationFn: addCustomer,
     onSuccess: () => {
-      // 5. Khi thành công, vô hiệu hóa query "customers"
-      // Điều này sẽ khiến useQuery tự động fetch lại dữ liệu mới
-      console.log("Customer added successfully! Refetching list...");
       queryClient.invalidateQueries({ queryKey: ["customers"] });
-      setIsDialogOpen(false); // Đóng dialog lại
+      setIsAddDialogOpen(false);
     },
     onError: (error) => {
-      // Xử lý lỗi (ví dụ: hiển thị thông báo)
-      console.error("Error adding customer:", error);
       alert("Thêm khách hàng thất bại!");
+    },
+  });
+
+  // Mutation để cập nhật trạng thái
+  const updateStatusMutation = useMutation({
+    mutationFn: ({
+      customerId,
+      newStatus,
+    }: {
+      customerId: string;
+      newStatus: "active" | "inactive";
+    }) => updateCustomerStatus(customerId, newStatus),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+    },
+    onError: (error) => {
+      alert("Cập nhật trạng thái thất bại!");
+    },
+  });
+
+  // 4. Mutation để chỉnh sửa thông tin
+  const updateCustomerMutation = useMutation({
+    mutationFn: ({
+      customerId,
+      data,
+    }: {
+      customerId: string;
+      data: CustomerFormValues;
+    }) => updateCustomer(customerId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+      setIsEditDialogOpen(false); // Đóng dialog chỉnh sửa
+    },
+    onError: (error) => {
+      alert("Cập nhật thông tin thất bại!");
     },
   });
 
   const handleAddCustomer = (data: CustomerFormValues) => {
     addCustomerMutation.mutate(data);
+  };
+
+  const handleUpdateStatus = (
+    customerId: string,
+    newStatus: "active" | "inactive"
+  ) => {
+    updateStatusMutation.mutate({ customerId, newStatus });
+  };
+
+  // 5. Hàm để mở dialog chỉnh sửa
+  const handleEditCustomer = (customer: Customer) => {
+    setEditingCustomer(customer);
+    setIsEditDialogOpen(true);
+  };
+
+  // 6. Hàm để gọi khi submit form chỉnh sửa
+  const handleUpdateCustomer = (data: CustomerFormValues) => {
+    if (editingCustomer) {
+      updateCustomerMutation.mutate({ customerId: editingCustomer.id, data });
+    }
   };
 
   if (isLoading) return <div>Đang tải danh sách khách hàng...</div>;
@@ -63,9 +126,9 @@ export default function CustomersPage() {
     <div className="p-6 bg-muted min-h-full">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Quản lý khách hàng</h2>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-primary text-primary-foreground px-4 py-2 rounded flex items-center">
+            <Button>
               <Plus className="mr-2 h-4 w-4" />
               Thêm khách hàng
             </Button>
@@ -76,25 +139,39 @@ export default function CustomersPage() {
             </DialogHeader>
             <AddCustomerForm
               onFormSubmit={handleAddCustomer}
-              onClose={() => setIsDialogOpen(false)}
+              onClose={() => setIsAddDialogOpen(false)}
               isSubmitting={addCustomerMutation.isPending}
             />
           </DialogContent>
         </Dialog>
       </div>
 
-      {/* Sử dụng component CustomerFilters đã tách */}
-      <CustomerFilters />
+      <DataTable
+        columns={columns({
+          onUpdateStatus: handleUpdateStatus,
+          onEdit: handleEditCustomer,
+        })}
+        data={customers}
+      />
 
-      {/* Customer List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-        {customers.map((customer) => (
-          <CustomerCard key={customer.id} customer={customer} />
-        ))}
-      </div>
-
-      {/* Sử dụng component QuickActions đã tách */}
-      <QuickActions />
+      {/* 7. Thêm Dialog cho việc chỉnh sửa */}
+      {editingCustomer && (
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                Chỉnh sửa thông tin: {editingCustomer.name}
+              </DialogTitle>
+            </DialogHeader>
+            <EditCustomerForm
+              initialData={editingCustomer}
+              onFormSubmit={handleUpdateCustomer}
+              onClose={() => setIsEditDialogOpen(false)}
+              isSubmitting={updateCustomerMutation.isPending}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

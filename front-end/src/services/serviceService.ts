@@ -29,7 +29,7 @@ interface AddServiceData {
   imageFile?: any; // Đây là đối tượng File, sẽ không được lưu
 }
 
-// ✅ HÀM MỚI: Thêm dịch vụ mới
+// Thêm dịch vụ mới
 export const addService = async (
   newServiceData: AddServiceData
 ): Promise<Service> => {
@@ -45,6 +45,7 @@ export const addService = async (
     body: JSON.stringify({
       id: uuidv4(),
       ...dataToSave,
+      status: "active",
       // Tạo một ảnh placeholder ngẫu nhiên từ các ảnh có sẵn
       imageUrl: `/images/service-${Math.floor(Math.random() * 3) + 1}.jpg`,
     }),
@@ -52,6 +53,54 @@ export const addService = async (
 
   if (!response.ok) {
     throw new Error("Failed to add service");
+  }
+
+  return response.json();
+};
+
+export const updateServiceStatus = async (
+  serviceId: string,
+  newStatus: "active" | "inactive"
+): Promise<Service> => {
+  console.log(`Updating service ${serviceId} to status: ${newStatus}`);
+
+  const response = await fetch(`${SERVICES_API_URL}/${serviceId}`, {
+    method: "PATCH", // Dùng PATCH để cập nhật một phần
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status: newStatus }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update service status");
+  }
+
+  return response.json();
+};
+
+// Kiểu dữ liệu cho form chỉnh sửa (không bao gồm các trường không thể sửa)
+interface UpdateServiceData {
+  name: string;
+  description?: string;
+  category: string;
+  price: number;
+  duration: number;
+  imageFile?: any;
+}
+
+export const updateService = async (
+  serviceId: string,
+  dataToUpdate: UpdateServiceData
+): Promise<Service> => {
+  console.log(`Updating service ${serviceId} with data:`, dataToUpdate);
+
+  const response = await fetch(`${SERVICES_API_URL}/${serviceId}`, {
+    method: "PATCH", // Dùng PATCH để chỉ cập nhật các trường được gửi lên
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(dataToUpdate),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update service");
   }
 
   return response.json();

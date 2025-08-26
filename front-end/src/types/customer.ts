@@ -7,4 +7,6 @@ export interface Customer {
   lastVisit: string; // ISO date string
   password?: string;
   role?: "CLIENT";
+  status: "active" | "inactive";
+  notes?: string;
 }
