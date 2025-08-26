@@ -46,11 +46,61 @@ export const addStaff = async (newStaffData: AddStaffData): Promise<Staff> => {
       id: uuidv4(), // Tạo ID ngẫu nhiên
       ...dataToSave,
       avatar: `https://api.dicebear.com/7.x/notionists/svg?seed=${dataToSave.name}`, // Tạo avatar ngẫu nhiên
+      status: "active",
     }),
   });
 
   if (!response.ok) {
     throw new Error("Failed to add staff");
+  }
+
+  return response.json();
+};
+
+// Kiểu dữ liệu cho form chỉnh sửa
+interface UpdateStaffData {
+  name: string;
+  email: string;
+  phone: string;
+  role: "technician" | "receptionist" | "manager";
+  serviceIds?: string[];
+}
+
+// Hàm cập nhật thông tin chi tiết
+export const updateStaff = async (
+  staffId: string,
+  dataToUpdate: UpdateStaffData
+): Promise<Staff> => {
+  console.log(`Updating staff ${staffId} with data:`, dataToUpdate);
+
+  const response = await fetch(`${STAFF_API_URL}/${staffId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(dataToUpdate),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update staff");
+  }
+
+  return response.json();
+};
+
+// Hàm cập nhật trạng thái
+export const updateStaffStatus = async (
+  staffId: string,
+  newStatus: "active" | "inactive"
+): Promise<Staff> => {
+  console.log(`Updating staff ${staffId} to status: ${newStatus}`);
+
+  const response = await fetch(`${STAFF_API_URL}/${staffId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status: newStatus }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update staff status");
   }
 
   return response.json();

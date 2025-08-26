@@ -1,4 +1,3 @@
-// src/app/(dashboard)/staff-management/page.tsx (PHIÊN BẢN NÂNG CẤP)
 "use client";
 
 import { useState } from "react";
@@ -16,7 +15,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import AddStaffForm from "@/components/forms/AddStaffForm";
-import { getStaff, addStaff } from "@/services/staffService";
+import EditStaffForm from "@/components/forms/EditStaffForm"; // 1. Import form chỉnh sửa
+import {
+  getStaff,
+  addStaff,
+  updateStaff,
+  updateStaffStatus,
+} from "@/services/staffService"; // 2. Import các hàm mới
 
 type StaffFormValues = {
   name: string;
@@ -29,10 +34,13 @@ type StaffFormValues = {
 };
 
 export default function StaffManagementPage() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  // 3. Thêm state để quản lý dialog chỉnh sửa
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingStaff, setEditingStaff] = useState<Staff | null>(null);
+
   const queryClient = useQueryClient();
 
-  // Sử dụng useQuery để fetch dữ liệu
   const {
     data: staff = [],
     isLoading,
@@ -42,16 +50,50 @@ export default function StaffManagementPage() {
     queryFn: getStaff,
   });
 
+  // Mutation để thêm nhân viên
   const addStaffMutation = useMutation({
     mutationFn: addStaff,
     onSuccess: () => {
-      console.log("Staff added successfully! Refetching list...");
-      queryClient.invalidateQueries({ queryKey: ["staffs"] });
-      setIsDialogOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["staff"] });
+      setIsAddDialogOpen(false);
+    },
+    onError: (err) => {
+      alert("Thêm nhân viên thất bại!");
+    },
+  });
+
+  // 4. Thêm mutation để chỉnh sửa thông tin
+  const updateStaffMutation = useMutation({
+    mutationFn: ({
+      staffId,
+      data,
+    }: {
+      staffId: string;
+      data: StaffFormValues;
+    }) => updateStaff(staffId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["staff"] });
+      setIsEditDialogOpen(false);
     },
     onError: (error) => {
-      console.error("Error adding staff:", error);
-      alert("Thêm nhân viên thất bại!");
+      alert("Cập nhật thông tin thất bại!");
+    },
+  });
+
+  // 5. Thêm mutation để cập nhật trạng thái
+  const updateStatusMutation = useMutation({
+    mutationFn: ({
+      staffId,
+      newStatus,
+    }: {
+      staffId: string;
+      newStatus: "active" | "inactive";
+    }) => updateStaffStatus(staffId, newStatus),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["staff"] });
+    },
+    onError: (error) => {
+      alert("Cập nhật trạng thái thất bại!");
     },
   });
 
@@ -59,32 +101,78 @@ export default function StaffManagementPage() {
     addStaffMutation.mutate(data);
   };
 
-  if (isLoading) return <div>Đang tải danh sách khách hàng...</div>;
-  if (error) return <div>Đã xảy ra lỗi: {error.message}</div>;
+  // 6. Thêm các hàm xử lý mới
+  const handleEditStaff = (staffMember: Staff) => {
+    setEditingStaff(staffMember);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleUpdateStaff = (data: StaffFormValues) => {
+    if (editingStaff) {
+      updateStaffMutation.mutate({ staffId: editingStaff.id, data });
+    }
+  };
+
+  const handleUpdateStatus = (
+    staffId: string,
+    newStatus: "active" | "inactive"
+  ) => {
+    updateStatusMutation.mutate({ staffId, newStatus });
+  };
+
+  if (isLoading) {
+    return <div>Đang tải danh sách nhân viên...</div>;
+  }
+
+  if (error) {
+    return <div>Đã xảy ra lỗi: {error.message}</div>;
+  }
 
   return (
-    <div>
+    <div className="container mx-auto p-4 md:p-6 lg:p-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Quản lý Nhân viên</h1>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
             <Button>Thêm nhân viên mới</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Tạo hồ sơ nhân viên mới</DialogTitle>
-              <DialogDescription>
-                Điền thông tin chi tiết để thêm nhân viên vào hệ thống.
-              </DialogDescription>
             </DialogHeader>
             <AddStaffForm
               onFormSubmit={handleAddStaff}
-              onClose={() => setIsDialogOpen(false)}
+              onClose={() => setIsAddDialogOpen(false)}
             />
           </DialogContent>
         </Dialog>
       </div>
-      <DataTable columns={columns} data={staff} />
+      <DataTable
+        columns={columns({
+          onEdit: handleEditStaff,
+          onUpdateStatus: handleUpdateStatus,
+        })}
+        data={staff}
+      />
+
+      {/* 7. Thêm Dialog cho việc chỉnh sửa */}
+      {editingStaff && (
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                Chỉnh sửa thông tin: {editingStaff.name}
+              </DialogTitle>
+            </DialogHeader>
+            <EditStaffForm
+              initialData={editingStaff}
+              onFormSubmit={handleUpdateStaff}
+              onClose={() => setIsEditDialogOpen(false)}
+              isSubmitting={updateStaffMutation.isPending}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

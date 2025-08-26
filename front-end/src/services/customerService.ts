@@ -20,7 +20,6 @@ export const getCustomers = async (): Promise<Customer[]> => {
     return customers;
   } catch (error) {
     console.error("Error fetching customers:", error);
-    // Trả về mảng rỗng nếu có lỗi để ứng dụng không bị crash
     return [];
   }
 };
@@ -45,11 +44,57 @@ export const addCustomer = async (
       ...newCustomerData,
       totalAppointments: 0,
       lastVisit: new Date().toISOString(),
+      status: "active",
     }),
   });
 
   if (!response.ok) {
     throw new Error("Failed to add customer");
+  }
+
+  return response.json();
+};
+export const updateCustomerStatus = async (
+  customerId: string,
+  newStatus: "active" | "inactive"
+): Promise<Customer> => {
+  console.log(`Updating customer ${customerId} to status: ${newStatus}`);
+
+  const response = await fetch(`${CUSTOMERS_API_URL}/${customerId}`, {
+    method: "PATCH", // Dùng PATCH để cập nhật một phần
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status: newStatus }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update customer status");
+  }
+
+  return response.json();
+};
+
+// Kiểu dữ liệu cho form chỉnh sửa (không bao gồm các trường không thể sửa)
+interface UpdateCustomerData {
+  name: string;
+  email: string;
+  phone: string;
+  notes?: string;
+}
+
+export const updateCustomer = async (
+  customerId: string,
+  dataToUpdate: UpdateCustomerData
+): Promise<Customer> => {
+  console.log(`Updating customer ${customerId} with data:`, dataToUpdate);
+
+  const response = await fetch(`${CUSTOMERS_API_URL}/${customerId}`, {
+    method: "PATCH", // Dùng PATCH để chỉ cập nhật các trường được gửi lên
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(dataToUpdate),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update customer");
   }
 
   return response.json();

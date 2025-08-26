@@ -23,18 +23,22 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { mockServices } from "@/lib/mock-data";
 import { UploadCloud, File as FileIcon, X } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { Staff } from "@/types/staff"; // 1. Import Staff type
 
 const ROLES = ["technician", "receptionist", "manager"] as const;
 const STATUSES = ["active", "inactive"] as const;
 
+// Schema validation giữ nguyên
 const staffFormSchema = z.object({
   name: z.string().min(3, "Tên phải có ít nhất 3 ký tự."),
   email: z.string().email("Email không hợp lệ."),
-  phone: z.string().regex(/(0[3|5|7|8|9])+([0-9]{8})\b/, {
-    message: "Số điện thoại không hợp lệ.",
-  }),
+  phone: z
+    .string()
+    .regex(/(0[3|5|7|8|9])+([0-9]{8})\b/, {
+      message: "Số điện thoại không hợp lệ.",
+    }),
   role: z.enum(ROLES, { message: "Vui lòng chọn vai trò." }),
   status: z.enum(STATUSES, { message: "Vui lòng chọn trạng thái." }),
   serviceIds: z.array(z.string()).optional(),
@@ -43,45 +47,62 @@ const staffFormSchema = z.object({
 
 type StaffFormValues = z.infer<typeof staffFormSchema>;
 
-interface AddStaffFormProps {
+// 2. Cập nhật Props để nhận dữ liệu ban đầu
+interface EditStaffFormProps {
+  initialData: Staff;
   onFormSubmit: (data: StaffFormValues) => void;
   onClose: () => void;
+  isSubmitting?: boolean;
 }
 
-export default function AddStaffForm({
+export default function EditStaffForm({
+  initialData,
   onFormSubmit,
   onClose,
-}: AddStaffFormProps) {
+  isSubmitting,
+}: EditStaffFormProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
 
   const form = useForm<StaffFormValues>({
     resolver: zodResolver(staffFormSchema),
+    // 3. Điền dữ liệu ban đầu vào form
     defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      role: "technician",
-      status: "active",
-      serviceIds: [],
+      name: initialData.name || "",
+      email: initialData.email || "",
+      phone: initialData.phone || "",
+      role: initialData.role || "technician",
+      status: initialData.status || "active",
+      serviceIds: initialData.serviceIds || [],
       avatar: undefined,
     },
   });
 
   const selectedRole = form.watch("role");
 
+  // 4. Reset form khi đối tượng nhân viên thay đổi
+  useEffect(() => {
+    form.reset({
+      name: initialData.name,
+      email: initialData.email,
+      phone: initialData.phone,
+      role: initialData.role,
+      status: initialData.status,
+      serviceIds: initialData.serviceIds,
+    });
+  }, [initialData, form]);
+
+  // --- Logic xử lý file (giữ nguyên) ---
   const handleFileSelect = (file: File | undefined) => {
     if (file) {
       setSelectedFile(file);
       form.setValue("avatar", file, { shouldValidate: true });
     }
   };
-
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     handleFileSelect(event.target.files?.[0]);
   };
-
   const handleRemoveFile = () => {
     setSelectedFile(null);
     form.setValue("avatar", undefined, { shouldValidate: true });
@@ -89,47 +110,40 @@ export default function AddStaffForm({
       fileInputRef.current.value = "";
     }
   };
-
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setIsDragging(true);
   };
-
   const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setIsDragging(false);
   };
-
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setIsDragging(false);
     const file = event.dataTransfer.files?.[0];
     handleFileSelect(file);
   };
+  // --- Kết thúc logic xử lý file ---
 
   function onSubmit(data: StaffFormValues) {
     if (data.role !== "technician") {
       data.serviceIds = [];
     }
-    console.log("Submitting staff data:", data);
     onFormSubmit(data);
-    onClose();
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
-          {/* ... các trường khác giữ nguyên ... */}
+        <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto -m-6">
+          {/* Các trường input giữ nguyên */}
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  Họ và tên{" "}
-                  <span className="text-muted-foreground">(bắt buộc)</span>
-                </FormLabel>
+                <FormLabel>Họ và tên</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -142,10 +156,7 @@ export default function AddStaffForm({
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  Email{" "}
-                  <span className="text-muted-foreground">(bắt buộc)</span>
-                </FormLabel>
+                <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input type="email" {...field} />
                 </FormControl>
@@ -158,10 +169,7 @@ export default function AddStaffForm({
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  Số điện thoại{" "}
-                  <span className="text-muted-foreground">(bắt buộc)</span>
-                </FormLabel>
+                <FormLabel>Số điện thoại</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -174,10 +182,7 @@ export default function AddStaffForm({
             name="role"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  Vai trò{" "}
-                  <span className="text-muted-foreground">(bắt buộc)</span>
-                </FormLabel>
+                <FormLabel>Vai trò</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -197,7 +202,6 @@ export default function AddStaffForm({
               </FormItem>
             )}
           />
-
           {selectedRole === "technician" && (
             <FormField
               control={form.control}
@@ -252,9 +256,10 @@ export default function AddStaffForm({
               )}
             />
           )}
-          {/* Hình ảnh */}
+
+          {/* Phần upload ảnh */}
           <div>
-            <FormLabel>Ảnh đại diện</FormLabel>
+            <FormLabel>Ảnh đại diện (Tùy chọn)</FormLabel>
             <input
               type="file"
               ref={fileInputRef}
@@ -275,7 +280,7 @@ export default function AddStaffForm({
               >
                 <div className="text-muted-foreground text-center">
                   <UploadCloud className="text-3xl mb-2 mx-auto" />
-                  <p>Nhấp để chọn ảnh hoặc kéo thả vào đây</p>
+                  <p>Nhấp để chọn ảnh mới hoặc kéo thả vào đây</p>
                 </div>
                 <p className="text-xs text-muted-foreground mt-2">
                   PNG, JPG, GIF tối đa 2MB
@@ -303,10 +308,17 @@ export default function AddStaffForm({
           </div>
         </div>
         <div className="flex justify-end gap-2 p-4 border-t border-border">
-          <Button type="button" variant="ghost" onClick={onClose}>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={onClose}
+            disabled={isSubmitting}
+          >
             Hủy
           </Button>
-          <Button type="submit">Lưu nhân viên</Button>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Đang lưu..." : "Lưu thay đổi"}
+          </Button>
         </div>
       </form>
     </Form>

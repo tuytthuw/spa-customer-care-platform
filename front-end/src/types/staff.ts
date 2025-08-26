@@ -7,4 +7,5 @@ export interface Staff {
   status: "active" | "inactive";
   password?: string;
   avatar?: string;
+  serviceIds?: string[];
 }
