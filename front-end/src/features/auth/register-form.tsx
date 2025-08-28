@@ -27,6 +27,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { register as registerAction } from "@/services/authService"; // Import action đăng ký
+import { toast } from "sonner";
 
 // Zod schema để validation
 const registerSchema = z.object({
@@ -52,18 +53,16 @@ export function RegisterForm() {
 
   // Hàm xử lý khi submit form
   const onSubmit = (values: z.infer<typeof registerSchema>) => {
-    setError(null);
-    setSuccess(null);
-
     startTransition(() => {
       registerAction(values).then((result) => {
         if (result.error) {
-          setError(result.error);
+          toast.error(result.error);
         }
 
         if (result.success) {
-          setSuccess(result.success + " Sẽ chuyển đến trang xác thực OTP.");
-          // Chuyển hướng đến trang OTP với email trên URL
+          toast.success(result.success, {
+            description: "Sẽ chuyển đến trang xác thực OTP.",
+          });
           setTimeout(() => {
             router.push(`/auth/verify-otp?email=${values.email}`);
           }, 1500);
@@ -130,14 +129,6 @@ export function RegisterForm() {
                 </FormItem>
               )}
             />
-
-            {/* Hiển thị thông báo */}
-            {error && (
-              <p className="text-sm font-medium text-destructive">{error}</p>
-            )}
-            {success && (
-              <p className="text-sm font-medium text-emerald-500">{success}</p>
-            )}
 
             <Button type="submit" className="w-full" disabled={isPending}>
               {isPending ? "Đang xử lý..." : "Tạo tài khoản"}

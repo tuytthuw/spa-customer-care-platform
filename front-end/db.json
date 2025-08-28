@@ -57,9 +57,10 @@
       "name": "Chăm sóc da mặt chuyên sâu",
       "description": "Liệu trình làm sạch, tẩy tế bào chết, massage và đắp mặt nạ, giúp da sáng khỏe và mịn màng.",
       "price": 500000,
-      "duration": 60,
+      "duration": 333,
       "category": "Chăm sóc da",
-      "imageUrl": "/images/service-1.jpg"
+      "imageUrl": "/images/service-1.jpg",
+      "status": "active"
     },
     {
       "id": "2",
@@ -68,7 +69,8 @@
       "price": 700000,
       "duration": 90,
       "category": "Massage",
-      "imageUrl": "/images/service-2.jpg"
+      "imageUrl": "/images/service-2.jpg",
+      "status": "active"
     },
     {
       "id": "c4a7bba9-5b3a-4b05-b717-89a1c520e124",
@@ -77,7 +79,8 @@
       "category": "eawshwkuhrw",
       "price": 2000,
       "duration": 30,
-      "imageUrl": "/images/service-2.jpg"
+      "imageUrl": "/images/service-2.jpg",
+      "status": "active"
     }
   ],
   "staff": [
@@ -167,7 +170,8 @@
       "price": 777777000,
       "totalSessions": 5,
       "serviceIds": [],
-      "imageUrl": "/images/service-3.jpg"
+      "imageUrl": "/images/service-3.jpg",
+      "status": "inactive"
     },
     {
       "id": "86213d84-eac3-43ab-b1d1-a86de4cb8843",
@@ -176,7 +180,8 @@
       "price": 555000,
       "totalSessions": 5,
       "serviceIds": [],
-      "imageUrl": "/images/service-2.jpg"
+      "imageUrl": "/images/service-2.jpg",
+      "status": "active"
     }
   ]
 }

@@ -22,6 +22,7 @@ import {
 import { Plus } from "lucide-react";
 import { columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
+import { toast } from "sonner";
 
 // Lấy type từ Zod schema
 type CustomerFormValues = {
@@ -54,9 +55,10 @@ export default function CustomersPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
       setIsAddDialogOpen(false);
+      toast.success("Thêm khách hàng thành công!");
     },
     onError: (error) => {
-      alert("Thêm khách hàng thất bại!");
+      toast.error(`Thêm khách hàng thất bại: ${error.message}`);
     },
   });
 
@@ -71,13 +73,14 @@ export default function CustomersPage() {
     }) => updateCustomerStatus(customerId, newStatus),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
+      toast.success("Cập nhật trạng thái thành công!");
     },
     onError: (error) => {
-      alert("Cập nhật trạng thái thất bại!");
+      toast.error(`Cập nhật trạng thái thất bại: ${error.message}`);
     },
   });
 
-  // 4. Mutation để chỉnh sửa thông tin
+  // Mutation để chỉnh sửa thông tin
   const updateCustomerMutation = useMutation({
     mutationFn: ({
       customerId,
@@ -88,10 +91,11 @@ export default function CustomersPage() {
     }) => updateCustomer(customerId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
-      setIsEditDialogOpen(false); // Đóng dialog chỉnh sửa
+      setIsEditDialogOpen(false);
+      toast.success("Cập nhật thông tin thành công!");
     },
     onError: (error) => {
-      alert("Cập nhật thông tin thất bại!");
+      toast.error(`Cập nhật thông tin thất bại: ${error.message}`);
     },
   });
 

@@ -22,6 +22,7 @@ import {
   updateStaff,
   updateStaffStatus,
 } from "@/services/staffService"; // 2. Import các hàm mới
+import { toast } from "sonner";
 
 type StaffFormValues = {
   name: string;
@@ -56,13 +57,14 @@ export default function StaffManagementPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["staff"] });
       setIsAddDialogOpen(false);
+      toast.success("Thêm nhân viên thành công!");
     },
     onError: (err) => {
-      alert("Thêm nhân viên thất bại!");
+      toast.error(`Thêm nhân viên thất bại: ${err.message}`);
     },
   });
 
-  // 4. Thêm mutation để chỉnh sửa thông tin
+  // Thêm mutation để chỉnh sửa thông tin
   const updateStaffMutation = useMutation({
     mutationFn: ({
       staffId,
@@ -74,13 +76,14 @@ export default function StaffManagementPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["staff"] });
       setIsEditDialogOpen(false);
+      toast.success("Cập nhật thông tin thành công!");
     },
     onError: (error) => {
-      alert("Cập nhật thông tin thất bại!");
+      toast.error(`Cập nhật thông tin thất bại: ${error.message}`);
     },
   });
 
-  // 5. Thêm mutation để cập nhật trạng thái
+  // Thêm mutation để cập nhật trạng thái
   const updateStatusMutation = useMutation({
     mutationFn: ({
       staffId,
@@ -91,9 +94,10 @@ export default function StaffManagementPage() {
     }) => updateStaffStatus(staffId, newStatus),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["staff"] });
+      toast.success("Cập nhật trạng thái thành công!");
     },
     onError: (error) => {
-      alert("Cập nhật trạng thái thất bại!");
+      toast.error(`Cập nhật trạng thái thất bại: ${error.message}`);
     },
   });
 

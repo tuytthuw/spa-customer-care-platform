@@ -11,7 +11,7 @@ import { Permission } from "@/types/permissions";
 import { Staff } from "@/types/staff";
 import { mockRoles } from "@/lib/mock-data"; // <-- 1. THÊM IMPORT CÒN THIẾU
 
-interface User extends Omit<Staff, "password" | "role"> {
+export interface User extends Omit<Staff, "password" | "role"> {
   permissions: Permission[];
   role: "customer" | "receptionist" | "technician" | "manager";
 }
