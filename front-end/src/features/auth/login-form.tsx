@@ -30,6 +30,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { FcGoogle } from "react-icons/fc";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -56,13 +57,10 @@ export function LoginForm() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    setError(null);
-    setSuccess(null);
-
     startTransition(() => {
       loginAction(values).then((result) => {
         if (result.error) {
-          setError(result.error);
+          toast.error(result.error);
           return; // Dừng lại nếu có lỗi
         }
 
@@ -154,12 +152,6 @@ export function LoginForm() {
                 </FormItem>
               )}
             />
-            {error && (
-              <p className="text-sm font-medium text-destructive">{error}</p>
-            )}
-            {success && (
-              <p className="text-sm font-medium text-emerald-500">{success}</p>
-            )}
             <Button type="submit" className="w-full" disabled={isPending}>
               {isPending ? "Đang xử lý..." : "Đăng Nhập"}
             </Button>
