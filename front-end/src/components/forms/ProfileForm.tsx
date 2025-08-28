@@ -20,6 +20,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ProfileFormValues, profileSchema } from "@/lib/schemas";
+import { toast } from "sonner";
 
 interface ProfileFormProps {
   // Trong thực tế, bạn sẽ truyền dữ liệu người dùng thật vào đây
@@ -35,7 +36,7 @@ export default function ProfileForm({ defaultValues }: ProfileFormProps) {
   function onSubmit(data: ProfileFormValues) {
     // Đây là nơi bạn sẽ gọi API để cập nhật thông tin
     console.log("Dữ liệu cập nhật:", data);
-    alert("Cập nhật thông tin thành công!");
+    toast.success("Cập nhật thông tin thành công!");
   }
 
   return (

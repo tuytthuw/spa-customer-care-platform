@@ -8,6 +8,7 @@ export type AppointmentStatus =
 
 export type Appointment = {
   id: string;
+  customerId: string;
   serviceId: string;
   technicianId?: string;
   date: string;

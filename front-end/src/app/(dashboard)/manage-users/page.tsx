@@ -1,44 +1,60 @@
 "use client";
 
-import { mockCustomers, mockStaff } from "@/lib/mock-data";
-import { columns as customerColumns } from "../customers/columns";
-import { columns as staffColumns } from "../manage-staffs/columns";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { User } from "@/types/user";
+import { columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
+import { getUsers, updateUserStatus } from "@/services/userService";
+import { toast } from "sonner";
 
-const ManageUsersPage = () => {
+export default function ManageUsersPage() {
+  const queryClient = useQueryClient();
+
+  const {
+    data: users = [],
+    isLoading,
+    error,
+  } = useQuery<User[]>({
+    queryKey: ["users"],
+    queryFn: getUsers,
+  });
+
+  const updateStatusMutation = useMutation({
+    mutationFn: ({
+      userId,
+      newStatus,
+    }: {
+      userId: string;
+      newStatus: "active" | "inactive";
+    }) => updateUserStatus(userId, newStatus),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast.success("Cập nhật trạng thái tài khoản thành công!");
+    },
+    onError: (err) => {
+      toast.error(`Cập nhật thất bại: ${err.message}`);
+    },
+  });
+
+  const handleUpdateStatus = (
+    userId: string,
+    newStatus: "active" | "inactive"
+  ) => {
+    updateStatusMutation.mutate({ userId, newStatus });
+  };
+
+  if (isLoading) return <div>Đang tải danh sách người dùng...</div>;
+  if (error) return <div>Đã xảy ra lỗi: {error.message}</div>;
+
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Quản lý Người dùng</h1>
+        <h1 className="text-3xl font-bold">Quản lý Tài khoản Người dùng</h1>
       </div>
-
-      <Tabs defaultValue="customers">
-        <TabsList className="grid w-full grid-cols-2 md:w-[400px]">
-          <TabsTrigger value="customers">Khách hàng</TabsTrigger>
-          <TabsTrigger value="staff">Nhân viên</TabsTrigger>
-        </TabsList>
-        <TabsContent value="customers" className="mt-4">
-          <div className="flex justify-end mb-4">
-            <Button>
-              <PlusCircle className="mr-2 h-4 w-4" /> Thêm khách hàng
-            </Button>
-          </div>
-          <DataTable columns={customerColumns} data={mockCustomers} />
-        </TabsContent>
-        <TabsContent value="staff" className="mt-4">
-          <div className="flex justify-end mb-4">
-            <Button>
-              <PlusCircle className="mr-2 h-4 w-4" /> Thêm nhân viên
-            </Button>
-          </div>
-          <DataTable columns={staffColumns} data={mockStaff} />
-        </TabsContent>
-      </Tabs>
+      <DataTable
+        columns={columns({ onUpdateStatus: handleUpdateStatus })}
+        data={users}
+      />
     </div>
   );
-};
-
-export default ManageUsersPage;
+}

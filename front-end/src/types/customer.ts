@@ -1,12 +1,10 @@
 export interface Customer {
   id: string;
+  userId: string;
   name: string;
-  email: string;
   phone: string;
+  avatar?: string;
   totalAppointments: number;
   lastVisit: string; // ISO date string
-  password?: string;
-  role?: "CLIENT";
-  status: "active" | "inactive";
   notes?: string;
 }

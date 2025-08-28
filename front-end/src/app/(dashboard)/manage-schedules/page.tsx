@@ -18,6 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ScheduleForm from "@/components/forms/ScheduleForm";
 import { WorkSchedule } from "@/types/work-schedule";
 import { ScheduleRequestsTable } from "@/features/schedule/ScheduleRequestsTable"; // Import bảng phê duyệt
+import { toast } from "sonner";
 
 export default function WorkScheduleManagementPage() {
   // State cho Tab "Cấu hình lịch"
@@ -60,6 +61,11 @@ export default function WorkScheduleManagementPage() {
           : req
       )
     );
+    if (newStatus === "approved") {
+      toast.success("Yêu cầu đã được phê duyệt.");
+    } else {
+      toast.info("Yêu cầu đã bị từ chối.");
+    }
   };
 
   return (

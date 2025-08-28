@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { Appointment } from "@/types/appointment";
-import { mockServices, mockStaff } from "@/lib/mock-data";
+import { Service } from "@/types/service";
+import { Staff } from "@/types/staff";
 import {
   Card,
   CardContent,
@@ -12,33 +13,41 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import CancelAppointmentModal from "./CancelAppointmentModal";
 
+// 1. Cập nhật Props để nhận đầy đủ object `service` và `technician`
 interface AppointmentCardProps {
   appointment: Appointment;
+  service: Service;
+  technician?: Staff; // Kỹ thuật viên có thể không được chỉ định
   onCancel: (id: string, reason: string) => void;
 }
 
-const AppointmentCard = ({ appointment, onCancel }: AppointmentCardProps) => {
+const AppointmentCard = ({
+  appointment,
+  service, // 2. Nhận service từ props
+  technician, // 3. Nhận technician từ props
+  onCancel,
+}: AppointmentCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const service = mockServices.find((s) => s.id === appointment.serviceId);
-  const technician = mockStaff.find((t) => t.id === appointment.technicianId);
+  // 4. Bỏ các dòng .find() không cần thiết vì dữ liệu đã được truyền vào
+  // const service = mockServices.find((s) => s.id === appointment.serviceId);
+  // const technician = mockStaff.find((t) => t.id === appointment.technicianId);
 
-  if (!service) {
-    return null;
-  }
+  // Không cần kiểm tra service nữa vì nó là prop bắt buộc
+  // if (!service) {
+  //   return null;
+  // }
 
-  // === SỬA LỖI Ở ĐÂY: SỬ DỤNG VARIANT CÓ SẴN ===
   const getStatusVariant = (status: string) => {
     switch (status) {
       case "upcoming":
         return "default";
       case "completed":
-        return "secondary"; // Sử dụng "secondary" thay vì "success"
+        return "secondary";
       case "cancelled":
         return "destructive";
       default:
@@ -66,7 +75,6 @@ const AppointmentCard = ({ appointment, onCancel }: AppointmentCardProps) => {
                 })}
               </CardDescription>
             </div>
-            {/* Bỏ class màu tùy chỉnh */}
             <Badge variant={getStatusVariant(appointment.status)}>
               {appointment.status === "upcoming" && "Sắp tới"}
               {appointment.status === "completed" && "Đã hoàn thành"}
@@ -86,9 +94,15 @@ const AppointmentCard = ({ appointment, onCancel }: AppointmentCardProps) => {
           </div>
           <div className="col-span-1 md:col-span-2">
             <p className="font-semibold">Kỹ thuật viên:</p>
-            <p>{technician ? technician.name : "Chưa xác định"}</p>
+            <p>{technician ? technician.name : "Hệ thống tự sắp xếp"}</p>
             <p className="font-semibold mt-2">Thời gian:</p>
-            <p>10:00 - 11:00 (Ví dụ)</p>
+            {/* Lấy giờ trực tiếp từ dữ liệu lịch hẹn */}
+            <p>
+              {new Date(appointment.date).toLocaleTimeString("vi-VN", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </p>
           </div>
         </CardContent>
         {appointment.status === "upcoming" && (

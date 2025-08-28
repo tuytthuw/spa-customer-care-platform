@@ -1,54 +1,106 @@
 {
-  "customers": [
+  "users": [
     {
-      "id": "cus-1",
-      "name": "Trần Thị Bích Hằng",
+      "id": "user-cus-1",
       "email": "bichhang@example.com",
-      "phone": "0912345678",
-      "totalAppointments": 5,
-      "lastVisit": "2025-08-15T14:00:00.000Z",
+      "password": "password",
+      "role": "customer",
+      "status": "active"
+    },
+    {
+      "id": "user-cus-2",
+      "email": "minhtuan@example.com",
+      "password": "password",
+      "role": "customer",
+      "status": "active"
+    },
+    {
+      "id": "user-e41e073e",
+      "email": "Tinvg2918@gmail.com",
+      "password": "password",
+      "role": "customer",
+      "status": "active"
+    },
+    {
+      "id": "user-tech-1",
+      "email": "thuan@myspa.com",
+      "password": "password",
+      "role": "technician",
+      "status": "active"
+    },
+    {
+      "id": "user-rec-1",
+      "email": "kieutrang@myspa.com",
+      "password": "password",
+      "role": "receptionist",
       "status": "inactive"
     },
     {
+      "id": "user-fbc7dddb",
+      "email": "Tinvg2918@gmail.com",
+      "password": "password",
+      "role": "receptionist",
+      "status": "inactive"
+    }
+  ],
+  "customers": [
+    {
+      "id": "cus-1",
+      "userId": "user-cus-1",
+      "name": "Trần Thị Bích Hằng",
+      "phone": "0912345678",
+      "avatar": "/images/avatars/avatar-1.jpg",
+      "notes": "rgsdfbhb",
+      "totalAppointments": 5,
+      "lastVisit": "2025-08-15T14:00:00.000Z"
+    },
+    {
       "id": "cus-2",
+      "userId": "user-cus-2",
       "name": "Lê Minh Tuấn",
-      "email": "minhtuan@example.com",
       "phone": "0987654321",
+      "avatar": "/images/avatars/avatar-1.jpg",
+      "notes": "rgsdfbhb",
       "totalAppointments": 2,
-      "lastVisit": "2025-08-18T10:30:00.000Z",
-      "status": "active"
+      "lastVisit": "2025-08-18T10:30:00.000Z"
     },
     {
       "id": "e41e073e-dfd0-4c04-bbc3-5bbb8e97ffc8",
-      "name": "Quần dài",
-      "email": "Tinvg2918@gmail.com",
+      "userId": "user-e41e073e",
+      "name": "Quần dài",
       "phone": "0926630480",
+      "avatar": "/images/avatars/avatar-1.jpg",
       "notes": "rgsdfbhb",
-      "avatar": {},
       "totalAppointments": 0,
-      "lastVisit": "2025-08-25T12:40:24.195Z",
-      "status": "active"
+      "lastVisit": "2025-08-25T12:40:24.195Z"
+    }
+  ],
+  "staff": [
+    {
+      "id": "tech-1",
+      "userId": "user-tech-1",
+      "name": "Nguyễn Thu An",
+      "phone": "0911223344",
+      "role": "technician",
+      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=tech-1",
+      "serviceIds": []
     },
     {
-      "id": "b45685e3-2104-48cd-bfac-d89cd0e06d94",
-      "name": "Áo sơ mi",
-      "email": "Tinvg2918@gmail.com",
-      "phone": "0926630480",
-      "notes": "gfghjk",
-      "avatar": {},
-      "totalAppointments": 0,
-      "lastVisit": "2025-08-25T14:58:26.226Z"
+      "id": "rec-1",
+      "userId": "user-rec-1",
+      "name": "Phạm Kiều Trang",
+      "phone": "0933445566",
+      "role": "receptionist",
+      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=rec-1"
     },
     {
-      "id": "7e4e54b8-8ae3-45a6-a76c-cbce09f919a7",
-      "name": "yuio",
-      "email": "Tinvg2918@gmail.com",
+      "id": "fbc7dddb-9628-4673-a827-860e6d119301",
+      "userId": "user-fbc7dddb",
+      "name": "Áo phông basic",
       "phone": "0926630480",
-      "notes": "6yhgj",
-      "avatar": {},
-      "totalAppointments": 0,
-      "lastVisit": "2025-08-26T10:07:55.594Z",
-      "status": "active"
+      "role": "receptionist",
+      "serviceIds": [],
+      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Áo phông basic"
     }
   ],
   "services": [
@@ -83,40 +135,10 @@
       "status": "active"
     }
   ],
-  "staff": [
-    {
-      "id": "tech-1",
-      "name": "Nguyễn Thu An",
-      "email": "thuan@myspa.com",
-      "phone": "0911223344",
-      "role": "technician",
-      "status": "active",
-      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=tech-1",
-      "serviceIds": []
-    },
-    {
-      "id": "rec-1",
-      "name": "Phạm Kiều Trang",
-      "email": "kieutrang@myspa.com",
-      "phone": "0933445566",
-      "role": "receptionist",
-      "status": "inactive",
-      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=rec-1"
-    },
-    {
-      "id": "fbc7dddb-9628-4673-a827-860e6d119301",
-      "name": "Áo phông basic",
-      "email": "Tinvg2918@gmail.com",
-      "phone": "0926630480",
-      "role": "receptionist",
-      "status": "inactive",
-      "serviceIds": [],
-      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Áo phông basic"
-    }
-  ],
   "appointments": [
     {
       "id": "appt-1",
+      "customerId": "cus-1",
       "serviceId": "1",
       "technicianId": "tech-1",
       "date": "2025-08-28T10:00:00.000Z",
@@ -124,6 +146,7 @@
     },
     {
       "id": "appt-2",
+      "customerId": "cus-2",
       "serviceId": "2",
       "date": "2025-09-01T14:30:00.000Z",
       "status": "upcoming"

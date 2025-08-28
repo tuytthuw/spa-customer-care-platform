@@ -1,11 +1,9 @@
-// src/components/screens/auth/forgot-password-form.tsx
-
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,8 +23,9 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
-// Chúng ta sẽ tạo action này ở bước sau
-// import { sendPasswordResetOtp } from "@/actions/auth";
+// 1. Import action mới và toast
+import { sendPasswordResetOtp } from "@/services/authService";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -37,8 +36,6 @@ const formSchema = z.object({
 export function ForgotPasswordForm() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -47,21 +44,21 @@ export function ForgotPasswordForm() {
     },
   });
 
+  // 2. Cập nhật hàm onSubmit
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    setError(null);
-    setSuccess(null);
-
-    // Giả lập logic gửi OTP
     startTransition(() => {
-      console.log("Yêu cầu reset mật khẩu cho email:", values.email);
-      // Ở đây bạn sẽ gọi Server Action
-      // sendPasswordResetOtp(values.email).then(...)
-
-      setSuccess("Nếu email tồn tại, một mã OTP đã được gửi đến bạn.");
-      setTimeout(() => {
-        // Chuyển hướng đến trang OTP, kèm email và một "type" để phân biệt
-        router.push(`/auth/verify-otp?email=${values.email}&type=reset`);
-      }, 2000);
+      sendPasswordResetOtp(values.email).then((result) => {
+        if (result.error) {
+          toast.error(result.error);
+        }
+        if (result.success) {
+          toast.success(result.success);
+          // Sau khi thông báo, chuyển người dùng đến trang nhập OTP
+          setTimeout(() => {
+            router.push(`/auth/verify-otp?email=${values.email}&type=reset`);
+          }, 2000); // Đợi 2 giây để người dùng đọc thông báo
+        }
+      });
     });
   };
 
@@ -70,8 +67,7 @@ export function ForgotPasswordForm() {
       <CardHeader>
         <CardTitle>Quên mật khẩu</CardTitle>
         <CardDescription>
-          Đừng lo lắng. Hãy nhập email của bạn và chúng tôi sẽ gửi một mã OTP để
-          đặt lại mật khẩu.
+          Nhập email của bạn và chúng tôi sẽ gửi một mã OTP để đặt lại mật khẩu.
         </CardDescription>
       </CardHeader>
       <Form {...form}>
@@ -94,14 +90,6 @@ export function ForgotPasswordForm() {
                 </FormItem>
               )}
             />
-
-            {error && (
-              <p className="text-sm font-medium text-destructive">{error}</p>
-            )}
-            {success && (
-              <p className="text-sm font-medium text-emerald-500">{success}</p>
-            )}
-
             <Button type="submit" className="w-full" disabled={isPending}>
               {isPending ? "Đang gửi..." : "Gửi mã OTP"}
             </Button>
