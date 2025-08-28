@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { WorkSchedule } from "@/types/work-schedule";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
 
 interface ScheduleFormProps {
   initialData: WorkSchedule;
@@ -63,7 +64,7 @@ export default function ScheduleForm({ initialData }: ScheduleFormProps) {
       staffId: initialData.staffId,
       schedule: finalSchedule,
     });
-    alert("Cập nhật lịch làm việc thành công!");
+    toast.success("Cập nhật lịch làm việc thành công!");
   }
 
   return (

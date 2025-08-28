@@ -8,25 +8,24 @@ import {
   useEffect,
 } from "react";
 import { Permission } from "@/types/permissions";
-import { Staff } from "@/types/staff";
-import { mockRoles } from "@/lib/mock-data"; // <-- 1. THÊM IMPORT CÒN THIẾU
+import { mockRoles } from "@/lib/mock-data";
+import { User } from "@/types/user";
 
-export interface User extends Omit<Staff, "password" | "role"> {
+//AuthUser là User, cộng thêm permissions
+export type AuthUser = User & {
   permissions: Permission[];
-  role: "customer" | "receptionist" | "technician" | "manager";
-}
+};
 
-// 2. Sửa lại type của hàm login để nhất quán
 interface AuthContextType {
-  user: User | null;
-  login: (userData: Staff) => void; // Login sẽ nhận vào Staff data
+  user: AuthUser | null;
+  login: (userData: User) => void;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -34,7 +33,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         setUser(JSON.parse(storedUser));
       } catch (error) {
-        console.error("Failed to parse user from localStorage", error);
+        console.error(
+          "Không thể phân tích dữ liệu người dùng từ localStorage",
+          error
+        );
         localStorage.removeItem("user");
       }
     }
@@ -47,9 +49,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return rolePermissions ? rolePermissions.permissions : [];
   };
 
-  const login = (userData: Staff) => {
+  const login = (userData: User) => {
     const permissions = getPermissionsForRole(userData.role);
-    const userToStore: User = {
+    const userToStore: AuthUser = {
       ...userData,
       permissions,
     };
@@ -73,7 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error("useAuth phải được sử dụng bên trong một AuthProvider");
   }
   return context;
 }

@@ -1,5 +1,3 @@
-// src/components/screens/auth/reset-password-form.tsx
-
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,9 +22,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-// import { resetPassword } from "@/actions/auth";
+// 1. Import action thật từ authService và toast
+import { resetPassword } from "@/services/authService";
+import { toast } from "sonner";
 
-// Schema validation: yêu cầu 2 mật khẩu phải khớp nhau
+// Schema validation giữ nguyên
 const formSchema = z
   .object({
     password: z
@@ -36,18 +36,16 @@ const formSchema = z
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Mật khẩu xác nhận không khớp!",
-    path: ["confirmPassword"], // Hiển thị lỗi ở ô confirmPassword
+    path: ["confirmPassword"],
   });
 
 export function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const email = searchParams.get("email"); // Lấy email từ URL
-  const token = searchParams.get("token"); // Lấy token (mã OTP) từ URL
+  const email = searchParams.get("email");
+  const token = searchParams.get("token"); // Mã OTP từ URL
 
   const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -57,33 +55,32 @@ export function ResetPasswordForm() {
     },
   });
 
+  // 2. Cập nhật hàm onSubmit để gọi API
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    setError(null);
-    setSuccess(null);
+    if (!email || !token) {
+      toast.error("Yêu cầu không hợp lệ. Vui lòng thử lại từ đầu.");
+      return;
+    }
 
-    // Giả lập logic đặt lại mật khẩu
     startTransition(() => {
-      console.log(
-        "Đặt lại mật khẩu mới:",
-        values.password,
-        "cho email:",
+      resetPassword({
         email,
-        "với token:",
-        token
-      );
-      // Ở đây bạn sẽ gọi Server Action
-      // resetPassword({ email, token, newPassword: values.password }).then(...)
-
-      setSuccess(
-        "Đặt lại mật khẩu thành công! Bạn có thể đăng nhập ngay bây giờ."
-      );
-      setTimeout(() => {
-        router.push("/auth/login");
-      }, 2000);
+        token,
+        password: values.password,
+      }).then((result) => {
+        if (result.error) {
+          toast.error(result.error);
+        }
+        if (result.success) {
+          toast.success(result.success);
+          setTimeout(() => {
+            router.push("/auth/login");
+          }, 1500);
+        }
+      });
     });
   };
 
-  // Kiểm tra nếu không có email hoặc token thì không cho truy cập
   if (!email || !token) {
     return (
       <Card>
@@ -135,14 +132,6 @@ export function ResetPasswordForm() {
                 </FormItem>
               )}
             />
-
-            {error && (
-              <p className="text-sm font-medium text-destructive">{error}</p>
-            )}
-            {success && (
-              <p className="text-sm font-medium text-emerald-500">{success}</p>
-            )}
-
             <Button type="submit" className="w-full" disabled={isPending}>
               {isPending ? "Đang lưu..." : "Xác nhận"}
             </Button>

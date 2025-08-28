@@ -1,28 +1,19 @@
-// src/services/authService.ts
 "use server";
 
 import { z } from "zod";
-import { cookies } from "next/headers";
+import { User } from "@/types/user";
+import { Customer } from "@/types/customer";
 import crypto from "crypto";
-import { mockStaff, mockCustomers } from "@/lib/mock-data";
 
-// Định nghĩa lại User để bao gồm password và tất cả các vai trò
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: "ADMIN" | "CLIENT" | "technician" | "receptionist" | "manager";
-  password?: string;
-}
+const USERS_API_URL = "http://localhost:3001/users";
+const CUSTOMERS_API_URL = "http://localhost:3001/customers";
 
-// Kiểu trả về thống nhất cho các action
 type ActionResult = {
   success?: string;
   error?: string;
-  user?: Omit<User, "password">; // Trả về user không có mật khẩu
+  user?: Omit<User, "password"> & { role: string };
 };
 
-// Zod schema cho các form
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1),
@@ -34,107 +25,136 @@ const registerSchema = z.object({
   password: z.string().min(6),
 });
 
-// Giả lập cơ sở dữ liệu người dùng
-const mockUsers: User[] = [
-  {
-    id: "1",
-    name: "Admin",
-    email: "admin@gmail.com",
-    role: "ADMIN",
-    password: "password",
-  },
-  {
-    id: "2",
-    name: "Tuyet Thu",
-    email: "client@gmail.com",
-    role: "CLIENT",
-    password: "password",
-  },
-];
+const resetPasswordSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+  token: z.string().min(1), // Giả lập token OTP
+});
 
-// Action Đăng nhập (ĐÃ SỬA LỖI)
 export const login = async (
   values: z.infer<typeof loginSchema>
 ): Promise<ActionResult> => {
-  try {
-    const validatedFields = loginSchema.safeParse(values);
-    if (!validatedFields.success) {
-      return { error: "Dữ liệu không hợp lệ!" };
-    }
-    const { email, password } = validatedFields.data;
+  const { email, password } = values;
+  // 4. Chỉ cần tìm trong /users
+  const response = await fetch(
+    `${USERS_API_URL}?email=${email}&password=${password}`
+  );
+  const matchingUsers: User[] = await response.json();
 
-    // Gán vai trò cho khách hàng và gộp tất cả người dùng
-    const customersWithRole = mockCustomers.map((c) => ({
-      ...c,
-      role: "CLIENT" as const,
-    }));
-    const allUsers: User[] = [...mockUsers, ...mockStaff, ...customersWithRole];
-
-    // Kiểm tra thông tin đăng nhập
-    const user = allUsers.find(
-      (u) => u.email === email && u.password === password
-    );
-
-    if (!user) {
-      return { error: "Email hoặc mật khẩu không chính xác!" };
-    }
-
-    (cookies() as any).set("accessToken", "mock-access-token", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-    });
-
-    // Loại bỏ mật khẩu trước khi gửi về client
-    const { password: _, ...userWithoutPassword } = user;
-
-    return {
-      success: "Đăng nhập thành công!",
-      user: userWithoutPassword,
-    };
-  } catch (error) {
-    return { error: "Đã có lỗi xảy ra. Vui lòng thử lại." };
+  if (matchingUsers.length === 0) {
+    return { error: "Email hoặc mật khẩu không chính xác!" };
   }
+  if (matchingUsers[0].status === "inactive") {
+    return { error: "Tài khoản này đã bị vô hiệu hóa." };
+  }
+
+  const { password: _, ...userWithoutPassword } = matchingUsers[0];
+  return { success: "Đăng nhập thành công!", user: userWithoutPassword };
 };
 
-// Action Đăng ký
 export async function register(
   values: z.infer<typeof registerSchema>
 ): Promise<ActionResult> {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  const { name, email, password } = values;
 
-  const existingUser = mockUsers.find((user) => user.email === values.email);
-  if (existingUser) {
+  const userRes = await fetch(`${USERS_API_URL}?email=${email}`);
+  const existingUser = await userRes.json();
+  if (existingUser.length > 0) {
     return { error: "Email này đã được sử dụng." };
   }
 
-  const newUser: User = {
-    id: crypto.randomUUID(),
-    ...values,
-    role: "CLIENT",
+  // 1. Tạo bản ghi trong "users"
+  const newUserData: User = {
+    id: `user-${crypto.randomUUID()}`,
+    email,
+    password,
+    role: "customer",
+    status: "active",
   };
-  mockUsers.push(newUser);
+  const newUserResponse = await fetch(USERS_API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(newUserData),
+  });
+  if (!newUserResponse.ok) {
+    return { error: "Không thể tạo tài khoản người dùng." };
+  }
 
-  const { password: _, ...userWithoutPassword } = newUser;
+  // 2. Tạo bản ghi hồ sơ trong "customers"
+  const newCustomerProfile: Omit<Customer, "id"> = {
+    userId: newUserData.id,
+    name,
+    phone: "",
+    totalAppointments: 0,
+    lastVisit: new Date().toISOString(),
+  };
+  const newCustomerResponse = await fetch(CUSTOMERS_API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(newCustomerProfile),
+  });
+
+  if (!newCustomerResponse.ok) {
+    // Lý tưởng nhất là có một transaction để rollback việc tạo user
+    return { error: "Không thể tạo hồ sơ khách hàng." };
+  }
+
+  const { password: _, ...userWithoutPassword } = newUserData;
   return { success: "Đăng ký thành công!", user: userWithoutPassword };
 }
 
-// Action Đăng nhập bằng Google
-export async function loginWithGoogle(code: string): Promise<ActionResult> {
-  await new Promise((resolve) => setTimeout(resolve, 1500));
+export const resetPassword = async (
+  values: z.infer<typeof resetPasswordSchema>
+): Promise<ActionResult> => {
+  const validatedFields = resetPasswordSchema.safeParse(values);
+  if (!validatedFields.success) {
+    return { error: "Dữ liệu không hợp lệ!" };
+  }
+  const { email, password, token } = validatedFields.data;
 
-  if (code) {
-    const googleUser: User = {
-      id: crypto.randomUUID(),
-      name: "Google User",
-      email: "google.user@example.com",
-      role: "CLIENT",
-    };
-    return {
-      success: "Đăng nhập bằng Google thành công!",
-      user: googleUser,
-    };
+  if (token !== "123456") {
+    return { error: "Mã OTP không hợp lệ hoặc đã hết hạn." };
   }
 
-  return { error: "Authorization code không hợp lệ." };
-}
+  // Chỉ cần tìm người dùng trong /users
+  const response = await fetch(`${USERS_API_URL}?email=${email}`);
+  const matchingUsers: User[] = await response.json();
+
+  if (matchingUsers.length === 0) {
+    return { error: "Không tìm thấy tài khoản với email này." };
+  }
+
+  const userToUpdate = matchingUsers[0];
+  const updateResponse = await fetch(`${USERS_API_URL}/${userToUpdate.id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password: password }),
+  });
+
+  if (!updateResponse.ok) {
+    return { error: "Không thể cập nhật mật khẩu." };
+  }
+
+  return { success: "Mật khẩu của bạn đã được cập nhật thành công!" };
+};
+
+export const sendPasswordResetOtp = async (
+  email: string
+): Promise<{ success?: string; error?: string }> => {
+  if (!email) {
+    return { error: "Email không được để trống." };
+  }
+
+  // Chỉ cần kiểm tra email trong /users
+  const response = await fetch(`${USERS_API_URL}?email=${email}`);
+  const matchingUsers = await response.json();
+
+  if (matchingUsers.length > 0) {
+    console.log(`Giả lập gửi OTP đến email: ${email}`);
+  }
+
+  return {
+    success:
+      "Nếu email của bạn tồn tại trong hệ thống, một mã OTP đã được gửi.",
+  };
+};
