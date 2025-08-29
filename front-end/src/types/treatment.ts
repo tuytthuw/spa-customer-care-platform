@@ -9,6 +9,7 @@ export interface TreatmentSession {
 export interface TreatmentPackage {
   id: string;
   customerId: string;
+  treatmentPlanId: string;
   serviceId: string;
   totalSessions: number;
   completedSessions: number;

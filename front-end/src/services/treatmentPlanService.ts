@@ -1,10 +1,11 @@
 // src/services/treatmentPlanService.ts
 import { TreatmentPlan } from "@/types/treatmentPlan";
+import { TreatmentPackage } from "@/types/treatment";
 import { v4 as uuidv4 } from "uuid";
 
 const PLANS_API_URL = "http://localhost:3001/treatmentPlans";
+const CUSTOMER_TREATMENTS_API_URL = "http://localhost:3001/customerTreatments";
 
-// Lấy danh sách liệu trình
 export const getTreatmentPlans = async (): Promise<TreatmentPlan[]> => {
   try {
     const response = await fetch(PLANS_API_URL, { cache: "no-store" });
@@ -16,26 +17,39 @@ export const getTreatmentPlans = async (): Promise<TreatmentPlan[]> => {
   }
 };
 
+export const getCustomerTreatments = async (): Promise<TreatmentPackage[]> => {
+  try {
+    const response = await fetch(CUSTOMER_TREATMENTS_API_URL, {
+      cache: "no-store",
+    });
+    if (!response.ok) throw new Error("Failed to fetch customer treatments.");
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching customer treatments:", error);
+    return [];
+  }
+};
+
 interface PlanData {
   name: string;
   description?: string;
   price: number;
   totalSessions: number;
-  imageFile?: any;
+  imageFile?: File;
 }
 
-// Thêm liệu trình mới
 export const addTreatmentPlan = async (
   newPlanData: PlanData
 ): Promise<TreatmentPlan> => {
-  const { imageFile, ...dataToSave } = newPlanData;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { imageFile, ...dataToSave } = newPlanData; // Báo ESLint bỏ qua cảnh báo
   const response = await fetch(PLANS_API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       id: uuidv4(),
       ...dataToSave,
-      status: "active", // Thêm trạng thái mặc định
+      status: "active",
       serviceIds: [],
       imageUrl: `/images/service-${Math.floor(Math.random() * 3) + 1}.jpg`,
     }),
@@ -44,12 +58,12 @@ export const addTreatmentPlan = async (
   return response.json();
 };
 
-// Cập nhật liệu trình
 export const updateTreatmentPlan = async (
   planId: string,
   dataToUpdate: PlanData
 ): Promise<TreatmentPlan> => {
-  const { imageFile, ...data } = dataToUpdate;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { imageFile, ...data } = dataToUpdate; // Báo ESLint bỏ qua cảnh báo
   const response = await fetch(`${PLANS_API_URL}/${planId}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
@@ -59,7 +73,6 @@ export const updateTreatmentPlan = async (
   return response.json();
 };
 
-// Cập nhật trạng thái liệu trình
 export const updateTreatmentPlanStatus = async (
   planId: string,
   newStatus: "active" | "inactive"

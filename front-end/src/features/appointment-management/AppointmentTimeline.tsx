@@ -2,23 +2,26 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Check, MoreVertical } from "lucide-react";
-import { mockAppointments, mockCustomers, mockServices } from "@/lib/mock-data";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Appointment, AppointmentStatus } from "@/types/appointment";
+import { Customer } from "@/types/customer";
+import { Service } from "@/types/service";
 import { cn } from "@/lib/utils";
 
 interface AppointmentTimelineProps {
   appointments: Appointment[];
-  selectedAppointmentId?: string;
+  customers: Customer[];
+  services: Service[];
+  selectedAppointmentId?: string | null;
   onSelectAppointment: (appointment: Appointment) => void;
-  onStatusChange: (id: string, status: AppointmentStatus) => void;
 }
 
 export const AppointmentTimeline = ({
   appointments,
+  customers,
+  services,
   selectedAppointmentId,
   onSelectAppointment,
-  onStatusChange,
 }: AppointmentTimelineProps) => {
   const timeSlots = [
     "9:00",
@@ -33,48 +36,54 @@ export const AppointmentTimeline = ({
     "18:00",
     "19:00",
     "20:00",
-    "21:00",
-    "22:00",
   ];
-  const getStatusTextAndColor = (status: AppointmentStatus) => {
+
+  const getStatusInfo = (status: AppointmentStatus) => {
     switch (status) {
       case "upcoming":
-        return { text: "Chờ", color: "border-yellow-500" };
+        return {
+          text: "Sắp tới",
+          className:
+            "border-[var(--status-warning)] bg-[color-mix(in_oklab,var(--status-warning),transparent_90%)]",
+        };
       case "checked-in":
-        return { text: "Đã đến", color: "border-primary" };
+        return {
+          text: "Đã check-in",
+          className:
+            "border-[var(--status-info)] bg-[color-mix(in_oklab,var(--status-info),transparent_90%)]",
+        };
       case "in-progress":
-        return { text: "Đang làm", color: "border-blue-500" };
+        return {
+          text: "Đang làm",
+          className:
+            "border-[var(--status-processing)] bg-[color-mix(in_oklab,var(--status-processing),transparent_90%)]",
+        };
       case "completed":
-        return { text: "Hoàn thành", color: "border-green-500" };
+        return {
+          text: "Hoàn thành",
+          className:
+            "border-[var(--status-success)] bg-[color-mix(in_oklab,var(--status-success),transparent_90%)]",
+        };
+      case "cancelled":
+        return {
+          text: "Đã hủy",
+          className:
+            "border-[var(--destructive)] bg-[color-mix(in_oklab,var(--destructive),transparent_90%)]",
+        };
       default:
-        return { text: "Đã hủy", color: "border-destructive" };
+        return { text: "Không xác định", className: "border-border bg-muted" };
     }
   };
 
   return (
     <div className="flex-1 p-6 overflow-auto">
       <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center">
-          <h2 className="text-2xl mr-4 font-bold">Lịch hẹn</h2>
-          <div className="flex border border-border rounded-md">
-            <Button
-              variant="default"
-              className="rounded-r-none bg-primary text-primary-foreground"
-            >
-              Ngày
-            </Button>
-            <Button variant="ghost" className="rounded-l-none">
-              Tuần
-            </Button>
-          </div>
-        </div>
+        <h2 className="text-2xl mr-4 font-bold">Lịch hẹn trong ngày</h2>
         <div className="flex items-center">
           <Button variant="outline" size="icon" className="mr-2">
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <Button className="bg-primary text-primary-foreground">
-            Hôm nay
-          </Button>
+          <Button>Hôm nay</Button>
           <Button variant="outline" size="icon" className="ml-2">
             <ChevronRight className="h-4 w-4" />
           </Button>
@@ -87,56 +96,48 @@ export const AppointmentTimeline = ({
             key={time}
             className="grid grid-cols-12 items-start min-h-[6rem]"
           >
-            <div className="col-span-1 text-muted-foreground pt-1">{time}</div>
-            <div className="col-span-11 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 h-full border-t border-border pt-4">
-              {mockAppointments
+            <div className="col-span-1 text-muted-foreground pt-3">{time}</div>
+            <div className="col-span-11 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 h-full border-t border-border pt-4 -ml-4 pl-4">
+              {appointments
                 .filter((a) => new Date(a.date).getHours() === parseInt(time))
                 .map((app) => {
-                  const customer = mockCustomers.find((c) =>
-                    c.id.startsWith("cus-")
+                  const customer = customers.find(
+                    (c) => c.id === app.customerId
                   );
-                  const service = mockServices.find(
-                    (s) => s.id === app.serviceId
-                  );
+                  const service = services.find((s) => s.id === app.serviceId);
+                  const statusInfo = getStatusInfo(app.status);
+                  const isSelected = app.id === selectedAppointmentId;
+
+                  if (!customer || !service) return null; // Bỏ qua nếu không tìm thấy thông tin
+
                   return (
-                    <div
+                    <button
                       key={app.id}
-                      className="bg-muted rounded p-3 border-l-4 border-primary"
+                      onClick={() => onSelectAppointment(app)}
+                      className={cn(
+                        "text-left rounded-lg p-3 border-l-4 transition-all hover:shadow-md",
+                        statusInfo.className,
+                        isSelected ? "ring-2 ring-primary shadow-lg" : "bg-card"
+                      )}
                     >
                       <div className="flex justify-between mb-1">
-                        <span className="font-semibold">{customer?.name}</span>
-                        <span className="text-xs bg-card text-foreground px-2 py-0.5 rounded-full">
-                          {app.status === "upcoming" ? "Chờ" : "Check-in"}
+                        <span className="font-semibold text-sm">
+                          {customer.name}
+                        </span>
+                        <span className="text-xs bg-white/50 text-foreground px-2 py-0.5 rounded-full">
+                          {statusInfo.text}
                         </span>
                       </div>
-                      <p className="text-sm text-muted-foreground">
-                        {service?.name} ({service?.duration} phút)
+                      <p className="text-xs text-muted-foreground">
+                        {service.name}
                       </p>
-                      <div className="flex justify-between items-center mt-2">
-                        <span className="text-sm text-muted-foreground">
-                          {new Date(app.date).toLocaleTimeString("vi-VN", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </span>
-                        <div>
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            className="text-xs h-auto px-2 py-1 mr-1"
-                          >
-                            <Check className="mr-1 h-3 w-3" /> Check-in
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-6 w-6"
-                          >
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
+                      <p className="text-xs text-muted-foreground mt-2 font-medium">
+                        {new Date(app.date).toLocaleTimeString("vi-VN", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </p>
+                    </button>
                   );
                 })}
             </div>

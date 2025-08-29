@@ -1,5 +1,5 @@
 import { TreatmentSession } from "@/types/treatment";
-import { mockStaff } from "@/lib/mock-data";
+import { Staff } from "@/types/staff";
 import {
   Table,
   TableBody,
@@ -12,24 +12,29 @@ import { Badge } from "@/components/ui/badge";
 
 interface SessionHistoryProps {
   sessions: TreatmentSession[];
+  staffList: Staff[];
 }
 
-const SessionHistory = ({ sessions }: SessionHistoryProps) => {
+export default function SessionHistory({
+  sessions,
+  staffList,
+}: SessionHistoryProps) {
   return (
     <div>
-      <h4 className="text-lg font-semibold mb-2">Lịch sử liệu trình</h4>
+      <h4 className="text-lg font-semibold mb-2">Lịch sử các buổi</h4>
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead>Buổi</TableHead>
             <TableHead>Ngày thực hiện</TableHead>
             <TableHead>Kỹ thuật viên</TableHead>
+            <TableHead>Ghi chú</TableHead>
             <TableHead>Trạng thái</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {sessions.map((session, index) => {
-            const technician = mockStaff.find(
+            const technician = staffList.find(
               (s) => s.id === session.technicianId
             );
             return (
@@ -39,6 +44,9 @@ const SessionHistory = ({ sessions }: SessionHistoryProps) => {
                   {new Date(session.date).toLocaleDateString("vi-VN")}
                 </TableCell>
                 <TableCell>{technician?.name || "N/A"}</TableCell>
+                <TableCell className="text-sm italic text-muted-foreground">
+                  {session.notes || "Không có"}
+                </TableCell>
                 <TableCell>
                   <Badge
                     variant={
@@ -55,6 +63,4 @@ const SessionHistory = ({ sessions }: SessionHistoryProps) => {
       </Table>
     </div>
   );
-};
-
-export default SessionHistory;
+}
