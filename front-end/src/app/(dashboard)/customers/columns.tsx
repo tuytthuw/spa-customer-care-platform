@@ -2,6 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Customer } from "@/types/customer";
+import { FullCustomerProfile } from "@/services/customerService";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -25,11 +26,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
-// 1. Cập nhật props để nhận thêm hàm onEdit
 interface GetColumnsProps {
   onUpdateStatus: (
-    customerId: string,
+    userId: string, // Cập nhật để truyền userId thay vì customerId cho status
     newStatus: "active" | "inactive"
   ) => void;
   onEdit: (customer: Customer) => void;
@@ -38,10 +39,21 @@ interface GetColumnsProps {
 export const columns = ({
   onUpdateStatus,
   onEdit,
-}: GetColumnsProps): ColumnDef<Customer>[] => [
+}: GetColumnsProps): ColumnDef<FullCustomerProfile>[] => [
   {
     accessorKey: "name",
     header: "Họ và tên",
+    cell: ({ row }) => {
+      const customer = row.original;
+      return (
+        <Link
+          href={`/customers/${customer.id}`}
+          className="font-medium text-primary hover:underline"
+        >
+          {customer.name}
+        </Link>
+      );
+    },
   },
   {
     accessorKey: "email",
@@ -88,7 +100,6 @@ export const columns = ({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-              {/* 2. Thêm sự kiện onClick cho nút Chỉnh sửa */}
               <DropdownMenuItem onClick={() => onEdit(customer)}>
                 Chỉnh sửa
               </DropdownMenuItem>
@@ -111,8 +122,8 @@ export const columns = ({
             <AlertDialogHeader>
               <AlertDialogTitle>Bạn có chắc chắn?</AlertDialogTitle>
               <AlertDialogDescription>
-                Hành động này sẽ thay đổi trạng thái của khách hàng
-                <span className="font-medium"> {customer.name}</span>.
+                Hành động này sẽ thay đổi trạng thái tài khoản của khách hàng{" "}
+                <span className="font-medium">{customer.name}</span>.
                 {isInactive
                   ? " Khách hàng này sẽ có thể đăng nhập và đặt lịch trở lại."
                   : " Khách hàng này sẽ không thể đăng nhập hoặc đặt lịch mới."}
@@ -123,7 +134,7 @@ export const columns = ({
               <AlertDialogAction
                 onClick={() =>
                   onUpdateStatus(
-                    customer.id,
+                    customer.userId, // Truyền userId để cập nhật đúng user
                     isInactive ? "active" : "inactive"
                   )
                 }

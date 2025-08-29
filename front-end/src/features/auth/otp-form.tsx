@@ -138,7 +138,7 @@ export function OtpForm() {
               </p>
             )}
             {success && (
-              <p className="text-sm font-medium text-emerald-500 text-center">
+              <p className="text-sm font-medium text-[var(--status-success)] text-center">
                 {success}
               </p>
             )}

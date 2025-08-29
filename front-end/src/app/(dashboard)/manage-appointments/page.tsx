@@ -1,51 +1,106 @@
 "use client";
 
 import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StatisticsSidebar } from "@/features/appointment-management/StatisticsSidebar";
 import { AppointmentTimeline } from "@/features/appointment-management/AppointmentTimeline";
 import { AppointmentDetails } from "@/features/appointment-management/AppointmentDetails";
-import { mockAppointments as initialAppointments } from "@/lib/mock-data";
 import { Appointment, AppointmentStatus } from "@/types/appointment";
+import { Customer } from "@/types/customer";
+import { Service } from "@/types/service";
+import { Staff } from "@/types/staff";
+import {
+  getAppointments,
+  updateAppointmentStatus,
+} from "@/services/appointmentService";
+import { getCustomers } from "@/services/customerService";
+import { getServices } from "@/services/serviceService";
+import { getStaff } from "@/services/staffService";
+import { toast } from "sonner";
 
 export default function AppointmentsManagementPage() {
-  // --- Quản lý state tập trung tại đây ---
-  const [appointments, setAppointments] =
-    useState<Appointment[]>(initialAppointments);
-  const [selectedAppointment, setSelectedAppointment] =
-    useState<Appointment | null>(initialAppointments[0] || null);
+  const queryClient = useQueryClient();
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState<
+    string | null
+  >(null);
 
-  // --- Hàm xử lý cập nhật trạng thái ---
+  // --- Fetch tất cả dữ liệu cần thiết từ API ---
+  const { data: appointments = [], isLoading: loadingAppointments } = useQuery<
+    Appointment[]
+  >({
+    queryKey: ["appointments"],
+    queryFn: getAppointments,
+  });
+
+  const { data: customers = [], isLoading: loadingCustomers } = useQuery<
+    Customer[]
+  >({
+    queryKey: ["customers"],
+    queryFn: getCustomers,
+  });
+
+  const { data: services = [], isLoading: loadingServices } = useQuery<
+    Service[]
+  >({
+    queryKey: ["services"],
+    queryFn: getServices,
+  });
+
+  const { data: staff = [], isLoading: loadingStaff } = useQuery<Staff[]>({
+    queryKey: ["staff"],
+    queryFn: getStaff,
+  });
+
+  // --- Mutation để cập nhật trạng thái ---
+  const updateStatusMutation = useMutation({
+    mutationFn: ({
+      id,
+      newStatus,
+    }: {
+      id: string;
+      newStatus: AppointmentStatus;
+    }) => updateAppointmentStatus(id, newStatus),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+      toast.success("Cập nhật trạng thái thành công!");
+    },
+    onError: (error) => {
+      toast.error(`Cập nhật thất bại: ${error.message}`);
+    },
+  });
+
   const handleStatusChange = (id: string, newStatus: AppointmentStatus) => {
-    console.log(`Updating appointment ${id} to ${newStatus}`);
-    setAppointments((currentApps) =>
-      currentApps.map((app) =>
-        app.id === id ? { ...app, status: newStatus } : app
-      )
-    );
-    // Cập nhật cả lịch hẹn đang được chọn nếu nó trùng khớp
-    if (selectedAppointment?.id === id) {
-      setSelectedAppointment((prev) =>
-        prev ? { ...prev, status: newStatus } : null
-      );
-    }
+    updateStatusMutation.mutate({ id, newStatus });
   };
 
-  // --- Hàm chọn lịch hẹn để xem chi tiết ---
-  const handleSelectAppointment = (appointment: Appointment) => {
-    setSelectedAppointment(appointment);
-  };
+  const selectedAppointment =
+    appointments.find((app) => app.id === selectedAppointmentId) || null;
+
+  // Xử lý trạng thái loading chung
+  if (
+    loadingAppointments ||
+    loadingCustomers ||
+    loadingServices ||
+    loadingStaff
+  ) {
+    return <div className="p-8">Đang tải dữ liệu trang quản lý...</div>;
+  }
+
   return (
-    <div className="flex h-full">
-      {/* Truyền dữ liệu và hàm xử lý xuống các component con */}
-      <StatisticsSidebar appointments={appointments} />
+    <div className="flex h-full bg-muted/30">
+      <StatisticsSidebar appointments={appointments} staff={staff} />
       <AppointmentTimeline
         appointments={appointments}
-        onSelectAppointment={handleSelectAppointment}
-        onStatusChange={handleStatusChange}
-        selectedAppointmentId={selectedAppointment?.id}
+        customers={customers}
+        services={services}
+        onSelectAppointment={(app) => setSelectedAppointmentId(app.id)}
+        selectedAppointmentId={selectedAppointmentId}
       />
       <AppointmentDetails
         appointment={selectedAppointment}
+        customers={customers}
+        services={services}
+        staff={staff}
         onStatusChange={handleStatusChange}
       />
     </div>

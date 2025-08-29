@@ -2,110 +2,120 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { mockCustomers, mockServices, mockStaff } from "@/lib/mock-data";
 import Image from "next/image";
-import { Textarea } from "@/components/ui/textarea";
-import { Appointment, AppointmentStatus } from "@/types/appointment"; // Import types
-import Link from "next/link"; // Import Link
+import { Appointment, AppointmentStatus } from "@/types/appointment";
+import { Customer } from "@/types/customer";
+import { Service } from "@/types/service";
+import { Staff } from "@/types/staff";
+import Link from "next/link";
+import { Separator } from "@/components/ui/separator";
 
-// Component nhận props từ cha
 interface AppointmentDetailsProps {
   appointment: Appointment | null;
+  customers: Customer[];
+  services: Service[];
+  staff: Staff[];
   onStatusChange: (id: string, status: AppointmentStatus) => void;
 }
 
 export const AppointmentDetails = ({
   appointment,
+  customers,
+  services,
+  staff,
   onStatusChange,
 }: AppointmentDetailsProps) => {
-  // Nếu không có lịch hẹn nào được chọn, hiển thị thông báo
   if (!appointment) {
     return (
-      <div className="w-80 bg-card border-l border-border p-4 flex items-center justify-center">
-        <p className="text-muted-foreground">
+      <div className="w-96 bg-card border-l border-border p-4 flex items-center justify-center">
+        <p className="text-muted-foreground text-center">
           Chọn một lịch hẹn để xem chi tiết
         </p>
       </div>
     );
   }
 
-  // Lấy dữ liệu dựa trên appointment được truyền vào
-  const customer = mockCustomers[0];
-  const service = mockServices.find((s) => s.id === appointment.serviceId);
-  const staff = mockStaff[0];
+  const customer = customers.find((c) => c.id === appointment.customerId);
+  const service = services.find((s) => s.id === appointment.serviceId);
+  const technician = staff.find((t) => t.id === appointment.technicianId);
+
+  if (!customer || !service) {
+    return (
+      <div className="w-96 bg-card border-l border-border p-4 flex items-center justify-center">
+        <p className="text-destructive text-center">
+          Lỗi: Không tìm thấy thông tin khách hàng hoặc dịch vụ.
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div className="w-80 bg-card border-l border-border p-4 overflow-auto">
-      <h3 className="text-lg font-semibold mb-4">Chi tiết lịch hẹn</h3>
+    <div className="w-96 bg-card border-l border-border p-6 flex flex-col">
+      <h3 className="text-xl font-bold mb-4">Chi tiết lịch hẹn</h3>
+
       <div className="flex items-center mb-4">
         <Image
-          src={`https://api.dicebear.com/7.x/notionists/svg?seed=${customer.id}`}
+          src={
+            customer.avatar ||
+            `https://api.dicebear.com/7.x/notionists/svg?seed=${customer.id}`
+          }
           alt="Avatar"
           width={48}
           height={48}
           className="w-12 h-12 rounded-full mr-3"
         />
         <div>
-          <h4>{customer.name}</h4>
+          <h4 className="font-semibold">{customer.name}</h4>
           <p className="text-sm text-muted-foreground">
-            Khách hàng thường xuyên
+            Lịch sử: {customer.totalAppointments} lần
           </p>
         </div>
       </div>
 
-      <div className="space-y-4 mb-6">
+      <Separator className="my-4" />
+
+      <div className="space-y-4 mb-6 flex-grow">
         <div>
           <p className="text-sm text-muted-foreground">Dịch vụ</p>
-          <p>
-            {service?.name} ({service?.duration} phút)
+          <p className="font-medium">
+            {service.name} ({service.duration} phút)
           </p>
         </div>
         <div>
           <p className="text-sm text-muted-foreground">Thời gian</p>
-          <p>
+          <p className="font-medium">
             {new Date(appointment.date).toLocaleString("vi-VN", {
-              dateStyle: "short",
-              timeStyle: "short",
-            })}
+              hour: "2-digit",
+              minute: "2-digit",
+            })}{" "}
+            - {new Date(appointment.date).toLocaleDateString("vi-VN")}
           </p>
         </div>
-        <div>
-          <p className="text-sm text-muted-foreground">Nhân viên phục vụ</p>
-          <div className="flex items-center">
-            <Image
-              src={`https://api.dicebear.com/7.x/notionists/svg?seed=${staff.id}`}
-              alt="Avatar"
-              width={24}
-              height={24}
-              className="w-6 h-6 rounded-full mr-2"
-            />
-            <span>{staff.name}</span>
+        {technician && (
+          <div>
+            <p className="text-sm text-muted-foreground">Nhân viên phục vụ</p>
+            <p className="font-medium">{technician.name}</p>
           </div>
-        </div>
+        )}
         <div>
           <p className="text-sm text-muted-foreground">Trạng thái</p>
-          <p>
-            <span className="inline-block bg-muted text-muted-foreground px-2 py-0.5 rounded-full text-xs capitalize">
-              {appointment.status.replace("-", " ")}
-            </span>
+          <p className="font-medium capitalize">
+            {appointment.status.replace("-", " ")}
           </p>
         </div>
         <div>
-          <p className="text-sm text-muted-foreground">Giá dịch vụ</p>
-          <p>
-            {new Intl.NumberFormat("vi-VN").format(service?.price || 0)} VNĐ
-          </p>
+          <p className="text-sm text-muted-foreground">Ghi chú của khách</p>
+          <p className="text-sm italic">&quot;Không có ghi chú.&quot;</p>
         </div>
       </div>
 
-      {/* Logic hiển thị nút bấm dựa trên trạng thái */}
-      <div className="space-y-2 mb-6">
+      <div className="space-y-2 mt-auto">
         {appointment.status === "upcoming" && (
           <Button
             className="w-full"
             onClick={() => onStatusChange(appointment.id, "checked-in")}
           >
-            Check-in
+            Check-in cho khách
           </Button>
         )}
         {appointment.status === "checked-in" && (
@@ -116,9 +126,8 @@ export const AppointmentDetails = ({
             Bắt đầu thực hiện
           </Button>
         )}
-        {["checked-in", "in-progress"].includes(appointment.status) && (
+        {appointment.status === "in-progress" && (
           <Button
-            variant="secondary"
             className="w-full"
             onClick={() => onStatusChange(appointment.id, "completed")}
           >
@@ -126,28 +135,19 @@ export const AppointmentDetails = ({
           </Button>
         )}
         {appointment.status === "completed" && (
-          <Link href={`/dashboard/billing/${appointment.id}`} passHref>
-            <Button className="w-full">Đi đến thanh toán</Button>
-          </Link>
+          <Button asChild className="w-full">
+            <Link href={`/billing/${appointment.id}`}>Đi đến thanh toán</Link>
+          </Button>
         )}
-        <Button variant="outline" className="w-full">
-          Đổi lịch hẹn
-        </Button>
-        <Button
-          variant="destructive"
-          className="w-full"
-          onClick={() => onStatusChange(appointment.id, "cancelled")}
-        >
-          Hủy lịch hẹn
-        </Button>
-      </div>
-
-      <div>
-        <h4 className="mb-2 font-semibold">Ghi chú</h4>
-        <Textarea
-          className="w-full"
-          placeholder="Thêm ghi chú về khách hàng..."
-        />
+        {["upcoming", "checked-in"].includes(appointment.status) && (
+          <Button
+            variant="destructive"
+            className="w-full"
+            onClick={() => onStatusChange(appointment.id, "cancelled")}
+          >
+            Báo hủy
+          </Button>
+        )}
       </div>
     </div>
   );

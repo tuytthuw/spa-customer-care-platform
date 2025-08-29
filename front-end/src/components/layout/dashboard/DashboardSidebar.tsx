@@ -19,6 +19,8 @@ import {
   Inbox,
   UserCog,
   ShoppingBag,
+  Building,
+  ClipboardCheck,
 } from "lucide-react";
 
 // Định nghĩa cấu trúc của một link điều hướng
@@ -86,6 +88,16 @@ const managerLinks: NavLink[] = [
     href: "/work-schedule-management",
     label: "Quản lý Lịch làm việc",
     icon: Settings,
+  },
+  {
+    href: "/manage-resources",
+    label: "Quản lý Tài nguyên",
+    icon: Building,
+  },
+  {
+    href: "/resource-schedule",
+    label: "Lịch trình Tài nguyên",
+    icon: ClipboardCheck,
   },
 ];
 

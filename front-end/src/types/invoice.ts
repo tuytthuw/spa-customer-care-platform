@@ -1,12 +1,9 @@
-import { Appointment } from "./appointment";
-import { Product } from "./product";
-
 export interface InvoiceItem {
   id: string;
   name: string;
   quantity: number;
   price: number;
-  type: "service" | "product";
+  type: "service" | "product" | "treatment";
 }
 
 export interface Invoice {

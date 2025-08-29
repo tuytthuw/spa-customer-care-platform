@@ -82,6 +82,9 @@
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.55 0.13 195);
+
+  --receipt-width: 80mm; /* đổi 72–90mm tùy máy in khổ K80/K57 */
+  --receipt-font-size: 12px; /* cỡ chữ khi in */
 }
 
 .dark {
@@ -129,5 +132,35 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* CSS for printing */
+@media print {
+  /* Ẩn tất cả mọi thứ trên trang */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Chỉ hiển thị component hóa đơn và nội dung của nó */
+  .printable-receipt,
+  .printable-receipt * {
+    visibility: visible;
+  }
+
+  /* Đặt hóa đơn ở góc trên cùng bên trái của trang in, khống chế bề ngang bằng biến */
+  .printable-receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: var(--receipt-width);
+    font-size: var(--receipt-font-size);
+    line-height: 1.35;
+  }
+
+  /* Tùy chọn: khổ giấy cho máy in nhiệt, nếu cần */
+  @page {
+    size: var(--receipt-width) auto;
+    margin: 0;
   }
 }

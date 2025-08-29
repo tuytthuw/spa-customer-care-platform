@@ -1,0 +1,79 @@
+"use client";
+
+import { useParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { Customer } from "@/types/customer";
+import { Appointment } from "@/types/appointment";
+import { getCustomers, FullCustomerProfile } from "@/services/customerService";
+import { getAppointments } from "@/services/appointmentService";
+import { CustomerProfileCard } from "@/features/customer/CustomerProfileCard";
+import { AppointmentHistory } from "@/features/customer/AppointmentHistory";
+import { Service } from "@/types/service";
+import { getServices } from "@/services/serviceService";
+import { Staff } from "@/types/staff";
+import { getStaff } from "@/services/staffService";
+
+export default function CustomerDetailPage() {
+  const params = useParams();
+  const customerId = params.customerId as string;
+
+  // Fetch dữ liệu cho khách hàng cụ thể và các dữ liệu liên quan
+  const { data: customers = [], isLoading: loadingCustomers } = useQuery<
+    FullCustomerProfile[]
+  >({
+    queryKey: ["customers"],
+    queryFn: getCustomers,
+  });
+
+  const { data: appointments = [], isLoading: loadingAppointments } = useQuery<
+    Appointment[]
+  >({
+    queryKey: ["appointments"],
+    queryFn: getAppointments,
+  });
+
+  const { data: services = [], isLoading: loadingServices } = useQuery<
+    Service[]
+  >({
+    queryKey: ["services"],
+    queryFn: getServices,
+  });
+
+  const { data: staff = [], isLoading: loadingStaff } = useQuery<Staff[]>({
+    queryKey: ["staff"],
+    queryFn: getStaff,
+  });
+
+  const isLoading =
+    loadingCustomers || loadingAppointments || loadingServices || loadingStaff;
+
+  if (isLoading) {
+    return <div className="p-8">Đang tải hồ sơ khách hàng...</div>;
+  }
+
+  const customer = customers.find((c) => c.id === customerId);
+  const customerAppointments = appointments.filter(
+    (app) => app.customerId === customerId
+  );
+
+  if (!customer) {
+    return <div className="p-8">Không tìm thấy khách hàng.</div>;
+  }
+
+  return (
+    <div className="container mx-auto p-4 md:p-6 lg:p-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-1">
+          <CustomerProfileCard customer={customer} />
+        </div>
+        <div className="lg:col-span-2">
+          <AppointmentHistory
+            appointments={customerAppointments}
+            services={services}
+            staff={staff}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
