@@ -2,8 +2,8 @@
 
 import React from "react";
 import Image from "next/image";
-import { Appointment } from "@/types/appointment";
-import { Staff } from "@/types/staff"; // Import Staff type
+import { Appointment } from "@/features/appointment/types";
+import { Staff } from "@/features/staff/types"; // Import Staff type
 
 interface StatisticsSidebarProps {
   appointments: Appointment[];

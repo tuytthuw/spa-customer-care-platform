@@ -1,9 +1,9 @@
 "use client";
 
-import { Resource } from "@/types/resource";
-import { Appointment } from "@/types/appointment";
+import { Resource } from "@/features/resource/types";
+import { Appointment } from "@/features/appointment/types";
 import { FullCustomerProfile } from "@/features/customer/api/customer.api";
-import { Staff } from "@/types/staff";
+import { Staff } from "@/features/staff/types";
 import { FullCalendarUI } from "@/components/ui/full-calendar";
 
 interface ResourceCalendarProps {

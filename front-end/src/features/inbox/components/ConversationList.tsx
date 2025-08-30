@@ -1,4 +1,4 @@
-import { Conversation } from "@/types/conversation";
+import { Conversation } from "@/features/inbox/types";
 import { mockCustomers } from "@/lib/mock-data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";

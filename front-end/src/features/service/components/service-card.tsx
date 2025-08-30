@@ -1,5 +1,5 @@
 // src/components/screens/services/service-card.tsx
-import { Service } from "@/types/service";
+import { Service } from "@/features/service/types";
 import {
   Card,
   CardContent,

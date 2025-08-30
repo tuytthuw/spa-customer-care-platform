@@ -1,4 +1,4 @@
-import { Appointment } from "@/types/appointment";
+import { Appointment } from "@/features/appointment/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";

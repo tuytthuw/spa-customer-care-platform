@@ -1,5 +1,5 @@
 // src/services/userService.ts
-import { User } from "@/types/user";
+import { User } from "@/features/user/types";
 
 const USERS_API_URL = "http://localhost:3001/users";
 

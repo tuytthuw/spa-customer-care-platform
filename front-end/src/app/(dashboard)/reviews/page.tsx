@@ -5,8 +5,8 @@ import { mockAppointments, mockTreatmentPackages } from "@/lib/mock-data";
 import ReviewCard from "@/features/review/components/ServiceReviewCard";
 import ReviewModal from "@/features/review/components/ReviewModal";
 import TreatmentReviewCard from "@/features/review/components/TreatmentReviewCard"; // Import component mới
-import { Appointment } from "@/types/appointment";
-import { TreatmentPackage } from "@/types/treatment";
+import { Appointment } from "@/features/appointment/types";
+import { TreatmentPackage } from "@/features/treatment/types";
 
 const ReviewsPage = () => {
   // Dùng state chung cho cả 2 loại

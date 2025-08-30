@@ -9,7 +9,7 @@ import {
 } from "react";
 import { Permission } from "@/types/permissions";
 import { mockRoles } from "@/lib/mock-data";
-import { User } from "@/types/user";
+import { User } from "@/features/user/types";
 
 //AuthUser là User, cộng thêm permissions
 export type AuthUser = User & {

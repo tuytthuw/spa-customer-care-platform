@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { mockConversations } from "@/lib/mock-data";
-import { Conversation } from "@/types/conversation";
+import { Conversation } from "@/features/inbox/types";
 import ConversationList from "@/features/inbox/components/ConversationList";
 import ChatPanel from "@/features/inbox/components/ChatPanel";
 

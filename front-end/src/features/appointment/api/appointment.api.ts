@@ -1,5 +1,5 @@
 // src/services/appointmentService.ts
-import { Appointment, AppointmentStatus } from "@/types/appointment"; // <-- 1. THÊM AppointmentStatus VÀO IMPORT
+import { Appointment, AppointmentStatus } from "@/features/appointment/types"; // <-- 1. THÊM AppointmentStatus VÀO IMPORT
 
 // URL API mới trỏ đến json-server
 const APPOINTMENTS_API_URL = "http://localhost:3001/appointments";

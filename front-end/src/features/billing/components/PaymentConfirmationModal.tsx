@@ -9,7 +9,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Invoice } from "@/types/invoice";
+import { Invoice } from "@/features/billing/types";
 
 interface PaymentConfirmationModalProps {
   isOpen: boolean;

@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -13,116 +14,128 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { z } from "zod";
-import { useEffect, useState, useRef } from "react";
-import { Customer } from "@/types/customer";
 import { UploadCloud, File as FileIcon, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { Service } from "@/features/service/types"; // 1. Import Service type
 
-// 1. Cập nhật schema để bao gồm trường avatar
-const customerFormSchema = z.object({
-  name: z.string().min(3, { message: "Tên phải có ít nhất 3 ký tự." }),
-  email: z.string().email({ message: "Email không hợp lệ." }),
-  phone: z.string().regex(/(0[3|5|7|8|9])+([0-9]{8})\b/, {
-    message: "Số điện thoại không hợp lệ.",
-  }),
-  notes: z.string().optional(),
-  avatar: z.any().optional(),
+// Schema validation
+const serviceFormSchema = z.object({
+  name: z.string().trim().min(3, "Tên dịch vụ phải có ít nhất 3 ký tự."),
+  description: z
+    .string()
+    .trim()
+    .min(10, "Mô tả phải có ít nhất 10 ký tự.")
+    .optional(),
+  category: z.string().trim().min(2, "Danh mục không được để trống."),
+  price: z.number().min(0, "Giá phải là một số dương."),
+  duration: z.number().int().min(5, "Thời lượng phải ít nhất 5 phút."),
+  imageFile: z.any().optional(),
 });
 
-type CustomerFormValues = z.infer<typeof customerFormSchema>;
+type ServiceFormValues = z.infer<typeof serviceFormSchema>;
 
-interface EditCustomerFormProps {
-  initialData: Customer;
-  onFormSubmit: (data: CustomerFormValues) => void;
+// 2. Cập nhật Props
+interface EditServiceFormProps {
+  initialData: Service;
+  onFormSubmit: (data: ServiceFormValues) => void;
   onClose: () => void;
   isSubmitting?: boolean;
 }
 
-export default function EditCustomerForm({
+export default function EditServiceForm({
   initialData,
   onFormSubmit,
   onClose,
   isSubmitting,
-}: EditCustomerFormProps) {
-  // 2. Thêm state và ref cho chức năng upload
+}: EditServiceFormProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [displayPrice, setDisplayPrice] = useState("");
 
-  const form = useForm<CustomerFormValues>({
-    resolver: zodResolver(customerFormSchema),
+  const form = useForm<ServiceFormValues>({
+    resolver: zodResolver(serviceFormSchema),
+    // 3. Điền dữ liệu ban đầu
     defaultValues: {
       name: initialData.name || "",
-      email: initialData.email || "",
-      phone: initialData.phone || "",
-      notes: initialData.notes || "",
-      avatar: undefined, // Thêm avatar vào defaultValues
+      description: initialData.description || "",
+      category: initialData.category || "",
+      price: initialData.price || 0,
+      duration: initialData.duration || 30,
+      imageFile: undefined,
     },
   });
 
+  // 4. Reset form khi dữ liệu thay đổi
   useEffect(() => {
-    // Reset form với dữ liệu ban đầu, nhưng không reset file đã chọn
     form.reset({
       name: initialData.name,
-      email: initialData.email,
-      phone: initialData.phone,
-      notes: initialData.notes,
+      description: initialData.description,
+      category: initialData.category,
+      price: initialData.price,
+      duration: initialData.duration,
     });
+    // Cập nhật giá trị hiển thị ban đầu
+    setDisplayPrice(
+      new Intl.NumberFormat("vi-VN").format(initialData.price / 1000)
+    );
   }, [initialData, form]);
 
-  // 3. Thêm tất cả các hàm xử lý file
+  // --- Logic xử lý file và giá tiền ---
   const handleFileSelect = (file: File | undefined) => {
     if (file) {
       setSelectedFile(file);
-      form.setValue("avatar", file, { shouldValidate: true });
+      form.setValue("imageFile", file, { shouldValidate: true });
     }
   };
-
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     handleFileSelect(event.target.files?.[0]);
   };
-
   const handleRemoveFile = () => {
     setSelectedFile(null);
-    form.setValue("avatar", undefined, { shouldValidate: true });
+    form.setValue("imageFile", undefined, { shouldValidate: true });
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
   };
-
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setIsDragging(true);
   };
-
   const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setIsDragging(false);
   };
-
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setIsDragging(false);
     const file = event.dataTransfer.files?.[0];
     handleFileSelect(file);
   };
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value.replace(/[^0-9]/g, "");
+    const numberValue = parseInt(rawValue, 10) || 0;
+    form.setValue("price", numberValue * 1000, { shouldValidate: true });
+    setDisplayPrice(new Intl.NumberFormat("vi-VN").format(numberValue));
+  };
+  // --- Kết thúc logic xử lý ---
 
-  function onSubmit(data: CustomerFormValues) {
+  function onSubmit(data: ServiceFormValues) {
     onFormSubmit(data);
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-4">
         <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto -m-6">
-          {/* Các trường input giữ nguyên */}
+          {/* ... các trường input giữ nguyên ... */}
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Họ và tên</FormLabel>
+                <FormLabel>Tên dịch vụ</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -132,12 +145,12 @@ export default function EditCustomerForm({
           />
           <FormField
             control={form.control}
-            name="email"
+            name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Mô tả</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Textarea {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -145,10 +158,10 @@ export default function EditCustomerForm({
           />
           <FormField
             control={form.control}
-            name="phone"
+            name="category"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Số điện thoại</FormLabel>
+                <FormLabel>Danh mục</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -156,26 +169,59 @@ export default function EditCustomerForm({
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="notes"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Ghi chú</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Nhập các thông tin cần lưu ý..."
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+              control={form.control}
+              name="price"
+              render={() => (
+                <FormItem>
+                  <FormLabel>Giá dịch vụ</FormLabel>
+                  <div className="relative">
+                    <FormControl>
+                      <Input
+                        value={displayPrice}
+                        onChange={handlePriceChange}
+                        className="pr-12"
+                      />
+                    </FormControl>
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                      <span className="text-muted-foreground">VND</span>
+                    </div>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="duration"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Thời lượng</FormLabel>
+                  <div className="relative">
+                    <FormControl>
+                      <Input
+                        type="number"
+                        className="pr-14"
+                        {...field}
+                        onChange={(e) => {
+                          const value = e.target.valueAsNumber;
+                          field.onChange(isNaN(value) ? 0 : value);
+                        }}
+                      />
+                    </FormControl>
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                      <span className="text-muted-foreground">phút</span>
+                    </div>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
-          {/* 4. Thêm phần upload ảnh đã hoàn thiện */}
           <div>
-            <FormLabel>Ảnh đại diện (Tùy chọn)</FormLabel>
+            <FormLabel>Hình ảnh dịch vụ (Tùy chọn)</FormLabel>
             <input
               type="file"
               ref={fileInputRef}
@@ -199,7 +245,7 @@ export default function EditCustomerForm({
                   <p>Nhấp để chọn ảnh mới hoặc kéo thả vào đây</p>
                 </div>
                 <p className="text-xs text-muted-foreground mt-2">
-                  PNG, JPG, GIF tối đa 2MB
+                  PNG, JPG, GIF tối đa 5MB
                 </p>
               </div>
             ) : (
@@ -223,7 +269,7 @@ export default function EditCustomerForm({
             )}
           </div>
         </div>
-        <div className="flex justify-end gap-2 p-4 border-t border-border">
+        <div className="flex justify-end gap-2 pt-4 border-t border-border">
           <Button
             type="button"
             variant="ghost"

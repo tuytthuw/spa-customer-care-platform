@@ -1,8 +1,8 @@
 "use client";
 
-import { Appointment } from "@/types/appointment";
-import { Service } from "@/types/service";
-import { Staff } from "@/types/staff";
+import { Appointment } from "@/features/appointment/types";
+import { Service } from "@/features/service/types";
+import { Staff } from "@/features/staff/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,

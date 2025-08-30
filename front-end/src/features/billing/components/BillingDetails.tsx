@@ -1,8 +1,8 @@
 "use client";
 
-import { InvoiceItem } from "@/types/invoice";
-import { Product } from "@/types/product";
-import { Service } from "@/types/service";
+import { InvoiceItem } from "@/features/billing/types";
+import { Product } from "@/features/product/types";
+import { Service } from "@/features/service/types";
 import { TreatmentPlan } from "@/types/treatmentPlan";
 import {
   Table,

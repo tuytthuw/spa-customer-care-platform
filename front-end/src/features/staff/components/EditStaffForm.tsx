@@ -25,7 +25,7 @@ import { mockServices } from "@/lib/mock-data";
 import { UploadCloud, File as FileIcon, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Staff } from "@/types/staff"; // 1. Import Staff type
+import { Staff } from "@/features/staff/types"; // 1. Import Staff type
 
 const ROLES = ["technician", "receptionist", "manager"] as const;
 const STATUSES = ["active", "inactive"] as const;
@@ -34,11 +34,9 @@ const STATUSES = ["active", "inactive"] as const;
 const staffFormSchema = z.object({
   name: z.string().min(3, "Tên phải có ít nhất 3 ký tự."),
   email: z.string().email("Email không hợp lệ."),
-  phone: z
-    .string()
-    .regex(/(0[3|5|7|8|9])+([0-9]{8})\b/, {
-      message: "Số điện thoại không hợp lệ.",
-    }),
+  phone: z.string().regex(/(0[3|5|7|8|9])+([0-9]{8})\b/, {
+    message: "Số điện thoại không hợp lệ.",
+  }),
   role: z.enum(ROLES, { message: "Vui lòng chọn vai trò." }),
   status: z.enum(STATUSES, { message: "Vui lòng chọn trạng thái." }),
   serviceIds: z.array(z.string()).optional(),

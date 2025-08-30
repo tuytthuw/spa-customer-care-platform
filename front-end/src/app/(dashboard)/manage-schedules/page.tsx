@@ -15,8 +15,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"; // Import Tabs
-import ScheduleForm from "@/components/forms/ScheduleForm";
-import { WorkSchedule } from "@/types/work-schedule";
+import ScheduleForm from "@/features/schedule/components/ScheduleForm";
+import { WorkSchedule } from "@/features/schedule/types";
 import { ScheduleRequestsTable } from "@/features/schedule/components/ScheduleRequestsTable"; // Import bảng phê duyệt
 import { toast } from "sonner";
 

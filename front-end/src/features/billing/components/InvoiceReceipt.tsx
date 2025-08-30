@@ -1,6 +1,6 @@
 "use client";
 
-import { Invoice } from "@/types/invoice";
+import { Invoice } from "@/features/billing/types";
 import { FullCustomerProfile } from "@/features/customer/api/customer.api";
 import { Separator } from "@/components/ui/separator";
 

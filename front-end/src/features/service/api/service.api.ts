@@ -1,5 +1,5 @@
 // src/services/serviceService.ts
-import { Service } from "@/types/service";
+import { Service } from "@/features/service/types";
 import { v4 as uuidv4 } from "uuid";
 
 const SERVICES_API_URL = "http://localhost:3001/services";

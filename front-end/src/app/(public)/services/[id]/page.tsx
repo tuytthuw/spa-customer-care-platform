@@ -1,6 +1,6 @@
 // src/app/services/[id]/page.tsx
 import { mockServices } from "@/lib/mock-data";
-import { Service } from "@/types/service";
+import { Service } from "@/features/service/types";
 import { Button } from "@/components/ui/button";
 import { Clock, Tag } from "lucide-react";
 import Image from "next/image";

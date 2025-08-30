@@ -1,4 +1,4 @@
-import { Customer } from "@/types/customer";
+import { Customer } from "@/features/customer/types";
 import { mockServices, mockStaff } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";

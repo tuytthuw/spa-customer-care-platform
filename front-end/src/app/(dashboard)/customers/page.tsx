@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Customer } from "@/types/customer";
+import { Customer } from "@/features/customer/types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,8 +11,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import AddCustomerForm from "@/components/forms/AddCustomerForm";
-import EditCustomerForm from "@/components/forms/EditCustomerForm"; // 1. Import form chỉnh sửa
+import AddCustomerForm from "@/features/customer/components/AddCustomerForm";
+import EditCustomerForm from "@/features/customer/components/EditCustomerForm"; // 1. Import form chỉnh sửa
 import {
   getCustomers,
   addCustomer,

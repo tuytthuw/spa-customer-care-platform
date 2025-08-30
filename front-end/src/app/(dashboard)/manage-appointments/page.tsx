@@ -5,17 +5,17 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StatisticsSidebar } from "@/features/appointment/components/appointment-management/StatisticsSidebar";
 import { AppointmentTimeline } from "@/features/appointment/components/appointment-management/AppointmentTimeline";
 import { AppointmentDetails } from "@/features/appointment/components/appointment-management/AppointmentDetails";
-import { Appointment, AppointmentStatus } from "@/types/appointment";
-import { Customer } from "@/types/customer";
-import { Service } from "@/types/service";
-import { Staff } from "@/types/staff";
+import { Appointment, AppointmentStatus } from "@/features/appointment/types";
+import { Customer } from "@/features/customer/types";
+import { Service } from "@/features/service/types";
+import { Staff } from "@/features/staff/types";
 import {
   getAppointments,
   updateAppointmentStatus,
 } from "@/features/appointment/api/appointment.api";
 import { getCustomers } from "@/features/customer/api/customer.api";
 import { getServices } from "@/features/service/api/service.api";
-import { getStaff } from "@/services/staff.api";
+import { getStaff } from "@/features/staff/api/staff.api";
 import { toast } from "sonner";
 
 export default function AppointmentsManagementPage() {

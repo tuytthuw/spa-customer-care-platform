@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Service } from "@/types/service";
+import { Service } from "@/features/service/types";
 import { TreatmentPlan } from "@/types/treatmentPlan";
 import { columns as serviceColumns } from "./service-columns";
 import { DataTable } from "@/components/ui/data-table";
@@ -14,10 +14,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import AddServiceForm from "@/components/forms/AddServiceForm";
-import AddTreatmentPlanForm from "@/components/forms/AddTreatmentPlanForm";
-import EditServiceForm from "@/components/forms/EditServiceForm";
-import EditTreatmentPlanForm from "@/components/forms/EditTreatmentPlanForm";
+import AddServiceForm from "@/features/service/components/AddServiceForm";
+import AddTreatmentPlanForm from "@/features/treatment/components/AddTreatmentPlanForm";
+import EditServiceForm from "@/features/service/components/EditServiceForm";
+import EditTreatmentPlanForm from "@/features/treatment/components/EditTreatmentPlanForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { treatmentPlanColumns } from "./treatment-plan-columns";
 import {
@@ -31,7 +31,7 @@ import {
   addTreatmentPlan,
   updateTreatmentPlan,
   updateTreatmentPlanStatus,
-} from "@/services/treatment.api";
+} from "@/features/treatment/api/treatment.api";
 import { toast } from "sonner";
 
 type ServiceFormValues = {

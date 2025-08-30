@@ -2,14 +2,14 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContexts";
-import { TreatmentPackage } from "@/types/treatment";
+import { TreatmentPackage } from "@/features/treatment/types";
 import { TreatmentPlan } from "@/types/treatmentPlan";
-import { Staff } from "@/types/staff";
+import { Staff } from "@/features/staff/types";
 import {
   getCustomerTreatments,
   getTreatmentPlans,
-} from "@/services/treatment.api";
-import { getStaff } from "@/services/staff.api";
+} from "@/features/treatment/api/treatment.api";
+import { getStaff } from "@/features/staff/api/staff.api";
 import TreatmentCard from "@/features/treatment/TreatmentCard";
 
 export default function TreatmentsPage() {

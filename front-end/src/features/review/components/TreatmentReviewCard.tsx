@@ -1,4 +1,4 @@
-import { TreatmentPackage } from "@/types/treatment";
+import { TreatmentPackage } from "@/features/treatment/types";
 import {
   Card,
   CardContent,

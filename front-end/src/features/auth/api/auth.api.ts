@@ -1,8 +1,8 @@
 "use server";
 
 import { z } from "zod";
-import { User } from "@/types/user";
-import { Customer } from "@/types/customer";
+import { User } from "@/features/user/types";
+import { Customer } from "@/features/customer/types";
 import crypto from "crypto";
 
 const USERS_API_URL = "http://localhost:3001/users";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { WorkSchedule } from "@/types/work-schedule";
+import { WorkSchedule } from "@/features/schedule/types";
 import { mockStaff } from "@/lib/mock-data";
 import {
   Card,

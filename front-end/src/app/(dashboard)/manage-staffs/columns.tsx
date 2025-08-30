@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Staff } from "@/types/staff";
+import { Staff } from "@/features/staff/types";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,

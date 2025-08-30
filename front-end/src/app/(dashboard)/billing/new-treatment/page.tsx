@@ -7,11 +7,11 @@ import {
   getCustomers,
   FullCustomerProfile,
 } from "@/features/customer/api/customer.api";
-import { getTreatmentPlans } from "@/services/treatment.api";
+import { getTreatmentPlans } from "@/features/treatment/api/treatment.api";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
-import { TreatmentPackage } from "@/types/treatment"; // Import type này
+import { TreatmentPackage } from "@/features/treatment/types"; // Import type này
 
 import {
   Card,

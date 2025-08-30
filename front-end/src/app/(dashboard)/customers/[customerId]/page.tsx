@@ -2,8 +2,8 @@
 
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { Customer } from "@/types/customer";
-import { Appointment } from "@/types/appointment";
+import { Customer } from "@/features/customer/types";
+import { Appointment } from "@/features/appointment/types";
 import {
   getCustomers,
   FullCustomerProfile,
@@ -11,10 +11,10 @@ import {
 import { getAppointments } from "@/features/appointment/api/appointment.api";
 import { CustomerProfileCard } from "@/features/customer/components/CustomerProfileCard";
 import { AppointmentHistory } from "@/features/customer/components/AppointmentHistory";
-import { Service } from "@/types/service";
+import { Service } from "@/features/service/types";
 import { getServices } from "@/features/service/api/service.api";
-import { Staff } from "@/types/staff";
-import { getStaff } from "@/services/staff.api";
+import { Staff } from "@/features/staff/types";
+import { getStaff } from "@/features/staff/api/staff.api";
 
 export default function CustomerDetailPage() {
   const params = useParams();
