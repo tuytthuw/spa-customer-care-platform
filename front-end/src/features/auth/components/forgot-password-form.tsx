@@ -24,7 +24,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 // 1. Import action mới và toast
-import { sendPasswordResetOtp } from "@/services/authService";
+import { sendPasswordResetOtp } from "@/features/auth/api/auth.api";
 import { toast } from "sonner";
 
 const formSchema = z.object({

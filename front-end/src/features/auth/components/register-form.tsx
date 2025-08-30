@@ -26,7 +26,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { register as registerAction } from "@/services/authService"; // Import action đăng ký
+import { register as registerAction } from "@/features/auth/api/auth.api"; // Import action đăng ký
 import { toast } from "sonner";
 
 // Zod schema để validation

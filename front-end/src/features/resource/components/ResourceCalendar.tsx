@@ -2,7 +2,7 @@
 
 import { Resource } from "@/types/resource";
 import { Appointment } from "@/types/appointment";
-import { FullCustomerProfile } from "@/services/customerService";
+import { FullCustomerProfile } from "@/features/customer/api/customer.api";
 import { Staff } from "@/types/staff";
 import { FullCalendarUI } from "@/components/ui/full-calendar";
 

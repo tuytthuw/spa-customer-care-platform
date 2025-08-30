@@ -3,8 +3,11 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { TreatmentPlan } from "@/types/treatmentPlan";
-import { getCustomers, FullCustomerProfile } from "@/services/customerService";
-import { getTreatmentPlans } from "@/services/treatmentPlanService";
+import {
+  getCustomers,
+  FullCustomerProfile,
+} from "@/features/customer/api/customer.api";
+import { getTreatmentPlans } from "@/services/treatment.api";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";

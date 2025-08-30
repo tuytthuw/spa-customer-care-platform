@@ -25,13 +25,13 @@ import {
   addService,
   updateService,
   updateServiceStatus,
-} from "@/services/serviceService";
+} from "@/features/service/api/service.api";
 import {
   getTreatmentPlans,
   addTreatmentPlan,
   updateTreatmentPlan,
   updateTreatmentPlanStatus,
-} from "@/services/treatmentPlanService";
+} from "@/services/treatment.api";
 import { toast } from "sonner";
 
 type ServiceFormValues = {

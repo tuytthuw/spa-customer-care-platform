@@ -1,10 +1,13 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getResources } from "@/services/resourceService";
-import { getAppointments } from "@/services/appointmentService";
-import { getCustomers, FullCustomerProfile } from "@/services/customerService";
-import { getStaff } from "@/services/staffService";
+import { getResources } from "@/services/resource.api";
+import { getAppointments } from "@/features/appointment/api/appointment.api";
+import {
+  getCustomers,
+  FullCustomerProfile,
+} from "@/features/customer/api/customer.api";
+import { getStaff } from "@/services/staff.api";
 import ResourceCalendar from "@/features/resource/components/ResourceCalendar";
 import { Appointment } from "@/types/appointment";
 import { Resource } from "@/types/resource";

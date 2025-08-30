@@ -7,11 +7,14 @@ import { Invoice, InvoiceItem } from "@/types/invoice";
 import { Product } from "@/types/product";
 import { Service } from "@/types/service";
 import { TreatmentPlan } from "@/types/treatmentPlan";
-import { FullCustomerProfile, getCustomers } from "@/services/customerService";
-import { getServices } from "@/services/serviceService";
-import { getProducts } from "@/services/productService";
-import { getTreatmentPlans } from "@/services/treatmentPlanService";
-import { createInvoice } from "@/services/invoiceService";
+import {
+  FullCustomerProfile,
+  getCustomers,
+} from "@/features/customer/api/customer.api";
+import { getServices } from "@/features/service/api/service.api";
+import { getProducts } from "@/services/product.api";
+import { getTreatmentPlans } from "@/services/treatment.api";
+import { createInvoice } from "@/services/invoice.api";
 
 import BillingDetails from "@/features/billing/components/BillingDetails";
 import InvoiceReceipt from "@/features/billing/components/InvoiceReceipt";

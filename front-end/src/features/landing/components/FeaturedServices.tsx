@@ -2,7 +2,7 @@ import ServiceCard from "@/features/service/components/service-card";
 import { Button } from "@/components/ui/button";
 import { Service } from "@/types/service";
 import Link from "next/link";
-import { getServices } from "@/services/serviceService";
+import { getServices } from "@/features/service/api/service.api";
 
 // hàm getFeaturedServices
 const getFeaturedServices = async (): Promise<Service[]> => {

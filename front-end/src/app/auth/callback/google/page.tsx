@@ -3,7 +3,7 @@
 
 import { useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { loginWithGoogle } from "@/services/authService"; // 1. Import action
+import { loginWithGoogle } from "@/features/auth/api/auth.api"; // 1. Import action
 
 export default function GoogleCallbackPage() {
   const searchParams = useSearchParams();
