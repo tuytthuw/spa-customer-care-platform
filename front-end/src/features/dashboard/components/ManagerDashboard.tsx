@@ -1,10 +1,10 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { StatsCard } from "@/features/reports/StatsCard";
-import { UpcomingAppointments } from "@/features/dashboard/UpcomingAppointments";
-import RevenueChart from "@/features/reports/RevenueChart";
-import ServiceBreakdownChart from "@/features/reports/ServiceBreakdownChart";
+import { StatsCard } from "@/features/reports/components/StatsCard";
+import { UpcomingAppointments } from "@/features/dashboard/components/UpcomingAppointments";
+import RevenueChart from "@/features/reports/components/RevenueChart";
+import ServiceBreakdownChart from "@/features/reports/components/ServiceBreakdownChart";
 import { Activity, CalendarCheck, DollarSign, Users } from "lucide-react";
 import { getAppointments } from "@/services/appointmentService";
 import { getCustomers } from "@/services/customerService";

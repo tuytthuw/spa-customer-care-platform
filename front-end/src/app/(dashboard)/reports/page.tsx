@@ -1,9 +1,9 @@
 "use client";
 
 // 1. Sửa lại import để dùng StatsCard từ dashboard
-import { StatsCard } from "@/features/reports/StatsCard";
-import RevenueChart from "@/features/reports/RevenueChart";
-import ServiceBreakdownChart from "@/features/reports/ServiceBreakdownChart";
+import { StatsCard } from "@/features/reports/components/StatsCard";
+import RevenueChart from "@/features/reports/components/RevenueChart";
+import ServiceBreakdownChart from "@/features/reports/components/ServiceBreakdownChart";
 import { DollarSign, BookUser, UserPlus, Star } from "lucide-react";
 
 const ReportsPage = () => {

@@ -1,4 +1,4 @@
-import TodaysAppointmentCard from "@/features/dashboard/TodaysAppointmentCard";
+import TodaysAppointmentCard from "@/features/dashboard/components/TodaysAppointmentCard";
 import { mockAppointments, mockCustomers, mockServices } from "@/lib/mock-data";
 
 // Lọc các lịch hẹn cho "hôm nay" để hiển thị (giả lập)

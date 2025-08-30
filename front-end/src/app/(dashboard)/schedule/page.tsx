@@ -4,10 +4,10 @@ import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { mockAppointments as initialAppointments } from "@/lib/mock-data";
 import { Appointment } from "@/types/appointment";
-import { AppointmentDetailsModal } from "@/features/schedule/AppointmentDetailsModal";
+import { AppointmentDetailsModal } from "@/features/schedule/components/AppointmentDetailsModal";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RegisterScheduleModal } from "@/features/schedule/RegisterScheduleModal";
+import { RegisterScheduleModal } from "@/features/schedule/components/RegisterScheduleModal";
 
 export default function SchedulePage() {
   const [date, setDate] = useState<Date | undefined>(new Date());

@@ -1,4 +1,4 @@
-import ServiceCard from "@/features/service/service-card";
+import ServiceCard from "@/features/service/components/service-card";
 import { Button } from "@/components/ui/button";
 import { Service } from "@/types/service";
 import Link from "next/link";

@@ -13,8 +13,8 @@ import { getProducts } from "@/services/productService";
 import { getTreatmentPlans } from "@/services/treatmentPlanService";
 import { createInvoice } from "@/services/invoiceService";
 
-import BillingDetails from "@/features/billing/BillingDetails";
-import InvoiceReceipt from "@/features/billing/InvoiceReceipt";
+import BillingDetails from "@/features/billing/components/BillingDetails";
+import InvoiceReceipt from "@/features/billing/components/InvoiceReceipt";
 import {
   Dialog,
   DialogContent,

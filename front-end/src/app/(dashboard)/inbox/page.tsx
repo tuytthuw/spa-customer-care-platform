@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { mockConversations } from "@/lib/mock-data";
 import { Conversation } from "@/types/conversation";
-import ConversationList from "@/features/inbox/ConversationList";
-import ChatPanel from "@/features/inbox/ChatPanel";
+import ConversationList from "@/features/inbox/components/ConversationList";
+import ChatPanel from "@/features/inbox/components/ChatPanel";
 
 const InboxPage = () => {
   const [conversations, setConversations] =

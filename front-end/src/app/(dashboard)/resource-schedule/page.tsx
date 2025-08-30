@@ -5,7 +5,7 @@ import { getResources } from "@/services/resourceService";
 import { getAppointments } from "@/services/appointmentService";
 import { getCustomers, FullCustomerProfile } from "@/services/customerService";
 import { getStaff } from "@/services/staffService";
-import ResourceCalendar from "@/features/resource/ResourceCalendar";
+import ResourceCalendar from "@/features/resource/components/ResourceCalendar";
 import { Appointment } from "@/types/appointment";
 import { Resource } from "@/types/resource";
 import { Staff } from "@/types/staff";

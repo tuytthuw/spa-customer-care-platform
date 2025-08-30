@@ -13,8 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Appointment } from "@/types/appointment";
 import { mockCustomers, mockServices } from "@/lib/mock-data";
 import { User, NotebookPen } from "lucide-react"; // Import icon mới
-import CustomerProfileModal from "../technician/CustomerProfileModal";
-import LogStatusModal from "../technician/LogStatusModal"; // Import modal ghi chú
+import CustomerProfileModal from "../../technician/components/CustomerProfileModal";
+import LogStatusModal from "../../technician/components/LogStatusModal"; // Import modal ghi chú
 
 interface AppointmentDetailsModalProps {
   isOpen: boolean;
