@@ -5,7 +5,7 @@ import { Appointment } from "@/types/appointment";
 import { Service } from "@/types/service";
 import { Staff } from "@/types/staff";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import AppointmentCard from "@/features/appointment/AppointmentCard";
+import AppointmentCard from "@/features/appointment/components/AppointmentCard";
 import {
   getAppointments,
   updateAppointmentStatus, // Giả sử bạn sẽ tạo hàm này
@@ -134,13 +134,19 @@ export default function AppointmentsPage() {
         </TabsList>
 
         <TabsContent value="upcoming" className="mt-4">
-          <div className="space-y-4">{renderAppointmentList(upcomingAppointments)}</div>
+          <div className="space-y-4">
+            {renderAppointmentList(upcomingAppointments)}
+          </div>
         </TabsContent>
         <TabsContent value="completed" className="mt-4">
-          <div className="space-y-4">{renderAppointmentList(completedAppointments)}</div>
+          <div className="space-y-4">
+            {renderAppointmentList(completedAppointments)}
+          </div>
         </TabsContent>
         <TabsContent value="cancelled" className="mt-4">
-          <div className="space-y-4">{renderAppointmentList(cancelledAppointments)}</div>
+          <div className="space-y-4">
+            {renderAppointmentList(cancelledAppointments)}
+          </div>
         </TabsContent>
       </Tabs>
     </div>

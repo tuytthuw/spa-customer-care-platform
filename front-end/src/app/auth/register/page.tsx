@@ -1,5 +1,5 @@
 // src/app/auth/register/page.tsx
-import { RegisterForm } from "@/features/auth/register-form";
+import { RegisterForm } from "@/features/auth/components/register-form";
 import Link from "next/link";
 
 export default function RegisterPage() {

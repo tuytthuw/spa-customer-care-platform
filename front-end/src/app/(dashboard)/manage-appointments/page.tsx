@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { StatisticsSidebar } from "@/features/appointment-management/StatisticsSidebar";
-import { AppointmentTimeline } from "@/features/appointment-management/AppointmentTimeline";
-import { AppointmentDetails } from "@/features/appointment-management/AppointmentDetails";
+import { StatisticsSidebar } from "@/features/appointment-management/components/StatisticsSidebar";
+import { AppointmentTimeline } from "@/features/appointment-management/components/AppointmentTimeline";
+import { AppointmentDetails } from "@/features/appointment-management/components/AppointmentDetails";
 import { Appointment, AppointmentStatus } from "@/types/appointment";
 import { Customer } from "@/types/customer";
 import { Service } from "@/types/service";

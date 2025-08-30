@@ -1,6 +1,6 @@
 // src/app/auth/verify-otp/page.tsx
 
-import { OtpForm } from "@/features/auth/otp-form";
+import { OtpForm } from "@/features/auth/components/otp-form";
 
 export default function VerifyOtpPage() {
   return (

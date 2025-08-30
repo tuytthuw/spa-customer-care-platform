@@ -2,12 +2,12 @@
 
 import React, { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import DateTimeStep from "@/features/booking/date-time-step";
-import ConfirmationStep from "@/features/booking/confirmation-step";
-import ServiceSelectionStep from "@/features/booking/ServiceSelectionStep";
-import BookingSuccessStep from "@/features/booking/BookingSuccessStep";
+import DateTimeStep from "@/features/booking/components/date-time-step";
+import ConfirmationStep from "@/features/booking/components/confirmation-step";
+import ServiceSelectionStep from "@/features/booking/components/ServiceSelectionStep";
+import BookingSuccessStep from "@/features/booking/components/BookingSuccessStep";
 import { Service } from "@/types/service";
-import { BookingSteps } from "@/features/booking/BookingSteps";
+import { BookingSteps } from "@/features/booking/components/BookingSteps";
 
 export default function BookingPage() {
   const searchParams = useSearchParams();

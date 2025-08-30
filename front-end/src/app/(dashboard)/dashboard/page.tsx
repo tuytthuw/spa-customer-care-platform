@@ -1,9 +1,9 @@
 "use client";
 
 import { useAuth } from "@/contexts/AuthContexts";
-import ManagerDashboard from "@/features/dashboard/ManagerDashboard";
-import TechnicianDashboard from "@/features/dashboard/TechnicianDashboard";
-import CustomerDashboard from "@/features/dashboard/CustomerDashboard";
+import ManagerDashboard from "@/features/dashboard/components/ManagerDashboard";
+import TechnicianDashboard from "@/features/dashboard/components/TechnicianDashboard";
+import CustomerDashboard from "@/features/dashboard/components/CustomerDashboard";
 
 export default function DashboardPage() {
   const { user } = useAuth();
