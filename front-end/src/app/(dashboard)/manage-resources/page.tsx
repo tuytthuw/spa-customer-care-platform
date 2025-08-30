@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Resource } from "@/types/resource";
-import { getResources } from "@/services/resourceService";
+import { getResources } from "@/services/resource.api";
 import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";

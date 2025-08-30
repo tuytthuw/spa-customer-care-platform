@@ -5,13 +5,13 @@ import { Appointment } from "@/types/appointment";
 import { Service } from "@/types/service";
 import { Staff } from "@/types/staff";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import AppointmentCard from "@/features/appointment/components/AppointmentCard";
+import AppointmentCard from "@/features/appointment/components/my-appointments/AppointmentCard";
 import {
   getAppointments,
   updateAppointmentStatus, // Giả sử bạn sẽ tạo hàm này
-} from "@/services/appointmentService";
-import { getServices } from "@/services/serviceService";
-import { getStaff } from "@/services/staffService";
+} from "@/features/appointment/api/appointment.api";
+import { getServices } from "@/features/service/api/service.api";
+import { getStaff } from "@/services/staff.api";
 import { toast } from "sonner";
 
 export default function AppointmentsPage() {

@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { User } from "@/types/user";
 import { columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
-import { getUsers, updateUserStatus } from "@/services/userService";
+import { getUsers, updateUserStatus } from "@/services/user.api";
 import { toast } from "sonner";
 
 export default function ManageUsersPage() {

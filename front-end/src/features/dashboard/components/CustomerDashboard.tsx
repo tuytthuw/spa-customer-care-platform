@@ -3,8 +3,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Appointment } from "@/types/appointment";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import AppointmentCard from "@/features/appointment/components/AppointmentCard";
-import { getAppointments } from "@/services/appointmentService";
+import AppointmentCard from "@/features/appointment/components/my-appointments/AppointmentCard";
+import { getAppointments } from "@/features/appointment/api/appointment.api";
 
 export default function CustomerDashboard() {
   const {

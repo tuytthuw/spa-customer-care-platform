@@ -2,7 +2,7 @@
 import { Service } from "@/types/service";
 import ServiceCard from "@/features/service/components/service-card";
 import { Input } from "@/components/ui/input";
-import { getServices } from "@/services/serviceService";
+import { getServices } from "@/features/service/api/service.api";
 
 export default async function ServicesPage() {
   const services = await getServices();

@@ -18,7 +18,7 @@ import {
   addCustomer,
   updateCustomerStatus,
   updateCustomer,
-} from "@/services/customerService"; // 2. Import hàm updateCustomer
+} from "@/features/customer/api/customer.api"; // 2. Import hàm updateCustomer
 import { Plus } from "lucide-react";
 import { columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";

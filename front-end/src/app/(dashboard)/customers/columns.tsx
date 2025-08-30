@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Customer } from "@/types/customer";
-import { FullCustomerProfile } from "@/services/customerService";
+import { FullCustomerProfile } from "@/features/customer/api/customer.api";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,

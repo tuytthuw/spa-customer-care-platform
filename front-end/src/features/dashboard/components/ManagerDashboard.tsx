@@ -6,8 +6,8 @@ import { UpcomingAppointments } from "@/features/dashboard/components/UpcomingAp
 import RevenueChart from "@/features/reports/components/RevenueChart";
 import ServiceBreakdownChart from "@/features/reports/components/ServiceBreakdownChart";
 import { Activity, CalendarCheck, DollarSign, Users } from "lucide-react";
-import { getAppointments } from "@/services/appointmentService";
-import { getCustomers } from "@/services/customerService";
+import { getAppointments } from "@/features/appointment/api/appointment.api";
+import { getCustomers } from "@/features/customer/api/customer.api";
 import { Appointment } from "@/types/appointment";
 import { Customer } from "@/types/customer";
 

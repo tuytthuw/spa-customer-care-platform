@@ -23,7 +23,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 // 1. Import action thật từ authService và toast
-import { resetPassword } from "@/services/authService";
+import { resetPassword } from "@/features/auth/api/auth.api";
 import { toast } from "sonner";
 
 // Schema validation giữ nguyên

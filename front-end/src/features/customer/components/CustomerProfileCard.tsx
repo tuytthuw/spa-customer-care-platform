@@ -1,6 +1,6 @@
 "use client";
 
-import { FullCustomerProfile } from "@/services/customerService";
+import { FullCustomerProfile } from "@/features/customer/api/customer.api";
 import {
   Card,
   CardContent,

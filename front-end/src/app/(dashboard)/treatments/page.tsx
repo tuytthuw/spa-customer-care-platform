@@ -8,8 +8,8 @@ import { Staff } from "@/types/staff";
 import {
   getCustomerTreatments,
   getTreatmentPlans,
-} from "@/services/treatmentPlanService";
-import { getStaff } from "@/services/staffService";
+} from "@/services/treatment.api";
+import { getStaff } from "@/services/staff.api";
 import TreatmentCard from "@/features/treatment/TreatmentCard";
 
 export default function TreatmentsPage() {

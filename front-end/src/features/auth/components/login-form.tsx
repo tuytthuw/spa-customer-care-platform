@@ -6,7 +6,7 @@ import * as z from "zod";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContexts";
-import { login as loginAction } from "@/services/authService";
+import { login as loginAction } from "@/features/auth/api/auth.api";
 import { Button } from "@/components/ui/button";
 import {
   Form,

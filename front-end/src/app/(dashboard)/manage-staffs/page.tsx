@@ -21,7 +21,7 @@ import {
   addStaff,
   updateStaff,
   updateStaffStatus,
-} from "@/services/staffService"; // 2. Import các hàm mới
+} from "@/services/staff.api"; // 2. Import các hàm mới
 import { toast } from "sonner";
 
 type StaffFormValues = {
