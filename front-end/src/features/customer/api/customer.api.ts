@@ -1,25 +1,11 @@
 // src/services/customerService.ts
-import { Customer } from "@/features/customer/types";
+import { Customer, FullCustomerProfile } from "@/features/customer/types";
 import { User } from "@/features/user/types";
 import { v4 as uuidv4 } from "uuid";
 
 const CUSTOMERS_API_URL = "http://localhost:3001/customers";
 const USERS_API_URL = "http://localhost:3001/users";
 
-/**
- * Type này đại diện cho hồ sơ khách hàng đầy đủ,
- * kết hợp dữ liệu từ cả 'customers' và 'users'.
- */
-export type FullCustomerProfile = Customer & {
-  email: string;
-  status: "active" | "inactive";
-};
-
-/**
- * Lấy danh sách hồ sơ khách hàng đầy đủ.
- * Hàm này sẽ kết hợp dữ liệu từ 'customers' và 'users'.
- * Chỉ những khách hàng có tài khoản ('user') đang hoạt động ('active') mới được trả về.
- */
 export const getCustomers = async (): Promise<FullCustomerProfile[]> => {
   try {
     const [customersRes, usersRes] = await Promise.all([

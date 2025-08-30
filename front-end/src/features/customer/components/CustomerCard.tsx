@@ -1,5 +1,5 @@
 import { Customer } from "@/features/customer/types";
-import { mockServices, mockStaff } from "@/lib/mock-data";
+import { Service } from "@/features/service/types";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Check, MoreVertical } from "lucide-react";

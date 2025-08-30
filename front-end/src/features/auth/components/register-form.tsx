@@ -5,6 +5,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { registerSchema } from "@/features/auth/schemas";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
@@ -26,15 +27,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { register as registerAction } from "@/features/auth/api/auth.api"; // Import action đăng ký
+import { register as registerAction } from "@/features/auth/api/auth.api";
 import { toast } from "sonner";
-
-// Zod schema để validation
-const registerSchema = z.object({
-  name: z.string().min(1, { message: "Tên không được để trống." }),
-  email: z.string().email({ message: "Địa chỉ email không hợp lệ." }),
-  password: z.string().min(6, { message: "Mật khẩu phải có ít nhất 6 ký tự." }),
-});
 
 export function RegisterForm() {
   const router = useRouter();

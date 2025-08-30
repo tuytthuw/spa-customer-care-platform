@@ -13,27 +13,18 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { z } from "zod";
 import { useEffect, useState, useRef } from "react";
-import { Customer } from "@/features/customer/types";
+import {} from "@/features/customer/types";
 import { UploadCloud, File as FileIcon, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-// 1. Cập nhật schema để bao gồm trường avatar
-const customerFormSchema = z.object({
-  name: z.string().min(3, { message: "Tên phải có ít nhất 3 ký tự." }),
-  email: z.string().email({ message: "Email không hợp lệ." }),
-  phone: z.string().regex(/(0[3|5|7|8|9])+([0-9]{8})\b/, {
-    message: "Số điện thoại không hợp lệ.",
-  }),
-  notes: z.string().optional(),
-  avatar: z.any().optional(),
-});
-
-type CustomerFormValues = z.infer<typeof customerFormSchema>;
+import {
+  customerFormSchema,
+  CustomerFormValues,
+} from "@/features/customer/schemas";
+import { FullCustomerProfile } from "@/features/customer/types";
 
 interface EditCustomerFormProps {
-  initialData: Customer;
+  initialData: FullCustomerProfile;
   onFormSubmit: (data: CustomerFormValues) => void;
   onClose: () => void;
   isSubmitting?: boolean;
@@ -57,7 +48,7 @@ export default function EditCustomerForm({
       email: initialData.email || "",
       phone: initialData.phone || "",
       notes: initialData.notes || "",
-      avatar: undefined, // Thêm avatar vào defaultValues
+      avatar: undefined,
     },
   });
 

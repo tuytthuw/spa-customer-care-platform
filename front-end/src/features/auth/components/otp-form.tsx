@@ -5,6 +5,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { otpSchema } from "@/features/auth/schemas";
 import { useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -28,14 +29,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-// Chúng ta sẽ tạo action `verifyOtp` ở bước tiếp theo
-// import { verifyOtp } from "@/actions/auth";
-
-const formSchema = z.object({
-  pin: z.string().min(6, {
-    message: "Mã OTP phải có 6 chữ số.",
-  }),
-});
 
 export function OtpForm() {
   const router = useRouter();
@@ -46,14 +39,14 @@ export function OtpForm() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof otpSchema>>({
+    resolver: zodResolver(otpSchema),
     defaultValues: {
       pin: "",
     },
   });
   const type = searchParams.get("type");
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = (values: z.infer<typeof otpSchema>) => {
     setError(null);
     setSuccess(null);
 

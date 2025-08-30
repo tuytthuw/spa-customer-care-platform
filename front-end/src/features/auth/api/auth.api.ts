@@ -5,6 +5,14 @@ import { User } from "@/features/user/types";
 import { Customer } from "@/features/customer/types";
 import crypto from "crypto";
 
+// Import các schema từ tệp tập trung
+import {
+  loginSchema,
+  registerSchema,
+  resetPasswordApiSchema,
+  forgotPasswordSchema,
+} from "@/features/auth/schemas";
+
 const USERS_API_URL = "http://localhost:3001/users";
 const CUSTOMERS_API_URL = "http://localhost:3001/customers";
 
@@ -14,28 +22,15 @@ type ActionResult = {
   user?: Omit<User, "password"> & { role: string };
 };
 
-const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
-});
-
-const registerSchema = z.object({
-  name: z.string().min(1),
-  email: z.string().email(),
-  password: z.string().min(6),
-});
-
-const resetPasswordSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-  token: z.string().min(1), // Giả lập token OTP
-});
-
 export const login = async (
   values: z.infer<typeof loginSchema>
 ): Promise<ActionResult> => {
-  const { email, password } = values;
-  // 4. Chỉ cần tìm trong /users
+  const validatedFields = loginSchema.safeParse(values);
+  if (!validatedFields.success) {
+    return { error: "Dữ liệu không hợp lệ!" };
+  }
+  const { email, password } = validatedFields.data;
+
   const response = await fetch(
     `${USERS_API_URL}?email=${email}&password=${password}`
   );
@@ -55,7 +50,11 @@ export const login = async (
 export async function register(
   values: z.infer<typeof registerSchema>
 ): Promise<ActionResult> {
-  const { name, email, password } = values;
+  const validatedFields = registerSchema.safeParse(values);
+  if (!validatedFields.success) {
+    return { error: "Dữ liệu không hợp lệ!" };
+  }
+  const { name, email, password } = validatedFields.data;
 
   const userRes = await fetch(`${USERS_API_URL}?email=${email}`);
   const existingUser = await userRes.json();
@@ -63,7 +62,6 @@ export async function register(
     return { error: "Email này đã được sử dụng." };
   }
 
-  // 1. Tạo bản ghi trong "users"
   const newUserData: User = {
     id: `user-${crypto.randomUUID()}`,
     email,
@@ -80,7 +78,6 @@ export async function register(
     return { error: "Không thể tạo tài khoản người dùng." };
   }
 
-  // 2. Tạo bản ghi hồ sơ trong "customers"
   const newCustomerProfile: Omit<Customer, "id"> = {
     userId: newUserData.id,
     name,
@@ -95,7 +92,6 @@ export async function register(
   });
 
   if (!newCustomerResponse.ok) {
-    // Lý tưởng nhất là có một transaction để rollback việc tạo user
     return { error: "Không thể tạo hồ sơ khách hàng." };
   }
 
@@ -104,9 +100,9 @@ export async function register(
 }
 
 export const resetPassword = async (
-  values: z.infer<typeof resetPasswordSchema>
+  values: z.infer<typeof resetPasswordApiSchema>
 ): Promise<ActionResult> => {
-  const validatedFields = resetPasswordSchema.safeParse(values);
+  const validatedFields = resetPasswordApiSchema.safeParse(values);
   if (!validatedFields.success) {
     return { error: "Dữ liệu không hợp lệ!" };
   }
@@ -116,7 +112,6 @@ export const resetPassword = async (
     return { error: "Mã OTP không hợp lệ hoặc đã hết hạn." };
   }
 
-  // Chỉ cần tìm người dùng trong /users
   const response = await fetch(`${USERS_API_URL}?email=${email}`);
   const matchingUsers: User[] = await response.json();
 
@@ -139,13 +134,14 @@ export const resetPassword = async (
 };
 
 export const sendPasswordResetOtp = async (
-  email: string
+  values: z.infer<typeof forgotPasswordSchema>
 ): Promise<{ success?: string; error?: string }> => {
-  if (!email) {
-    return { error: "Email không được để trống." };
+  const validatedFields = forgotPasswordSchema.safeParse(values);
+  if (!validatedFields.success) {
+    return { error: "Email không hợp lệ." };
   }
+  const { email } = validatedFields.data;
 
-  // Chỉ cần kiểm tra email trong /users
   const response = await fetch(`${USERS_API_URL}?email=${email}`);
   const matchingUsers = await response.json();
 
