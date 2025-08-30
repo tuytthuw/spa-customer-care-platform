@@ -3,7 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useState, useTransition } from "react";
+import { resetPasswordFormSchema } from "@/features/auth/schemas";
+import { useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,19 +27,6 @@ import {
 import { resetPassword } from "@/features/auth/api/auth.api";
 import { toast } from "sonner";
 
-// Schema validation giữ nguyên
-const formSchema = z
-  .object({
-    password: z
-      .string()
-      .min(6, { message: "Mật khẩu phải có ít nhất 6 ký tự." }),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Mật khẩu xác nhận không khớp!",
-    path: ["confirmPassword"],
-  });
-
 export function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -47,8 +35,8 @@ export function ResetPasswordForm() {
 
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof resetPasswordFormSchema>>({
+    resolver: zodResolver(resetPasswordFormSchema),
     defaultValues: {
       password: "",
       confirmPassword: "",
@@ -56,7 +44,7 @@ export function ResetPasswordForm() {
   });
 
   // 2. Cập nhật hàm onSubmit để gọi API
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = (values: z.infer<typeof resetPasswordFormSchema>) => {
     if (!email || !token) {
       toast.error("Yêu cầu không hợp lệ. Vui lòng thử lại từ đầu.");
       return;

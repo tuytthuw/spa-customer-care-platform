@@ -8,3 +8,8 @@ export interface Customer {
   lastVisit: string; // ISO date string
   notes?: string;
 }
+
+export type FullCustomerProfile = Customer & {
+  email: string;
+  status: "active" | "inactive";
+};

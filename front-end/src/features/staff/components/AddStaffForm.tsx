@@ -2,7 +2,6 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -21,28 +20,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { mockServices } from "@/lib/mock-data";
 import { UploadCloud, File as FileIcon, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-
-const ROLES = ["technician", "receptionist", "manager"] as const;
-const STATUSES = ["active", "inactive"] as const;
-
-const staffFormSchema = z.object({
-  name: z.string().min(3, "Tên phải có ít nhất 3 ký tự."),
-  email: z.string().email("Email không hợp lệ."),
-  phone: z.string().regex(/(0[3|5|7|8|9])+([0-9]{8})\b/, {
-    message: "Số điện thoại không hợp lệ.",
-  }),
-  role: z.enum(ROLES, { message: "Vui lòng chọn vai trò." }),
-  status: z.enum(STATUSES, { message: "Vui lòng chọn trạng thái." }),
-  serviceIds: z.array(z.string()).optional(),
-  avatar: z.any().optional(),
-});
-
-type StaffFormValues = z.infer<typeof staffFormSchema>;
-
+import { staffFormSchema, StaffFormValues } from "@/features/staff/schemas";
+import ad
 interface AddStaffFormProps {
   onFormSubmit: (data: StaffFormValues) => void;
   onClose: () => void;

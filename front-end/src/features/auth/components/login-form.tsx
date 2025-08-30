@@ -3,7 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useState, useTransition } from "react";
+import { loginSchema } from "@/features/auth/schemas";
+import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContexts";
 import { login as loginAction } from "@/features/auth/api/auth.api";
@@ -28,29 +29,20 @@ import {
 import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
 
-const formSchema = z.object({
-  email: z.string().email({
-    message: "Địa chỉ email không hợp lệ.",
-  }),
-  password: z.string().min(1, {
-    message: "Mật khẩu không được để trống.",
-  }),
-});
-
 export function LoginForm() {
   const router = useRouter();
   const { login: setAuthUser } = useAuth();
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof loginSchema>) {
     startTransition(() => {
       loginAction(values).then((result) => {
         if (result.error) {
@@ -60,8 +52,6 @@ export function LoginForm() {
 
         if (result.success && result.user) {
           toast.success("Đăng nhập thành công!");
-          // Dữ liệu người dùng từ API đã có vai trò chính xác,
-          // chỉ cần truyền thẳng vào context.
           setAuthUser(result.user);
           router.push("/dashboard");
         }

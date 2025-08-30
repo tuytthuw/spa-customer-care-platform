@@ -13,23 +13,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { z } from "zod";
 import { UploadCloud, File as FileIcon, X } from "lucide-react";
 import { useRef, useState } from "react";
-import { cn } from "@/lib/utils"; // 1. Import `cn` utility
-
-// Định nghĩa schema validation
-const customerFormSchema = z.object({
-  name: z.string().min(3, { message: "Tên phải có ít nhất 3 ký tự." }),
-  email: z.string().email({ message: "Email không hợp lệ." }),
-  phone: z.string().regex(/(0[3|5|7|8|9])+([0-9]{8})\b/, {
-    message: "Số điện thoại không hợp lệ.",
-  }),
-  notes: z.string().optional(),
-  avatar: z.any().optional(),
-});
-
-type CustomerFormValues = z.infer<typeof customerFormSchema>;
+import { cn } from "@/lib/utils";
+import {
+  customerFormSchema,
+  CustomerFormValues,
+} from "@/features/customer/schemas";
 
 interface AddCustomerFormProps {
   onFormSubmit: (data: CustomerFormValues) => void;

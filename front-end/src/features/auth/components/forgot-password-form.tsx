@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { forgotPasswordSchema } from "@/features/auth/schemas";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -27,27 +28,21 @@ import {
 import { sendPasswordResetOtp } from "@/features/auth/api/auth.api";
 import { toast } from "sonner";
 
-const formSchema = z.object({
-  email: z.string().email({
-    message: "Địa chỉ email không hợp lệ.",
-  }),
-});
-
 export function ForgotPasswordForm() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof forgotPasswordSchema>>({
+    resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
       email: "",
     },
   });
 
   // 2. Cập nhật hàm onSubmit
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = (values: z.infer<typeof forgotPasswordSchema>) => {
     startTransition(() => {
-      sendPasswordResetOtp(values.email).then((result) => {
+      sendPasswordResetOtp(values).then((result) => {
         if (result.error) {
           toast.error(result.error);
         }
