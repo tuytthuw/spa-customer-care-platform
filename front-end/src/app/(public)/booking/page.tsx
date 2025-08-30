@@ -6,7 +6,7 @@ import DateTimeStep from "@/features/booking/components/date-time-step";
 import ConfirmationStep from "@/features/booking/components/confirmation-step";
 import ServiceSelectionStep from "@/features/booking/components/ServiceSelectionStep";
 import BookingSuccessStep from "@/features/booking/components/BookingSuccessStep";
-import { Service } from "@/types/service";
+import { Service } from "@/features/service/types";
 import { BookingSteps } from "@/features/booking/components/BookingSteps";
 
 export default function BookingPage() {

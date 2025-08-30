@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Appointment } from "@/types/appointment";
+import { Appointment } from "@/features/appointment/types";
 
 interface LogStatusModalProps {
   isOpen: boolean;

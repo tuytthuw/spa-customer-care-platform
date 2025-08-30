@@ -3,9 +3,9 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Appointment, AppointmentStatus } from "@/types/appointment";
-import { Customer } from "@/types/customer";
-import { Service } from "@/types/service";
+import { Appointment, AppointmentStatus } from "@/features/appointment/types";
+import { Customer } from "@/features/customer/types";
+import { Service } from "@/features/service/types";
 import { cn } from "@/lib/utils";
 
 interface AppointmentTimelineProps {

@@ -1,9 +1,9 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Appointment } from "@/types/appointment";
-import { Service } from "@/types/service";
-import { Staff } from "@/types/staff";
+import { Appointment } from "@/features/appointment/types";
+import { Service } from "@/features/service/types";
+import { Staff } from "@/features/staff/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AppointmentCard from "@/features/appointment/components/my-appointments/AppointmentCard";
 import {
@@ -11,7 +11,7 @@ import {
   updateAppointmentStatus, // Giả sử bạn sẽ tạo hàm này
 } from "@/features/appointment/api/appointment.api";
 import { getServices } from "@/features/service/api/service.api";
-import { getStaff } from "@/services/staff.api";
+import { getStaff } from "@/features/staff/api/staff.api";
 import { toast } from "sonner";
 
 export default function AppointmentsPage() {

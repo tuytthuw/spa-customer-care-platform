@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { TreatmentPackage } from "@/types/treatment";
+import { TreatmentPackage } from "@/features/treatment/types";
 import { TreatmentPlan } from "@/types/treatmentPlan";
-import { Staff } from "@/types/staff";
+import { Staff } from "@/features/staff/types";
 import {
   Card,
   CardContent,

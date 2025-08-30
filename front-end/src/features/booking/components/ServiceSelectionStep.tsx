@@ -1,5 +1,5 @@
 import { mockServices } from "@/lib/mock-data";
-import { Service } from "@/types/service";
+import { Service } from "@/features/service/types";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Clock, Tag } from "lucide-react";

@@ -1,6 +1,6 @@
 // Trong thực tế, trang này cần 'use client' để lấy dữ liệu từ context
 // Nhưng để đơn giản, ta sẽ dùng Server Component với dữ liệu giả
-import ProfileForm from "@/components/forms/ProfileForm";
+import ProfileForm from "@/features/user/components/ProfileForm";
 import { mockUser } from "@/lib/mock-data";
 
 // Mô phỏng việc lấy dữ liệu người dùng hiện tại

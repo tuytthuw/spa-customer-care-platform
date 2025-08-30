@@ -1,17 +1,17 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getResources } from "@/services/resource.api";
+import { getResources } from "@/features/resource/api/resource.api";
 import { getAppointments } from "@/features/appointment/api/appointment.api";
 import {
   getCustomers,
   FullCustomerProfile,
 } from "@/features/customer/api/customer.api";
-import { getStaff } from "@/services/staff.api";
+import { getStaff } from "@/features/staff/api/staff.api";
 import ResourceCalendar from "@/features/resource/components/ResourceCalendar";
-import { Appointment } from "@/types/appointment";
-import { Resource } from "@/types/resource";
-import { Staff } from "@/types/staff";
+import { Appointment } from "@/features/appointment/types";
+import { Resource } from "@/features/resource/types";
+import { Staff } from "@/features/staff/types";
 
 export default function ResourceSchedulePage() {
   // Fetch tất cả dữ liệu cần thiết

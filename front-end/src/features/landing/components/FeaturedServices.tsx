@@ -1,6 +1,6 @@
 import ServiceCard from "@/features/service/components/service-card";
 import { Button } from "@/components/ui/button";
-import { Service } from "@/types/service";
+import { Service } from "@/features/service/types";
 import Link from "next/link";
 import { getServices } from "@/features/service/api/service.api";
 

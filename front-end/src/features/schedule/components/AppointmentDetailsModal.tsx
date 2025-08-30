@@ -10,7 +10,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Appointment } from "@/types/appointment";
+import { Appointment } from "@/features/appointment/types";
 import { mockCustomers, mockServices } from "@/lib/mock-data";
 import { User, NotebookPen } from "lucide-react"; // Import icon mới
 import CustomerProfileModal from "../../technician/components/CustomerProfileModal";

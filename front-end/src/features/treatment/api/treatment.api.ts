@@ -1,6 +1,6 @@
 // src/services/treatmentPlanService.ts
-import { TreatmentPlan } from "@/types/treatmentPlan";
-import { TreatmentPackage } from "@/types/treatment";
+import { TreatmentPlan } from "@/features/treatment/types";
+import { TreatmentPackage } from "@/features/treatment/types";
 import { v4 as uuidv4 } from "uuid";
 
 const PLANS_API_URL = "http://localhost:3001/treatmentPlans";

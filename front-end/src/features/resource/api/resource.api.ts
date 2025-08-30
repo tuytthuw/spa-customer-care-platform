@@ -1,5 +1,5 @@
 // src/services/resourceService.ts
-import { Resource } from "@/types/resource";
+import { Resource } from "@/features/resource/types";
 
 const RESOURCES_API_URL = "http://localhost:3001/resources";
 

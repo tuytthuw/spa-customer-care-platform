@@ -3,18 +3,18 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Invoice, InvoiceItem } from "@/types/invoice";
-import { Product } from "@/types/product";
-import { Service } from "@/types/service";
+import { Invoice, InvoiceItem } from "@/features/billing/types";
+import { Product } from "@/features/product/types";
+import { Service } from "@/features/service/types";
 import { TreatmentPlan } from "@/types/treatmentPlan";
 import {
   FullCustomerProfile,
   getCustomers,
 } from "@/features/customer/api/customer.api";
 import { getServices } from "@/features/service/api/service.api";
-import { getProducts } from "@/services/product.api";
-import { getTreatmentPlans } from "@/services/treatment.api";
-import { createInvoice } from "@/services/invoice.api";
+import { getProducts } from "@/features/product/api/product.api";
+import { getTreatmentPlans } from "@/features/treatment/api/treatment.api";
+import { createInvoice } from "@/features/billing/api/invoice.api";
 
 import BillingDetails from "@/features/billing/components/BillingDetails";
 import InvoiceReceipt from "@/features/billing/components/InvoiceReceipt";

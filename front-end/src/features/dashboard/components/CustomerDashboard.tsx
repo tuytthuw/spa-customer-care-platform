@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Appointment } from "@/types/appointment";
+import { Appointment } from "@/features/appointment/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AppointmentCard from "@/features/appointment/components/my-appointments/AppointmentCard";
 import { getAppointments } from "@/features/appointment/api/appointment.api";

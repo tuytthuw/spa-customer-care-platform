@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Product } from "@/types/product"; // Đảm bảo bạn đã có type này
+import { Product } from "@/features/product/types"; // Đảm bảo bạn đã có type này
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,

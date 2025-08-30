@@ -1,6 +1,6 @@
 // src/services/customerService.ts
-import { Customer } from "@/types/customer";
-import { User } from "@/types/user";
+import { Customer } from "@/features/customer/types";
+import { User } from "@/features/user/types";
 import { v4 as uuidv4 } from "uuid";
 
 const CUSTOMERS_API_URL = "http://localhost:3001/customers";

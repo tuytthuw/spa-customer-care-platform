@@ -1,5 +1,5 @@
 // src/services/productService.ts
-import { Product } from "@/types/product";
+import { Product } from "@/features/product/types";
 
 const PRODUCTS_API_URL = "http://localhost:3001/products";
 

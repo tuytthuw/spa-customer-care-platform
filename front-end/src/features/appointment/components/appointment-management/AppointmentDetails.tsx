@@ -3,10 +3,10 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { Appointment, AppointmentStatus } from "@/types/appointment";
-import { Customer } from "@/types/customer";
-import { Service } from "@/types/service";
-import { Staff } from "@/types/staff";
+import { Appointment, AppointmentStatus } from "@/features/appointment/types";
+import { Customer } from "@/features/customer/types";
+import { Service } from "@/features/service/types";
+import { Staff } from "@/features/staff/types";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 

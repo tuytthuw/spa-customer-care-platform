@@ -9,7 +9,7 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 import { mockProducts } from "@/lib/mock-data";
-import { Product } from "@/types/product";
+import { Product } from "@/features/product/types";
 
 interface ProductSearchProps {
   onAddProduct: (product: Product) => void;

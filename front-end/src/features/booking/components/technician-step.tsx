@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 // 1. Sửa lại import để dùng mockStaff và type Staff
 import { mockStaff } from "@/lib/mock-data";
-import { Staff } from "@/types/staff";
+import { Staff } from "@/features/staff/types";
 
 interface TechnicianStepProps {
   onNextStep: (technicianId?: string) => void;

@@ -1,5 +1,5 @@
-import { TreatmentSession } from "@/types/treatment";
-import { Staff } from "@/types/staff";
+import { TreatmentSession } from "@/features/treatment/types";
+import { Staff } from "@/features/staff/types";
 import {
   Table,
   TableBody,

@@ -8,8 +8,8 @@ import ServiceBreakdownChart from "@/features/reports/components/ServiceBreakdow
 import { Activity, CalendarCheck, DollarSign, Users } from "lucide-react";
 import { getAppointments } from "@/features/appointment/api/appointment.api";
 import { getCustomers } from "@/features/customer/api/customer.api";
-import { Appointment } from "@/types/appointment";
-import { Customer } from "@/types/customer";
+import { Appointment } from "@/features/appointment/types";
+import { Customer } from "@/features/customer/types";
 
 export default function ManagerDashboard() {
   // 1. Fetch dữ liệu appointments và customers từ API

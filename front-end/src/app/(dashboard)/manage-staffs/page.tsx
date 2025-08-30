@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Staff } from "@/types/staff";
+import { Staff } from "@/features/staff/types";
 import { columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
@@ -14,14 +14,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import AddStaffForm from "@/components/forms/AddStaffForm";
-import EditStaffForm from "@/components/forms/EditStaffForm"; // 1. Import form chỉnh sửa
+import AddStaffForm from "@/features/staff/components/AddStaffForm";
+import EditStaffForm from "@/features/staff/components/EditStaffForm"; // 1. Import form chỉnh sửa
 import {
   getStaff,
   addStaff,
   updateStaff,
   updateStaffStatus,
-} from "@/services/staff.api"; // 2. Import các hàm mới
+} from "@/features/staff/api/staff.api"; // 2. Import các hàm mới
 import { toast } from "sonner";
 
 type StaffFormValues = {

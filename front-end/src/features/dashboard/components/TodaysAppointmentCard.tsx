@@ -1,6 +1,6 @@
-import { Appointment } from "@/types/appointment";
-import { Customer } from "@/types/customer";
-import { Service } from "@/types/service";
+import { Appointment } from "@/features/appointment/types";
+import { Customer } from "@/features/customer/types";
+import { Service } from "@/features/service/types";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Clock, Check, Play } from "lucide-react";

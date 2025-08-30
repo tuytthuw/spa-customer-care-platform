@@ -13,8 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Appointment } from "@/types/appointment";
-import { TreatmentPackage } from "@/types/treatment"; // Import TreatmentPackage
+import { Appointment } from "@/features/appointment/types";
+import { TreatmentPackage } from "@/features/treatment/types"; // Import TreatmentPackage
 import StarRating from "./StarRating";
 import { mockServices } from "@/lib/mock-data";
 

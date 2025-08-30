@@ -1,5 +1,5 @@
 // src/services/staffService.ts
-import { Staff } from "@/types/staff";
+import { Staff } from "@/features/staff/types";
 import { v4 as uuidv4 } from "uuid";
 
 const STAFF_API_URL = "http://localhost:3001/staff";
