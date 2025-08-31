@@ -46,3 +46,5 @@ export const personSchema = z.object({
   phone: phoneSchema,
   avatar: imageFileSchema,
 });
+
+export type PesonFormValues = z.infer<typeof personSchema>;

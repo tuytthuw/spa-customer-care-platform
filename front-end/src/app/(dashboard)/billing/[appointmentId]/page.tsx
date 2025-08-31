@@ -6,11 +6,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Invoice, InvoiceItem } from "@/features/billing/types";
 import { Product } from "@/features/product/types";
 import { Service } from "@/features/service/types";
-import { TreatmentPlan } from "@/types/treatmentPlan";
-import {
-  FullCustomerProfile,
-  getCustomers,
-} from "@/features/customer/api/customer.api";
+import { TreatmentPlan } from "@/features/treatment/types";
+import { getCustomers } from "@/features/customer/api/customer.api";
+import { FullCustomerProfile } from "@/features/customer/types";
 import { getServices } from "@/features/service/api/service.api";
 import { getProducts } from "@/features/product/api/product.api";
 import { getTreatmentPlans } from "@/features/treatment/api/treatment.api";

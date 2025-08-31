@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Customer } from "@/features/customer/types";
+import { FullCustomerProfile } from "@/features/customer/types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -36,7 +36,8 @@ export default function CustomersPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   // 3. Thêm state để quản lý dialog chỉnh sửa và khách hàng đang được sửa
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
+  const [editingCustomer, setEditingCustomer] =
+    useState<FullCustomerProfile | null>(null);
 
   const queryClient = useQueryClient();
 
@@ -44,7 +45,7 @@ export default function CustomersPage() {
     data: customers = [],
     isLoading,
     error,
-  } = useQuery<Customer[]>({
+  } = useQuery<FullCustomerProfile[]>({
     queryKey: ["customers"],
     queryFn: getCustomers,
   });
@@ -111,7 +112,7 @@ export default function CustomersPage() {
   };
 
   // 5. Hàm để mở dialog chỉnh sửa
-  const handleEditCustomer = (customer: Customer) => {
+  const handleEditCustomer = (customer: FullCustomerProfile) => {
     setEditingCustomer(customer);
     setIsEditDialogOpen(true);
   };

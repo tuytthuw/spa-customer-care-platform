@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Service } from "@/features/service/types";
-import { TreatmentPlan } from "@/types/treatmentPlan";
+import { TreatmentPlan } from "@/features/treatment/types";
 import { columns as serviceColumns } from "./service-columns";
 import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
@@ -33,23 +33,8 @@ import {
   updateTreatmentPlanStatus,
 } from "@/features/treatment/api/treatment.api";
 import { toast } from "sonner";
-
-type ServiceFormValues = {
-  name: string;
-  description?: string;
-  category: string;
-  price: number;
-  duration: number;
-  imageFile?: any;
-};
-
-type TreatmentPlanFormValues = {
-  name: string;
-  description?: string;
-  price: number;
-  totalSessions: number;
-  imageFile?: any;
-};
+import { ServiceFormValues } from "@/features/service/schemas";
+import { TreatmentPlanFormValues } from "@/features/treatment/schemas";
 
 export default function ServicesManagementPage() {
   const [isServiceAddOpen, setIsServiceAddOpen] = useState(false);
@@ -82,8 +67,13 @@ export default function ServicesManagementPage() {
     },
   });
   const updateServiceMutation = useMutation({
-    mutationFn: ({ serviceId, data }: { serviceId: string; data: any }) =>
-      updateService(serviceId, data),
+    mutationFn: ({
+      serviceId,
+      data,
+    }: {
+      serviceId: string;
+      data: ServiceFormValues;
+    }) => updateService(serviceId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["services"] });
       setIsServiceEditOpen(false);
@@ -123,8 +113,13 @@ export default function ServicesManagementPage() {
     },
   });
   const updatePlanMutation = useMutation({
-    mutationFn: ({ planId, data }: { planId: string; data: any }) =>
-      updateTreatmentPlan(planId, data),
+    mutationFn: ({
+      planId,
+      data,
+    }: {
+      planId: string;
+      data: TreatmentPlanFormValues;
+    }) => updateTreatmentPlan(planId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["treatmentPlans"] });
       setIsPlanEditOpen(false);

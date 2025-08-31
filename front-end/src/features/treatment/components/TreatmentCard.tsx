@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { TreatmentPackage } from "@/features/treatment/types";
-import { TreatmentPlan } from "@/types/treatmentPlan";
+import { TreatmentPlan } from "@/features/treatment/types";
 import { Staff } from "@/features/staff/types";
 import {
   Card,

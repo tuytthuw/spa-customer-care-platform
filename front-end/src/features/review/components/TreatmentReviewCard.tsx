@@ -1,4 +1,5 @@
 import { TreatmentPackage } from "@/features/treatment/types";
+import { Service } from "@/features/service/types";
 import {
   Card,
   CardContent,
@@ -8,21 +9,22 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { mockServices } from "@/lib/mock-data";
 
 interface TreatmentReviewCardProps {
   treatmentPackage: TreatmentPackage;
+  services: Service[];
   onWriteReview: () => void;
 }
 
 const TreatmentReviewCard = ({
   treatmentPackage,
+  services,
   onWriteReview,
 }: TreatmentReviewCardProps) => {
-  const service = mockServices.find((s) => s.id === treatmentPackage.serviceId);
+  const service = services.find((s) => s.id === treatmentPackage.serviceId);
 
   if (!service) {
-    return null; // Or a fallback UI
+    return null;
   }
 
   return (

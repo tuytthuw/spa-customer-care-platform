@@ -73,6 +73,17 @@
       "notes": "rgsdfbhb",
       "totalAppointments": 0,
       "lastVisit": "2025-08-25T12:40:24.195Z"
+    },
+    {
+      "id": "a2f8126f-fe90-477f-be1b-2a82968b9b54",
+      "userId": "user-561784d7-a068-4db6-bc15-e5356d348387",
+      "name": "Áo phông",
+      "email": "Tinvg2918@gmail.com",
+      "phone": "0926630480",
+      "avatar": {},
+      "notes": "ẻ",
+      "totalAppointments": 0,
+      "lastVisit": "2025-08-30T13:20:27.335Z"
     }
   ],
   "staff": [
@@ -83,7 +94,8 @@
       "phone": "0911223344",
       "role": "technician",
       "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=tech-1",
-      "serviceIds": []
+      "serviceIds": [],
+      "status": "active"
     },
     {
       "id": "rec-1",
@@ -91,7 +103,8 @@
       "name": "Phạm Kiều Trang",
       "phone": "0933445566",
       "role": "receptionist",
-      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=rec-1"
+      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=rec-1",
+      "status": "active"
     },
     {
       "id": "fbc7dddb-9628-4673-a827-860e6d119301",
@@ -100,7 +113,8 @@
       "phone": "0926630480",
       "role": "receptionist",
       "serviceIds": [],
-      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Áo phông basic"
+      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Áo phông basic",
+      "status": "active"
     }
   ],
   "services": [
@@ -109,7 +123,7 @@
       "name": "Chăm sóc da mặt chuyên sâu",
       "description": "Liệu trình làm sạch, tẩy tế bào chết, massage và đắp mặt nạ, giúp da sáng khỏe và mịn màng.",
       "price": 500000,
-      "duration": 333,
+      "duration": 328,
       "category": "Chăm sóc da",
       "imageUrl": "/images/service-1.jpg",
       "status": "active"
@@ -157,7 +171,9 @@
       "id": "plan-1",
       "name": "Liệu trình Triệt lông Nách vĩnh viễn",
       "description": "Gói 10 buổi triệt lông bằng công nghệ Diode Laser an toàn và hiệu quả, cam kết bảo hành 5 năm.",
-      "serviceIds": ["3"],
+      "serviceIds": [
+        "3"
+      ],
       "price": 8000000,
       "totalSessions": 10,
       "imageUrl": "/images/service-3.jpg"
@@ -166,7 +182,9 @@
       "id": "plan-2",
       "name": "Gói Phục hồi da chuyên sâu 5 buổi",
       "description": "Liệu trình 5 buổi chăm sóc da mặt chuyên sâu, giúp tái tạo làn da, mang lại vẻ sáng khỏe và mịn màng.",
-      "serviceIds": ["1"],
+      "serviceIds": [
+        "1"
+      ],
       "price": 2200000,
       "totalSessions": 5,
       "imageUrl": "/images/service-1.jpg"
@@ -175,7 +193,9 @@
       "id": "plan-3",
       "name": "Gói Massage thư giãn trị liệu",
       "description": "Combo 5 buổi massage toàn thân với tinh dầu thiên nhiên, giúp giảm căng thẳng, mệt mỏi và phục hồi năng lượng.",
-      "serviceIds": ["2"],
+      "serviceIds": [
+        "2"
+      ],
       "price": 3000000,
       "totalSessions": 5,
       "imageUrl": "/images/service-2.jpg"

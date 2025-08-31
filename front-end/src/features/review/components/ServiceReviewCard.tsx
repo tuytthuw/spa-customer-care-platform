@@ -1,29 +1,28 @@
 import { Appointment } from "@/features/appointment/types";
+import { Service } from "@/features/service/types";
+import { Staff } from "@/features/staff/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-// Sửa lại import để dùng dữ liệu có sẵn
-import { mockServices, mockStaff } from "@/lib/mock-data";
 
 interface ReviewCardProps {
   appointment: Appointment;
+  services: Service[];
+  staff: Staff[];
   onWriteReview: () => void;
 }
 
-const ReviewCard = ({ appointment, onWriteReview }: ReviewCardProps) => {
-  // Tìm thông tin service và staff dựa trên ID
-  const service = mockServices.find((s) => s.id === appointment.serviceId);
-  const staff = mockStaff.find((s) => s.id === appointment.technicianId);
+const ReviewCard = ({
+  appointment,
+  services,
+  staff,
+  onWriteReview,
+}: ReviewCardProps) => {
+  const service = services.find((s) => s.id === appointment.serviceId);
+  const staffMember = staff.find((s) => s.id === appointment.technicianId);
 
-  // Xử lý trường hợp không tìm thấy
   if (!service) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Dịch vụ không tồn tại</CardTitle>
-        </CardHeader>
-      </Card>
-    );
+    return null;
   }
 
   return (
@@ -45,7 +44,9 @@ const ReviewCard = ({ appointment, onWriteReview }: ReviewCardProps) => {
           <div>
             <p>
               Kỹ thuật viên:{" "}
-              <strong>{staff ? staff.name : "Chưa xác định"}</strong>
+              <strong>
+                {staffMember ? staffMember.name : "Chưa xác định"}
+              </strong>
             </p>
             <p>
               Ngày:{" "}

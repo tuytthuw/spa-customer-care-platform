@@ -17,7 +17,6 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import CancelAppointmentModal from "./CancelAppointmentModal";
 
-// 1. Cập nhật Props để nhận đầy đủ object `service` và `technician`
 interface AppointmentCardProps {
   appointment: Appointment;
   service: Service;
@@ -27,20 +26,11 @@ interface AppointmentCardProps {
 
 const AppointmentCard = ({
   appointment,
-  service, // 2. Nhận service từ props
-  technician, // 3. Nhận technician từ props
+  service,
+  technician,
   onCancel,
 }: AppointmentCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // 4. Bỏ các dòng .find() không cần thiết vì dữ liệu đã được truyền vào
-  // const service = mockServices.find((s) => s.id === appointment.serviceId);
-  // const technician = mockStaff.find((t) => t.id === appointment.technicianId);
-
-  // Không cần kiểm tra service nữa vì nó là prop bắt buộc
-  // if (!service) {
-  //   return null;
-  // }
 
   const getStatusVariant = (status: string) => {
     switch (status) {

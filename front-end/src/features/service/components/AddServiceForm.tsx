@@ -17,22 +17,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { UploadCloud, File as FileIcon, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-
-// 1. Sửa lại schema để xử lý đối tượng File
-const serviceFormSchema = z.object({
-  name: z.string().trim().min(3, "Tên dịch vụ phải có ít nhất 3 ký tự."),
-  description: z
-    .string()
-    .trim()
-    .min(10, "Mô tả phải có ít nhất 10 ký tự.")
-    .optional(),
-  category: z.string().trim().min(2, "Danh mục không được để trống."),
-  price: z.number().min(0, "Giá phải là một số dương."),
-  duration: z.number().int().min(5, "Thời lượng phải ít nhất 5 phút."),
-  imageFile: z.any().optional(),
-});
-
-type ServiceFormValues = z.infer<typeof serviceFormSchema>;
+import {
+  serviceFormSchema,
+  ServiceFormValues,
+} from "@/features/service/schemas";
 
 interface AddServiceFormProps {
   onFormSubmit: (data: ServiceFormValues) => void;
@@ -48,7 +36,6 @@ export default function AddServiceForm({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
-  // 2. Thêm state để quản lý giá trị hiển thị cho ô giá tiền
   const [displayPrice, setDisplayPrice] = useState("");
 
   const form = useForm<ServiceFormValues>({
@@ -121,7 +108,6 @@ export default function AddServiceForm({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-4">
         <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto -m-6">
-          {/* ... các trường khác giữ nguyên ... */}
           <FormField
             control={form.control}
             name="name"

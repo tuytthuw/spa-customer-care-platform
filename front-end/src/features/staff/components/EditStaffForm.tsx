@@ -2,7 +2,6 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -24,29 +23,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { UploadCloud, File as FileIcon, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Staff } from "@/features/staff/types"; // 1. Import Staff type
-
-const ROLES = ["technician", "receptionist", "manager"] as const;
-const STATUSES = ["active", "inactive"] as const;
-
-// Schema validation giữ nguyên
-const staffFormSchema = z.object({
-  name: z.string().min(3, "Tên phải có ít nhất 3 ký tự."),
-  email: z.string().email("Email không hợp lệ."),
-  phone: z.string().regex(/(0[3|5|7|8|9])+([0-9]{8})\b/, {
-    message: "Số điện thoại không hợp lệ.",
-  }),
-  role: z.enum(ROLES, { message: "Vui lòng chọn vai trò." }),
-  status: z.enum(STATUSES, { message: "Vui lòng chọn trạng thái." }),
-  serviceIds: z.array(z.string()).optional(),
-  avatar: z.any().optional(),
-});
-
-type StaffFormValues = z.infer<typeof staffFormSchema>;
+import { FullStaffProfile } from "@/features/staff/types";
+import { Service } from "@/features/service/types";
+import { staffFormSchema, StaffFormValues } from "@/features/staff/schemas";
 
 // 2. Cập nhật Props để nhận dữ liệu ban đầu
 interface EditStaffFormProps {
-  initialData: Staff;
+  initialData: FullStaffProfile;
+  services: Service[];
   onFormSubmit: (data: StaffFormValues) => void;
   onClose: () => void;
   isSubmitting?: boolean;
@@ -54,6 +38,7 @@ interface EditStaffFormProps {
 
 export default function EditStaffForm({
   initialData,
+  services,
   onFormSubmit,
   onClose,
   isSubmitting,
@@ -64,7 +49,6 @@ export default function EditStaffForm({
 
   const form = useForm<StaffFormValues>({
     resolver: zodResolver(staffFormSchema),
-    // 3. Điền dữ liệu ban đầu vào form
     defaultValues: {
       name: initialData.name || "",
       email: initialData.email || "",
@@ -78,7 +62,6 @@ export default function EditStaffForm({
 
   const selectedRole = form.watch("role");
 
-  // 4. Reset form khi đối tượng nhân viên thay đổi
   useEffect(() => {
     form.reset({
       name: initialData.name,
@@ -211,7 +194,7 @@ export default function EditStaffForm({
                     </FormLabel>
                   </div>
                   <div className="space-y-2">
-                    {mockServices.map((service) => (
+                    {services.map((service) => (
                       <FormField
                         key={service.id}
                         control={form.control}
@@ -254,7 +237,6 @@ export default function EditStaffForm({
             />
           )}
 
-          {/* Phần upload ảnh */}
           <div>
             <FormLabel>Ảnh đại diện (Tùy chọn)</FormLabel>
             <input

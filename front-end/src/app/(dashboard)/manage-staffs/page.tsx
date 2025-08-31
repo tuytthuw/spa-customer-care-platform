@@ -2,26 +2,27 @@
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Staff } from "@/features/staff/types";
+import { FullStaffProfile } from "@/features/staff/types";
+import { Service } from "@/features/service/types";
 import { columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import AddStaffForm from "@/features/staff/components/AddStaffForm";
-import EditStaffForm from "@/features/staff/components/EditStaffForm"; // 1. Import form chỉnh sửa
+import EditStaffForm from "@/features/staff/components/EditStaffForm";
 import {
-  getStaff,
+  getStaffProfiles,
   addStaff,
   updateStaff,
   updateStaffStatus,
-} from "@/features/staff/api/staff.api"; // 2. Import các hàm mới
+} from "@/features/staff/api/staff.api";
+import { getServices } from "@/features/service/api/service.api";
 import { toast } from "sonner";
 
 type StaffFormValues = {
@@ -31,14 +32,15 @@ type StaffFormValues = {
   role: "technician" | "receptionist" | "manager";
   status: "active" | "inactive";
   serviceIds?: string[];
-  avatar?: any;
+  avatar?: File | undefined;
 };
 
 export default function StaffManagementPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  // 3. Thêm state để quản lý dialog chỉnh sửa
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [editingStaff, setEditingStaff] = useState<Staff | null>(null);
+  const [editingStaff, setEditingStaff] = useState<FullStaffProfile | null>(
+    null
+  );
 
   const queryClient = useQueryClient();
 
@@ -46,9 +48,17 @@ export default function StaffManagementPage() {
     data: staff = [],
     isLoading,
     error,
-  } = useQuery<Staff[]>({
+  } = useQuery<FullStaffProfile[]>({
     queryKey: ["staff"],
-    queryFn: getStaff,
+    queryFn: getStaffProfiles,
+  });
+
+  // Thêm query để lấy danh sách dịch vụ
+  const { data: services = [], isLoading: isLoadingServices } = useQuery<
+    Service[]
+  >({
+    queryKey: ["services"],
+    queryFn: getServices,
   });
 
   // Mutation để thêm nhân viên
@@ -106,7 +116,7 @@ export default function StaffManagementPage() {
   };
 
   // 6. Thêm các hàm xử lý mới
-  const handleEditStaff = (staffMember: Staff) => {
+  const handleEditStaff = (staffMember: FullStaffProfile) => {
     setEditingStaff(staffMember);
     setIsEditDialogOpen(true);
   };
@@ -145,6 +155,7 @@ export default function StaffManagementPage() {
               <DialogTitle>Tạo hồ sơ nhân viên mới</DialogTitle>
             </DialogHeader>
             <AddStaffForm
+              services={services}
               onFormSubmit={handleAddStaff}
               onClose={() => setIsAddDialogOpen(false)}
             />
@@ -170,6 +181,7 @@ export default function StaffManagementPage() {
             </DialogHeader>
             <EditStaffForm
               initialData={editingStaff}
+              services={services}
               onFormSubmit={handleUpdateStaff}
               onClose={() => setIsEditDialogOpen(false)}
               isSubmitting={updateStaffMutation.isPending}

@@ -1,25 +1,59 @@
-// Trong thực tế, trang này cần 'use client' để lấy dữ liệu từ context
-// Nhưng để đơn giản, ta sẽ dùng Server Component với dữ liệu giả
+"use client";
+
 import ProfileForm from "@/features/user/components/ProfileForm";
-import { mockUser } from "@/lib/mock-data";
+import { useAuth } from "@/contexts/AuthContexts";
+import { useQuery } from "@tanstack/react-query";
+import { getCustomers } from "@/features/customer/api/customer.api";
+import { getStaffProfiles } from "@/features/staff/api/staff.api";
+import { FullCustomerProfile } from "@/features/customer/types";
+import { FullStaffProfile } from "@/features/staff/types";
 
-// Mô phỏng việc lấy dữ liệu người dùng hiện tại
-const getCurrentUser = async () => {
-  // Thay thế bằng logic lấy user từ session hoặc context
-  return Promise.resolve(mockUser);
-};
+export default function ProfilePage() {
+  const { user } = useAuth();
 
-export default async function ProfilePage() {
-  const user = await getCurrentUser();
+  // Fetch both customer and staff profiles
+  const { data: customers = [], isLoading: loadingCustomers } = useQuery<
+    FullCustomerProfile[]
+  >({
+    queryKey: ["customers", user?.id],
+    queryFn: getCustomers,
+    enabled: !!user && user.role === "customer",
+  });
+
+  const { data: staff = [], isLoading: loadingStaff } = useQuery<
+    FullStaffProfile[]
+  >({
+    queryKey: ["staff", user?.id],
+    queryFn: getStaffProfiles,
+    enabled: !!user && user.role !== "customer",
+  });
+
+  const isLoading = loadingCustomers || loadingStaff;
+
+  if (!user || isLoading) {
+    return <div className="p-6">Đang tải thông tin hồ sơ...</div>;
+  }
+
+  let userProfile;
+  if (user.role === "customer") {
+    userProfile = customers.find((c) => c.userId === user.id);
+  } else {
+    userProfile = staff.find((s) => s.userId === user.id);
+  }
+
+  if (!userProfile) {
+    return <div className="p-6">Không tìm thấy thông tin hồ sơ chi tiết.</div>;
+  }
 
   return (
-    <div>
+    <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">Hồ sơ của tôi</h1>
       <ProfileForm
         defaultValues={{
-          name: user.name,
+          name: userProfile.name,
           email: user.email,
-          phone: user.phone || "",
+          phone: userProfile.phone || "",
+          avatar: userProfile.avatar || "",
         }}
       />
     </div>

@@ -6,5 +6,8 @@ export interface Staff {
   role: "technician" | "receptionist" | "manager";
   avatar?: string;
   serviceIds?: string[];
-  status?: "active" | "inactive";
 }
+export type FullStaffProfile = Staff & {
+  email: string;
+  status: "active" | "inactive";
+};
