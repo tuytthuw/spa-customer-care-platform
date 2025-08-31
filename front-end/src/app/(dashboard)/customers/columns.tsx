@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Customer } from "@/features/customer/types";
-import { FullCustomerProfile } from "@/features/customer/api/customer.api";
+import { FullCustomerProfile } from "@/features/customer/types";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -33,7 +33,7 @@ interface GetColumnsProps {
     userId: string, // Cập nhật để truyền userId thay vì customerId cho status
     newStatus: "active" | "inactive"
   ) => void;
-  onEdit: (customer: Customer) => void;
+  onEdit: (customer: FullCustomerProfile) => void;
 }
 
 export const columns = ({

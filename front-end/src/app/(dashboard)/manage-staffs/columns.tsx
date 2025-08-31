@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Staff } from "@/features/staff/types";
+import { FullStaffProfile } from "@/features/staff/types";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -28,14 +28,14 @@ import { cn } from "@/lib/utils";
 
 // 1. Cập nhật props để nhận cả hai hàm
 interface GetColumnsProps {
-  onEdit: (staff: Staff) => void;
+  onEdit: (staff: FullStaffProfile) => void;
   onUpdateStatus: (staffId: string, newStatus: "active" | "inactive") => void;
 }
 
 export const columns = ({
   onEdit,
   onUpdateStatus,
-}: GetColumnsProps): ColumnDef<Staff>[] => [
+}: GetColumnsProps): ColumnDef<FullStaffProfile>[] => [
   {
     accessorKey: "name",
     header: "Họ và tên",

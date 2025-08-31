@@ -7,6 +7,19 @@ const INVOICES_API_URL = "http://localhost:3001/invoices";
 // Lấy type Omit để loại bỏ các trường không cần thiết khi tạo mới
 type InvoiceCreationData = Omit<Invoice, "id" | "createdAt">;
 
+export const getInvoices = async (): Promise<Invoice[]> => {
+  try {
+    const response = await fetch(INVOICES_API_URL, { cache: "no-store" });
+    if (!response.ok) {
+      throw new Error("Failed to fetch invoices.");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching invoices:", error);
+    return [];
+  }
+};
+
 export const createInvoice = async (
   invoiceData: InvoiceCreationData
 ): Promise<Invoice> => {

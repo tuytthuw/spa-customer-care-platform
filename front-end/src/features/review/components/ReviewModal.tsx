@@ -14,25 +14,24 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Appointment } from "@/features/appointment/types";
-import { TreatmentPackage } from "@/features/treatment/types"; // Import TreatmentPackage
+import { TreatmentPackage } from "@/features/treatment/types";
+import { Service } from "@/features/service/types";
 import StarRating from "./StarRating";
-import { mockServices } from "@/lib/mock-data";
 
-// Cho phép modal nhận appointment hoặc treatmentPackage
 interface ReviewModalProps {
   isOpen: boolean;
   onClose: () => void;
-  item: Appointment | TreatmentPackage; // Dùng 'item' chung
+  item: Appointment | TreatmentPackage;
+  services: Service[];
 }
 
-const ReviewModal = ({ isOpen, onClose, item }: ReviewModalProps) => {
+const ReviewModal = ({ isOpen, onClose, item, services }: ReviewModalProps) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [images, setImages] = useState<File[]>([]);
 
-  // Xác định serviceId dựa trên loại item
   const serviceId = "serviceId" in item ? item.serviceId : null;
-  const service = mockServices.find((s) => s.id === serviceId);
+  const service = services.find((s) => s.id === serviceId);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {

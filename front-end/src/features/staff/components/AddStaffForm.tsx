@@ -24,13 +24,16 @@ import { UploadCloud, File as FileIcon, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { staffFormSchema, StaffFormValues } from "@/features/staff/schemas";
-import ad
+import { Service } from "@/features/service/types";
+
 interface AddStaffFormProps {
+  services: Service[];
   onFormSubmit: (data: StaffFormValues) => void;
   onClose: () => void;
 }
 
 export default function AddStaffForm({
+  services,
   onFormSubmit,
   onClose,
 }: AddStaffFormProps) {
@@ -192,7 +195,7 @@ export default function AddStaffForm({
                     </FormLabel>
                   </div>
                   <div className="space-y-2">
-                    {mockServices.map((service) => (
+                    {services.map((service) => (
                       <FormField
                         key={service.id}
                         control={form.control}

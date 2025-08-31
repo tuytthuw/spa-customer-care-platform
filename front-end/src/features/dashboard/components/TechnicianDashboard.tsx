@@ -1,10 +1,42 @@
-import TodaysAppointmentCard from "@/features/dashboard/components/TodaysAppointmentCard";
-import { mockAppointments, mockCustomers, mockServices } from "@/lib/mock-data";
+"use client";
 
-// Lọc các lịch hẹn cho "hôm nay" để hiển thị (giả lập)
-const todaysAppointments = mockAppointments.slice(0, 3);
+import TodaysAppointmentCard from "@/features/dashboard/components/TodaysAppointmentCard";
+import { useQuery } from "@tanstack/react-query";
+import { Appointment } from "@/features/appointment/types";
+import { Customer } from "@/features/customer/types";
+import { Service } from "@/features/service/types";
+import { getAppointments } from "@/features/appointment/api/appointment.api";
+import { getCustomers } from "@/features/customer/api/customer.api";
+import { getServices } from "@/features/service/api/service.api";
+import { useAuth } from "@/contexts/AuthContexts";
 
 export default function TechnicianDashboard() {
+  const { user } = useAuth(); // Lấy thông tin user đang đăng nhập
+
+  // Fetch tất cả dữ liệu cần thiết
+  const { data: appointments = [], isLoading: loadingAppointments } = useQuery<
+    Appointment[]
+  >({
+    queryKey: ["appointments"],
+    queryFn: getAppointments,
+  });
+
+  const { data: customers = [], isLoading: loadingCustomers } = useQuery<
+    Customer[]
+  >({
+    queryKey: ["customers"],
+    queryFn: getCustomers,
+  });
+
+  const { data: services = [], isLoading: loadingServices } = useQuery<
+    Service[]
+  >({
+    queryKey: ["services"],
+    queryFn: getServices,
+  });
+
+  const isLoading = loadingAppointments || loadingCustomers || loadingServices;
+
   const today = new Date();
   const dateString = today.toLocaleDateString("vi-VN", {
     weekday: "long",
@@ -13,10 +45,31 @@ export default function TechnicianDashboard() {
     day: "numeric",
   });
 
-  // Giả lập dữ liệu thống kê
+  if (isLoading) {
+    return (
+      <div className="p-6">
+        <h2 className="text-xl text-foreground mb-4">
+          Đang tải lịch hẹn hôm nay...
+        </h2>
+      </div>
+    );
+  }
+
+  // Lọc các lịch hẹn cho kỹ thuật viên đang đăng nhập và trong ngày hôm nay
+  const todaysAppointments = appointments.filter((app) => {
+    const appDate = new Date(app.date);
+    // Giả sử userId của staff và technicianId trong appointment là giống nhau
+    // Trong thực tế, có thể cần Abstraction Layer tốt hơn
+    return (
+      app.technicianId === user?.id &&
+      appDate.toDateString() === today.toDateString()
+    );
+  });
+
+  // Tính toán thống kê từ dữ liệu thật
   const totalCustomers = todaysAppointments.length;
   const inProgressCount = todaysAppointments.filter(
-    (a) => a.status === "upcoming"
+    (a) => a.status === "in-progress"
   ).length;
   const completedCount = todaysAppointments.filter(
     (a) => a.status === "completed"
@@ -62,22 +115,30 @@ export default function TechnicianDashboard() {
         </div>
 
         <div className="space-y-4">
-          {todaysAppointments.map((appointment) => {
-            const customer = mockCustomers.find((c) => c.id === "cus-1");
-            const service = mockServices.find(
-              (s) => s.id === appointment.serviceId
-            );
-            if (!customer || !service) return null;
+          {todaysAppointments.length > 0 ? (
+            todaysAppointments.map((appointment) => {
+              const customer = customers.find(
+                (c) => c.id === appointment.customerId
+              );
+              const service = services.find(
+                (s) => s.id === appointment.serviceId
+              );
+              if (!customer || !service) return null;
 
-            return (
-              <TodaysAppointmentCard
-                key={appointment.id}
-                appointment={appointment}
-                customer={customer}
-                service={service}
-              />
-            );
-          })}
+              return (
+                <TodaysAppointmentCard
+                  key={appointment.id}
+                  appointment={appointment}
+                  customer={customer}
+                  service={service}
+                />
+              );
+            })
+          ) : (
+            <div className="bg-card rounded-lg shadow-sm border border-border p-6 text-center">
+              <p>Bạn không có lịch hẹn nào hôm nay.</p>
+            </div>
+          )}
         </div>
       </div>
     </main>

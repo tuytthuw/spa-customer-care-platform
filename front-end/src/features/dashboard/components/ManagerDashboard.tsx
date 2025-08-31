@@ -8,11 +8,18 @@ import ServiceBreakdownChart from "@/features/reports/components/ServiceBreakdow
 import { Activity, CalendarCheck, DollarSign, Users } from "lucide-react";
 import { getAppointments } from "@/features/appointment/api/appointment.api";
 import { getCustomers } from "@/features/customer/api/customer.api";
+import { getInvoices } from "@/features/billing/api/invoice.api";
 import { Appointment } from "@/features/appointment/types";
 import { Customer } from "@/features/customer/types";
+import { Invoice } from "@/features/billing/types";
+
+const formatCurrency = (amount: number) =>
+  new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(
+    amount
+  );
 
 export default function ManagerDashboard() {
-  // 1. Fetch dữ liệu appointments và customers từ API
+  // 1. Fetch dữ liệu appointments, customers, invoices từ API
   const { data: appointments = [], isLoading: loadingAppointments } = useQuery<
     Appointment[]
   >({
@@ -27,8 +34,17 @@ export default function ManagerDashboard() {
     queryFn: getCustomers,
   });
 
+  const { data: invoices = [], isLoading: loadingInvoices } = useQuery<
+    Invoice[]
+  >({
+    queryKey: ["invoices"],
+    queryFn: getInvoices,
+  });
+
+  const isLoading = loadingAppointments || loadingCustomers || loadingInvoices;
+
   // 2. Xử lý trạng thái loading
-  if (loadingAppointments || loadingCustomers) {
+  if (isLoading) {
     return (
       <div className="flex-1 space-y-4 p-6 pt-6">
         <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
@@ -53,9 +69,16 @@ export default function ManagerDashboard() {
     (customer) => new Date(customer.lastVisit).toDateString() === today
   ).length;
 
-  // Giả lập doanh thu và tỷ lệ lấp đầy cho mục đích hiển thị
-  // Trong thực tế, bạn sẽ cần logic phức tạp hơn để tính toán các giá trị này
-  const revenueToday = "12,500,000đ";
+  // Tính doanh thu thật
+  const revenueToday = invoices
+    .filter(
+      (invoice) =>
+        new Date(invoice.createdAt).toDateString() === today &&
+        invoice.status === "paid"
+    )
+    .reduce((total, invoice) => total + invoice.total, 0);
+
+  // Tỷ lệ lấp đầy vẫn giữ giả lập vì logic phức tạp hơn
   const occupancyRate = "75%";
 
   return (
@@ -68,7 +91,7 @@ export default function ManagerDashboard() {
           {/* 4. Hiển thị dữ liệu động */}
           <StatsCard
             title="Doanh thu hôm nay"
-            value={revenueToday}
+            value={formatCurrency(revenueToday)}
             icon={DollarSign}
             description="+20.1% so với hôm qua"
           />

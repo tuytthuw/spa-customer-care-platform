@@ -7,9 +7,35 @@ import {
   ReactNode,
   useEffect,
 } from "react";
-import { Permission } from "@/types/permissions";
-import { mockRoles } from "@/lib/mock-data";
+import { Permission, Role, PERMISSIONS } from "@/types/permissions";
 import { User } from "@/features/user/types";
+
+const mockRoles: Role[] = [
+  {
+    id: "customer",
+    name: "Khách hàng",
+    permissions: [
+      PERMISSIONS.VIEW_APPOINTMENTS,
+      PERMISSIONS.VIEW_TREATMENTS,
+      PERMISSIONS.VIEW_REVIEWS,
+    ],
+  },
+  {
+    id: "technician",
+    name: "Kỹ thuật viên",
+    permissions: [PERMISSIONS.VIEW_SCHEDULE],
+  },
+  {
+    id: "receptionist",
+    name: "Lễ tân",
+    permissions: [PERMISSIONS.MANAGE_APPOINTMENTS, PERMISSIONS.VIEW_INBOX],
+  },
+  {
+    id: "manager",
+    name: "Quản lý",
+    permissions: Object.values(PERMISSIONS), // Quản lý có tất cả các quyền
+  },
+];
 
 //AuthUser là User, cộng thêm permissions
 export type AuthUser = User & {

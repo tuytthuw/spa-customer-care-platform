@@ -2,12 +2,9 @@
 
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { Customer } from "@/features/customer/types";
+import { FullCustomerProfile } from "@/features/customer/types";
 import { Appointment } from "@/features/appointment/types";
-import {
-  getCustomers,
-  FullCustomerProfile,
-} from "@/features/customer/api/customer.api";
+import { getCustomers } from "@/features/customer/api/customer.api";
 import { getAppointments } from "@/features/appointment/api/appointment.api";
 import { CustomerProfileCard } from "@/features/customer/components/CustomerProfileCard";
 import { AppointmentHistory } from "@/features/customer/components/AppointmentHistory";
