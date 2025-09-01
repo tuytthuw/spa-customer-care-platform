@@ -41,6 +41,10 @@ export const columns = ({
   onEdit,
 }: GetColumnsProps): ColumnDef<FullCustomerProfile>[] => [
   {
+    accessorKey: "id",
+    header: "ID",
+  },
+  {
     accessorKey: "name",
     header: "Họ và tên",
     cell: ({ row }) => {

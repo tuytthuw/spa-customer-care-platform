@@ -1,80 +1,85 @@
-// src/app/services/[id]/page.tsx
-import { mockServices } from "@/lib/mock-data";
-import { Service } from "@/features/service/types";
-import { Button } from "@/components/ui/button";
-import { Clock, Tag } from "lucide-react";
-import Image from "next/image";
-import { notFound } from "next/navigation";
-import Link from "next/link"; // Import Link
+"use client";
 
-// Mô phỏng việc gọi API để lấy 1 dịch vụ theo ID
-const getServiceById = async (id: string): Promise<Service | undefined> => {
-  // Thay thế bằng fetch tới API: /api/services/${id}
-  return Promise.resolve(mockServices.find((s) => s.id === id));
-};
+import { useQuery } from "@tanstack/react-query";
+import { getServiceById } from "@/features/service/api/service.api";
+import { getReviews } from "@/features/review/api/review.api"; // **MỚI**
+import { Review } from "@/features/review/types"; // **MỚI**
+import { ReviewList } from "@/features/review/components/ReviewList"; // **MỚI**
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { Clock, Tag } from "lucide-react";
+import { notFound } from "next/navigation";
 
 interface ServiceDetailPageProps {
-  params: {
-    id: string;
-  };
+  params: { id: string };
 }
 
-export default async function ServiceDetailPage({
-  params,
-}: ServiceDetailPageProps) {
-  const service = await getServiceById(params.id);
+export default function ServiceDetailPage({ params }: ServiceDetailPageProps) {
+  const { id } = params;
 
-  // Nếu không tìm thấy service, hiển thị trang 404
-  if (!service) {
+  const {
+    data: service,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["service", id],
+    queryFn: () => getServiceById(id),
+  });
+
+  // **MỚI: Query để lấy tất cả đánh giá**
+  const { data: allReviews = [], isLoading: isLoadingReviews } = useQuery<
+    Review[]
+  >({
+    queryKey: ["reviews"],
+    queryFn: getReviews,
+  });
+
+  if (isLoading || isLoadingReviews) {
+    return <div>Đang tải...</div>;
+  }
+
+  if (error || !service) {
     notFound();
   }
 
+  // **MỚI: Lọc ra các đánh giá cho dịch vụ này**
+  const serviceReviews = allReviews.filter(
+    (review) => review.serviceId === service.id
+  );
+
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-        {/* Cột hình ảnh */}
-        <div className="relative w-full h-96 rounded-lg overflow-hidden">
+    <div className="container mx-auto py-12">
+      <div className="grid md:grid-cols-2 gap-8 items-start">
+        <div>
           <Image
             src={service.imageUrl}
             alt={service.name}
-            fill
-            className="object-cover"
+            width={600}
+            height={600}
+            className="rounded-lg object-cover w-full"
           />
         </div>
-
-        {/* Cột thông tin */}
-        <div className="flex flex-col justify-center">
-          <p className="text-primary font-semibold mb-2">{service.category}</p>
-          <h1 className="text-4xl font-bold tracking-tight mb-4">
-            {service.name}
-          </h1>
-          <p className="text-muted-foreground text-lg mb-6">
-            {service.description}
-          </p>
-
-          <div className="flex items-center space-x-6 mb-6">
-            <div className="flex items-center gap-2">
-              <Clock className="w-5 h-5 text-muted-foreground" />
-              <span className="font-medium">{service.duration} phút</span>
+        <div>
+          <h1 className="text-4xl font-bold mb-4">{service.name}</h1>
+          <p className="text-muted-foreground mb-6">{service.description}</p>
+          <div className="flex items-center gap-6 mb-6">
+            <div className="flex items-center">
+              <Clock className="mr-2 h-5 w-5" />
+              <span>{service.duration} phút</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Tag className="w-5 h-5 text-muted-foreground" />
-              <span className="text-2xl font-bold text-primary">
-                {new Intl.NumberFormat("vi-VN", {
-                  style: "currency",
-                  currency: "VND",
-                }).format(service.price)}
+            <div className="flex items-center">
+              <Tag className="mr-2 h-5 w-5" />
+              <span className="font-semibold">
+                {new Intl.NumberFormat("vi-VN").format(service.price)} VNĐ
               </span>
             </div>
           </div>
-
-          <Link href={`/booking?serviceId=${service.id}`}>
-            <Button size="lg" className="w-full sm:w-auto">
-              Đặt Lịch Ngay
-            </Button>
-          </Link>
+          <Button size="lg">Đặt lịch ngay</Button>
         </div>
       </div>
+
+      {/* **MỚI: Hiển thị component danh sách đánh giá** */}
+      <ReviewList reviews={serviceReviews} />
     </div>
   );
 }

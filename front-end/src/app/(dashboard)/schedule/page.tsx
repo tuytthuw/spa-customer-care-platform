@@ -1,69 +1,131 @@
 "use client";
 
 import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Calendar } from "@/components/ui/calendar";
-import { mockAppointments as initialAppointments } from "@/lib/mock-data";
 import { Appointment } from "@/features/appointment/types";
+import { Customer } from "@/features/customer/types";
+import { Service } from "@/features/service/types";
+import { FullStaffProfile } from "@/features/staff/types";
+import {
+  getAppointments,
+  logAppointmentCompletion,
+} from "@/features/appointment/api/appointment.api";
+import { getCustomers } from "@/features/customer/api/customer.api";
+import { getServices } from "@/features/service/api/service.api";
+import { getStaffProfiles } from "@/features/staff/api/staff.api";
+import { useAuth } from "@/contexts/AuthContexts";
 import { AppointmentDetailsModal } from "@/features/schedule/components/AppointmentDetailsModal";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RegisterScheduleModal } from "@/features/schedule/components/RegisterScheduleModal";
+import { toast } from "sonner";
+import { ScheduleRegistrationData } from "@/features/schedule/types";
 
 export default function SchedulePage() {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [appointments, setAppointments] =
-    useState<Appointment[]>(initialAppointments);
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment | null>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false); // State for registration modal
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
+    null
+  );
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
 
-  // Filter appointments for the selected date and technician
-  const technicianId = "tech-1"; // Assuming this is the logged-in technician
+  const { data: staffProfiles = [], isLoading: loadingStaff } = useQuery<
+    FullStaffProfile[]
+  >({
+    queryKey: ["staffProfiles"],
+    queryFn: getStaffProfiles,
+    enabled: !!user,
+  });
+
+  const currentTechnician = staffProfiles.find((s) => s.userId === user?.id);
+
+  const { data: appointments = [], isLoading: loadingAppointments } = useQuery<
+    Appointment[]
+  >({
+    queryKey: ["appointments", currentTechnician?.id],
+    queryFn: getAppointments,
+    enabled: !!currentTechnician,
+  });
+
+  const { data: customers = [], isLoading: loadingCustomers } = useQuery<
+    Customer[]
+  >({
+    queryKey: ["customers"],
+    queryFn: getCustomers,
+  });
+
+  const { data: services = [], isLoading: loadingServices } = useQuery<
+    Service[]
+  >({
+    queryKey: ["services"],
+    queryFn: getServices,
+  });
+
+  const updateAppointmentMutation = useMutation({
+    mutationFn: ({ id, notes }: { id: string; notes: string }) =>
+      logAppointmentCompletion(id, notes),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["appointments", currentTechnician?.id],
+      });
+      toast.success("Đã cập nhật trạng thái lịch hẹn.");
+      setIsDetailsModalOpen(false);
+    },
+    onError: (error) => {
+      toast.error(`Cập nhật thất bại: ${error.message}`);
+    },
+  });
+
+  const isLoading =
+    loadingStaff || loadingAppointments || loadingCustomers || loadingServices;
+
   const dailyAppointments = appointments.filter((app) => {
     const appDate = new Date(app.date);
     const selectedDate = date || new Date();
+    // **SỬA LỖI LOGIC**: Chỉ lọc lịch hẹn của đúng kỹ thuật viên này
     return (
-      app.technicianId === technicianId &&
+      app.technicianId === currentTechnician?.id &&
       appDate.toDateString() === selectedDate.toDateString()
     );
   });
 
   const handleAppointmentClick = (appointment: Appointment) => {
+    // Tìm customer và service tương ứng từ danh sách đã fetch
+    const customer = customers.find((c) => c.id === appointment.customerId);
+    const service = services.find((s) => s.id === appointment.serviceId);
+
     setSelectedAppointment(appointment);
+    setSelectedCustomer(customer || null); // Lưu customer vào state
+    setSelectedService(service || null); // Lưu service vào state
     setIsDetailsModalOpen(true);
   };
 
-  // Handler for updating appointment notes and status
   const handleUpdateAppointment = (
     id: string,
     notes: string,
     status: "completed"
   ) => {
-    console.log(
-      `Updating appointment ${id} with notes: "${notes}" and status: ${status}`
-    );
-    setAppointments((current) =>
-      current.map((app) =>
-        app.id === id ? { ...app, technicianNotes: notes, status: status } : app
-      )
-    );
+    updateAppointmentMutation.mutate({ id, notes });
   };
 
-  // Handler for saving the registered schedule
-  const handleSaveSchedule = (scheduleData: any) => {
+  const handleSaveSchedule = (scheduleData: ScheduleRegistrationData) => {
     console.log("Saving schedule registration:", {
-      staffId: technicianId,
+      staffId: currentTechnician?.id,
       status: "pending",
       ...scheduleData,
     });
-    // In a real app, you would call an API to save this request
+    toast.success("Đã gửi yêu cầu đăng ký lịch tuần tới.");
   };
 
   return (
     <>
       <div className="container mx-auto p-4 md:p-6 lg:p-8">
-        {/* Header with the new registration button */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-3xl font-bold tracking-tight">Lịch làm việc</h2>
           <Button onClick={() => setIsRegisterModalOpen(true)}>
@@ -89,23 +151,39 @@ export default function SchedulePage() {
               Lịch hẹn ngày {date ? date.toLocaleDateString("vi-VN") : ""}
             </h2>
             <div className="space-y-4">
-              {dailyAppointments.length > 0 ? (
-                dailyAppointments.map((app) => (
-                  <button
-                    key={app.id}
-                    onClick={() => handleAppointmentClick(app)}
-                    className="w-full text-left"
-                  >
-                    <Card className="hover:bg-muted/50 transition-colors">
-                      <CardContent className="p-4">
-                        <p className="font-semibold">10:00 - Chăm sóc da</p>
-                        <p className="text-sm text-muted-foreground">
-                          Khách hàng: Nguyễn Thị A
-                        </p>
-                      </CardContent>
-                    </Card>
-                  </button>
-                ))
+              {isLoading ? (
+                <p>Đang tải lịch hẹn...</p>
+              ) : dailyAppointments.length > 0 ? (
+                // **THAY ĐỔI: Hiển thị dữ liệu động**
+                dailyAppointments.map((app) => {
+                  const service = services.find((s) => s.id === app.serviceId);
+                  const customer = customers.find(
+                    (c) => c.id === app.customerId
+                  );
+                  if (!service || !customer) return null;
+
+                  return (
+                    <button
+                      key={app.id}
+                      onClick={() => handleAppointmentClick(app)}
+                      className="w-full text-left"
+                    >
+                      <Card className="hover:bg-muted/50 transition-colors">
+                        <CardContent className="p-4">
+                          <p className="font-semibold">
+                            {`${new Date(app.date).toLocaleTimeString("vi-VN", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })} - ${service.name}`}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            Khách hàng: {customer.name}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </button>
+                  );
+                })
               ) : (
                 <p>Không có lịch hẹn nào trong ngày này.</p>
               )}
@@ -114,11 +192,12 @@ export default function SchedulePage() {
         </div>
       </div>
 
-      {/* Modals are kept outside the main layout grid for better stacking context */}
       <AppointmentDetailsModal
         isOpen={isDetailsModalOpen}
         onClose={() => setIsDetailsModalOpen(false)}
         appointment={selectedAppointment}
+        customer={selectedCustomer}
+        service={selectedService}
         onUpdateAppointment={handleUpdateAppointment}
       />
       <RegisterScheduleModal

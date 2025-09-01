@@ -12,11 +12,13 @@ import { Staff } from "@/features/staff/types";
 import {
   getAppointments,
   updateAppointmentStatus,
+  updateAppointmentDetails,
 } from "@/features/appointment/api/appointment.api";
 import { getCustomers } from "@/features/customer/api/customer.api";
 import { getServices } from "@/features/service/api/service.api";
 import { getStaff } from "@/features/staff/api/staff.api";
 import { toast } from "sonner";
+import { EventDropArg } from "@fullcalendar/core";
 
 export default function AppointmentsManagementPage() {
   const queryClient = useQueryClient();
@@ -69,8 +71,44 @@ export default function AppointmentsManagementPage() {
     },
   });
 
+  // Mutation xử lý kéo-thả**
+  const updateDetailsMutation = useMutation({
+    mutationFn: ({
+      id,
+      updates,
+    }: {
+      id: string;
+      updates: Partial<Pick<Appointment, "date" | "technicianId">>;
+    }) => updateAppointmentDetails(id, updates),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+      toast.success("Cập nhật lịch hẹn thành công!");
+    },
+    onError: (error) => {
+      toast.error(`Cập nhật thất bại: ${error.message}`);
+    },
+  });
+
   const handleStatusChange = (id: string, newStatus: AppointmentStatus) => {
     updateStatusMutation.mutate({ id, newStatus });
+  };
+
+  // **MỚI: Hàm xử lý sự kiện khi kéo-thả lịch hẹn**
+  const handleEventDrop = (info: EventDropArg) => {
+    const { event } = info;
+    const updates: Partial<Pick<Appointment, "date" | "technicianId">> = {};
+
+    if (event.start) {
+      updates.date = event.start.toISOString();
+    }
+
+    // `newResource` chỉ tồn tại trong các view resource, nếu bạn dùng nó
+    // if (info.newResource) {
+    //   updates.technicianId = info.newResource.id;
+    // }
+
+    console.log(`Updating appointment ${event.id} with`, updates);
+    updateDetailsMutation.mutate({ id: event.id, updates });
   };
 
   const selectedAppointment =
@@ -95,6 +133,7 @@ export default function AppointmentsManagementPage() {
         services={services}
         onSelectAppointment={(app) => setSelectedAppointmentId(app.id)}
         selectedAppointmentId={selectedAppointmentId}
+        onEventDrop={handleEventDrop}
       />
       <AppointmentDetails
         appointment={selectedAppointment}

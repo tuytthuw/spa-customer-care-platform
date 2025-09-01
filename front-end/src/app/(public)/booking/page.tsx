@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import DateTimeStep from "@/features/booking/components/date-time-step";
-import ConfirmationStep from "@/features/booking/components/confirmation-step";
+import ConfirmationStep from "@/features/booking/components/ConfirmationStep";
 import ServiceSelectionStep from "@/features/booking/components/ServiceSelectionStep";
 import BookingSuccessStep from "@/features/booking/components/BookingSuccessStep";
 import { Service } from "@/features/service/types";

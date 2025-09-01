@@ -22,6 +22,8 @@ interface AppointmentCardProps {
   service: Service;
   technician?: Staff; // Kỹ thuật viên có thể không được chỉ định
   onCancel: (id: string, reason: string) => void;
+  onReview: (appointment: Appointment) => void;
+  hasReviewed: boolean;
 }
 
 const AppointmentCard = ({
@@ -29,8 +31,10 @@ const AppointmentCard = ({
   service,
   technician,
   onCancel,
+  onReview,
+  hasReviewed,
 }: AppointmentCardProps) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
 
   const getStatusVariant = (status: string) => {
     switch (status) {
@@ -47,6 +51,7 @@ const AppointmentCard = ({
 
   const handleConfirmCancel = (reason: string) => {
     onCancel(appointment.id, reason);
+    setIsCancelModalOpen(false);
   };
 
   return (
@@ -95,18 +100,29 @@ const AppointmentCard = ({
             </p>
           </div>
         </CardContent>
-        {appointment.status === "upcoming" && (
-          <CardFooter className="flex justify-end">
-            <Button variant="destructive" onClick={() => setIsModalOpen(true)}>
-              Hủy lịch
+        <CardFooter className="flex justify-end gap-2">
+          {appointment.status === "upcoming" && (
+            <Button
+              variant="outline"
+              onClick={() => setIsCancelModalOpen(true)}
+            >
+              Hủy lịch hẹn
             </Button>
-          </CardFooter>
-        )}
+          )}
+          {appointment.status === "completed" && !hasReviewed && (
+            <Button onClick={() => onReview(appointment)}>Viết đánh giá</Button>
+          )}
+          {appointment.status === "completed" && hasReviewed && (
+            <Button variant="outline" disabled>
+              Đã đánh giá
+            </Button>
+          )}
+        </CardFooter>
       </Card>
 
       <CancelAppointmentModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isCancelModalOpen}
+        onClose={() => setIsCancelModalOpen(false)}
         onConfirm={handleConfirmCancel}
       />
     </>

@@ -11,16 +11,18 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Appointment } from "@/features/appointment/types";
-import { mockCustomers, mockServices } from "@/lib/mock-data";
-import { User, NotebookPen } from "lucide-react"; // Import icon mới
+import { Customer } from "@/features/customer/types";
+import { Service } from "@/features/service/types";
+import { User, NotebookPen } from "lucide-react";
 import CustomerProfileModal from "../../technician/components/CustomerProfileModal";
-import LogStatusModal from "../../technician/components/LogStatusModal"; // Import modal ghi chú
+import LogStatusModal from "../../technician/components/LogStatusModal";
 
 interface AppointmentDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
   appointment: Appointment | null;
-  // Thêm hàm để cập nhật ghi chú và trạng thái
+  customer: Customer | null;
+  service: Service | null;
   onUpdateAppointment: (id: string, notes: string, status: "completed") => void;
 }
 
@@ -28,17 +30,14 @@ export const AppointmentDetailsModal = ({
   isOpen,
   onClose,
   appointment,
+  customer,
+  service,
   onUpdateAppointment,
 }: AppointmentDetailsModalProps) => {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [isLogModalOpen, setIsLogModalOpen] = useState(false); // State cho modal ghi chú
+  const [isLogModalOpen, setIsLogModalOpen] = useState(false);
 
-  if (!appointment) return null;
-
-  const service = mockServices.find((s) => s.id === appointment.serviceId);
-  const customer = mockCustomers.find((c) =>
-    c.id.includes(appointment.id.slice(-1))
-  );
+  if (!appointment || !service || !customer) return null;
 
   const handleSaveLog = (appointmentId: string, notes: string) => {
     onUpdateAppointment(appointmentId, notes, "completed");
@@ -49,15 +48,15 @@ export const AppointmentDetailsModal = ({
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{service?.name}</DialogTitle>
+            <DialogTitle>{service.name}</DialogTitle>
             <DialogDescription>
-              Lịch hẹn vào lúc {"10:00"} ngày{" "}
+              Lịch hẹn vào lúc ngày{" "}
               {new Date(appointment.date).toLocaleDateString("vi-VN")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-2">
             <p>
-              <strong>Khách hàng:</strong> {customer?.name}
+              <strong>Khách hàng:</strong> {customer.name}
             </p>
             <p>
               <strong>Trạng thái:</strong>{" "}
@@ -92,7 +91,7 @@ export const AppointmentDetailsModal = ({
       <CustomerProfileModal
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
-        customerId={customer?.id || null}
+        customerId={customer.id || null}
       />
       <LogStatusModal
         isOpen={isLogModalOpen}

@@ -37,6 +37,10 @@ export const columns = ({
   onUpdateStatus,
 }: GetColumnsProps): ColumnDef<FullStaffProfile>[] => [
   {
+    accessorKey: "id",
+    header: "ID",
+  },
+  {
     accessorKey: "name",
     header: "Họ và tên",
   },

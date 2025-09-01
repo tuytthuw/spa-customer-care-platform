@@ -34,6 +34,10 @@ export const columns = ({
   onUpdateStatus,
 }: GetColumnsProps): ColumnDef<User>[] => [
   {
+    accessorKey: "id",
+    header: "ID",
+  },
+  {
     accessorKey: "email",
     header: "Email",
   },
