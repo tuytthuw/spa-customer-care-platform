@@ -19,3 +19,10 @@ export interface WorkSchedule {
   weekOf?: string; // Ví dụ: "2025-08-25" (Ngày đầu tuần)
   status?: "pending" | "approved" | "rejected";
 }
+
+// kiểu dữ liệu cho form đăng ký lịch
+export type ScheduleRegistrationData = {
+  schedule: {
+    [key: string]: DaySchedule;
+  };
+};

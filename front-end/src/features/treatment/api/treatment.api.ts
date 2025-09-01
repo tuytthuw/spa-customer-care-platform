@@ -63,7 +63,7 @@ export const updateTreatmentPlan = async (
   dataToUpdate: PlanData
 ): Promise<TreatmentPlan> => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { imageFile, ...data } = dataToUpdate; // Báo ESLint bỏ qua cảnh báo
+  const { imageFile, ...data } = dataToUpdate;
   const response = await fetch(`${PLANS_API_URL}/${planId}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },

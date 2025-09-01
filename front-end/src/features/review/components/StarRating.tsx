@@ -5,11 +5,15 @@ import { cn } from "@/lib/utils";
 
 interface StarRatingProps {
   rating: number;
-  setRating: (rating: number) => void;
+  onRatingChange: (rating: number) => void;
   totalStars?: number;
 }
 
-const StarRating = ({ rating, setRating, totalStars = 5 }: StarRatingProps) => {
+const StarRating = ({
+  rating,
+  onRatingChange,
+  totalStars = 5,
+}: StarRatingProps) => {
   return (
     <div className="flex items-center">
       {[...Array(totalStars)].map((_, index) => {
@@ -17,7 +21,7 @@ const StarRating = ({ rating, setRating, totalStars = 5 }: StarRatingProps) => {
         return (
           <button
             key={starValue}
-            onClick={() => setRating(starValue)}
+            onClick={() => onRatingChange(starValue)}
             className="focus:outline-none"
           >
             <Star

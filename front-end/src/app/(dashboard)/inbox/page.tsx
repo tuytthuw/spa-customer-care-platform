@@ -1,24 +1,36 @@
 "use client";
 
-import { useState } from "react";
-import { mockConversations } from "@/lib/mock-data";
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Conversation } from "@/features/inbox/types";
+import { getConversations } from "@/features/inbox/api/inbox.api";
 import ConversationList from "@/features/inbox/components/ConversationList";
 import ChatPanel from "@/features/inbox/components/ChatPanel";
 
 const InboxPage = () => {
-  const [conversations, setConversations] =
-    useState<Conversation[]>(mockConversations);
+  const { data: conversations = [], isLoading } = useQuery<Conversation[]>({
+    queryKey: ["conversations"],
+    queryFn: getConversations,
+  });
+
   const [selectedConversation, setSelectedConversation] =
-    useState<Conversation | null>(conversations[0] || null);
+    useState<Conversation | null>(null);
+
+  //Tự động chọn cuộc hội thoại đầu tiên sau khi tải xong
+  useEffect(() => {
+    if (!isLoading && conversations.length > 0 && !selectedConversation) {
+      setSelectedConversation(conversations[0]);
+    }
+  }, [isLoading, conversations, selectedConversation]);
 
   const handleSelectConversation = (conversation: Conversation) => {
     setSelectedConversation(conversation);
-    // Đánh dấu là đã đọc
-    setConversations((convs) =>
-      convs.map((c) => (c.id === conversation.id ? { ...c, isRead: true } : c))
-    );
+    // Logic đánh dấu đã đọc sẽ được xử lý ở phía server trong tương lai
   };
+
+  if (isLoading) {
+    return <div className="p-8">Đang tải hộp thư...</div>;
+  }
 
   return (
     <div className="flex h-full border-t">

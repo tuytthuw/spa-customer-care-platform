@@ -9,16 +9,39 @@ import { getAppointments } from "@/features/appointment/api/appointment.api";
 import { getCustomers } from "@/features/customer/api/customer.api";
 import { getServices } from "@/features/service/api/service.api";
 import { useAuth } from "@/contexts/AuthContexts";
+import { getStaffProfiles } from "@/features/staff/api/staff.api";
+import { FullStaffProfile } from "@/features/staff/types";
 
 export default function TechnicianDashboard() {
   const { user } = useAuth(); // Lấy thông tin user đang đăng nhập
+
+  const { data: staffProfiles = [], isLoading: loadingStaff } = useQuery<
+    FullStaffProfile[]
+  >({
+    queryKey: ["staffProfiles"],
+    queryFn: getStaffProfiles,
+    enabled: !!user, // Chỉ fetch khi có user
+  });
+
+  const currentTechnician = staffProfiles.find((s) => s.userId === user?.id);
 
   // Fetch tất cả dữ liệu cần thiết
   const { data: appointments = [], isLoading: loadingAppointments } = useQuery<
     Appointment[]
   >({
-    queryKey: ["appointments"],
+    queryKey: ["appointments", "technician", currentTechnician?.id],
     queryFn: getAppointments,
+    enabled: !!currentTechnician,
+    select: (data) => {
+      if (!currentTechnician) return [];
+      const today = new Date().toDateString();
+      // Lọc lịch hẹn của đúng kỹ thuật viên này và trong ngày hôm nay
+      return data.filter(
+        (app) =>
+          app.technicianId === currentTechnician.id &&
+          new Date(app.date).toDateString() === today
+      );
+    },
   });
 
   const { data: customers = [], isLoading: loadingCustomers } = useQuery<
@@ -35,7 +58,8 @@ export default function TechnicianDashboard() {
     queryFn: getServices,
   });
 
-  const isLoading = loadingAppointments || loadingCustomers || loadingServices;
+  const isLoading =
+    loadingStaff || loadingAppointments || loadingCustomers || loadingServices;
 
   const today = new Date();
   const dateString = today.toLocaleDateString("vi-VN", {
@@ -56,15 +80,7 @@ export default function TechnicianDashboard() {
   }
 
   // Lọc các lịch hẹn cho kỹ thuật viên đang đăng nhập và trong ngày hôm nay
-  const todaysAppointments = appointments.filter((app) => {
-    const appDate = new Date(app.date);
-    // Giả sử userId của staff và technicianId trong appointment là giống nhau
-    // Trong thực tế, có thể cần Abstraction Layer tốt hơn
-    return (
-      app.technicianId === user?.id &&
-      appDate.toDateString() === today.toDateString()
-    );
-  });
+  const todaysAppointments = appointments;
 
   // Tính toán thống kê từ dữ liệu thật
   const totalCustomers = todaysAppointments.length;

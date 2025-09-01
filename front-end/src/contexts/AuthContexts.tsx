@@ -40,11 +40,13 @@ const mockRoles: Role[] = [
 //AuthUser là User, cộng thêm permissions
 export type AuthUser = User & {
   permissions: Permission[];
+  name?: string;
+  phone?: string;
 };
 
 interface AuthContextType {
   user: AuthUser | null;
-  login: (userData: User) => void;
+  login: (userData: User & { name?: string; phone?: string }) => void;
   logout: () => void;
 }
 
@@ -75,7 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return rolePermissions ? rolePermissions.permissions : [];
   };
 
-  const login = (userData: User) => {
+  const login = (userData: User & { name?: string; phone?: string }) => {
     const permissions = getPermissionsForRole(userData.role);
     const userToStore: AuthUser = {
       ...userData,

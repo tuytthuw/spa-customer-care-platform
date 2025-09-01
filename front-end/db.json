@@ -115,6 +115,28 @@
       "serviceIds": [],
       "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Áo phông basic",
       "status": "active"
+    },
+    {
+      "id": "06b00ba8-052e-44dd-bde7-4a5b8084458b",
+      "userId": "user-4e322bd1-904e-486f-8926-ff7d51ad447f",
+      "name": "Áo phông",
+      "email": "Tinvg2918@gmail.com",
+      "phone": "0933445566",
+      "role": "receptionist",
+      "status": "active",
+      "serviceIds": [],
+      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Áo phông"
+    },
+    {
+      "id": "9faeb827-6b07-4636-949b-55fcdb07c98a",
+      "userId": "user-8d37caa3-6707-49bf-a7ae-e570a7e1860a",
+      "name": "Nguyễn Thu An",
+      "email": "Tinvg2918@gmail.com",
+      "phone": "0926630480",
+      "role": "technician",
+      "status": "active",
+      "serviceIds": ["2", "1", "c4a7bba9-5b3a-4b05-b717-89a1c520e124"],
+      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Nguyễn Thu An"
     }
   ],
   "services": [
@@ -163,6 +185,13 @@
       "customerId": "cus-2",
       "serviceId": "2",
       "date": "2025-09-01T14:30:00.000Z",
+      "status": "cancelled"
+    },
+    {
+      "id": "appt-78ae821b-8414-4b2d-b5cd-1a60108bf511",
+      "customerId": "user-cus-2",
+      "serviceId": "2",
+      "date": "2025-09-06T06:00:00.000Z",
       "status": "upcoming"
     }
   ],
@@ -171,9 +200,7 @@
       "id": "plan-1",
       "name": "Liệu trình Triệt lông Nách vĩnh viễn",
       "description": "Gói 10 buổi triệt lông bằng công nghệ Diode Laser an toàn và hiệu quả, cam kết bảo hành 5 năm.",
-      "serviceIds": [
-        "3"
-      ],
+      "serviceIds": ["3"],
       "price": 8000000,
       "totalSessions": 10,
       "imageUrl": "/images/service-3.jpg"
@@ -182,9 +209,7 @@
       "id": "plan-2",
       "name": "Gói Phục hồi da chuyên sâu 5 buổi",
       "description": "Liệu trình 5 buổi chăm sóc da mặt chuyên sâu, giúp tái tạo làn da, mang lại vẻ sáng khỏe và mịn màng.",
-      "serviceIds": [
-        "1"
-      ],
+      "serviceIds": ["1"],
       "price": 2200000,
       "totalSessions": 5,
       "imageUrl": "/images/service-1.jpg"
@@ -193,9 +218,7 @@
       "id": "plan-3",
       "name": "Gói Massage thư giãn trị liệu",
       "description": "Combo 5 buổi massage toàn thân với tinh dầu thiên nhiên, giúp giảm căng thẳng, mệt mỏi và phục hồi năng lượng.",
-      "serviceIds": [
-        "2"
-      ],
+      "serviceIds": ["2"],
       "price": 3000000,
       "totalSessions": 5,
       "imageUrl": "/images/service-2.jpg"
@@ -521,6 +544,84 @@
       "paymentMethod": "card",
       "status": "paid",
       "createdAt": "2025-08-29T14:12:59.311Z"
+    }
+  ],
+  "conversations": [
+    {
+      "id": "conv-1",
+      "customerId": "cus-1",
+      "lastMessage": "Cảm ơn spa nhé, mình rất hài lòng!",
+      "lastMessageTimestamp": "2025-08-25T10:30:00.000Z",
+      "isRead": false,
+      "messages": [
+        {
+          "id": "msg-1",
+          "sender": "bot",
+          "text": "Serenity Spa xin chào, chúng tôi có thể giúp gì cho bạn?",
+          "timestamp": "2025-08-25T10:00:00.000Z"
+        },
+        {
+          "id": "msg-2",
+          "sender": "customer",
+          "text": "Chào bạn, mình muốn hỏi về liệu trình triệt lông.",
+          "timestamp": "2025-08-25T10:05:00.000Z"
+        },
+        {
+          "id": "msg-3",
+          "sender": "staff",
+          "text": "Chào chị Hằng, liệu trình triệt lông bên em đang có ưu đãi ạ. Chị muốn tư vấn chi tiết hơn không ạ?",
+          "timestamp": "2025-08-25T10:10:00.000Z"
+        },
+        {
+          "id": "msg-4",
+          "sender": "customer",
+          "text": "Cảm ơn spa nhé, mình rất hài lòng!",
+          "timestamp": "2025-08-25T10:30:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "conv-2",
+      "customerId": "cus-2",
+      "lastMessage": "Ok bạn, mình sẽ qua đúng giờ.",
+      "lastMessageTimestamp": "2025-08-26T15:00:00.000Z",
+      "isRead": true,
+      "messages": [
+        {
+          "id": "msg-5",
+          "sender": "staff",
+          "text": "Chào anh Tuấn, em xin phép nhắc lại lịch hẹn massage của anh vào 14:30 ngày mai ạ.",
+          "timestamp": "2025-08-26T14:55:00.000Z"
+        },
+        {
+          "id": "msg-6",
+          "sender": "customer",
+          "text": "Ok bạn, mình sẽ qua đúng giờ.",
+          "timestamp": "2025-08-26T15:00:00.000Z"
+        }
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "id": "rev-1",
+      "appointmentId": "appt-3",
+      "customerId": "cus-1",
+      "technicianId": "tech-1",
+      "serviceId": "svc-1",
+      "rating": 5,
+      "comment": "Dịch vụ rất tuyệt vời! Bạn kỹ thuật viên làm rất cẩn thận và chuyên nghiệp. Chắc chắn sẽ quay lại.",
+      "createdAt": "2025-08-20T14:00:00.000Z"
+    },
+    {
+      "id": "rev-2",
+      "appointmentId": "appt-4",
+      "customerId": "cus-2",
+      "technicianId": "tech-2",
+      "serviceId": "svc-2",
+      "rating": 4,
+      "comment": "Không gian spa thư giãn, nhân viên thân thiện. Sẽ tốt hơn nếu có thêm nhạc nhẹ.",
+      "createdAt": "2025-08-22T18:00:00.000Z"
     }
   ]
 }

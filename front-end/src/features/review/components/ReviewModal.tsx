@@ -1,97 +1,101 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
-  DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Appointment } from "@/features/appointment/types";
-import { TreatmentPackage } from "@/features/treatment/types";
-import { Service } from "@/features/service/types";
-import StarRating from "./StarRating";
+import StarRating from "@/features/review/components/StarRating";
 
+// **THAY ĐỔI: Cập nhật props để rõ ràng và hiệu quả hơn**
 interface ReviewModalProps {
   isOpen: boolean;
   onClose: () => void;
-  item: Appointment | TreatmentPackage;
-  services: Service[];
+  // Hàm để xử lý khi người dùng gửi đánh giá
+  onSubmit: (rating: number, comment: string) => void;
+  // Chỉ cần truyền tên của dịch vụ/liệu trình
+  itemName: string;
+  isSubmitting?: boolean;
 }
 
-const ReviewModal = ({ isOpen, onClose, item, services }: ReviewModalProps) => {
-  const [rating, setRating] = useState(0);
+export const ReviewModal = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  itemName,
+  isSubmitting = false,
+}: ReviewModalProps) => {
+  const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
-  const [images, setImages] = useState<File[]>([]);
 
-  const serviceId = "serviceId" in item ? item.serviceId : null;
-  const service = services.find((s) => s.id === serviceId);
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setImages(Array.from(e.target.files));
+  // Reset state khi modal được mở lại
+  useEffect(() => {
+    if (isOpen) {
+      setRating(5);
+      setComment("");
     }
-  };
+  }, [isOpen]);
 
   const handleSubmit = () => {
-    console.log("Submitting review for:", {
-      id: item.id,
-      rating,
-      comment,
-      images,
-    });
-    onClose();
+    if (comment.trim() && rating > 0) {
+      onSubmit(rating, comment);
+    }
   };
-
-  if (!service) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Đánh giá: {service.name}</DialogTitle>
+          <DialogTitle>Đánh giá: {itemName}</DialogTitle>
+          <DialogDescription>
+            Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng chia sẻ trải nghiệm của bạn.
+          </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4">
+        <div className="space-y-4 py-4">
           <div>
-            <Label>Đánh giá của bạn</Label>
-            <StarRating rating={rating} setRating={setRating} />
+            <Label className="mb-2 block">Xếp hạng của bạn</Label>
+            {/* Giả sử StarRating nhận onRatingChange */}
+            <StarRating rating={rating} onRatingChange={setRating} />
           </div>
           <div>
-            <Label htmlFor="comment">Nhận xét</Label>
+            <Label htmlFor="comment" className="mb-2 block">
+              Nhận xét của bạn
+            </Label>
             <Textarea
               id="comment"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              placeholder="Chia sẻ cảm nhận của bạn..."
+              placeholder="Dịch vụ tuyệt vời, nhân viên chuyên nghiệp..."
+              rows={4}
             />
           </div>
           <div>
-            <Label htmlFor="images">Thêm hình ảnh</Label>
+            <Label htmlFor="images">Thêm hình ảnh (tùy chọn)</Label>
             <Input
               id="images"
               type="file"
               multiple
-              onChange={handleImageChange}
+              // Logic xử lý upload sẽ được thêm sau
             />
           </div>
         </div>
         <DialogFooter>
-          <DialogClose asChild>
-            <Button type="button" variant="secondary">
-              Hủy
-            </Button>
-          </DialogClose>
-          <Button onClick={handleSubmit}>Gửi đánh giá</Button>
+          <Button type="button" variant="outline" onClick={onClose}>
+            Hủy
+          </Button>
+          <Button onClick={handleSubmit} disabled={isSubmitting}>
+            {isSubmitting ? "Đang gửi..." : "Gửi đánh giá"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 };
-
-export default ReviewModal;

@@ -7,6 +7,7 @@ import { Appointment, AppointmentStatus } from "@/features/appointment/types";
 import { Customer } from "@/features/customer/types";
 import { Service } from "@/features/service/types";
 import { cn } from "@/lib/utils";
+import { EventDropArg } from "@fullcalendar/core";
 
 interface AppointmentTimelineProps {
   appointments: Appointment[];
@@ -14,6 +15,7 @@ interface AppointmentTimelineProps {
   services: Service[];
   selectedAppointmentId?: string | null;
   onSelectAppointment: (appointment: Appointment) => void;
+  onEventDrop?: (info: EventDropArg) => void;
 }
 
 export const AppointmentTimeline = ({
@@ -22,6 +24,7 @@ export const AppointmentTimeline = ({
   services,
   selectedAppointmentId,
   onSelectAppointment,
+  onEventDrop,
 }: AppointmentTimelineProps) => {
   const timeSlots = [
     "9:00",
@@ -74,7 +77,15 @@ export const AppointmentTimeline = ({
         return { text: "Không xác định", className: "border-border bg-muted" };
     }
   };
+  // **LƯU Ý:** Để kéo thả hoạt động, component này cần được thay thế bằng FullCalendar.
+  // Tuy nhiên, để sửa lỗi và giữ giao diện hiện tại, chúng ta sẽ tạm thời giữ nguyên
+  // và bạn cần thay thế phần hiển thị timeline này bằng component FullCalendarUI
+  // khi triển khai thực tế.
 
+  // Giả sử bạn sẽ dùng một component lịch khác ở đây, ví dụ FullCalendarUI
+  // return <FullCalendarUI events={...} resources={...} eventDrop={onEventDrop} />
+
+  // Giữ nguyên giao diện hiện tại để không làm gián đoạn luồng làm việc
   return (
     <div className="flex-1 p-6 overflow-auto">
       <div className="flex justify-between items-center mb-6">

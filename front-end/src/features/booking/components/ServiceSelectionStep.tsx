@@ -1,4 +1,5 @@
-import { mockServices } from "@/lib/mock-data";
+import { useQuery } from "@tanstack/react-query";
+import { getServices } from "@/features/service/api/service.api";
 import { Service } from "@/features/service/types";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -11,8 +12,14 @@ interface ServiceSelectionStepProps {
 export default function ServiceSelectionStep({
   onServiceSelect,
 }: ServiceSelectionStepProps) {
-  // Trong thực tế, bạn sẽ fetch dữ liệu này
-  const services = mockServices;
+  const { data: services = [], isLoading } = useQuery<Service[]>({
+    queryKey: ["services"],
+    queryFn: getServices,
+  });
+
+  if (isLoading) {
+    return <div>Đang tải danh sách dịch vụ...</div>;
+  }
 
   return (
     <div>

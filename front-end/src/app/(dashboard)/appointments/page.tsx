@@ -1,30 +1,56 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Appointment } from "@/features/appointment/types";
 import { Service } from "@/features/service/types";
 import { Staff } from "@/features/staff/types";
+import { Review, NewReviewData } from "@/features/review/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AppointmentCard from "@/features/appointment/components/my-appointments/AppointmentCard";
+import { ReviewModal } from "@/features/review/components/ReviewModal";
 import {
   getAppointments,
-  updateAppointmentStatus, // Giả sử bạn sẽ tạo hàm này
+  updateAppointmentStatus,
 } from "@/features/appointment/api/appointment.api";
 import { getServices } from "@/features/service/api/service.api";
 import { getStaff } from "@/features/staff/api/staff.api";
+import { getReviews, createReview } from "@/features/review/api/review.api";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContexts";
+import { getCustomers } from "@/features/customer/api/customer.api";
+import { FullCustomerProfile } from "@/features/customer/types";
 
 export default function AppointmentsPage() {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<Appointment | null>(null);
 
-  // 1. Fetch tất cả dữ liệu cần thiết: appointments, services, và staff
+  const { data: customers = [], isLoading: isLoadingCustomers } = useQuery<
+    FullCustomerProfile[]
+  >({
+    queryKey: ["customers"],
+    queryFn: getCustomers,
+  });
+
   const {
     data: appointments = [],
     isLoading: isLoadingAppointments,
     error: errorAppointments,
   } = useQuery<Appointment[]>({
-    queryKey: ["appointments"],
+    queryKey: ["appointments", user?.id], // **THAY ĐỔI: Thêm user.id vào queryKey**
     queryFn: getAppointments,
+    enabled: !!user && !isLoadingCustomers, // **MỚI: Chỉ fetch khi có user và đã tải xong customer**
+    select: (data) => {
+      if (!user) return [];
+      // Tìm customer profile tương ứng với user đang đăng nhập
+      const currentUserProfile = customers.find((c) => c.userId === user.id);
+      if (!currentUserProfile) return [];
+      // Lọc appointment theo customerId tìm được
+      return data.filter((a) => a.customerId === currentUserProfile.id);
+    },
   });
 
   const {
@@ -44,6 +70,47 @@ export default function AppointmentsPage() {
     queryKey: ["staff"],
     queryFn: getStaff,
   });
+
+  const { data: reviews = [] } = useQuery<Review[]>({
+    queryKey: ["reviews"],
+    queryFn: getReviews,
+  });
+
+  const createReviewMutation = useMutation({
+    mutationFn: createReview,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["reviews"] });
+      toast.success("Cảm ơn bạn đã gửi đánh giá!");
+      setIsReviewModalOpen(false);
+    },
+    onError: (error) => {
+      toast.error(`Gửi đánh giá thất bại: ${error.message}`);
+    },
+  });
+
+  const handleOpenReviewModal = (appointment: Appointment) => {
+    setSelectedAppointment(appointment);
+    setIsReviewModalOpen(true);
+  };
+
+  const handleReviewSubmit = (rating: number, comment: string) => {
+    if (!selectedAppointment || !user || !selectedAppointment.technicianId) {
+      toast.error("Thiếu thông tin để gửi đánh giá.");
+      return;
+    }
+    const customerProfile = customers.find((c) => c.userId === user.id);
+    if (!customerProfile) return;
+
+    const reviewData: NewReviewData = {
+      appointmentId: selectedAppointment.id,
+      customerId: customerProfile.id,
+      technicianId: selectedAppointment.technicianId,
+      serviceId: selectedAppointment.serviceId,
+      rating,
+      comment,
+    };
+    createReviewMutation.mutate(reviewData);
+  };
 
   // 2. Sử dụng useMutation để xử lý việc cập nhật trạng thái
   const cancelAppointmentMutation = useMutation({
@@ -67,7 +134,10 @@ export default function AppointmentsPage() {
 
   // 4. Gộp các trạng thái loading và error
   const isLoading =
-    isLoadingAppointments || isLoadingServices || isLoadingStaff;
+    isLoadingAppointments ||
+    isLoadingServices ||
+    isLoadingStaff ||
+    isLoadingCustomers;
   const error = errorAppointments || errorServices || errorStaff;
 
   if (isLoading) {
@@ -100,6 +170,9 @@ export default function AppointmentsPage() {
       // 5. Tìm kiếm service và technician từ dữ liệu đã fetch
       const service = services.find((s) => s.id === appointment.serviceId);
       const technician = staff.find((t) => t.id === appointment.technicianId);
+      const hasReviewed = reviews.some(
+        (r) => r.appointmentId === appointment.id
+      );
 
       // Chỉ render khi có đủ thông tin dịch vụ
       if (!service) return null;
@@ -111,6 +184,8 @@ export default function AppointmentsPage() {
           service={service}
           technician={technician}
           onCancel={handleCancelAppointment}
+          onReview={handleOpenReviewModal}
+          hasReviewed={hasReviewed}
         />
       );
     });
@@ -148,6 +223,16 @@ export default function AppointmentsPage() {
             {renderAppointmentList(cancelledAppointments)}
           </div>
         </TabsContent>
+        <ReviewModal
+          isOpen={isReviewModalOpen}
+          onClose={() => setIsReviewModalOpen(false)}
+          onSubmit={handleReviewSubmit}
+          itemName={
+            services.find((s) => s.id === selectedAppointment?.serviceId)
+              ?.name || "Dịch vụ"
+          }
+          isSubmitting={createReviewMutation.isPending}
+        />
       </Tabs>
     </div>
   );

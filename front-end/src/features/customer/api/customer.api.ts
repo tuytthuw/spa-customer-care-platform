@@ -55,6 +55,7 @@ interface AddCustomerData {
   email: string;
   phone: string;
   notes?: string;
+  avatar?: File;
 }
 
 // Thêm khách hàng mới (bao gồm cả việc tạo user tương ứng)
@@ -63,8 +64,9 @@ export const addCustomer = async (
 ): Promise<Customer> => {
   // Logic này sẽ cần được mở rộng để tạo cả User và Customer Profile
   // Tạm thời giữ nguyên để đơn giản
-  console.log("Sending new customer to API...", newCustomerData);
 
+  console.log("Sending new customer to API...", newCustomerData);
+  const newId = uuidv4();
   const response = await fetch(CUSTOMERS_API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -72,6 +74,7 @@ export const addCustomer = async (
       id: uuidv4(),
       userId: `user-${uuidv4()}`, // Cần một userId thật
       ...newCustomerData,
+      avatar: `https://api.dicebear.com/7.x/notionists/svg?seed=${newId}`,
       totalAppointments: 0,
       lastVisit: new Date().toISOString(),
     }),

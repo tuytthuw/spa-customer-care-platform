@@ -19,19 +19,34 @@ export const getServices = async (): Promise<Service[]> => {
   }
 };
 
+// Hàm lấy một dịch vụ theo ID**
+export const getServiceById = async (id: string): Promise<Service | null> => {
+  try {
+    const response = await fetch(`${SERVICES_API_URL}/${id}`);
+    if (!response.ok) {
+      if (response.status === 404) return null;
+      throw new Error("Failed to fetch service.");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(`Error fetching service with id ${id}:`, error);
+    return null;
+  }
+};
+
 // Kiểu dữ liệu cho form
-interface AddServiceData {
+interface ServiceFormData {
   name: string;
   description?: string;
   category: string;
   price: number;
   duration: number;
-  imageFile?: any; // Đây là đối tượng File, sẽ không được lưu
+  imageFile?: File;
 }
 
 // Thêm dịch vụ mới
 export const addService = async (
-  newServiceData: AddServiceData
+  newServiceData: ServiceFormData
 ): Promise<Service> => {
   console.log("Sending new service to API...", newServiceData);
 
@@ -78,25 +93,19 @@ export const updateServiceStatus = async (
 };
 
 // Kiểu dữ liệu cho form chỉnh sửa (không bao gồm các trường không thể sửa)
-interface UpdateServiceData {
-  name: string;
-  description?: string;
-  category: string;
-  price: number;
-  duration: number;
-  imageFile?: any;
-}
 
 export const updateService = async (
   serviceId: string,
-  dataToUpdate: UpdateServiceData
+  dataToUpdate: ServiceFormData
 ): Promise<Service> => {
   console.log(`Updating service ${serviceId} with data:`, dataToUpdate);
 
+  const { imageFile, ...data } = dataToUpdate;
+
   const response = await fetch(`${SERVICES_API_URL}/${serviceId}`, {
-    method: "PATCH", // Dùng PATCH để chỉ cập nhật các trường được gửi lên
+    method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(dataToUpdate),
+    body: JSON.stringify(data),
   });
 
   if (!response.ok) {
