@@ -1,15 +1,21 @@
-import ServiceCard from "@/features/service/components/service-card";
+// src/features/landing/components/FeaturedServices.tsx
+
+import ServiceCard from "@/features/service/components/ServiceCard";
 import { Button } from "@/components/ui/button";
 import { Service } from "@/features/service/types";
 import Link from "next/link";
 import { getServices } from "@/features/service/api/service.api";
 
-// hàm getFeaturedServices
+// 1. Chuyển hàm lấy dữ liệu vào trong file component
 const getFeaturedServices = async (): Promise<Service[]> => {
-  const allServices = await getServices(); // Gọi hàm thật
-  return allServices.slice(0, 3); // Lấy 3 dịch vụ đầu tiên
+  const allServices = await getServices();
+  // Lấy 3 dịch vụ đầu tiên làm dịch vụ nổi bật
+  return allServices.slice(0, 3);
 };
+
+// 2. Thêm "async" để biến đây thành một Server Component
 export default async function FeaturedServices() {
+  // 3. Gọi trực tiếp hàm lấy dữ liệu
   const featuredServices = await getFeaturedServices();
 
   return (

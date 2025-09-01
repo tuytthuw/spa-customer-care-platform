@@ -9,6 +9,7 @@ import { Service } from "@/features/service/types";
 import { Staff } from "@/features/staff/types";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
+import { X } from "lucide-react";
 
 interface AppointmentDetailsProps {
   appointment: Appointment | null;
@@ -16,6 +17,7 @@ interface AppointmentDetailsProps {
   services: Service[];
   staff: Staff[];
   onStatusChange: (id: string, status: AppointmentStatus) => void;
+  onClose: () => void;
 }
 
 export const AppointmentDetails = ({
@@ -24,6 +26,7 @@ export const AppointmentDetails = ({
   services,
   staff,
   onStatusChange,
+  onClose,
 }: AppointmentDetailsProps) => {
   if (!appointment) {
     return (
@@ -51,8 +54,12 @@ export const AppointmentDetails = ({
 
   return (
     <div className="w-96 bg-card border-l border-border p-6 flex flex-col">
-      <h3 className="text-xl font-bold mb-4">Chi tiết lịch hẹn</h3>
-
+      <div className="flex justify-between items-start mb-4">
+        <h3 className="text-xl font-bold">Chi tiết lịch hẹn</h3>
+        <Button variant="ghost" size="icon" onClick={onClose}>
+          <X className="h-5 w-5" />
+        </Button>
+      </div>
       <div className="flex items-center mb-4">
         <Image
           src={

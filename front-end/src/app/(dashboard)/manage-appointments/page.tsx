@@ -19,6 +19,7 @@ import { getServices } from "@/features/service/api/service.api";
 import { getStaff } from "@/features/staff/api/staff.api";
 import { toast } from "sonner";
 import { EventDropArg } from "@fullcalendar/core";
+import { cn } from "@/lib/utils";
 
 export default function AppointmentsManagementPage() {
   const queryClient = useQueryClient();
@@ -127,21 +128,33 @@ export default function AppointmentsManagementPage() {
   return (
     <div className="flex h-full bg-muted/30">
       <StatisticsSidebar appointments={appointments} staff={staff} />
-      <AppointmentTimeline
-        appointments={appointments}
-        customers={customers}
-        services={services}
-        onSelectAppointment={(app) => setSelectedAppointmentId(app.id)}
-        selectedAppointmentId={selectedAppointmentId}
-        onEventDrop={handleEventDrop}
-      />
-      <AppointmentDetails
-        appointment={selectedAppointment}
-        customers={customers}
-        services={services}
-        staff={staff}
-        onStatusChange={handleStatusChange}
-      />
+      <div
+        className={cn(
+          "transition-all duration-300 ease-in-out",
+          selectedAppointment ? "w-[calc(100%-24rem-16rem)]" : "w-full"
+        )}
+      >
+        <AppointmentTimeline
+          appointments={appointments}
+          customers={customers}
+          services={services}
+          onSelectAppointment={(app) => setSelectedAppointmentId(app.id)}
+          staff={staff}
+          onEventDrop={handleEventDrop}
+        />
+      </div>
+
+      {selectedAppointment && (
+        <AppointmentDetails
+          key={selectedAppointment.id} // Thêm key để component re-render khi chọn lịch hẹn khác
+          appointment={selectedAppointment}
+          customers={customers}
+          services={services}
+          staff={staff}
+          onStatusChange={handleStatusChange}
+          onClose={() => setSelectedAppointmentId(null)} // Thêm hàm để đóng chi tiết
+        />
+      )}
     </div>
   );
 }

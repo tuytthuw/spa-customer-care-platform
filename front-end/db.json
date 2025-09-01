@@ -203,7 +203,8 @@
       "serviceIds": ["3"],
       "price": 8000000,
       "totalSessions": 10,
-      "imageUrl": "/images/service-3.jpg"
+      "imageUrl": "/images/service-3.jpg",
+      "status": "active"
     },
     {
       "id": "plan-2",
@@ -212,7 +213,8 @@
       "serviceIds": ["1"],
       "price": 2200000,
       "totalSessions": 5,
-      "imageUrl": "/images/service-1.jpg"
+      "imageUrl": "/images/service-1.jpg",
+      "status": "inactive"
     },
     {
       "id": "plan-3",
