@@ -48,7 +48,9 @@ const ReviewsPage = () => {
       data.filter((a) => a.customerId === currentUserProfile?.id),
   });
 
-  const { data: treatments = [] } = useQuery<TreatmentPackage[]>({
+  const { data: treatments = [], isLoading: loadingTreatments } = useQuery<
+    TreatmentPackage[]
+  >({
     queryKey: ["customerTreatments", currentUserProfile?.id],
     queryFn: getCustomerTreatments,
     enabled: !!currentUserProfile,
@@ -56,25 +58,26 @@ const ReviewsPage = () => {
       data.filter((t) => t.customerId === currentUserProfile?.id),
   });
 
-  const { data: services = [] } = useQuery<Service[]>({
+  const { data: services = [], isLoading: loadingServices } = useQuery<
+    Service[]
+  >({
     queryKey: ["services"],
     queryFn: getServices,
   });
-  const { data: staff = [] } = useQuery<Staff[]>({
+  const { data: staff = [], isLoading: loadingStaff } = useQuery<Staff[]>({
     queryKey: ["staff"],
     queryFn: getStaff,
   });
-  const { data: reviews = [] } = useQuery<Review[]>({
+  const { data: reviews = [], isLoading: loadingReviews } = useQuery<Review[]>({
     queryKey: ["reviews"],
     queryFn: getReviews,
   });
-  const { data: treatmentPlans = [] } = useQuery<TreatmentPlan[]>({
+  const { data: treatmentPlans = [], isLoading: loadingPlans } = useQuery<
+    TreatmentPlan[]
+  >({
     queryKey: ["treatmentPlans"],
     queryFn: getTreatmentPlans,
   });
-
-  // const isLoading =
-  //   loadingAppts || loadingTreatments || loadingServices || loadingStaff;
 
   const createReviewMutation = useMutation({
     mutationFn: createReview,
@@ -96,19 +99,11 @@ const ReviewsPage = () => {
     setSelectedItem(null);
   };
 
-  const completedAppointments = appointments.filter(
-    (appt) => appt.status === "completed"
-  );
-
-  const completedTreatments = treatments.filter(
-    (pkg) => pkg.completedSessions === pkg.totalSessions
-  );
-
   const handleReviewSubmit = (rating: number, comment: string) => {
     if (!selectedItem || !currentUserProfile) return;
     let reviewData: NewReviewData | null = null;
 
-    if ("serviceId" in selectedItem) {
+    if ("date" in selectedItem) {
       // Đây là Appointment
       if (!selectedItem.technicianId) return;
       reviewData = {
@@ -137,20 +132,29 @@ const ReviewsPage = () => {
   };
   const getSelectedItemName = () => {
     if (!selectedItem) return "";
-    if ("serviceId" in selectedItem) {
+    if ("serviceId" in selectedItem && "date" in selectedItem) {
       // Appointment
       return services.find((s) => s.id === selectedItem.serviceId)?.name || "";
-    } else {
+    } else if ("treatmentPlanId" in selectedItem) {
       // TreatmentPackage
       return (
         treatmentPlans.find((p) => p.id === selectedItem.treatmentPlanId)
           ?.name || ""
       );
     }
+    return "";
   };
 
-  // --- BƯỚC 3: XỬ LÝ TRẠNG THÁI LOADING VÀ LỌC DỮ LIỆU ---
-  const isLoading = loadingCustomers && !currentUserProfile;
+  // --- SỬA LỖI Ở ĐÂY: XỬ LÝ TRẠNG THÁI LOADING VÀ LỌC DỮ LIỆU ---
+  const isLoading =
+    loadingCustomers ||
+    loadingAppts ||
+    loadingTreatments ||
+    loadingServices ||
+    loadingStaff ||
+    loadingReviews ||
+    loadingPlans;
+
   if (isLoading) return <div className="p-8">Đang tải...</div>;
 
   const appointmentsToReview = appointments.filter(
@@ -168,12 +172,10 @@ const ReviewsPage = () => {
       <h1 className="text-3xl font-bold mb-6">Đánh giá dịch vụ & Liệu trình</h1>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">
-          Dịch vụ lẻ đã hoàn thành
-        </h2>
+        <h2 className="text-2xl font-semibold mb-4">Dịch vụ lẻ cần đánh giá</h2>
         <div className="space-y-4">
-          {completedAppointments.length > 0 ? (
-            completedAppointments.map((appointment) => (
+          {appointmentsToReview.length > 0 ? (
+            appointmentsToReview.map((appointment) => (
               <ReviewCard
                 key={appointment.id}
                 appointment={appointment}
@@ -191,12 +193,10 @@ const ReviewsPage = () => {
       </section>
 
       <section>
-        <h2 className="text-2xl font-semibold mb-4">
-          Liệu trình đã hoàn thành
-        </h2>
+        <h2 className="text-2xl font-semibold mb-4">Liệu trình cần đánh giá</h2>
         <div className="space-y-4">
-          {completedTreatments.length > 0 ? (
-            completedTreatments.map((pkg) => (
+          {treatmentsToReview.length > 0 ? (
+            treatmentsToReview.map((pkg) => (
               <TreatmentReviewCard
                 key={pkg.id}
                 treatmentPackage={pkg}
@@ -206,7 +206,7 @@ const ReviewsPage = () => {
             ))
           ) : (
             <p className="text-muted-foreground">
-              Bạn không có liệu trình nào đã hoàn thành để đánh giá.
+              Bạn không có liệu trình nào cần đánh giá.
             </p>
           )}
         </div>
