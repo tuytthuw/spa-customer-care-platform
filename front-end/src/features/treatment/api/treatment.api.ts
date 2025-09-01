@@ -17,6 +17,22 @@ export const getTreatmentPlans = async (): Promise<TreatmentPlan[]> => {
   }
 };
 
+export const getTreatmentPlanById = async (
+  id: string
+): Promise<TreatmentPlan | null> => {
+  try {
+    const response = await fetch(`${PLANS_API_URL}/${id}`);
+    if (!response.ok) {
+      if (response.status === 404) return null; // Không tìm thấy
+      throw new Error("Failed to fetch treatment plan.");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(`Error fetching treatment plan with id ${id}:`, error);
+    return null;
+  }
+};
+
 export const getCustomerTreatments = async (): Promise<TreatmentPackage[]> => {
   try {
     const response = await fetch(CUSTOMER_TREATMENTS_API_URL, {

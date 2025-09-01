@@ -1,19 +1,19 @@
+// src/features/appointment/components/appointment-management/AppointmentTimeline.tsx
 "use client";
 
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Appointment, AppointmentStatus } from "@/features/appointment/types";
+import { Appointment } from "@/features/appointment/types";
 import { Customer } from "@/features/customer/types";
 import { Service } from "@/features/service/types";
-import { cn } from "@/lib/utils";
-import { EventDropArg } from "@fullcalendar/core";
+import { Staff } from "@/features/staff/types"; // 1. Import Staff type
+import { FullCalendarUI } from "@/components/ui/full-calendar"; // 2. Import FullCalendarUI
+import { EventClickArg, EventDropArg } from "@fullcalendar/core";
 
 interface AppointmentTimelineProps {
   appointments: Appointment[];
   customers: Customer[];
   services: Service[];
-  selectedAppointmentId?: string | null;
+  staff: Staff[]; // Thêm staff vào props
   onSelectAppointment: (appointment: Appointment) => void;
   onEventDrop?: (info: EventDropArg) => void;
 }
@@ -22,139 +22,78 @@ export const AppointmentTimeline = ({
   appointments,
   customers,
   services,
-  selectedAppointmentId,
+  staff,
   onSelectAppointment,
   onEventDrop,
 }: AppointmentTimelineProps) => {
-  const timeSlots = [
-    "9:00",
-    "10:00",
-    "11:00",
-    "12:00",
-    "13:00",
-    "14:00",
-    "15:00",
-    "16:00",
-    "17:00",
-    "18:00",
-    "19:00",
-    "20:00",
-  ];
+  // 3. Chuyển đổi dữ liệu cho FullCalendar
+  // Tạo "resource" (nguồn lực) là các kỹ thuật viên
+  const calendarResources = staff
+    .filter((s) => s.role === "technician")
+    .map((technician) => ({
+      id: technician.id,
+      title: technician.name,
+    }));
 
-  const getStatusInfo = (status: AppointmentStatus) => {
-    switch (status) {
-      case "upcoming":
-        return {
-          text: "Sắp tới",
-          className:
-            "border-[var(--status-warning)] bg-[color-mix(in_oklab,var(--status-warning),transparent_90%)]",
-        };
-      case "checked-in":
-        return {
-          text: "Đã check-in",
-          className:
-            "border-[var(--status-info)] bg-[color-mix(in_oklab,var(--status-info),transparent_90%)]",
-        };
-      case "in-progress":
-        return {
-          text: "Đang làm",
-          className:
-            "border-[var(--status-processing)] bg-[color-mix(in_oklab,var(--status-processing),transparent_90%)]",
-        };
-      case "completed":
-        return {
-          text: "Hoàn thành",
-          className:
-            "border-[var(--status-success)] bg-[color-mix(in_oklab,var(--status-success),transparent_90%)]",
-        };
-      case "cancelled":
-        return {
-          text: "Đã hủy",
-          className:
-            "border-[var(--destructive)] bg-[color-mix(in_oklab,var(--destructive),transparent_90%)]",
-        };
-      default:
-        return { text: "Không xác định", className: "border-border bg-muted" };
+  // Tạo "event" (sự kiện) là các lịch hẹn
+  const calendarEvents = appointments.map((app) => {
+    const customer = customers.find((c) => c.id === app.customerId);
+    const service = services.find((s) => s.id === app.serviceId);
+
+    // Tính thời gian kết thúc dựa trên duration của dịch vụ
+    const startTime = new Date(app.date);
+    const endTime = service
+      ? new Date(startTime.getTime() + service.duration * 60000)
+      : new Date(startTime.getTime() + 60 * 60000); // Mặc định 60 phút nếu không có dịch vụ
+
+    return {
+      id: app.id,
+      resourceId: app.technicianId, // Gán lịch hẹn cho kỹ thuật viên tương ứng
+      title: customer ? customer.name : "Khách lẻ",
+      start: startTime,
+      end: endTime,
+      // Thêm màu sắc dựa trên trạng thái (tùy chọn)
+      color:
+        app.status === "completed"
+          ? "var(--status-success)"
+          : app.status === "in-progress"
+          ? "var(--status-processing)"
+          : "var(--primary)",
+    };
+  });
+
+  // 4. Hàm xử lý khi người dùng nhấp vào một lịch hẹn trên lịch
+  const handleEventClick = (clickInfo: EventClickArg) => {
+    const appointmentId = clickInfo.event.id;
+    const selected = appointments.find((app) => app.id === appointmentId);
+    if (selected) {
+      onSelectAppointment(selected);
     }
   };
-  // **LƯU Ý:** Để kéo thả hoạt động, component này cần được thay thế bằng FullCalendar.
-  // Tuy nhiên, để sửa lỗi và giữ giao diện hiện tại, chúng ta sẽ tạm thời giữ nguyên
-  // và bạn cần thay thế phần hiển thị timeline này bằng component FullCalendarUI
-  // khi triển khai thực tế.
 
-  // Giả sử bạn sẽ dùng một component lịch khác ở đây, ví dụ FullCalendarUI
-  // return <FullCalendarUI events={...} resources={...} eventDrop={onEventDrop} />
-
-  // Giữ nguyên giao diện hiện tại để không làm gián đoạn luồng làm việc
   return (
-    <div className="flex-1 p-6 overflow-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl mr-4 font-bold">Lịch hẹn trong ngày</h2>
-        <div className="flex items-center">
-          <Button variant="outline" size="icon" className="mr-2">
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <Button>Hôm nay</Button>
-          <Button variant="outline" size="icon" className="ml-2">
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-
-      <div className="space-y-4">
-        {timeSlots.map((time) => (
-          <div
-            key={time}
-            className="grid grid-cols-12 items-start min-h-[6rem]"
-          >
-            <div className="col-span-1 text-muted-foreground pt-3">{time}</div>
-            <div className="col-span-11 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 h-full border-t border-border pt-4 -ml-4 pl-4">
-              {appointments
-                .filter((a) => new Date(a.date).getHours() === parseInt(time))
-                .map((app) => {
-                  const customer = customers.find(
-                    (c) => c.id === app.customerId
-                  );
-                  const service = services.find((s) => s.id === app.serviceId);
-                  const statusInfo = getStatusInfo(app.status);
-                  const isSelected = app.id === selectedAppointmentId;
-
-                  if (!customer || !service) return null; // Bỏ qua nếu không tìm thấy thông tin
-
-                  return (
-                    <button
-                      key={app.id}
-                      onClick={() => onSelectAppointment(app)}
-                      className={cn(
-                        "text-left rounded-lg p-3 border-l-4 transition-all hover:shadow-md",
-                        statusInfo.className,
-                        isSelected ? "ring-2 ring-primary shadow-lg" : "bg-card"
-                      )}
-                    >
-                      <div className="flex justify-between mb-1">
-                        <span className="font-semibold text-sm">
-                          {customer.name}
-                        </span>
-                        <span className="text-xs bg-white/50 text-foreground px-2 py-0.5 rounded-full">
-                          {statusInfo.text}
-                        </span>
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        {service.name}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-2 font-medium">
-                        {new Date(app.date).toLocaleTimeString("vi-VN", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </p>
-                    </button>
-                  );
-                })}
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="flex-1 p-6 overflow-auto h-full">
+      {/* 5. Render FullCalendarUI với dữ liệu đã được xử lý */}
+      <FullCalendarUI
+        // Các props cơ bản
+        initialView="resourceTimelineDay"
+        resources={calendarResources}
+        events={calendarEvents}
+        // Các props cho tương tác
+        editable={true} // Cho phép kéo thả
+        eventDrop={onEventDrop} // Hàm xử lý khi thả sự kiện
+        eventClick={handleEventClick} // Hàm xử lý khi nhấp vào sự kiện
+        // Tùy chỉnh giao diện
+        slotMinTime="08:00:00" // Giờ bắt đầu
+        slotMaxTime="21:00:00" // Giờ kết thúc
+        headerToolbar={{
+          left: "prev,next today",
+          center: "title",
+          right: "resourceTimelineDay,resourceTimelineWeek",
+        }}
+        locale="vi" // Ngôn ngữ Tiếng Việt
+        resourceAreaHeaderContent="Kỹ thuật viên"
+      />
     </div>
   );
 };

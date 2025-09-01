@@ -1,6 +1,6 @@
 // src/app/services/page.tsx
 import { Service } from "@/features/service/types";
-import ServiceCard from "@/features/service/components/service-card";
+import ServiceCard from "@/features/service/components/ServiceCard";
 import { Input } from "@/components/ui/input";
 import { getServices } from "@/features/service/api/service.api";
 
