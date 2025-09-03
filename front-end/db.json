@@ -66,10 +66,7 @@
       "phone": "0911223344",
       "role": "technician",
       "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=tech-1",
-      "serviceIds": [
-        "1",
-        "2"
-      ],
+      "serviceIds": ["1", "2"],
       "status": "active"
     },
     {
@@ -100,10 +97,7 @@
       "duration": 60,
       "imageUrl": "/images/service-1.jpg",
       "status": "active",
-      "categories": [
-        "Nguyễn Thu An",
-        "sfdghj"
-      ]
+      "categories": ["Nguyễn Thu An", "sfdghj"]
     },
     {
       "id": "2",
@@ -125,9 +119,7 @@
       "id": "6e1bf3d0-1952-42d4-a254-9ef6801ae741",
       "name": "Áo phông",
       "description": "rtyuilhgkuytrewq",
-      "categories": [
-        "Áo phông"
-      ],
+      "categories": ["Áo phông"],
       "price": 333000,
       "duration": 30,
       "status": "active",
@@ -137,9 +129,7 @@
       "id": "1205794a-f0be-4da1-a359-48f387e8c267",
       "name": "23t4y5uyvh",
       "description": "qưeretryukb",
-      "categories": [
-        "Nguyễn Thu An"
-      ],
+      "categories": ["Nguyễn Thu An"],
       "price": 22000,
       "duration": 30,
       "status": "active",
@@ -149,9 +139,7 @@
       "id": "585aca97-60dd-4c40-9cdb-7dac252434fb",
       "name": "qưerty",
       "description": "23r4tryjukil",
-      "categories": [
-        "Nguyễn Thu An"
-      ],
+      "categories": ["Nguyễn Thu An"],
       "price": 3456000,
       "duration": 30,
       "status": "active",
@@ -173,174 +161,27 @@
       "serviceId": "2",
       "date": "2025-09-01T14:30:00.000Z",
       "status": "upcoming"
-    }
-  ],
-  "treatmentPlans": [
-    {
-      "id": "plan-1",
-      "name": "Liệu trình Triệt lông Nách vĩnh viễn",
-      "description": "Gói 10 buổi triệt lông bằng công nghệ Diode Laser an toàn và hiệu quả, cam kết bảo hành 5 năm.",
-      "categories": [
-        "sfdghj"
-      ],
-      "serviceIds": [],
-      "price": 8000000,
-      "totalSessions": 10,
-      "imageUrl": "/images/service-3.jpg",
-      "status": "active"
     },
     {
-      "id": "plan-2",
-      "name": "Gói Phục hồi da chuyên sâu 5 buổi",
-      "description": "Liệu trình 5 buổi chăm sóc da mặt chuyên sâu, giúp tái tạo làn da, mang lại vẻ sáng khỏe và mịn màng.",
-      "categories": [
-        "Chăm sóc da mặt"
-      ],
-      "serviceIds": [
-        "1"
-      ],
-      "price": 2200000,
-      "totalSessions": 5,
-      "imageUrl": "/images/service-1.jpg",
-      "status": "active"
+      "id": "appt-7ac1962b-ef3e-4f2d-b4c5-d5dd39a1b528",
+      "customerId": "guest-user",
+      "serviceId": "1",
+      "date": "2025-09-03T08:30:00.000Z",
+      "status": "upcoming"
     },
     {
-      "id": "plan-3",
-      "name": "Gói Massage thư giãn trị liệu",
-      "description": "Combo 5 buổi massage toàn thân với tinh dầu thiên nhiên, giúp giảm căng thẳng, mệt mỏi và phục hồi năng lượng.",
-      "categories": [
-        "Massage & Trị liệu"
-      ],
-      "serviceIds": [
-        "2"
-      ],
-      "price": 3000000,
-      "totalSessions": 5,
-      "imageUrl": "/images/service-2.jpg",
-      "status": "active"
-    }
-  ],
-  "customerTreatments": [
-    {
-      "id": "ct-1",
-      "customerId": "cus-1",
-      "treatmentPlanId": "plan-1",
-      "purchaseDate": "2025-07-15T10:00:00.000Z",
-      "totalSessions": 10,
-      "completedSessions": 4,
-      "sessions": [
-        {
-          "id": "cts-1",
-          "date": "2025-07-20T14:00:00.000Z",
-          "technicianId": "tech-1",
-          "status": "completed",
-          "notes": "Vùng da phản ứng tốt, không bị đỏ."
-        },
-        {
-          "id": "cts-2",
-          "date": "2025-07-27T14:00:00.000Z",
-          "technicianId": "tech-1",
-          "status": "completed",
-          "notes": "Lông mọc lại thưa và mỏng hơn."
-        },
-        {
-          "id": "cts-3",
-          "date": "2025-08-03T14:00:00.000Z",
-          "technicianId": "tech-2",
-          "status": "completed",
-          "notes": "Tăng mức năng lượng laser."
-        },
-        {
-          "id": "cts-4",
-          "date": "2025-08-10T14:00:00.000Z",
-          "technicianId": "tech-1",
-          "status": "completed",
-          "notes": ""
-        },
-        {
-          "id": "cts-5",
-          "date": "2025-08-25T14:00:00.000Z",
-          "technicianId": "tech-1",
-          "status": "upcoming",
-          "notes": ""
-        }
-      ]
+      "id": "appt-57cf72f3-81d3-4804-aa3e-d1aac5180b24",
+      "customerId": "guest-user",
+      "serviceId": "1",
+      "date": "2025-09-03T08:30:00.000Z",
+      "status": "upcoming"
     },
     {
-      "id": "ct-2",
-      "customerId": "cus-1",
-      "treatmentPlanId": "plan-2",
-      "purchaseDate": "2025-08-01T11:30:00.000Z",
-      "totalSessions": 5,
-      "completedSessions": 2,
-      "sessions": [
-        {
-          "id": "cts-6",
-          "date": "2025-08-05T10:00:00.000Z",
-          "technicianId": "tech-2",
-          "status": "completed",
-          "notes": "Da căng bóng, đủ ẩm."
-        },
-        {
-          "id": "cts-7",
-          "date": "2025-08-19T10:00:00.000Z",
-          "technicianId": "tech-2",
-          "status": "completed",
-          "notes": "Giảm mụn cám rõ rệt."
-        },
-        {
-          "id": "cts-8",
-          "date": "2025-09-02T10:00:00.000Z",
-          "technicianId": "tech-2",
-          "status": "upcoming",
-          "notes": ""
-        }
-      ]
-    },
-    {
-      "id": "ct-345ebaee-0a74-4848-b763-13b15a848b6b",
-      "customerId": "e41e073e-dfd0-4c04-bbc3-5bbb8e97ffc8",
-      "treatmentPlanId": "28865856-d222-4192-af2a-d6e242986a25",
-      "purchaseDate": "2025-08-29T09:51:17.391Z",
-      "totalSessions": 5,
-      "completedSessions": 0,
-      "sessions": [
-        {
-          "id": "cts-5741741d-ea0a-4c10-8b97-ffbdf4cd39f5",
-          "date": "",
-          "technicianId": "",
-          "status": "upcoming",
-          "notes": "Buổi 1"
-        },
-        {
-          "id": "cts-2a40ef75-4bc9-4d0a-91f1-c8647aa32aba",
-          "date": "",
-          "technicianId": "",
-          "status": "upcoming",
-          "notes": "Buổi 2"
-        },
-        {
-          "id": "cts-5a9f9093-6cc8-4f9e-9e01-4498bc0d53cc",
-          "date": "",
-          "technicianId": "",
-          "status": "upcoming",
-          "notes": "Buổi 3"
-        },
-        {
-          "id": "cts-a886c04b-e03a-4417-81d3-f1490cc67222",
-          "date": "",
-          "technicianId": "",
-          "status": "upcoming",
-          "notes": "Buổi 4"
-        },
-        {
-          "id": "cts-4767fcfa-8877-4622-8ed5-4747321a3818",
-          "date": "",
-          "technicianId": "",
-          "status": "upcoming",
-          "notes": "Buổi 5"
-        }
-      ]
+      "id": "appt-1192dfd9-24ad-4e74-bb2c-4b8860fb88e1",
+      "customerId": "guest-user",
+      "serviceId": "1",
+      "date": "2025-09-03T08:30:00.000Z",
+      "status": "upcoming"
     }
   ],
   "resources": [
@@ -710,6 +551,95 @@
       "id": "cat-2e78beaa-1cb8-44fc-896b-1b5a4afccc1a",
       "name": "jkljhgf",
       "type": "service"
+    }
+  ],
+  "treatmentPlans": [
+    {
+      "id": "plan-1",
+      "name": "Liệu trình Phục hồi da toàn diện",
+      "description": "Gói 5 buổi kết hợp làm sạch sâu và massage nâng cơ, giúp tái tạo làn da, mang lại vẻ sáng khỏe và mịn màng.",
+      "category": "Chăm sóc da",
+      "price": 2500000,
+      "imageUrl": "/images/service-1.jpg",
+      "status": "active",
+      "steps": [
+        { "step": 1, "serviceId": "1" },
+        { "step": 2, "serviceId": "1" },
+        { "step": 3, "serviceId": "2" },
+        { "step": 4, "serviceId": "1" },
+        { "step": 5, "serviceId": "2" }
+      ]
+    },
+    {
+      "id": "plan-2",
+      "name": "Liệu trình Thư giãn cao cấp",
+      "description": "Combo 3 buổi massage toàn thân và 2 buổi chăm sóc da chuyên sâu, giúp giảm căng thẳng và phục hồi năng lượng.",
+      "category": "Massage",
+      "price": 3000000,
+      "imageUrl": "/images/service-2.jpg",
+      "status": "active",
+      "steps": [
+        { "step": 1, "serviceId": "2" },
+        { "step": 2, "serviceId": "1" },
+        { "step": 3, "serviceId": "2" },
+        { "step": 4, "serviceId": "1" },
+        { "step": 5, "serviceId": "2" }
+      ]
+    }
+  ],
+  "customerTreatments": [
+    {
+      "id": "ct-1",
+      "customerId": "cus-1",
+      "treatmentPlanId": "plan-1",
+      "purchaseDate": "2025-07-15T10:00:00.000Z",
+      "sessions": [
+        {
+          "id": "cts-1",
+          "treatmentPlanStep": 1,
+          "serviceId": "1",
+          "date": "2025-07-20T14:00:00.000Z",
+          "technicianId": "tech-1",
+          "status": "completed",
+          "notes": "Da khách hàng phản ứng tốt, không bị đỏ."
+        },
+        {
+          "id": "cts-2",
+          "treatmentPlanStep": 2,
+          "serviceId": "1",
+          "date": "2025-07-27T14:00:00.000Z",
+          "technicianId": "tech-1",
+          "status": "completed",
+          "notes": "Lỗ chân lông thu nhỏ."
+        },
+        {
+          "id": "cts-3",
+          "treatmentPlanStep": 3,
+          "serviceId": "2",
+          "date": "",
+          "technicianId": "",
+          "status": "upcoming",
+          "notes": ""
+        },
+        {
+          "id": "cts-4",
+          "treatmentPlanStep": 4,
+          "serviceId": "1",
+          "date": "",
+          "technicianId": "",
+          "status": "upcoming",
+          "notes": ""
+        },
+        {
+          "id": "cts-5",
+          "treatmentPlanStep": 5,
+          "serviceId": "2",
+          "date": "",
+          "technicianId": "",
+          "status": "upcoming",
+          "notes": ""
+        }
+      ]
     }
   ]
 }

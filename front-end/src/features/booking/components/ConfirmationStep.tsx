@@ -6,10 +6,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
-import { ArrowLeft, CalendarDays } from "lucide-react";
+import { ArrowLeft, CalendarDays, UserCircle } from "lucide-react";
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { createAppointment } from "@/features/appointment/api/appointment.api";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContexts";
 import { Service } from "@/features/service/types";
@@ -21,41 +19,46 @@ interface ConfirmationStepProps {
     time: string;
   };
   onPrevStep: () => void;
-  onConfirm: () => void;
+  onConfirm: (customerInfo: {
+    name: string;
+    phone: string;
+    email: string;
+    note: string;
+  }) => void;
+  isSubmitting?: boolean;
 }
 
 export default function ConfirmationStep({
   bookingDetails,
   onPrevStep,
   onConfirm,
+  isSubmitting = false,
 }: ConfirmationStepProps) {
   const { user } = useAuth();
   const { service, date, time } = bookingDetails;
 
-  // State để quản lý thông tin form
-  const [name, setName] = useState(user?.name || "");
-  const [phone, setPhone] = useState(user?.phone || "");
-  const [email, setEmail] = useState(user?.email || "");
-  const [note, setNote] = useState("");
-  const [termsAccepted, setTermsAccepted] = useState(false);
-
-  const createAppointmentMutation = useMutation({
-    mutationFn: createAppointment,
-    onSuccess: () => {
-      // Không cần toast ở đây vì onConfirm sẽ xử lý
-      onConfirm(); // Chuyển sang bước thành công
-    },
-    onError: (error) => {
-      toast.error(`Đặt lịch thất bại: ${error.message}`);
-    },
+  // Hợp nhất state
+  const [formData, setFormData] = useState({
+    name: user?.name || "",
+    phone: user?.phone || "",
+    email: user?.email || "",
+    note: "",
   });
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   if (!service) {
     return <div>Lỗi: Không có thông tin dịch vụ. Vui lòng quay lại.</div>;
   }
 
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+
   const handleConfirmClick = () => {
-    if (!name || !phone || !email) {
+    if (!formData.name || !formData.phone || !formData.email) {
       toast.error("Vui lòng điền đầy đủ họ tên, số điện thoại và email.");
       return;
     }
@@ -63,20 +66,8 @@ export default function ConfirmationStep({
       toast.error("Bạn phải đồng ý với điều khoản dịch vụ.");
       return;
     }
-
-    // Kết hợp ngày và giờ thành một đối tượng Date hoàn chỉnh
-    const [hours, minutes] = time.split(":").map(Number);
-    const appointmentDate = new Date(date);
-    appointmentDate.setHours(hours, minutes, 0, 0);
-
-    createAppointmentMutation.mutate({
-      // Trong thực tế, customerId sẽ được lấy từ user đang đăng nhập
-      // hoặc tạo mới nếu là khách vãng lai.
-      customerId: user ? user.id : "guest-user",
-      serviceId: service.id,
-      date: appointmentDate.toISOString(),
-      // Ghi chú và các thông tin khác có thể được thêm vào đây
-    });
+    // ✅ Truyền toàn bộ thông tin đã được xác thực lên component cha
+    onConfirm(formData);
   };
 
   return (
@@ -139,64 +130,78 @@ export default function ConfirmationStep({
         {/* Thông tin khách hàng */}
         <div className="mb-8">
           <h3 className="text-lg mb-4">Thông tin khách hàng</h3>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="name">Họ và tên</Label>
-              <Input
-                id="name"
-                type="text"
-                placeholder="Nhập họ và tên"
-                className="mt-2"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                disabled={createAppointmentMutation.isPending}
-              />
+          {user ? (
+            <div className="bg-muted p-4 rounded-lg border border-border">
+              <div className="flex items-center">
+                <UserCircle className="text-muted-foreground text-xl mr-3" />
+                <div>
+                  <p className="font-semibold">{user.name}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {user.email} - {user.phone}
+                  </p>
+                </div>
+              </div>
             </div>
-            <div>
-              <Label htmlFor="phone">Số điện thoại</Label>
-              <Input
-                id="phone"
-                type="tel"
-                placeholder="Nhập số điện thoại"
-                className="mt-2"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                disabled={createAppointmentMutation.isPending}
-              />
+          ) : (
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="name">Họ và tên</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Nhập họ và tên"
+                  className="mt-2"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  disabled={isSubmitting}
+                />
+              </div>
+              <div>
+                <Label htmlFor="phone">Số điện thoại</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder="Nhập số điện thoại"
+                  className="mt-2"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  disabled={isSubmitting}
+                />
+              </div>
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Nhập email"
+                  className="mt-2"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  disabled={isSubmitting}
+                />
+              </div>
             </div>
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Nhập email"
-                className="mt-2"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={createAppointmentMutation.isPending}
-              />
-            </div>
-            <div>
-              <Label htmlFor="note">Ghi chú</Label>
-              <Textarea
-                id="note"
-                placeholder="Nhập ghi chú nếu có"
-                className="mt-2 h-24"
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                disabled={createAppointmentMutation.isPending}
-              />
-            </div>
-          </div>
+          )}
         </div>
 
-        <div className="mb-4">
+        <div>
+          <Label htmlFor="note">Ghi chú (tùy chọn)</Label>
+          <Textarea
+            id="note"
+            placeholder="Nhập ghi chú nếu có"
+            className="mt-2 h-24"
+            value={formData.note}
+            onChange={handleInputChange}
+            disabled={isSubmitting}
+          />
+        </div>
+        <div className="mt-4 mb-4">
           <div className="flex items-center">
             <Checkbox
               id="terms"
               checked={termsAccepted}
               onCheckedChange={(checked) => setTermsAccepted(!!checked)}
-              disabled={createAppointmentMutation.isPending}
+              disabled={isSubmitting}
             />
             <label htmlFor="terms" className="ml-2 text-foreground text-sm">
               Tôi đồng ý với{" "}
@@ -214,11 +219,9 @@ export default function ConfirmationStep({
         <Button
           onClick={handleConfirmClick}
           className="w-full py-3 bg-primary text-primary-foreground hover:bg-primary/90"
-          disabled={createAppointmentMutation.isPending}
+          disabled={isSubmitting}
         >
-          {createAppointmentMutation.isPending
-            ? "Đang xử lý..."
-            : "Xác nhận đặt lịch"}
+          {isSubmitting ? "Đang xử lý..." : "Xác nhận đặt lịch"}
         </Button>
       </div>
     </div>

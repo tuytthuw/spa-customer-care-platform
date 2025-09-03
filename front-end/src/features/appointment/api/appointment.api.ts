@@ -112,3 +112,28 @@ export const logAppointmentCompletion = async (
 
   return response.json();
 };
+
+// Hàm lấy lịch hẹn theo ID khách hàng
+export const getAppointmentsByCustomerId = async (
+  customerId: string
+): Promise<Appointment[]> => {
+  if (!customerId) return [];
+  console.log(`Fetching appointments for customer ${customerId}...`);
+  try {
+    const response = await fetch(
+      `${APPOINTMENTS_API_URL}?customerId=${customerId}`,
+      {
+        cache: "no-store",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch appointments for customer.");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching appointments by customer:", error);
+    return [];
+  }
+};
