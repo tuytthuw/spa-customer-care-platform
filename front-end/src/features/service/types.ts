@@ -5,7 +5,7 @@ export interface Service {
   description: string;
   price: number;
   duration: number; // in minutes
-  category: string;
+  categories: string[];
   imageUrl: string;
   status: "active" | "inactive";
 }

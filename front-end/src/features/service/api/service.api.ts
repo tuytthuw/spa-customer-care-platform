@@ -35,10 +35,10 @@ export const getServiceById = async (id: string): Promise<Service | null> => {
 };
 
 // Kiểu dữ liệu cho form
-interface ServiceFormData {
+export interface ServiceFormData {
   name: string;
   description?: string;
-  categories: string[];
+  categories?: string[];
   price: number;
   duration: number;
   imageFile?: File;

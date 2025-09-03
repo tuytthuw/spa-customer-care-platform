@@ -46,10 +46,10 @@ export const getCustomerTreatments = async (): Promise<TreatmentPackage[]> => {
   }
 };
 
-interface PlanData {
+export interface PlanData {
   name: string;
   description?: string;
-  categories: string[];
+  categories?: string[];
   price: number;
   totalSessions: number;
   imageFile?: File;
