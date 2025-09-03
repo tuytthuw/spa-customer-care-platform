@@ -38,7 +38,7 @@ export const getServiceById = async (id: string): Promise<Service | null> => {
 interface ServiceFormData {
   name: string;
   description?: string;
-  category: string;
+  categories: string[];
   price: number;
   duration: number;
   imageFile?: File;

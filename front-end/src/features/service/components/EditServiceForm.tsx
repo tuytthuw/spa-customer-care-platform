@@ -2,7 +2,6 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,28 +13,44 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { UploadCloud, File as FileIcon, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Service } from "@/features/service/types"; // 1. Import Service type
+import { Category } from "@/features/category/types";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  UploadCloud,
+  File as FileIcon,
+  X,
+  ChevronsUpDown,
+  Plus,
+} from "lucide-react";
+import {
+  serviceFormSchema,
+  ServiceFormValues,
+} from "@/features/service/schemas";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  getCategories,
+  addCategory,
+} from "@/features/category/api/category.api";
+import AddCategoryForm from "@/features/category/components/AddCategoryForm";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@radix-ui/react-dropdown-menu";
 
-// Schema validation
-const serviceFormSchema = z.object({
-  name: z.string().trim().min(3, "Tên dịch vụ phải có ít nhất 3 ký tự."),
-  description: z
-    .string()
-    .trim()
-    .min(10, "Mô tả phải có ít nhất 10 ký tự.")
-    .optional(),
-  category: z.string().trim().min(2, "Danh mục không được để trống."),
-  price: z.number().min(0, "Giá phải là một số dương."),
-  duration: z.number().int().min(5, "Thời lượng phải ít nhất 5 phút."),
-  imageFile: z.any().optional(),
-});
-
-type ServiceFormValues = z.infer<typeof serviceFormSchema>;
-
-// 2. Cập nhật Props
 interface EditServiceFormProps {
   initialData: Service;
   onFormSubmit: (data: ServiceFormValues) => void;
@@ -49,10 +64,31 @@ export default function EditServiceForm({
   onClose,
   isSubmitting,
 }: EditServiceFormProps) {
+  const queryClient = useQueryClient();
+  const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [displayPrice, setDisplayPrice] = useState("");
+
+  const { data: categories = [] } = useQuery<Category[]>({
+    queryKey: ["categories", "service"],
+    queryFn: () =>
+      getCategories().then((data) => data.filter((c) => c.type === "service")),
+  });
+
+  const addCategoryMutation = useMutation({
+    mutationFn: addCategory,
+    onSuccess: (newCategory) => {
+      queryClient.invalidateQueries({ queryKey: ["categories", "service"] });
+      toast.success(`Đã thêm danh mục "${newCategory.name}"!`);
+      // Tự động chọn danh mục vừa thêm
+      const currentCategories = form.getValues("categories") || [];
+      form.setValue("categories", [...currentCategories, newCategory.name]);
+      setIsAddCategoryOpen(false);
+    },
+    onError: (err) => toast.error(`Thêm thất bại: ${err.message}`),
+  });
 
   const form = useForm<ServiceFormValues>({
     resolver: zodResolver(serviceFormSchema),
@@ -60,7 +96,11 @@ export default function EditServiceForm({
     defaultValues: {
       name: initialData.name || "",
       description: initialData.description || "",
-      category: initialData.category || "",
+      categories: Array.isArray(initialData.category)
+        ? initialData.category
+        : initialData.category
+        ? [initialData.category]
+        : [],
       price: initialData.price || 0,
       duration: initialData.duration || 30,
       imageFile: undefined,
@@ -72,7 +112,11 @@ export default function EditServiceForm({
     form.reset({
       name: initialData.name,
       description: initialData.description,
-      category: initialData.category,
+      categories: Array.isArray(initialData.category)
+        ? initialData.category
+        : initialData.category
+        ? [initialData.category]
+        : [],
       price: initialData.price,
       duration: initialData.duration,
     });
@@ -125,6 +169,8 @@ export default function EditServiceForm({
     onFormSubmit(data);
   }
 
+  const selectedCategories = form.watch("categories") || [];
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-4">
@@ -158,13 +204,96 @@ export default function EditServiceForm({
           />
           <FormField
             control={form.control}
-            name="category"
-            render={({ field }) => (
+            name="categories"
+            render={() => (
               <FormItem>
                 <FormLabel>Danh mục</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className="w-full justify-between h-auto min-h-9"
+                      >
+                        <div className="flex gap-1 flex-wrap">
+                          {selectedCategories.length > 0
+                            ? selectedCategories.map((catName) => (
+                                <Badge key={catName} variant="secondary">
+                                  {catName}
+                                </Badge>
+                              ))
+                            : "Chọn danh mục..."}
+                        </div>
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                    <div className="p-2 space-y-1">
+                      {categories.map((category) => (
+                        <FormField
+                          key={category.id}
+                          control={form.control}
+                          name="categories"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value?.includes(category.name)}
+                                  onCheckedChange={(checked) => {
+                                    return checked
+                                      ? field.onChange([
+                                          ...(field.value || []),
+                                          category.name,
+                                        ])
+                                      : field.onChange(
+                                          field.value?.filter(
+                                            (value) => value !== category.name
+                                          )
+                                        );
+                                  }}
+                                />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                {category.name}
+                              </FormLabel>
+                            </FormItem>
+                          )}
+                        />
+                      ))}
+                    </div>
+                    {/* Nút thêm nhanh danh mục */}
+                    <Separator />
+                    <Dialog
+                      open={isAddCategoryOpen}
+                      onOpenChange={setIsAddCategoryOpen}
+                    >
+                      <DialogTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start rounded-t-none"
+                        >
+                          <Plus className="mr-2 h-4 w-4" />
+                          Thêm danh mục mới
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Tạo danh mục dịch vụ mới</DialogTitle>
+                        </DialogHeader>
+                        <AddCategoryForm
+                          categoryType="service"
+                          onFormSubmit={(data) =>
+                            addCategoryMutation.mutate(data)
+                          }
+                          onClose={() => setIsAddCategoryOpen(false)}
+                          isSubmitting={addCategoryMutation.isPending}
+                        />
+                      </DialogContent>
+                    </Dialog>
+                  </PopoverContent>
+                </Popover>
                 <FormMessage />
               </FormItem>
             )}
@@ -205,8 +334,13 @@ export default function EditServiceForm({
                         className="pr-14"
                         {...field}
                         onChange={(e) => {
-                          const value = e.target.valueAsNumber;
-                          field.onChange(isNaN(value) ? 0 : value);
+                          // Giữ lại giá trị chuỗi để xử lý, chỉ chuyển đổi khi cần
+                          const valueAsString = e.target.value;
+                          // Chuyển đổi sang số để validate và lưu trữ
+                          const valueAsNumber = parseInt(valueAsString, 10);
+                          field.onChange(
+                            isNaN(valueAsNumber) ? "" : valueAsNumber
+                          );
                         }}
                       />
                     </FormControl>
