@@ -13,8 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 import { Service } from "@/features/service/types"; // 1. Import Service type
 import { Category } from "@/features/category/types";
 import {
@@ -24,13 +23,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  UploadCloud,
-  File as FileIcon,
-  X,
-  ChevronsUpDown,
-  Plus,
-} from "lucide-react";
+import { ChevronsUpDown, Plus } from "lucide-react";
 import {
   serviceFormSchema,
   ServiceFormValues,
@@ -50,6 +43,7 @@ import {
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@radix-ui/react-dropdown-menu";
+import { ImageUploader } from "@/components/ui/ImageUploader";
 
 interface EditServiceFormProps {
   initialData: Service;
@@ -66,9 +60,6 @@ export default function EditServiceForm({
 }: EditServiceFormProps) {
   const queryClient = useQueryClient();
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
   const [displayPrice, setDisplayPrice] = useState("");
 
   const { data: categories = [] } = useQuery<Category[]>({
@@ -126,37 +117,8 @@ export default function EditServiceForm({
     );
   }, [initialData, form]);
 
-  // --- Logic xử lý file và giá tiền ---
-  const handleFileSelect = (file: File | undefined) => {
-    if (file) {
-      setSelectedFile(file);
-      form.setValue("imageFile", file, { shouldValidate: true });
-    }
-  };
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    handleFileSelect(event.target.files?.[0]);
-  };
-  const handleRemoveFile = () => {
-    setSelectedFile(null);
-    form.setValue("imageFile", undefined, { shouldValidate: true });
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
-  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setIsDragging(true);
-  };
-  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setIsDragging(false);
-  };
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setIsDragging(false);
-    const file = event.dataTransfer.files?.[0];
-    handleFileSelect(file);
-  };
+  // --- giá tiền ---
+
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value.replace(/[^0-9]/g, "");
     const numberValue = parseInt(rawValue, 10) || 0;
@@ -354,54 +316,21 @@ export default function EditServiceForm({
             />
           </div>
 
-          <div>
-            <FormLabel>Hình ảnh dịch vụ (Tùy chọn)</FormLabel>
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              className="hidden"
-              accept="image/png, image/jpeg, image/gif"
-            />
-            {!selectedFile ? (
-              <div
-                onClick={() => fileInputRef.current?.click()}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                className={cn(
-                  "mt-1 border-2 border-dashed border-border rounded-md p-6 flex flex-col items-center justify-center cursor-pointer hover:bg-muted/50 transition-colors",
-                  isDragging && "border-primary bg-muted/50"
-                )}
-              >
-                <div className="text-muted-foreground text-center">
-                  <UploadCloud className="text-3xl mb-2 mx-auto" />
-                  <p>Nhấp để chọn ảnh mới hoặc kéo thả vào đây</p>
-                </div>
-                <p className="text-xs text-muted-foreground mt-2">
-                  PNG, JPG, GIF tối đa 5MB
-                </p>
-              </div>
-            ) : (
-              <div className="mt-2 flex items-start justify-between p-3 border rounded-md bg-muted/50">
-                <div className="flex items-start gap-2 min-w-0">
-                  <FileIcon className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
-                  <span className="text-sm font-medium break-all">
-                    {selectedFile.name}
-                  </span>
-                </div>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="h-6 w-6 flex-shrink-0"
-                  onClick={handleRemoveFile}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
+          <FormField
+            control={form.control}
+            name="imageFile"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Hình ảnh dịch vụ (Tùy chọn)</FormLabel>
+                <FormControl>
+                  <ImageUploader
+                    onFileSelect={(file) => field.onChange(file)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
-          </div>
+          />
         </div>
         <div className="flex justify-end gap-2 pt-4 border-t border-border">
           <Button

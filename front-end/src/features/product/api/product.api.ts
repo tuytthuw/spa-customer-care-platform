@@ -35,7 +35,7 @@ export const getProductById = async (id: string): Promise<Product | null> => {
 interface ProductFormData {
   name: string;
   description?: string;
-  categories: string[];
+  categories?: string[];
   price: number;
   stock: number;
   imageFile?: File;

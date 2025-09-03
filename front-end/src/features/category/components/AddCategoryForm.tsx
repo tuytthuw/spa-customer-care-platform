@@ -40,12 +40,21 @@ export default function AddCategoryForm({
     },
   });
 
+  const processSubmit = (data: CategoryFormValues) => {
+    onFormSubmit(data);
+  };
+
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onFormSubmit)}
+        onSubmit={(e) => {
+          e.preventDefault(); // Ngăn hành vi mặc định của form
+          e.stopPropagation(); // Ngăn sự kiện lan tỏa lên các form cha
+          form.handleSubmit(processSubmit)(); // Chỉ gọi hàm submit của form này
+        }}
         className="space-y-4 pt-4"
       >
+        {" "}
         <FormField
           control={form.control}
           name="name"

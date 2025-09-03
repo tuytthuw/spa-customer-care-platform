@@ -4,6 +4,7 @@ import { useState } from "react";
 import { TreatmentPackage } from "@/features/treatment/types";
 import { TreatmentPlan } from "@/features/treatment/types";
 import { Staff } from "@/features/staff/types";
+import { Service } from "@/features/service/types";
 import {
   Card,
   CardContent,
@@ -22,17 +23,23 @@ interface TreatmentCardProps {
   treatmentPackage: TreatmentPackage;
   planInfo: TreatmentPlan;
   staffList: Staff[];
+  serviceList: Service[];
 }
 
 export default function TreatmentCard({
   treatmentPackage,
   planInfo,
   staffList,
+  serviceList,
 }: TreatmentCardProps) {
   const [isHistoryVisible, setIsHistoryVisible] = useState(false);
 
+  const completedSessionsCount = treatmentPackage.sessions.filter(
+    (s) => s.status === "completed"
+  ).length;
+  const totalSteps = planInfo.steps.length;
   const progress =
-    (treatmentPackage.completedSessions / treatmentPackage.totalSessions) * 100;
+    totalSteps > 0 ? (completedSessionsCount / totalSteps) * 100 : 0;
 
   return (
     <Card>
@@ -48,8 +55,7 @@ export default function TreatmentCard({
           <div className="flex-1">
             <CardTitle className="text-xl">{planInfo.name}</CardTitle>
             <CardDescription>
-              Đã hoàn thành {treatmentPackage.completedSessions} /{" "}
-              {treatmentPackage.totalSessions} buổi
+              Đã hoàn thành {completedSessionsCount} / {totalSteps} buổi
             </CardDescription>
             <Progress value={progress} className="w-full my-3" />
             <p className="text-sm text-muted-foreground">
@@ -66,6 +72,8 @@ export default function TreatmentCard({
           <SessionHistory
             sessions={treatmentPackage.sessions}
             staffList={staffList}
+            serviceList={serviceList}
+            treatmentPackageId={"treatmentPackage.id"}
           />
         )}
       </CardContent>

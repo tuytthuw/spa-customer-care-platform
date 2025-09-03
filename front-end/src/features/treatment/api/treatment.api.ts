@@ -46,10 +46,10 @@ export const getCustomerTreatments = async (): Promise<TreatmentPackage[]> => {
   }
 };
 
-interface PlanData {
+export interface PlanData {
   name: string;
   description?: string;
-  categories: string[];
+  categories?: string[];
   price: number;
   totalSessions: number;
   imageFile?: File;
@@ -100,5 +100,54 @@ export const updateTreatmentPlanStatus = async (
     body: JSON.stringify({ status: newStatus }),
   });
   if (!response.ok) throw new Error("Failed to update treatment plan status");
+  return response.json();
+};
+
+export const bookTreatmentSession = async (bookingData: {
+  treatmentPackageId: string;
+  sessionId: string;
+  date: string; // ISO String
+  technicianId?: string;
+}): Promise<TreatmentPackage> => {
+  const { treatmentPackageId, sessionId, date, technicianId } = bookingData;
+
+  // 1. Lấy gói liệu trình hiện tại từ server
+  const pkgResponse = await fetch(
+    `${CUSTOMER_TREATMENTS_API_URL}/${treatmentPackageId}`
+  );
+  if (!pkgResponse.ok) {
+    throw new Error("Không tìm thấy gói liệu trình của khách hàng.");
+  }
+  const treatmentPackage: TreatmentPackage = await pkgResponse.json();
+
+  // 2. Tìm và cập nhật buổi hẹn trong gói
+  const sessionIndex = treatmentPackage.sessions.findIndex(
+    (s) => s.id === sessionId
+  );
+  if (sessionIndex === -1) {
+    throw new Error("Không tìm thấy buổi hẹn trong liệu trình.");
+  }
+
+  // Cập nhật thông tin cho buổi hẹn
+  treatmentPackage.sessions[sessionIndex] = {
+    ...treatmentPackage.sessions[sessionIndex],
+    date: date,
+    technicianId: technicianId || "", // Gán kỹ thuật viên nếu có
+  };
+
+  // 3. Gửi lại toàn bộ đối tượng gói liệu trình đã được cập nhật lên server
+  const response = await fetch(
+    `${CUSTOMER_TREATMENTS_API_URL}/${treatmentPackageId}`,
+    {
+      method: "PUT", // Dùng PUT để thay thế toàn bộ
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(treatmentPackage),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Đặt lịch cho buổi trị liệu thất bại.");
+  }
+
   return response.json();
 };

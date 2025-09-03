@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { User } from "@/features/user/types";
 import { Customer } from "@/features/customer/types";
+import { Staff } from "@/features/staff/types";
 import crypto from "crypto";
 
 // Import các schema từ tệp tập trung
@@ -15,11 +16,16 @@ import {
 
 const USERS_API_URL = "http://localhost:3001/users";
 const CUSTOMERS_API_URL = "http://localhost:3001/customers";
+const STAFF_API_URL = "http://localhost:3001/staff";
 
 type ActionResult = {
   success?: string;
   error?: string;
-  user?: Omit<User, "password"> & { role: string };
+  user?: Omit<User, "password"> & {
+    role: string;
+    name?: string;
+    phone?: string;
+  };
 };
 
 export const login = async (
@@ -39,12 +45,39 @@ export const login = async (
   if (matchingUsers.length === 0) {
     return { error: "Email hoặc mật khẩu không chính xác!" };
   }
-  if (matchingUsers[0].status === "inactive") {
+  const user = matchingUsers[0]; // ✅ Sửa lỗi: Khai báo biến user ở đây
+  if (user.status === "inactive") {
     return { error: "Tài khoản này đã bị vô hiệu hóa." };
   }
 
-  const { password: _, ...userWithoutPassword } = matchingUsers[0];
-  return { success: "Đăng nhập thành công!", user: userWithoutPassword };
+  const userProfile: { name?: string; phone?: string } = {};
+
+  if (user.role === "customer") {
+    const customerRes = await fetch(`${CUSTOMERS_API_URL}?userId=${user.id}`);
+    const matchingCustomers: Customer[] = await customerRes.json();
+    if (matchingCustomers.length > 0) {
+      userProfile.name = matchingCustomers[0].name;
+      userProfile.phone = matchingCustomers[0].phone;
+    }
+  } else {
+    // Giả sử các vai trò khác đều là staff
+    const staffRes = await fetch(`${STAFF_API_URL}?userId=${user.id}`);
+    const matchingStaff: Staff[] = await staffRes.json();
+    if (matchingStaff.length > 0) {
+      userProfile.name = matchingStaff[0].name;
+      userProfile.phone = matchingStaff[0].phone;
+    }
+  }
+
+  const { password: _, ...userWithoutPassword } = user;
+
+  // ✅ Kết hợp thông tin user và profile trước khi trả về
+  const fullUser = {
+    ...userWithoutPassword,
+    ...userProfile,
+  };
+
+  return { success: "Đăng nhập thành công!", user: fullUser };
 };
 
 export async function register(
