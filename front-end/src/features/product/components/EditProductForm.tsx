@@ -1,5 +1,11 @@
+// src/features/product/components/EditProductForm.tsx
 "use client";
 
+import {
+  productFormSchema,
+  ProductFormValues,
+} from "@/features/product/schemas";
+import { Product } from "@/features/product/types";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -13,13 +19,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Category } from "@/features/category/types";
-import {
-  treatmentPlanFormSchema,
-  TreatmentPlanFormValues,
-} from "@/features/treatment/schemas";
 import {
   Dialog,
   DialogContent,
@@ -49,17 +51,20 @@ import {
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@radix-ui/react-dropdown-menu";
-interface AddTreatmentPlanFormProps {
-  onFormSubmit: (data: TreatmentPlanFormValues) => void;
+
+interface EditProductFormProps {
+  initialData: Product;
+  onFormSubmit: (data: ProductFormValues) => void;
   onClose: () => void;
   isSubmitting?: boolean;
 }
 
-export default function AddTreatmentPlanForm({
+export default function EditProductForm({
+  initialData,
   onFormSubmit,
   onClose,
   isSubmitting,
-}: AddTreatmentPlanFormProps) {
+}: EditProductFormProps) {
   const queryClient = useQueryClient();
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -68,17 +73,15 @@ export default function AddTreatmentPlanForm({
   const [displayPrice, setDisplayPrice] = useState("");
 
   const { data: categories = [] } = useQuery<Category[]>({
-    queryKey: ["categories", "treatment"],
+    queryKey: ["categories", "product"],
     queryFn: () =>
-      getCategories().then((data) =>
-        data.filter((c) => c.type === "treatment")
-      ),
+      getCategories().then((data) => data.filter((c) => c.type === "product")),
   });
 
   const addCategoryMutation = useMutation({
     mutationFn: addCategory,
     onSuccess: (newCategory) => {
-      queryClient.invalidateQueries({ queryKey: ["categories", "treatment"] });
+      queryClient.invalidateQueries({ queryKey: ["categories", "service"] });
       toast.success(`Đã thêm danh mục "${newCategory.name}"!`);
       // Tự động chọn danh mục vừa thêm
       const currentCategories = form.getValues("categories") || [];
@@ -88,19 +91,39 @@ export default function AddTreatmentPlanForm({
     onError: (err) => toast.error(`Thêm thất bại: ${err.message}`),
   });
 
-  const form = useForm<TreatmentPlanFormValues>({
-    resolver: zodResolver(treatmentPlanFormSchema),
+  const form = useForm<ProductFormValues>({
+    resolver: zodResolver(productFormSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      categories: [],
-      price: 0,
-      totalSessions: 5,
+      name: initialData.name || "",
+      description: initialData.description || "",
+      categories: Array.isArray(initialData.category)
+        ? initialData.category
+        : initialData.category
+        ? [initialData.category]
+        : [],
+      price: initialData.price || 0,
+      stock: initialData.stock || 0,
       imageFile: undefined,
     },
   });
 
-  // --- Logic xử lý file ---
+  useEffect(() => {
+    form.reset({
+      name: initialData.name,
+      description: initialData.description,
+      categories: Array.isArray(initialData.category)
+        ? initialData.category
+        : initialData.category
+        ? [initialData.category]
+        : [],
+      price: initialData.price,
+      stock: initialData.stock,
+    });
+    setDisplayPrice(
+      new Intl.NumberFormat("vi-VN").format(initialData.price / 1000)
+    );
+  }, [initialData, form]);
+
   const handleFileSelect = (file: File | undefined) => {
     if (file) {
       setSelectedFile(file);
@@ -144,29 +167,24 @@ export default function AddTreatmentPlanForm({
     setDisplayPrice(new Intl.NumberFormat("vi-VN").format(numberValue));
   };
 
-  function onSubmit(data: TreatmentPlanFormValues) {
+  function onSubmit(data: ProductFormValues) {
     onFormSubmit(data);
-    onClose();
   }
+
   const selectedCategories = form.watch("categories") || [];
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-4">
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto -m-6">
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  Tên liệu trình{" "}
-                  <span className="text-muted-foreground">(bắt buộc)</span>
-                </FormLabel>
+                <FormLabel>Tên sản phẩm</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Ví dụ: Liệu trình triệt lông vĩnh viễn"
-                    {...field}
-                  />
+                  <Input {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -179,10 +197,7 @@ export default function AddTreatmentPlanForm({
               <FormItem>
                 <FormLabel>Mô tả</FormLabel>
                 <FormControl>
-                  <Textarea
-                    placeholder="Nhập mô tả chi tiết về liệu trình"
-                    {...field}
-                  />
+                  <Textarea {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -290,14 +305,10 @@ export default function AddTreatmentPlanForm({
               name="price"
               render={() => (
                 <FormItem>
-                  <FormLabel>
-                    Giá liệu trình{" "}
-                    <span className="text-muted-foreground">(bắt buộc)</span>
-                  </FormLabel>
+                  <FormLabel>Giá bán</FormLabel>
                   <div className="relative">
                     <FormControl>
                       <Input
-                        placeholder="Nhập giá (ví dụ: 500 cho 500.000đ)"
                         className="pr-12"
                         value={displayPrice}
                         onChange={handlePriceChange}
@@ -313,22 +324,16 @@ export default function AddTreatmentPlanForm({
             />
             <FormField
               control={form.control}
-              name="totalSessions"
+              name="stock"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>
-                    Tổng số buổi{" "}
-                    <span className="text-muted-foreground">(bắt buộc)</span>
-                  </FormLabel>
+                  <FormLabel>Tồn kho</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="0"
                       {...field}
                       onChange={(e) => {
-                        // Giữ lại giá trị chuỗi để xử lý, chỉ chuyển đổi khi cần
                         const valueAsString = e.target.value;
-                        // Chuyển đổi sang số để validate và lưu trữ
                         const valueAsNumber = parseInt(valueAsString, 10);
                         field.onChange(
                           isNaN(valueAsNumber) ? "" : valueAsNumber
@@ -341,9 +346,8 @@ export default function AddTreatmentPlanForm({
               )}
             />
           </div>
-
           <div>
-            <FormLabel>Hình ảnh liệu trình</FormLabel>
+            <FormLabel>Ảnh sản phẩm (Tùy chọn)</FormLabel>
             <input
               type="file"
               ref={fileInputRef}
@@ -364,10 +368,10 @@ export default function AddTreatmentPlanForm({
               >
                 <div className="text-muted-foreground text-center">
                   <UploadCloud className="text-3xl mb-2 mx-auto" />
-                  <p>Nhấp để chọn ảnh hoặc kéo thả vào đây</p>
+                  <p>Nhấp để chọn ảnh mới hoặc kéo thả</p>
                 </div>
                 <p className="text-xs text-muted-foreground mt-2">
-                  PNG, JPG, GIF tối đa 5MB
+                  PNG, JPG, GIF (tối đa 5MB)
                 </p>
               </div>
             ) : (
@@ -391,7 +395,7 @@ export default function AddTreatmentPlanForm({
             )}
           </div>
         </div>
-        <div className="flex justify-end gap-2 pt-4 border-t border-border">
+        <div className="flex justify-end gap-2 p-4 border-t">
           <Button
             type="button"
             variant="ghost"
@@ -401,7 +405,7 @@ export default function AddTreatmentPlanForm({
             Hủy
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Đang lưu..." : "Lưu liệu trình"}
+            {isSubmitting ? "Đang lưu..." : "Lưu thay đổi"}
           </Button>
         </div>
       </form>

@@ -41,6 +41,13 @@
       "password": "password",
       "role": "receptionist",
       "status": "inactive"
+    },
+    {
+      "id": "user-manager-1",
+      "email": "manager@myspa.com",
+      "password": "password",
+      "role": "manager",
+      "status": "active"
     }
   ],
   "customers": [
@@ -135,7 +142,11 @@
       "phone": "0926630480",
       "role": "technician",
       "status": "active",
-      "serviceIds": ["2", "1", "c4a7bba9-5b3a-4b05-b717-89a1c520e124"],
+      "serviceIds": [
+        "2",
+        "1",
+        "c4a7bba9-5b3a-4b05-b717-89a1c520e124"
+      ],
       "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Nguyễn Thu An"
     }
   ],
@@ -145,10 +156,14 @@
       "name": "Chăm sóc da mặt chuyên sâu",
       "description": "Liệu trình làm sạch, tẩy tế bào chết, massage và đắp mặt nạ, giúp da sáng khỏe và mịn màng.",
       "price": 500000,
-      "duration": 328,
+      "duration": 3456,
       "category": "Chăm sóc da",
       "imageUrl": "/images/service-1.jpg",
-      "status": "active"
+      "status": "active",
+      "categories": [
+        "Chăm sóc da",
+        "Nguyễn Thu An"
+      ]
     },
     {
       "id": "2",
@@ -168,6 +183,19 @@
       "price": 2000,
       "duration": 30,
       "imageUrl": "/images/service-2.jpg",
+      "status": "active",
+      "categories": [
+        "eawshwkuhrw",
+        "Áo sơ mi"
+      ]
+    },
+    {
+      "id": "manager-1",
+      "userId": "user-manager-1",
+      "name": "Admin Manager",
+      "phone": "0909090909",
+      "role": "manager",
+      "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=manager-1",
       "status": "active"
     }
   ],
@@ -200,27 +228,34 @@
       "id": "plan-1",
       "name": "Liệu trình Triệt lông Nách vĩnh viễn",
       "description": "Gói 10 buổi triệt lông bằng công nghệ Diode Laser an toàn và hiệu quả, cam kết bảo hành 5 năm.",
-      "serviceIds": ["3"],
+      "serviceIds": [
+        "3"
+      ],
       "price": 8000000,
       "totalSessions": 10,
       "imageUrl": "/images/service-3.jpg",
-      "status": "active"
+      "status": "active",
+      "category": "Triệt lông"
     },
     {
       "id": "plan-2",
       "name": "Gói Phục hồi da chuyên sâu 5 buổi",
       "description": "Liệu trình 5 buổi chăm sóc da mặt chuyên sâu, giúp tái tạo làn da, mang lại vẻ sáng khỏe và mịn màng.",
-      "serviceIds": ["1"],
+      "serviceIds": [
+        "1"
+      ],
       "price": 2200000,
       "totalSessions": 5,
       "imageUrl": "/images/service-1.jpg",
-      "status": "inactive"
+      "status": "active"
     },
     {
       "id": "plan-3",
       "name": "Gói Massage thư giãn trị liệu",
       "description": "Combo 5 buổi massage toàn thân với tinh dầu thiên nhiên, giúp giảm căng thẳng, mệt mỏi và phục hồi năng lượng.",
-      "serviceIds": ["2"],
+      "serviceIds": [
+        "2"
+      ],
       "price": 3000000,
       "totalSessions": 5,
       "imageUrl": "/images/service-2.jpg"
@@ -624,6 +659,43 @@
       "rating": 4,
       "comment": "Không gian spa thư giãn, nhân viên thân thiện. Sẽ tốt hơn nếu có thêm nhạc nhẹ.",
       "createdAt": "2025-08-22T18:00:00.000Z"
+    }
+  ],
+  "categories": [
+    {
+      "id": "cat-1",
+      "name": "Chăm sóc da mặt",
+      "type": "service"
+    },
+    {
+      "id": "cat-2",
+      "name": "Massage & Trị liệu",
+      "type": "service"
+    },
+    {
+      "id": "cat-3",
+      "name": "Triệt lông",
+      "type": "treatment"
+    },
+    {
+      "id": "cat-4",
+      "name": "Dưỡng ẩm",
+      "type": "product"
+    },
+    {
+      "id": "cat-5",
+      "name": "Chống nắng",
+      "type": "product"
+    },
+    {
+      "id": "cat-038e2678-f863-41b7-a967-795e3da7cbe4",
+      "name": "Áo sơ mi",
+      "type": "service"
+    },
+    {
+      "id": "cat-cb86492b-76b3-4756-af40-2012f10bdd4a",
+      "name": "Nguyễn Thu An",
+      "type": "service"
     }
   ]
 }

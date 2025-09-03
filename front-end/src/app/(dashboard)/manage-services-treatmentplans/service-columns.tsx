@@ -116,8 +116,7 @@ export const columns = ({
             <AlertDialogHeader>
               <AlertDialogTitle>Bạn có chắc chắn?</AlertDialogTitle>
               <AlertDialogDescription>
-                Hành động này sẽ thay đổi trạng thái của dịch vụ "{service.name}
-                ".
+                Hành động này sẽ thay đổi trạng thái của dịch vụ {service.name}.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

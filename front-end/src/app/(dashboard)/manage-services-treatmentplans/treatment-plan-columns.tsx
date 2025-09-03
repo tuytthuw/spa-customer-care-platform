@@ -1,7 +1,6 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { TreatmentPlan } from "@/types/treatmentPlan";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -26,6 +25,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { types } from "util";
+import { TreatmentPlan } from "@/features/treatment/types";
 
 const formatCurrency = (amount: number) =>
   new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(
@@ -110,8 +111,7 @@ export const treatmentPlanColumns = ({
             <AlertDialogHeader>
               <AlertDialogTitle>Bạn có chắc chắn?</AlertDialogTitle>
               <AlertDialogDescription>
-                Hành động này sẽ thay đổi trạng thái của liệu trình "{plan.name}
-                ".
+                Hành động này sẽ thay đổi trạng thái của liệu trình {plan.name}.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

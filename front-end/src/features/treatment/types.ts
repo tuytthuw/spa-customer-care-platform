@@ -21,6 +21,7 @@ export interface TreatmentPlan {
   id: string;
   name: string;
   description: string;
+  category: string;
   serviceIds: string[];
   price: number;
   totalSessions: number; // Tổng số buổi trong liệu trình

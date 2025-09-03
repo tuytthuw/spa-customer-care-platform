@@ -10,7 +10,7 @@ import {
 export const serviceFormSchema = z.object({
   name: nameSchema,
   description: descriptionSchema,
-  category: z.string().trim().min(2, "Danh mục không được để trống."),
+  categories: z.array(z.string()).optional(),
   price: priceSchema,
   duration: z.number().int().min(5, "Thời lượng phải ít nhất 5 phút."),
   imageFile: imageFileSchema,

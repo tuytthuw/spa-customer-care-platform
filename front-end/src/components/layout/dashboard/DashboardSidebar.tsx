@@ -21,6 +21,7 @@ import {
   ShoppingBag,
   Building,
   ClipboardCheck,
+  FolderKanban,
 } from "lucide-react";
 
 // Định nghĩa cấu trúc của một link điều hướng
@@ -98,6 +99,11 @@ const managerLinks: NavLink[] = [
     href: "/resource-schedule",
     label: "Lịch trình Tài nguyên",
     icon: ClipboardCheck,
+  },
+  {
+    href: "/manage-categories",
+    label: "Quản lý Danh mục",
+    icon: FolderKanban,
   },
 ];
 

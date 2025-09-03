@@ -1,7 +1,8 @@
+// src/app/(dashboard)/manage-products/columns.tsx
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Product } from "@/features/product/types"; // Đảm bảo bạn đã có type này
+import { Product } from "@/features/product/types";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,9 +10,21 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import Image from "next/image";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat("vi-VN", {
@@ -20,7 +33,15 @@ const formatCurrency = (amount: number) => {
   }).format(amount);
 };
 
-export const columns: ColumnDef<Product>[] = [
+interface GetColumnsProps {
+  onEdit: (product: Product) => void;
+  onDelete: (productId: string) => void;
+}
+
+export const columns = ({
+  onEdit,
+  onDelete,
+}: GetColumnsProps): ColumnDef<Product>[] => [
   {
     accessorKey: "name",
     header: "Tên sản phẩm",
@@ -54,26 +75,44 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => {
       const product = row.original;
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Mở menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(product.id)}
-            >
-              Sao chép ID
-            </DropdownMenuItem>
-            <DropdownMenuItem>Sửa thông tin</DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive">
-              Xóa sản phẩm
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <AlertDialog>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Mở menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Hành động</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => onEdit(product)}>
+                Sửa thông tin
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <AlertDialogTrigger asChild>
+                <DropdownMenuItem className="text-destructive focus:text-destructive">
+                  Xóa sản phẩm
+                </DropdownMenuItem>
+              </AlertDialogTrigger>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Bạn có chắc chắn muốn xóa?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Hành động này không thể hoàn tác. Sản phẩm {product.name} sẽ bị
+                xóa vĩnh viễn.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Hủy</AlertDialogCancel>
+              <AlertDialogAction onClick={() => onDelete(product.id)}>
+                Xác nhận Xóa
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       );
     },
   },

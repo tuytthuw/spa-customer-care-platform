@@ -3,7 +3,7 @@
 import { InvoiceItem } from "@/features/billing/types";
 import { Product } from "@/features/product/types";
 import { Service } from "@/features/service/types";
-import { TreatmentPlan } from "@/types/treatmentPlan";
+import { TreatmentPlan } from "@/features/treatment/types";
 import {
   Table,
   TableBody,
