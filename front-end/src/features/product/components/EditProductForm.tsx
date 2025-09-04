@@ -87,11 +87,7 @@ export default function EditProductForm({
     defaultValues: {
       name: initialData.name || "",
       description: initialData.description || "",
-      categories: Array.isArray(initialData.category)
-        ? initialData.category
-        : initialData.category
-        ? [initialData.category]
-        : [],
+      categories: initialData.categories || [],
       price: initialData.price || 0,
       stock: initialData.stock || 0,
       imageFile: undefined,
@@ -102,11 +98,7 @@ export default function EditProductForm({
     form.reset({
       name: initialData.name,
       description: initialData.description,
-      categories: Array.isArray(initialData.category)
-        ? initialData.category
-        : initialData.category
-        ? [initialData.category]
-        : [],
+      categories: initialData.categories,
       price: initialData.price,
       stock: initialData.stock,
     });

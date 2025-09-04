@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FullCustomerProfile } from "@/features/customer/types";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +14,6 @@ import {
 import AddCustomerForm from "@/features/customer/components/AddCustomerForm";
 import EditCustomerForm from "@/features/customer/components/EditCustomerForm"; // 1. Import form chỉnh sửa
 import {
-  getCustomers,
   addCustomer,
   updateCustomerStatus,
   updateCustomer,
@@ -23,6 +22,7 @@ import { Plus } from "lucide-react";
 import { columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
 import { toast } from "sonner";
+import { useCustomers } from "@/features/customer/hooks/useCustomers";
 
 // Lấy type từ Zod schema
 type CustomerFormValues = {
@@ -34,21 +34,13 @@ type CustomerFormValues = {
 
 export default function CustomersPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  // 3. Thêm state để quản lý dialog chỉnh sửa và khách hàng đang được sửa
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingCustomer, setEditingCustomer] =
     useState<FullCustomerProfile | null>(null);
 
   const queryClient = useQueryClient();
 
-  const {
-    data: customers = [],
-    isLoading,
-    error,
-  } = useQuery<FullCustomerProfile[]>({
-    queryKey: ["customers"],
-    queryFn: getCustomers,
-  });
+  const { data: customers = [], isLoading, error } = useCustomers();
 
   // Mutation để thêm
   const addCustomerMutation = useMutation({

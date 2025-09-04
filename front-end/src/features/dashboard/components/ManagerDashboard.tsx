@@ -1,17 +1,13 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { StatsCard } from "@/features/reports/components/StatsCard";
 import { UpcomingAppointments } from "@/features/dashboard/components/UpcomingAppointments";
 import RevenueChart from "@/features/reports/components/RevenueChart";
 import ServiceBreakdownChart from "@/features/reports/components/ServiceBreakdownChart";
 import { Activity, CalendarCheck, DollarSign, Users } from "lucide-react";
-import { getAppointments } from "@/features/appointment/api/appointment.api";
-import { getCustomers } from "@/features/customer/api/customer.api";
-import { getInvoices } from "@/features/billing/api/invoice.api";
-import { Appointment } from "@/features/appointment/types";
-import { Customer } from "@/features/customer/types";
-import { Invoice } from "@/features/billing/types";
+import { useAppointments } from "@/features/appointment/hooks/useAppointments";
+import { useCustomers } from "@/features/customer/hooks/useCustomers";
+import { useInvoices } from "@/features/billing/hooks/useInvoices";
 
 const formatCurrency = (amount: number) =>
   new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(
@@ -19,27 +15,10 @@ const formatCurrency = (amount: number) =>
   );
 
 export default function ManagerDashboard() {
-  // 1. Fetch dữ liệu appointments, customers, invoices từ API
-  const { data: appointments = [], isLoading: loadingAppointments } = useQuery<
-    Appointment[]
-  >({
-    queryKey: ["appointments"],
-    queryFn: getAppointments,
-  });
-
-  const { data: customers = [], isLoading: loadingCustomers } = useQuery<
-    Customer[]
-  >({
-    queryKey: ["customers"],
-    queryFn: getCustomers,
-  });
-
-  const { data: invoices = [], isLoading: loadingInvoices } = useQuery<
-    Invoice[]
-  >({
-    queryKey: ["invoices"],
-    queryFn: getInvoices,
-  });
+  const { data: appointments = [], isLoading: loadingAppointments } =
+    useAppointments();
+  const { data: customers = [], isLoading: loadingCustomers } = useCustomers();
+  const { data: invoices = [], isLoading: loadingInvoices } = useInvoices();
 
   const isLoading = loadingAppointments || loadingCustomers || loadingInvoices;
 
