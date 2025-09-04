@@ -2,10 +2,9 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Product } from "@/features/product/types";
 import {
-  getProducts,
   addProduct,
   updateProduct,
   updateProducteStatus,
@@ -25,6 +24,7 @@ import { toast } from "sonner";
 import AddProductForm from "@/features/product/components/AddProductForm";
 import EditProductForm from "@/features/product/components/EditProductForm";
 import { ProductFormValues } from "@/features/product/schemas";
+import { useProducts } from "@/features/product/hooks/useProducts";
 
 export default function ManageProductsPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -32,14 +32,7 @@ export default function ManageProductsPage() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const queryClient = useQueryClient();
 
-  const {
-    data: products = [],
-    isLoading,
-    error,
-  } = useQuery<Product[]>({
-    queryKey: ["products"],
-    queryFn: getProducts,
-  });
+  const { data: products = [], isLoading, error } = useProducts();
 
   const addProductMutation = useMutation({
     mutationFn: addProduct,
@@ -67,13 +60,20 @@ export default function ManageProductsPage() {
     onError: (err) => toast.error(`Cập nhật thất bại: ${err.message}`),
   });
 
-  const deleteProductMutation = useMutation({
-    mutationFn: deleteProduct,
+  const updateProductStatusMutation = useMutation({
+    mutationFn: ({
+      productId,
+      newStatus,
+    }: {
+      productId: string;
+      newStatus: "active" | "inactive";
+    }) => updateProducteStatus(productId, newStatus),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
-      toast.success("Xóa sản phẩm thành công!");
+      toast.success("Cập nhật trạng thái thành công!");
     },
-    onError: (err) => toast.error(`Xóa thất bại: ${err.message}`),
+    onError: (err) =>
+      toast.error(`Cập nhật trạng thái thất bại: ${err.message}`),
   });
 
   const handleEdit = (product: Product) => {
@@ -85,6 +85,12 @@ export default function ManageProductsPage() {
     if (editingProduct) {
       updateProductMutation.mutate({ productId: editingProduct.id, data });
     }
+  };
+  const handleUpdateProductStatus = (
+    productId: string,
+    newStatus: "active" | "inactive"
+  ) => {
+    updateProductStatusMutation.mutate({ productId, newStatus });
   };
 
   if (isLoading) return <div>Đang tải danh sách sản phẩm...</div>;
@@ -115,7 +121,7 @@ export default function ManageProductsPage() {
       <DataTable
         columns={columns({
           onEdit: handleEdit,
-          onDelete: (id) => deleteProductMutation.mutate(id),
+          onUpdateStatus: handleUpdateProductStatus,
         })}
         data={products}
       />

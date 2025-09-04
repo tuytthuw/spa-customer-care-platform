@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FullStaffProfile } from "@/features/staff/types";
-import { Service } from "@/features/service/types";
 import { columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
@@ -17,13 +16,13 @@ import {
 import AddStaffForm from "@/features/staff/components/AddStaffForm";
 import EditStaffForm from "@/features/staff/components/EditStaffForm";
 import {
-  getStaffProfiles,
   addStaff,
   updateStaff,
   updateStaffStatus,
 } from "@/features/staff/api/staff.api";
-import { getServices } from "@/features/service/api/service.api";
 import { toast } from "sonner";
+import { useStaffs } from "@/features/staff/hooks/useStaffs";
+import { useServices } from "@/features/service/hooks/useServices";
 
 type StaffFormValues = {
   name: string;
@@ -44,22 +43,10 @@ export default function StaffManagementPage() {
 
   const queryClient = useQueryClient();
 
-  const {
-    data: staff = [],
-    isLoading,
-    error,
-  } = useQuery<FullStaffProfile[]>({
-    queryKey: ["staff"],
-    queryFn: getStaffProfiles,
-  });
+  const { data: staff = [], isLoading, error } = useStaffs();
 
   // Thêm query để lấy danh sách dịch vụ
-  const { data: services = [], isLoading: isLoadingServices } = useQuery<
-    Service[]
-  >({
-    queryKey: ["services"],
-    queryFn: getServices,
-  });
+  const { data: services = [], isLoading: isLoadingServices } = useServices();
 
   // Mutation để thêm nhân viên
   const addStaffMutation = useMutation({

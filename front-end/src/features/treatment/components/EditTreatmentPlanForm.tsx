@@ -88,13 +88,11 @@ export default function EditTreatmentPlanForm({
     defaultValues: {
       name: initialData.name || "",
       description: initialData.description || "",
-      categories: Array.isArray(initialData.category)
-        ? initialData.category
-        : initialData.category
-        ? [initialData.category]
-        : [],
+      categories: initialData.categories || [],
       price: initialData.price || 0,
-      totalSessions: initialData.totalSessions || 5,
+
+      totalSessions: initialData.totalSessions || 0,
+
       imageFile: undefined,
     },
   });
@@ -103,11 +101,7 @@ export default function EditTreatmentPlanForm({
     form.reset({
       name: initialData.name,
       description: initialData.description,
-      categories: Array.isArray(initialData.category)
-        ? initialData.category
-        : initialData.category
-        ? [initialData.category]
-        : [],
+      categories: initialData.categories,
       price: initialData.price,
       totalSessions: initialData.totalSessions,
     });

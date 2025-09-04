@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import {
   AlertDialog,
@@ -35,12 +36,12 @@ const formatCurrency = (amount: number) => {
 
 interface GetColumnsProps {
   onEdit: (product: Product) => void;
-  onDelete: (productId: string) => void;
+  onUpdateStatus: (productId: string, newStatus: "active" | "inactive") => void;
 }
 
 export const columns = ({
   onEdit,
-  onDelete,
+  onUpdateStatus,
 }: GetColumnsProps): ColumnDef<Product>[] => [
   {
     accessorKey: "name",
@@ -71,9 +72,21 @@ export const columns = ({
     header: "Tồn kho",
   },
   {
+    accessorKey: "status",
+    header: "Trạng thái",
+    cell: ({ row }) => (
+      <Badge
+        variant={row.original.status === "active" ? "default" : "secondary"}
+      >
+        {row.original.status === "active" ? "Đang hoạt động" : "Tạm ẩn"}
+      </Badge>
+    ),
+  },
+  {
     id: "actions",
     cell: ({ row }) => {
       const product = row.original;
+      const isInactive = product.status === "inactive";
       return (
         <AlertDialog>
           <DropdownMenu>
@@ -91,7 +104,7 @@ export const columns = ({
               <DropdownMenuSeparator />
               <AlertDialogTrigger asChild>
                 <DropdownMenuItem className="text-destructive focus:text-destructive">
-                  Xóa sản phẩm
+                  {isInactive ? "Kích hoạt" : "Vô hiệu hóa"}
                 </DropdownMenuItem>
               </AlertDialogTrigger>
             </DropdownMenuContent>
@@ -99,16 +112,22 @@ export const columns = ({
 
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Bạn có chắc chắn muốn xóa?</AlertDialogTitle>
+              <AlertDialogTitle>
+                Xác nhận {isInactive ? "kích hoạt" : "vô hiệu hóa"} sản phẩm
+              </AlertDialogTitle>
               <AlertDialogDescription>
-                Hành động này không thể hoàn tác. Sản phẩm {product.name} sẽ bị
-                xóa vĩnh viễn.
+                Hành động này sẽ thay đổi trạng thái của sản phẩm {product.name}
+                .
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Hủy</AlertDialogCancel>
-              <AlertDialogAction onClick={() => onDelete(product.id)}>
-                Xác nhận Xóa
+              <AlertDialogAction
+                onClick={() =>
+                  onUpdateStatus(product.id, isInactive ? "active" : "inactive")
+                }
+              >
+                Tiếp tục
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

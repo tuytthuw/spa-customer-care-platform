@@ -37,7 +37,7 @@ export default function SessionHistory({
             <TableHead>Ngày thực hiện</TableHead>
             <TableHead>Kỹ thuật viên</TableHead>
             <TableHead>Trạng thái</TableHead>
-            <TableHead className="text-right">Hành động</TableHead>{" "}
+            <TableHead className="text-right">Hành động</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

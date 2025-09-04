@@ -1,25 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { StatisticsSidebar } from "@/features/appointment/components/appointment-management/StatisticsSidebar";
 import { AppointmentTimeline } from "@/features/appointment/components/appointment-management/AppointmentTimeline";
 import { AppointmentDetails } from "@/features/appointment/components/appointment-management/AppointmentDetails";
 import { Appointment, AppointmentStatus } from "@/features/appointment/types";
-import { Customer } from "@/features/customer/types";
-import { Service } from "@/features/service/types";
-import { Staff } from "@/features/staff/types";
 import {
-  getAppointments,
   updateAppointmentStatus,
   updateAppointmentDetails,
 } from "@/features/appointment/api/appointment.api";
-import { getCustomers } from "@/features/customer/api/customer.api";
-import { getServices } from "@/features/service/api/service.api";
-import { getStaff } from "@/features/staff/api/staff.api";
 import { toast } from "sonner";
 import { EventDropArg } from "@fullcalendar/core";
 import { cn } from "@/lib/utils";
+import { useAppointments } from "@/features/appointment/hooks/useAppointments";
+import { useCustomers } from "@/features/customer/hooks/useCustomers";
+import { useServices } from "@/features/service/hooks/useServices";
+import { useStaffs } from "@/features/staff/hooks/useStaffs";
 
 export default function AppointmentsManagementPage() {
   const queryClient = useQueryClient();
@@ -28,31 +25,11 @@ export default function AppointmentsManagementPage() {
   >(null);
 
   // --- Fetch tất cả dữ liệu cần thiết từ API ---
-  const { data: appointments = [], isLoading: loadingAppointments } = useQuery<
-    Appointment[]
-  >({
-    queryKey: ["appointments"],
-    queryFn: getAppointments,
-  });
-
-  const { data: customers = [], isLoading: loadingCustomers } = useQuery<
-    Customer[]
-  >({
-    queryKey: ["customers"],
-    queryFn: getCustomers,
-  });
-
-  const { data: services = [], isLoading: loadingServices } = useQuery<
-    Service[]
-  >({
-    queryKey: ["services"],
-    queryFn: getServices,
-  });
-
-  const { data: staff = [], isLoading: loadingStaff } = useQuery<Staff[]>({
-    queryKey: ["staff"],
-    queryFn: getStaff,
-  });
+  const { data: appointments = [], isLoading: loadingAppointments } =
+    useAppointments();
+  const { data: customers = [], isLoading: loadingCustomers } = useCustomers();
+  const { data: services = [], isLoading: loadingServices } = useServices();
+  const { data: staff = [], isLoading: loadingStaff } = useStaffs();
 
   // --- Mutation để cập nhật trạng thái ---
   const updateStatusMutation = useMutation({

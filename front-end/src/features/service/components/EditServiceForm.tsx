@@ -87,11 +87,7 @@ export default function EditServiceForm({
     defaultValues: {
       name: initialData.name || "",
       description: initialData.description || "",
-      categories: Array.isArray(initialData.category)
-        ? initialData.category
-        : initialData.category
-        ? [initialData.category]
-        : [],
+      categories: initialData.categories || [],
       price: initialData.price || 0,
       duration: initialData.duration || 30,
       imageFile: undefined,
@@ -103,11 +99,7 @@ export default function EditServiceForm({
     form.reset({
       name: initialData.name,
       description: initialData.description,
-      categories: Array.isArray(initialData.category)
-        ? initialData.category
-        : initialData.category
-        ? [initialData.category]
-        : [],
+      categories: initialData.categories,
       price: initialData.price,
       duration: initialData.duration,
     });

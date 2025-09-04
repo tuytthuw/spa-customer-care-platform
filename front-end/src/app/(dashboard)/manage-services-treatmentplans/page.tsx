@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Service } from "@/features/service/types";
 import { TreatmentPlan } from "@/features/treatment/types";
 import { columns as serviceColumns } from "./service-columns";
@@ -21,13 +21,11 @@ import EditTreatmentPlanForm from "@/features/treatment/components/EditTreatment
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { treatmentPlanColumns } from "./treatment-plan-columns";
 import {
-  getServices,
   addService,
   updateService,
   updateServiceStatus,
 } from "@/features/service/api/service.api";
 import {
-  getTreatmentPlans,
   addTreatmentPlan,
   updateTreatmentPlan,
   updateTreatmentPlanStatus,
@@ -35,6 +33,8 @@ import {
 import { toast } from "sonner";
 import { ServiceFormValues } from "@/features/service/schemas";
 import { TreatmentPlanFormValues } from "@/features/treatment/schemas";
+import { useServices } from "@/features/service/hooks/useServices";
+import { useTreatmentPlans } from "@/features/treatment/hooks/useTreatmentPlans";
 
 export default function ServicesManagementPage() {
   const [isServiceAddOpen, setIsServiceAddOpen] = useState(false);
@@ -47,12 +47,9 @@ export default function ServicesManagementPage() {
   const queryClient = useQueryClient();
 
   // Queries
-  const { data: services = [], isLoading: isLoadingServices } = useQuery<
-    Service[]
-  >({ queryKey: ["services"], queryFn: getServices });
-  const { data: treatmentPlans = [], isLoading: isLoadingPlans } = useQuery<
-    TreatmentPlan[]
-  >({ queryKey: ["treatmentPlans"], queryFn: getTreatmentPlans });
+  const { data: services = [], isLoading: isLoadingServices } = useServices();
+  const { data: treatmentPlans = [], isLoading: isLoadingPlans } =
+    useTreatmentPlans();
 
   // Mutations for Services
   const addServiceMutation = useMutation({

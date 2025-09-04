@@ -73,7 +73,7 @@ export default function TreatmentCard({
             sessions={treatmentPackage.sessions}
             staffList={staffList}
             serviceList={serviceList}
-            treatmentPackageId={"treatmentPackage.id"}
+            treatmentPackageId={treatmentPackage.id}
           />
         )}
       </CardContent>

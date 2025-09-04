@@ -25,7 +25,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { types } from "util";
 import { TreatmentPlan } from "@/features/treatment/types";
 
 const formatCurrency = (amount: number) =>
