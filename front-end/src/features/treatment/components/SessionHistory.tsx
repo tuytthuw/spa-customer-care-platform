@@ -45,13 +45,16 @@ export default function SessionHistory({
             const technician = staffList.find(
               (s) => s.id === session.technicianId
             );
-            const service = serviceList.find((s) => s.id === session.serviceId);
-
+            // Lấy danh sách tên dịch vụ
+            const sessionServices = session.serviceId
+              .map((id) => serviceList.find((s) => s.id === id)?.name)
+              .filter(Boolean) // Lọc bỏ các giá trị undefined
+              .join(", ");
             return (
               <TableRow key={session.id}>
                 <TableCell>Buổi {session.treatmentPlanStep}</TableCell>
                 <TableCell className="font-medium">
-                  {service?.name || "N/A"}
+                  {sessionServices || "N/A"}
                 </TableCell>
                 <TableCell>
                   {session.date

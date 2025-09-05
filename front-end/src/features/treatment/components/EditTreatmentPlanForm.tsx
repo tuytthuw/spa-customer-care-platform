@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,7 +27,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ChevronsUpDown, Plus } from "lucide-react";
+import { ChevronsUpDown, Plus, PlusCircle, Trash2 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getCategories,
@@ -44,6 +44,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { ImageUploader } from "@/components/ui/ImageUploader";
+import { useServices } from "@/features/service/hooks/useServices";
 
 interface EditTreatmentPlanFormProps {
   initialData: TreatmentPlan;
@@ -70,6 +71,32 @@ export default function EditTreatmentPlanForm({
       ),
   });
 
+  const { data: services = [] } = useServices();
+
+  const form = useForm<TreatmentPlanFormValues>({
+    resolver: zodResolver(treatmentPlanFormSchema),
+  });
+
+  // Sử dụng useFieldArray để quản lý các buổi của liệu trình
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "steps",
+  });
+
+  useEffect(() => {
+    form.reset({
+      name: initialData.name,
+      description: initialData.description,
+      categories: initialData.categories,
+      price: initialData.price,
+      // Chuyển đổi `steps` từ dữ liệu ban đầu
+      steps: initialData.steps.map((step) => ({ serviceIds: step.serviceIds })),
+    });
+    setDisplayPrice(
+      new Intl.NumberFormat("vi-VN").format(initialData.price / 1000)
+    );
+  }, [initialData, form]);
+
   const addCategoryMutation = useMutation({
     mutationFn: addCategory,
     onSuccess: (newCategory) => {
@@ -82,33 +109,6 @@ export default function EditTreatmentPlanForm({
     },
     onError: (err) => toast.error(`Thêm thất bại: ${err.message}`),
   });
-
-  const form = useForm<TreatmentPlanFormValues>({
-    resolver: zodResolver(treatmentPlanFormSchema),
-    defaultValues: {
-      name: initialData.name || "",
-      description: initialData.description || "",
-      categories: initialData.categories || [],
-      price: initialData.price || 0,
-
-      totalSessions: initialData.totalSessions || 0,
-
-      imageFile: undefined,
-    },
-  });
-
-  useEffect(() => {
-    form.reset({
-      name: initialData.name,
-      description: initialData.description,
-      categories: initialData.categories,
-      price: initialData.price,
-      totalSessions: initialData.totalSessions,
-    });
-    setDisplayPrice(
-      new Intl.NumberFormat("vi-VN").format(initialData.price / 1000)
-    );
-  }, [initialData, form]);
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value.replace(/[^0-9]/g, "");
@@ -231,10 +231,10 @@ export default function EditTreatmentPlanForm({
                       </DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
-                          <DialogTitle>Tạo danh mục dịch vụ mới</DialogTitle>
+                          <DialogTitle>Tạo danh mục liệu trình mới</DialogTitle>
                         </DialogHeader>
                         <AddCategoryForm
-                          categoryType="service"
+                          categoryType="treatment"
                           onFormSubmit={(data) =>
                             addCategoryMutation.mutate(data)
                           }
@@ -272,32 +272,113 @@ export default function EditTreatmentPlanForm({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="totalSessions"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tổng số buổi</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      {...field}
-                      onChange={(e) => {
-                        // Giữ lại giá trị chuỗi để xử lý, chỉ chuyển đổi khi cần
-                        const valueAsString = e.target.value;
-                        // Chuyển đổi sang số để validate và lưu trữ
-                        const valueAsNumber = parseInt(valueAsString, 10);
-                        field.onChange(
-                          isNaN(valueAsNumber) ? "" : valueAsNumber
-                        );
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </div>
+
+          <div>
+            <FormLabel>Các buổi trong liệu trình</FormLabel>
+            <div className="space-y-4 mt-2">
+              {fields.map((field, index) => (
+                <div key={field.id} className="border p-4 rounded-md relative">
+                  <FormLabel className="mb-2 block">Buổi {index + 1}</FormLabel>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-2 right-2 h-7 w-7"
+                    onClick={() => remove(index)}
+                  >
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                  <FormField
+                    control={form.control}
+                    name={`steps.${index}.serviceIds`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                role="combobox"
+                                className="w-full justify-between h-auto min-h-9"
+                              >
+                                <div className="flex gap-1 flex-wrap">
+                                  {field.value?.length > 0
+                                    ? field.value.map((serviceId) => {
+                                        const service = services.find(
+                                          (s) => s.id === serviceId
+                                        );
+                                        return (
+                                          <Badge
+                                            key={serviceId}
+                                            variant="secondary"
+                                          >
+                                            {service?.name || "..."}
+                                          </Badge>
+                                        );
+                                      })
+                                    : "Chọn dịch vụ..."}
+                                </div>
+                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                            <div className="p-2 space-y-1 max-h-48 overflow-y-auto">
+                              {services.map((service) => (
+                                <FormItem
+                                  key={service.id}
+                                  className="flex flex-row items-start space-x-3 space-y-0"
+                                >
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value?.includes(
+                                        service.id
+                                      )}
+                                      onCheckedChange={(checked) => {
+                                        return checked
+                                          ? field.onChange([
+                                              ...(field.value || []),
+                                              service.id,
+                                            ])
+                                          : field.onChange(
+                                              field.value?.filter(
+                                                (value) => value !== service.id
+                                              )
+                                            );
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    {service.name}
+                                  </FormLabel>
+                                </FormItem>
+                              ))}
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="mt-2"
+                onClick={() => append({ serviceIds: [] })}
+              >
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Thêm buổi
+              </Button>
+            </div>
+            <FormMessage>
+              {form.formState.errors.steps?.root?.message}
+            </FormMessage>
+          </div>
+
           <FormField
             control={form.control}
             name="imageFile"

@@ -564,6 +564,11 @@
       "id": "cat-2e78beaa-1cb8-44fc-896b-1b5a4afccc1a",
       "name": "jkljhgf",
       "type": "service"
+    },
+    {
+      "id": "cat-391dec40-49ab-4e51-9a52-53280b3f0cb4",
+      "name": "qửetrty",
+      "type": "service"
     }
   ],
   "treatmentPlans": [
@@ -575,26 +580,39 @@
       "price": 2500000,
       "imageUrl": "/images/service-1.jpg",
       "status": "active",
+      "totalSessions": 5,
       "steps": [
         {
           "step": 1,
-          "serviceId": "1"
+          "serviceIds": [
+            "1"
+          ]
         },
         {
           "step": 2,
-          "serviceId": "1"
+          "serviceIds": [
+            "1",
+            "2"
+          ]
         },
         {
           "step": 3,
-          "serviceId": "2"
+          "serviceIds": [
+            "2"
+          ]
         },
         {
           "step": 4,
-          "serviceId": "1"
+          "serviceIds": [
+            "1"
+          ]
         },
         {
           "step": 5,
-          "serviceId": "2"
+          "serviceIds": [
+            "1",
+            "2"
+          ]
         }
       ]
     },
@@ -606,26 +624,37 @@
       "price": 3000000,
       "imageUrl": "/images/service-2.jpg",
       "status": "active",
+      "totalSessions": 5,
       "steps": [
         {
           "step": 1,
-          "serviceId": "2"
+          "serviceIds": [
+            "2"
+          ]
         },
         {
           "step": 2,
-          "serviceId": "1"
+          "serviceIds": [
+            "1"
+          ]
         },
         {
           "step": 3,
-          "serviceId": "2"
+          "serviceIds": [
+            "2"
+          ]
         },
         {
           "step": 4,
-          "serviceId": "1"
+          "serviceIds": [
+            "1"
+          ]
         },
         {
           "step": 5,
-          "serviceId": "2"
+          "serviceIds": [
+            "2"
+          ]
         }
       ]
     }
@@ -640,7 +669,9 @@
         {
           "id": "cts-1",
           "treatmentPlanStep": 1,
-          "serviceId": "1",
+          "serviceIds": [
+            "1"
+          ],
           "date": "2025-07-20T14:00:00.000Z",
           "technicianId": "tech-1",
           "status": "completed",
@@ -649,7 +680,10 @@
         {
           "id": "cts-2",
           "treatmentPlanStep": 2,
-          "serviceId": "1",
+          "serviceIds": [
+            "1",
+            "2"
+          ],
           "date": "2025-07-27T14:00:00.000Z",
           "technicianId": "tech-1",
           "status": "completed",
@@ -658,7 +692,9 @@
         {
           "id": "cts-3",
           "treatmentPlanStep": 3,
-          "serviceId": "2",
+          "serviceIds": [
+            "2"
+          ],
           "date": "2025-09-03T02:30:00.000Z",
           "technicianId": "",
           "status": "upcoming",
@@ -667,7 +703,9 @@
         {
           "id": "cts-4",
           "treatmentPlanStep": 4,
-          "serviceId": "1",
+          "serviceIds": [
+            "1"
+          ],
           "date": "",
           "technicianId": "",
           "status": "upcoming",
@@ -676,7 +714,10 @@
         {
           "id": "cts-5",
           "treatmentPlanStep": 5,
-          "serviceId": "2",
+          "serviceIds": [
+            "1",
+            "2"
+          ],
           "date": "",
           "technicianId": "",
           "status": "upcoming",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,7 +26,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ChevronsUpDown, Plus } from "lucide-react";
+import { ChevronsUpDown, Plus, PlusCircle, Trash2 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getCategories,
@@ -42,13 +42,14 @@ import {
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@radix-ui/react-dropdown-menu";
+import { ImageUploader } from "@/components/ui/ImageUploader";
+import { useServices } from "@/features/service/hooks/useServices";
+
 interface AddTreatmentPlanFormProps {
   onFormSubmit: (data: TreatmentPlanFormValues) => void;
   onClose: () => void;
   isSubmitting?: boolean;
 }
-import { ImageUploader } from "@/components/ui/ImageUploader";
-
 export default function AddTreatmentPlanForm({
   onFormSubmit,
   onClose,
@@ -66,12 +67,13 @@ export default function AddTreatmentPlanForm({
       ),
   });
 
+  const { data: services = [] } = useServices();
+
   const addCategoryMutation = useMutation({
     mutationFn: addCategory,
     onSuccess: (newCategory) => {
       queryClient.invalidateQueries({ queryKey: ["categories", "treatment"] });
       toast.success(`Đã thêm danh mục "${newCategory.name}"!`);
-      // Tự động chọn danh mục vừa thêm
       const currentCategories = form.getValues("categories") || [];
       form.setValue("categories", [...currentCategories, newCategory.name]);
       setIsAddCategoryOpen(false);
@@ -86,9 +88,14 @@ export default function AddTreatmentPlanForm({
       description: "",
       categories: [],
       price: 0,
-      totalSessions: 5,
+      steps: [],
       imageFile: undefined,
     },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "steps",
   });
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,6 +110,7 @@ export default function AddTreatmentPlanForm({
     onClose();
   }
   const selectedCategories = form.watch("categories") || [];
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-4">
@@ -223,7 +231,7 @@ export default function AddTreatmentPlanForm({
                           <DialogTitle>Tạo danh mục dịch vụ mới</DialogTitle>
                         </DialogHeader>
                         <AddCategoryForm
-                          categoryType="service"
+                          categoryType="treatment"
                           onFormSubmit={(data) =>
                             addCategoryMutation.mutate(data)
                           }
@@ -265,37 +273,111 @@ export default function AddTreatmentPlanForm({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="totalSessions"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Tổng số buổi{" "}
-                    <span className="text-muted-foreground">(bắt buộc)</span>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="0"
-                      {...field}
-                      onChange={(e) => {
-                        // Giữ lại giá trị chuỗi để xử lý, chỉ chuyển đổi khi cần
-                        const valueAsString = e.target.value;
-                        // Chuyển đổi sang số để validate và lưu trữ
-                        const valueAsNumber = parseInt(valueAsString, 10);
-                        field.onChange(
-                          isNaN(valueAsNumber) ? "" : valueAsNumber
-                        );
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </div>
-
+          <div>
+            <FormLabel>Các buổi trong liệu trình</FormLabel>
+            <div className="space-y-4 mt-2">
+              {fields.map((field, index) => (
+                <div key={field.id} className="border p-4 rounded-md relative">
+                  <FormLabel className="mb-2 block">Buổi {index + 1}</FormLabel>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-2 right-2 h-7 w-7"
+                    onClick={() => remove(index)}
+                  >
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                  <FormField
+                    control={form.control}
+                    name={`steps.${index}.serviceIds`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                role="combobox"
+                                className="w-full justify-between h-auto min-h-9"
+                              >
+                                <div className="flex gap-1 flex-wrap">
+                                  {field.value?.length > 0
+                                    ? field.value.map((serviceId) => {
+                                        const service = services.find(
+                                          (s) => s.id === serviceId
+                                        );
+                                        return (
+                                          <Badge
+                                            key={serviceId}
+                                            variant="secondary"
+                                          >
+                                            {service?.name || "..."}
+                                          </Badge>
+                                        );
+                                      })
+                                    : "Chọn dịch vụ..."}
+                                </div>
+                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                            <div className="p-2 space-y-1 max-h-48 overflow-y-auto">
+                              {services.map((service) => (
+                                <FormItem
+                                  key={service.id}
+                                  className="flex flex-row items-start space-x-3 space-y-0"
+                                >
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value?.includes(
+                                        service.id
+                                      )}
+                                      onCheckedChange={(checked) => {
+                                        return checked
+                                          ? field.onChange([
+                                              ...(field.value || []),
+                                              service.id,
+                                            ])
+                                          : field.onChange(
+                                              field.value?.filter(
+                                                (value) => value !== service.id
+                                              )
+                                            );
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    {service.name}
+                                  </FormLabel>
+                                </FormItem>
+                              ))}
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="mt-2"
+                onClick={() => append({ serviceIds: [] })}
+              >
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Thêm buổi
+              </Button>
+            </div>
+            <FormMessage>
+              {form.formState.errors.steps?.root?.message}
+            </FormMessage>
+          </div>
           <FormField
             control={form.control}
             name="imageFile"
@@ -312,6 +394,7 @@ export default function AddTreatmentPlanForm({
             )}
           />
         </div>
+
         <div className="flex justify-end gap-2 pt-4 border-t border-border">
           <Button
             type="button"

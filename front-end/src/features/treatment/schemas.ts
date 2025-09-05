@@ -2,13 +2,20 @@
 import { descriptionSchema, nameSchema, priceSchema } from "@/lib/schemas";
 import { z } from "zod";
 
+const treatmentPlanStepSchema = z.object({
+  serviceIds: z
+    .array(z.string())
+    .min(1, "Mỗi buổi phải có ít nhất một dịch vụ."),
+});
 // Di chuyển từ: src/features/treatment/components/AddTreatmentPlanForm.tsx
 export const treatmentPlanFormSchema = z.object({
   name: nameSchema,
   description: descriptionSchema,
   categories: z.array(z.string()).optional(),
   price: priceSchema,
-  totalSessions: z.number().int().min(1, "Số buổi phải ít nhất là 1."),
+  steps: z
+    .array(treatmentPlanStepSchema)
+    .min(1, "Liệu trình phải có ít nhất một buổi."),
   imageFile: z.any().optional(),
 });
 
