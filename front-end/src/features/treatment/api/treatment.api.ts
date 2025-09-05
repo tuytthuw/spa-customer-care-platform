@@ -1,7 +1,11 @@
 // src/services/treatmentPlanService.ts
-import { TreatmentPlan } from "@/features/treatment/types";
-import { TreatmentPackage } from "@/features/treatment/types";
+import {
+  TreatmentPlan,
+  TreatmentPackage,
+  TreatmentPlanStep,
+} from "@/features/treatment/types";
 import { v4 as uuidv4 } from "uuid";
+import { TreatmentPlanFormValues } from "@/features/treatment/schemas";
 
 const PLANS_API_URL = "http://localhost:3001/treatmentPlans";
 const CUSTOMER_TREATMENTS_API_URL = "http://localhost:3001/customerTreatments";
@@ -46,28 +50,25 @@ export const getCustomerTreatments = async (): Promise<TreatmentPackage[]> => {
   }
 };
 
-export interface PlanData {
-  name: string;
-  description?: string;
-  categories?: string[];
-  price: number;
-  totalSessions: number;
-  imageFile?: File;
-}
-
 export const addTreatmentPlan = async (
-  newPlanData: PlanData
+  newPlanData: TreatmentPlanFormValues
 ): Promise<TreatmentPlan> => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { imageFile, ...dataToSave } = newPlanData; // Báo ESLint bỏ qua cảnh báo
+  const { imageFile, ...dataToSave } = newPlanData;
+
+  const stepsWithNumbers = dataToSave.steps.map((step, index) => ({
+    ...step,
+    step: index + 1,
+  }));
+
   const response = await fetch(PLANS_API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       id: uuidv4(),
       ...dataToSave,
+      steps: stepsWithNumbers,
+      totalSessions: stepsWithNumbers.length,
       status: "active",
-      serviceIds: [],
       imageUrl: `/images/service-${Math.floor(Math.random() * 3) + 1}.jpg`,
     }),
   });
@@ -77,14 +78,25 @@ export const addTreatmentPlan = async (
 
 export const updateTreatmentPlan = async (
   planId: string,
-  dataToUpdate: PlanData
+  dataToUpdate: TreatmentPlanFormValues
 ): Promise<TreatmentPlan> => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { imageFile, ...data } = dataToUpdate;
+
+  const stepsWithNumbers = data.steps.map((step, index) => ({
+    ...step,
+    step: index + 1,
+  }));
+
+  const finalData = {
+    ...data,
+    steps: stepsWithNumbers,
+    totalSessions: stepsWithNumbers.length,
+  };
+
   const response = await fetch(`${PLANS_API_URL}/${planId}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify(finalData),
   });
   if (!response.ok) throw new Error("Failed to update treatment plan");
   return response.json();
