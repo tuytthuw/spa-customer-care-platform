@@ -47,6 +47,42 @@ export const getCustomers = async (): Promise<FullCustomerProfile[]> => {
   }
 };
 
+export const getCustomerById = async (
+  customerId: string
+): Promise<FullCustomerProfile | null> => {
+  try {
+    const [customerRes, usersRes] = await Promise.all([
+      fetch(`${CUSTOMERS_API_URL}/${customerId}`),
+      fetch(USERS_API_URL), // Vẫn cần fetch hết user để tìm email
+    ]);
+
+    if (!customerRes.ok) {
+      return null;
+    }
+
+    const customer: Customer = await customerRes.json();
+    const users: User[] = await usersRes.json();
+    const user = users.find((u) => u.id === customer.userId);
+
+    if (!user) {
+      // Hoặc trả về customer không có email/status
+      return null;
+    }
+
+    return {
+      ...customer,
+      email: user.email,
+      status: user.status,
+    };
+  } catch (error) {
+    console.error(
+      `Error fetching customer profile for id: ${customerId}`,
+      error
+    );
+    return null;
+  }
+};
+
 // --- CÁC HÀM TIỆN ÍCH KHÁC ---
 
 // Kiểu dữ liệu cho form thêm khách hàng
