@@ -1,6 +1,11 @@
-// src/features/product/components/AddProductForm.tsx
+// src/features/product/components/EditProductForm.tsx
 "use client";
 
+import {
+  productFormSchema,
+  ProductFormValues,
+} from "@/features/product/schemas";
+import { Product } from "@/features/product/types";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -14,11 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
-import {
-  productFormSchema,
-  ProductFormValues,
-} from "@/features/product/schemas";
+import { useEffect, useState } from "react";
 import { Category } from "@/features/category/types";
 import {
   Dialog,
@@ -45,20 +46,24 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { ImageUploader } from "@/components/ui/ImageUploader";
 
-interface AddProductFormProps {
+interface ProductFormProps {
+  initialData?: Product;
   onFormSubmit: (data: ProductFormValues) => void;
   onClose: () => void;
   isSubmitting?: boolean;
 }
 
-export default function AddProductForm({
+export default function ProductForm({
+  initialData,
   onFormSubmit,
   onClose,
   isSubmitting,
-}: AddProductFormProps) {
+}: ProductFormProps) {
   const queryClient = useQueryClient();
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
   const [displayPrice, setDisplayPrice] = useState("");
+
+  const isEditMode = !!initialData;
 
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ["categories", "product"],
@@ -66,17 +71,6 @@ export default function AddProductForm({
       getCategories().then((data) => data.filter((c) => c.type === "product")),
   });
 
-  const form = useForm<ProductFormValues>({
-    resolver: zodResolver(productFormSchema),
-    defaultValues: {
-      name: "",
-      description: "",
-      categories: [],
-      price: 0,
-      stock: 0,
-      imageFile: undefined,
-    },
-  });
   const addCategoryMutation = useMutation({
     mutationFn: addCategory,
     onSuccess: (newCategory) => {
@@ -90,25 +84,40 @@ export default function AddProductForm({
     onError: (err) => toast.error(`Thêm thất bại: ${err.message}`),
   });
 
+  const form = useForm<ProductFormValues>({
+    resolver: zodResolver(productFormSchema),
+    // 4. Dùng initialData nếu có, không thì dùng giá trị mặc định cho form "thêm mới"
+    defaultValues: initialData || {
+      name: "",
+      description: "",
+      categories: [],
+      price: 0,
+      stock: 0,
+      imageFile: undefined,
+    },
+  });
+
+  useEffect(() => {
+    if (isEditMode) {
+      form.reset(initialData);
+      setDisplayPrice(
+        new Intl.NumberFormat("vi-VN").format(initialData.price / 1000)
+      );
+    }
+  }, [initialData, form, isEditMode]);
+
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const rawValue = e.target.value.replace(/[^0-9]/g, ""); // Chỉ giữ lại số
+    const rawValue = e.target.value.replace(/[^0-9]/g, "");
     const numberValue = parseInt(rawValue, 10) || 0;
-
-    // Cập nhật giá trị thật cho form (nhân với 1000)
     form.setValue("price", numberValue * 1000, { shouldValidate: true });
-
-    // Cập nhật giá trị hiển thị đã được định dạng
     setDisplayPrice(new Intl.NumberFormat("vi-VN").format(numberValue));
   };
 
-  function onSubmit(data: ProductFormValues) {
-    onFormSubmit(data);
-  }
   const selectedCategories = form.watch("categories") || [];
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(onFormSubmit)}>
         <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto -m-6">
           <FormField
             control={form.control}
@@ -117,7 +126,7 @@ export default function AddProductForm({
               <FormItem>
                 <FormLabel>Tên sản phẩm</FormLabel>
                 <FormControl>
-                  <Input placeholder="VD: Serum B5 La Roche-Posay" {...field} />
+                  <Input {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -130,10 +139,7 @@ export default function AddProductForm({
               <FormItem>
                 <FormLabel>Mô tả</FormLabel>
                 <FormControl>
-                  <Textarea
-                    placeholder="Mô tả công dụng, thành phần..."
-                    {...field}
-                  />
+                  <Textarea {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -245,7 +251,6 @@ export default function AddProductForm({
                   <div className="relative">
                     <FormControl>
                       <Input
-                        placeholder="Nhập giá tiền"
                         className="pr-12"
                         value={displayPrice}
                         onChange={handlePriceChange}
@@ -268,7 +273,6 @@ export default function AddProductForm({
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="0"
                       {...field}
                       onChange={(e) => {
                         const valueAsString = e.target.value;
@@ -310,7 +314,7 @@ export default function AddProductForm({
             Hủy
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Đang lưu..." : "Lưu sản phẩm"}
+            {isSubmitting ? "Đang lưu..." : "Lưu thay đổi"}
           </Button>
         </div>
       </form>

@@ -1,11 +1,5 @@
-// src/features/product/components/EditProductForm.tsx
 "use client";
 
-import {
-  productFormSchema,
-  ProductFormValues,
-} from "@/features/product/schemas";
-import { Product } from "@/features/product/types";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -20,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
+import { Service } from "@/features/service/types"; // 1. Import Service type
 import { Category } from "@/features/category/types";
 import {
   Dialog,
@@ -29,6 +24,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ChevronsUpDown, Plus } from "lucide-react";
+import {
+  serviceFormSchema,
+  ServiceFormValues,
+} from "@/features/service/schemas";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getCategories,
@@ -46,27 +45,29 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { ImageUploader } from "@/components/ui/ImageUploader";
 
-interface EditProductFormProps {
-  initialData: Product;
-  onFormSubmit: (data: ProductFormValues) => void;
+interface ServiceFormProps {
+  initialData?: Service;
+  onFormSubmit: (data: ServiceFormValues) => void;
   onClose: () => void;
   isSubmitting?: boolean;
 }
 
-export default function EditProductForm({
+export default function ServiceForm({
   initialData,
   onFormSubmit,
   onClose,
   isSubmitting,
-}: EditProductFormProps) {
+}: ServiceFormProps) {
   const queryClient = useQueryClient();
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
   const [displayPrice, setDisplayPrice] = useState("");
 
+  const isEditMode = !!initialData;
+
   const { data: categories = [] } = useQuery<Category[]>({
-    queryKey: ["categories", "product"],
+    queryKey: ["categories", "service"],
     queryFn: () =>
-      getCategories().then((data) => data.filter((c) => c.type === "product")),
+      getCategories().then((data) => data.filter((c) => c.type === "service")),
   });
 
   const addCategoryMutation = useMutation({
@@ -82,30 +83,26 @@ export default function EditProductForm({
     onError: (err) => toast.error(`Thêm thất bại: ${err.message}`),
   });
 
-  const form = useForm<ProductFormValues>({
-    resolver: zodResolver(productFormSchema),
-    defaultValues: {
-      name: initialData.name || "",
-      description: initialData.description || "",
-      categories: initialData.categories || [],
-      price: initialData.price || 0,
-      stock: initialData.stock || 0,
+  const form = useForm<ServiceFormValues>({
+    resolver: zodResolver(serviceFormSchema),
+    defaultValues: initialData || {
+      name: "",
+      description: "",
+      categories: [],
+      price: 0,
+      duration: 30,
       imageFile: undefined,
     },
   });
 
   useEffect(() => {
-    form.reset({
-      name: initialData.name,
-      description: initialData.description,
-      categories: initialData.categories,
-      price: initialData.price,
-      stock: initialData.stock,
-    });
-    setDisplayPrice(
-      new Intl.NumberFormat("vi-VN").format(initialData.price / 1000)
-    );
-  }, [initialData, form]);
+    if (isEditMode && initialData) {
+      form.reset(initialData);
+      setDisplayPrice(
+        new Intl.NumberFormat("vi-VN").format(initialData.price / 1000)
+      );
+    }
+  }, [initialData, form, isEditMode]);
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value.replace(/[^0-9]/g, "");
@@ -113,23 +110,24 @@ export default function EditProductForm({
     form.setValue("price", numberValue * 1000, { shouldValidate: true });
     setDisplayPrice(new Intl.NumberFormat("vi-VN").format(numberValue));
   };
-
-  function onSubmit(data: ProductFormValues) {
-    onFormSubmit(data);
-  }
+  // --- Kết thúc logic xử lý ---
 
   const selectedCategories = form.watch("categories") || [];
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        onSubmit={form.handleSubmit(onFormSubmit)}
+        className="space-y-6 pt-4"
+      >
+        {" "}
         <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto -m-6">
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tên sản phẩm</FormLabel>
+                <FormLabel>Tên dịch vụ</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -252,13 +250,13 @@ export default function EditProductForm({
               name="price"
               render={() => (
                 <FormItem>
-                  <FormLabel>Giá bán</FormLabel>
+                  <FormLabel>Giá dịch vụ</FormLabel>
                   <div className="relative">
                     <FormControl>
                       <Input
-                        className="pr-12"
                         value={displayPrice}
                         onChange={handlePriceChange}
+                        className="pr-12"
                       />
                     </FormControl>
                     <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -271,34 +269,43 @@ export default function EditProductForm({
             />
             <FormField
               control={form.control}
-              name="stock"
+              name="duration"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tồn kho</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      {...field}
-                      onChange={(e) => {
-                        const valueAsString = e.target.value;
-                        const valueAsNumber = parseInt(valueAsString, 10);
-                        field.onChange(
-                          isNaN(valueAsNumber) ? "" : valueAsNumber
-                        );
-                      }}
-                    />
-                  </FormControl>
+                  <FormLabel>Thời lượng</FormLabel>
+                  <div className="relative">
+                    <FormControl>
+                      <Input
+                        type="number"
+                        className="pr-14"
+                        {...field}
+                        onChange={(e) => {
+                          // Giữ lại giá trị chuỗi để xử lý, chỉ chuyển đổi khi cần
+                          const valueAsString = e.target.value;
+                          // Chuyển đổi sang số để validate và lưu trữ
+                          const valueAsNumber = parseInt(valueAsString, 10);
+                          field.onChange(
+                            isNaN(valueAsNumber) ? "" : valueAsNumber
+                          );
+                        }}
+                      />
+                    </FormControl>
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                      <span className="text-muted-foreground">phút</span>
+                    </div>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
+
           <FormField
             control={form.control}
             name="imageFile"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Hình ảnh sản phẩm (Tùy chọn)</FormLabel>
+                <FormLabel>Hình ảnh dịch vụ (Tùy chọn)</FormLabel>
                 <FormControl>
                   <ImageUploader
                     onFileSelect={(file) => field.onChange(file)}
@@ -309,7 +316,7 @@ export default function EditProductForm({
             )}
           />
         </div>
-        <div className="flex justify-end gap-2 p-4 border-t">
+        <div className="flex justify-end gap-2 pt-4 border-t border-border">
           <Button
             type="button"
             variant="ghost"
@@ -319,7 +326,11 @@ export default function EditProductForm({
             Hủy
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Đang lưu..." : "Lưu thay đổi"}
+            {isSubmitting
+              ? "Đang lưu..."
+              : isEditMode
+              ? "Lưu thay đổi"
+              : "Lưu dịch vụ"}
           </Button>
         </div>
       </form>

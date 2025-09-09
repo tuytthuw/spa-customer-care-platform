@@ -14,9 +14,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import AddServiceForm from "@/features/service/components/AddServiceForm";
+import ServiceForm from "@/features/service/components/ServiceForm";
 import AddTreatmentPlanForm from "@/features/treatment/components/AddTreatmentPlanForm";
-import EditServiceForm from "@/features/service/components/EditServiceForm";
 import EditTreatmentPlanForm from "@/features/treatment/components/EditTreatmentPlanForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { treatmentPlanColumns } from "./treatment-plan-columns";
@@ -196,7 +195,7 @@ export default function ServicesManagementPage() {
                 <DialogHeader>
                   <DialogTitle>Tạo dịch vụ mới</DialogTitle>
                 </DialogHeader>
-                <AddServiceForm
+                <ServiceForm
                   onFormSubmit={(data) => addServiceMutation.mutate(data)}
                   onClose={() => setIsServiceAddOpen(false)}
                   isSubmitting={addServiceMutation.isPending}
@@ -245,7 +244,7 @@ export default function ServicesManagementPage() {
             <DialogHeader>
               <DialogTitle>Chỉnh sửa: {editingService.name}</DialogTitle>
             </DialogHeader>
-            <EditServiceForm
+            <ServiceForm
               initialData={editingService}
               onFormSubmit={handleUpdateService}
               onClose={() => setIsServiceEditOpen(false)}

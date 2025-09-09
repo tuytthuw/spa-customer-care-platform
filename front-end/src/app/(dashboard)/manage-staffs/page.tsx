@@ -23,6 +23,7 @@ import {
 import { toast } from "sonner";
 import { useStaffs } from "@/features/staff/hooks/useStaffs";
 import { useServices } from "@/features/service/hooks/useServices";
+import { FullPageLoader } from "@/components/ui/spinner";
 
 type StaffFormValues = {
   name: string;
@@ -122,7 +123,7 @@ export default function StaffManagementPage() {
   };
 
   if (isLoading) {
-    return <div>Đang tải danh sách nhân viên...</div>;
+    return <FullPageLoader text="Đang tải danh sách nhân viên..." />;
   }
 
   if (error) {
