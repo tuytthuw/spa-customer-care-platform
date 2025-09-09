@@ -21,8 +21,7 @@ import {
 import { PlusCircle } from "lucide-react";
 import { columns } from "./columns";
 import { toast } from "sonner";
-import AddProductForm from "@/features/product/components/AddProductForm";
-import EditProductForm from "@/features/product/components/EditProductForm";
+import ProductForm from "@/features/product/components/ProductForm";
 import { ProductFormValues } from "@/features/product/schemas";
 import { useProducts } from "@/features/product/hooks/useProducts";
 
@@ -81,11 +80,17 @@ export default function ManageProductsPage() {
     setIsEditDialogOpen(true);
   };
 
-  const handleUpdate = (data: ProductFormValues) => {
+  // 2. Các hàm handleAdd và handleUpdate giờ sẽ gọi cùng mutation
+  const handleAddProduct = (data: ProductFormValues) => {
+    addProductMutation.mutate(data);
+  };
+
+  const handleUpdateProduct = (data: ProductFormValues) => {
     if (editingProduct) {
       updateProductMutation.mutate({ productId: editingProduct.id, data });
     }
   };
+
   const handleUpdateProductStatus = (
     productId: string,
     newStatus: "active" | "inactive"
@@ -110,8 +115,9 @@ export default function ManageProductsPage() {
             <DialogHeader>
               <DialogTitle>Thêm sản phẩm mới</DialogTitle>
             </DialogHeader>
-            <AddProductForm
-              onFormSubmit={(data) => addProductMutation.mutate(data)}
+            {/* 3. Sử dụng ProductForm cho việc "Thêm" */}
+            <ProductForm
+              onFormSubmit={handleAddProduct}
               onClose={() => setIsAddDialogOpen(false)}
               isSubmitting={addProductMutation.isPending}
             />
@@ -131,9 +137,10 @@ export default function ManageProductsPage() {
             <DialogHeader>
               <DialogTitle>Chỉnh sửa: {editingProduct.name}</DialogTitle>
             </DialogHeader>
-            <EditProductForm
+            {/* 4. Sử dụng cùng ProductForm cho việc "Sửa", truyền vào initialData */}
+            <ProductForm
               initialData={editingProduct}
-              onFormSubmit={handleUpdate}
+              onFormSubmit={handleUpdateProduct}
               onClose={() => setIsEditDialogOpen(false)}
               isSubmitting={updateProductMutation.isPending}
             />
