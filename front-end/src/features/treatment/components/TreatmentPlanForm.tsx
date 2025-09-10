@@ -45,6 +45,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { ImageUploader } from "@/components/ui/ImageUploader";
 import { useServices } from "@/features/service/hooks/useServices";
+import { useCategories } from "@/features/category/hooks/useCategories";
 
 interface TreatmentPlanFormProps {
   initialData?: TreatmentPlan;
@@ -65,13 +66,7 @@ export default function TreatmentPlanForm({
 
   const isEditMode = !!initialData;
 
-  const { data: categories = [] } = useQuery<Category[]>({
-    queryKey: ["categories", "treatment"],
-    queryFn: () =>
-      getCategories().then((data) =>
-        data.filter((c) => c.type === "treatment")
-      ),
-  });
+  const { data: categories = [] } = useCategories();
 
   const { data: services = [] } = useServices();
 

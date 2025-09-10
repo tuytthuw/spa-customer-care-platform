@@ -12,20 +12,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import Image from "next/image";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { TreatmentPlan } from "@/features/treatment/types";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 
 const formatCurrency = (amount: number) =>
   new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(
@@ -89,53 +79,51 @@ export const treatmentPlanColumns = ({
     cell: ({ row }) => {
       const plan = row.original;
       const isInactive = plan.status === "inactive";
+      const actionText = isInactive ? "Hiện lại" : "Tạm ẩn";
+
       return (
-        <AlertDialog>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => onEdit(plan)}>
-                Sửa thông tin
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <AlertDialogTrigger asChild>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Hành động</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => onEdit(plan)}>
+              Sửa thông tin
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+
+            {/* SỬ DỤNG CONFIRMATION MODAL */}
+            <ConfirmationModal
+              trigger={
                 <DropdownMenuItem
+                  onSelect={(e) => e.preventDefault()}
                   className={cn(
                     isInactive
                       ? "text-primary focus:text-primary"
                       : "text-destructive focus:text-destructive"
                   )}
                 >
-                  {isInactive ? "Hiện lại" : "Tạm ẩn"}
+                  {actionText}
                 </DropdownMenuItem>
-              </AlertDialogTrigger>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Bạn có chắc chắn?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Hành động này sẽ thay đổi trạng thái của liệu trình {plan.name}.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Hủy</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() =>
-                  onUpdateStatus(plan.id, isInactive ? "active" : "inactive")
-                }
-              >
-                Tiếp tục
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+              }
+              title={`Xác nhận ${actionText.toLowerCase()} liệu trình`}
+              description={
+                <>
+                  Hành động này sẽ thay đổi trạng thái của liệu trình{" "}
+                  <strong>{plan.name}</strong>.
+                </>
+              }
+              onConfirm={() =>
+                onUpdateStatus(plan.id, isInactive ? "active" : "inactive")
+              }
+              isDestructive={!isInactive}
+              confirmText="Xác nhận"
+            />
+          </DropdownMenuContent>
+        </DropdownMenu>
       );
     },
   },

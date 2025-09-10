@@ -13,8 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import AddStaffForm from "@/features/staff/components/AddStaffForm";
-import EditStaffForm from "@/features/staff/components/EditStaffForm";
+import StaffForm from "@/features/staff/components/StaffForm";
 import {
   addStaff,
   updateStaff,
@@ -122,7 +121,7 @@ export default function StaffManagementPage() {
     updateStatusMutation.mutate({ staffId, newStatus });
   };
 
-  if (isLoading) {
+  if (isLoading || isLoadingServices) {
     return <FullPageLoader text="Đang tải danh sách nhân viên..." />;
   }
 
@@ -142,7 +141,7 @@ export default function StaffManagementPage() {
             <DialogHeader>
               <DialogTitle>Tạo hồ sơ nhân viên mới</DialogTitle>
             </DialogHeader>
-            <AddStaffForm
+            <StaffForm
               services={services}
               onFormSubmit={handleAddStaff}
               onClose={() => setIsAddDialogOpen(false)}
@@ -167,7 +166,7 @@ export default function StaffManagementPage() {
                 Chỉnh sửa thông tin: {editingStaff.name}
               </DialogTitle>
             </DialogHeader>
-            <EditStaffForm
+            <StaffForm
               initialData={editingStaff}
               services={services}
               onFormSubmit={handleUpdateStaff}

@@ -1,15 +1,6 @@
 // src/components/screens/services/service-card.tsx
 import { Service } from "@/features/service/types";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import Image from "next/image";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import DisplayCard from "@/components/common/DisplayCard";
 import { Clock } from "lucide-react";
 
 interface ServiceCardProps {
@@ -18,28 +9,13 @@ interface ServiceCardProps {
 
 export default function ServiceCard({ service }: ServiceCardProps) {
   return (
-    <Link href={`/services/${service.id}`} className="group">
-      <Card className="h-full flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-        <CardHeader className="p-0">
-          <div className="relative w-full h-48 overflow-hidden rounded-t-lg">
-            <Image
-              src={service.imageUrl}
-              alt={service.name}
-              fill
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-          </div>
-        </CardHeader>
-        <CardContent className="flex-grow pt-6">
-          <p className="text-sm font-medium text-primary mb-1">
-            {service.category}
-          </p>
-          <CardTitle className="text-xl mb-2">{service.name}</CardTitle>
-          <p className="text-muted-foreground text-sm line-clamp-3">
-            {service.description}
-          </p>
-        </CardContent>
-        <CardFooter className="flex justify-between items-center">
+    <DisplayCard
+      href={`/services/${service.id}`}
+      imageUrl={service.imageUrl}
+      title={service.name}
+      description={service.description}
+      footerContent={
+        <div className="flex justify-between items-center w-full">
           <div className="flex items-center gap-2 text-muted-foreground">
             <Clock className="w-4 h-4" />
             <span>{service.duration} phút</span>
@@ -50,8 +26,8 @@ export default function ServiceCard({ service }: ServiceCardProps) {
               currency: "VND",
             }).format(service.price)}
           </span>
-        </CardFooter>
-      </Card>
-    </Link>
+        </div>
+      }
+    />
   );
 }

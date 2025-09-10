@@ -14,17 +14,8 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal";
+
 import { cn } from "@/lib/utils";
 
 const formatCurrency = (amount: number) =>
@@ -92,54 +83,53 @@ export const columns = ({
     cell: ({ row }) => {
       const service = row.original;
       const isInactive = service.status === "inactive";
+      const actionText = isInactive ? "Hiện lại" : "Tạm ẩn";
+
       return (
-        <AlertDialog>
-          <div className="text-right">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-                <DropdownMenuItem onClick={() => onEdit(service)}>
-                  Chỉnh sửa
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <AlertDialogTrigger asChild>
+        <div className="text-right">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Hành động</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => onEdit(service)}>
+                Chỉnh sửa
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+
+              {/* SỬ DỤNG CONFIRMATION MODAL */}
+              <ConfirmationModal
+                trigger={
                   <DropdownMenuItem
+                    onSelect={(e) => e.preventDefault()}
                     className={cn(
                       isInactive
                         ? "text-primary focus:text-primary"
                         : "text-destructive focus:text-destructive"
                     )}
                   >
-                    {isInactive ? "Hiện lại" : "Tạm ẩn"}
+                    {actionText}
                   </DropdownMenuItem>
-                </AlertDialogTrigger>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Bạn có chắc chắn?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Hành động này sẽ thay đổi trạng thái của dịch vụ {service.name}.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Hủy</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() =>
+                }
+                title={`Xác nhận ${actionText.toLowerCase()} dịch vụ`}
+                description={
+                  <>
+                    Hành động này sẽ thay đổi trạng thái của dịch vụ{" "}
+                    <strong>{service.name}</strong>.
+                  </>
+                }
+                onConfirm={() =>
                   onUpdateStatus(service.id, isInactive ? "active" : "inactive")
                 }
-              >
-                Tiếp tục
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+                isDestructive={!isInactive}
+                confirmText="Xác nhận"
+              />
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       );
     },
   },

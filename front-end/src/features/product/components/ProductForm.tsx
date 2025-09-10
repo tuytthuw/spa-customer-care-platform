@@ -20,7 +20,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
-import { Category } from "@/features/category/types";
 import {
   Dialog,
   DialogContent,
@@ -29,11 +28,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ChevronsUpDown, Plus } from "lucide-react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  getCategories,
-  addCategory,
-} from "@/features/category/api/category.api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { addCategory } from "@/features/category/api/category.api";
 import AddCategoryForm from "@/features/category/components/AddCategoryForm";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -45,6 +41,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { ImageUploader } from "@/components/ui/ImageUploader";
+import { useCategories } from "@/features/category/hooks/useCategories";
 
 interface ProductFormProps {
   initialData?: Product;
@@ -65,11 +62,7 @@ export default function ProductForm({
 
   const isEditMode = !!initialData;
 
-  const { data: categories = [] } = useQuery<Category[]>({
-    queryKey: ["categories", "product"],
-    queryFn: () =>
-      getCategories().then((data) => data.filter((c) => c.type === "product")),
-  });
+  const { data: categories = [] } = useCategories();
 
   const addCategoryMutation = useMutation({
     mutationFn: addCategory,

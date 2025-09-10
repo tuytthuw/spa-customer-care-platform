@@ -1,7 +1,6 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Customer } from "@/features/customer/types";
 import { FullCustomerProfile } from "@/features/customer/types";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,20 +12,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 
 interface GetColumnsProps {
   onUpdateStatus: (
@@ -92,62 +80,54 @@ export const columns = ({
     cell: ({ row }) => {
       const customer = row.original;
       const isInactive = customer.status === "inactive";
+      const actionText = isInactive ? "Kích hoạt lại" : "Vô hiệu hóa";
 
       return (
-        <AlertDialog>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Mở menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => onEdit(customer)}>
-                Chỉnh sửa
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <AlertDialogTrigger asChild>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Mở menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Hành động</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => onEdit(customer)}>
+              Chỉnh sửa
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+
+            {/* SỬ DỤNG CONFIRMATION MODAL */}
+            <ConfirmationModal
+              trigger={
                 <DropdownMenuItem
-                  className={cn(
+                  onSelect={(e) => e.preventDefault()}
+                  className={
                     isInactive
                       ? "text-primary focus:text-primary"
                       : "text-destructive focus:text-destructive"
-                  )}
+                  }
                 >
-                  {isInactive ? "Kích hoạt lại" : "Vô hiệu hóa"}
+                  {actionText}
                 </DropdownMenuItem>
-              </AlertDialogTrigger>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Bạn có chắc chắn?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Hành động này sẽ thay đổi trạng thái tài khoản của khách hàng{" "}
-                <span className="font-medium">{customer.name}</span>.
-                {isInactive
-                  ? " Khách hàng này sẽ có thể đăng nhập và đặt lịch trở lại."
-                  : " Khách hàng này sẽ không thể đăng nhập hoặc đặt lịch mới."}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Hủy</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() =>
-                  onUpdateStatus(
-                    customer.userId, // Truyền userId để cập nhật đúng user
-                    isInactive ? "active" : "inactive"
-                  )
-                }
-              >
-                Tiếp tục
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+              }
+              title={`Xác nhận ${actionText.toLowerCase()} tài khoản`}
+              description={
+                <>
+                  Bạn có chắc chắn muốn {actionText.toLowerCase()} tài khoản của
+                  khách hàng <strong>{customer.name}</strong>?
+                </>
+              }
+              onConfirm={() =>
+                onUpdateStatus(
+                  customer.userId,
+                  isInactive ? "active" : "inactive"
+                )
+              }
+              isDestructive={!isInactive}
+            />
+          </DropdownMenuContent>
+        </DropdownMenu>
       );
     },
   },

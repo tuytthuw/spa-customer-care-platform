@@ -11,8 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import AddCustomerForm from "@/features/customer/components/AddCustomerForm";
-import EditCustomerForm from "@/features/customer/components/EditCustomerForm"; // 1. Import form chỉnh sửa
+import CustomerForm from "@/features/customer/components/CustomerForm";
 import {
   addCustomer,
   updateCustomerStatus,
@@ -134,7 +133,7 @@ export default function CustomersPage() {
             <DialogHeader>
               <DialogTitle>Thêm khách hàng mới</DialogTitle>
             </DialogHeader>
-            <AddCustomerForm
+            <CustomerForm
               onFormSubmit={handleAddCustomer}
               onClose={() => setIsAddDialogOpen(false)}
               isSubmitting={addCustomerMutation.isPending}
@@ -160,7 +159,7 @@ export default function CustomersPage() {
                 Chỉnh sửa thông tin: {editingCustomer.name}
               </DialogTitle>
             </DialogHeader>
-            <EditCustomerForm
+            <CustomerForm
               initialData={editingCustomer}
               onFormSubmit={handleUpdateCustomer}
               onClose={() => setIsEditDialogOpen(false)}
