@@ -20,24 +20,32 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { staffFormSchema, StaffFormValues } from "@/features/staff/schemas";
+import { useEffect } from "react";
+import { FullStaffProfile } from "@/features/staff/types";
 import { Service } from "@/features/service/types";
+import { staffFormSchema, StaffFormValues } from "@/features/staff/schemas";
 import { ImageUploader } from "@/components/ui/ImageUploader";
 
-interface AddStaffFormProps {
+interface StaffFormProps {
+  initialData?: FullStaffProfile;
   services: Service[];
   onFormSubmit: (data: StaffFormValues) => void;
   onClose: () => void;
+  isSubmitting?: boolean;
 }
 
-export default function AddStaffForm({
+export default function StaffForm({
+  initialData,
   services,
   onFormSubmit,
   onClose,
-}: AddStaffFormProps) {
+  isSubmitting,
+}: StaffFormProps) {
+  const isEditMode = !!initialData;
+
   const form = useForm<StaffFormValues>({
     resolver: zodResolver(staffFormSchema),
-    defaultValues: {
+    defaultValues: initialData || {
       name: "",
       email: "",
       phone: "",
@@ -50,29 +58,30 @@ export default function AddStaffForm({
 
   const selectedRole = form.watch("role");
 
+  useEffect(() => {
+    if (isEditMode && initialData) {
+      form.reset(initialData);
+    }
+  }, [initialData, form, isEditMode]);
+
   function onSubmit(data: StaffFormValues) {
     if (data.role !== "technician") {
       data.serviceIds = [];
     }
-    console.log("Submitting staff data:", data);
     onFormSubmit(data);
-    onClose();
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
-          {/* ... các trường khác giữ nguyên ... */}
+        <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto -m-6">
+          {/* Các trường input giữ nguyên */}
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  Họ và tên{" "}
-                  <span className="text-muted-foreground">(bắt buộc)</span>
-                </FormLabel>
+                <FormLabel>Họ và tên</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -85,10 +94,7 @@ export default function AddStaffForm({
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  Email{" "}
-                  <span className="text-muted-foreground">(bắt buộc)</span>
-                </FormLabel>
+                <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input type="email" {...field} />
                 </FormControl>
@@ -101,10 +107,7 @@ export default function AddStaffForm({
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  Số điện thoại{" "}
-                  <span className="text-muted-foreground">(bắt buộc)</span>
-                </FormLabel>
+                <FormLabel>Số điện thoại</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -117,10 +120,7 @@ export default function AddStaffForm({
             name="role"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  Vai trò{" "}
-                  <span className="text-muted-foreground">(bắt buộc)</span>
-                </FormLabel>
+                <FormLabel>Vai trò</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -140,7 +140,6 @@ export default function AddStaffForm({
               </FormItem>
             )}
           />
-
           {selectedRole === "technician" && (
             <FormField
               control={form.control}
@@ -195,7 +194,7 @@ export default function AddStaffForm({
               )}
             />
           )}
-          {/* Hình ảnh */}
+
           <FormField
             control={form.control}
             name="avatar"
@@ -213,10 +212,21 @@ export default function AddStaffForm({
           />
         </div>
         <div className="flex justify-end gap-2 p-4 border-t border-border">
-          <Button type="button" variant="ghost" onClick={onClose}>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={onClose}
+            disabled={isSubmitting}
+          >
             Hủy
           </Button>
-          <Button type="submit">Lưu nhân viên</Button>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting
+              ? "Đang lưu..."
+              : isEditMode
+              ? "Lưu thay đổi"
+              : "Lưu nhân viên"}
+          </Button>
         </div>
       </form>
     </Form>

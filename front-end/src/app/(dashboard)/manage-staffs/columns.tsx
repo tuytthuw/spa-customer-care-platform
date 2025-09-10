@@ -13,20 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { cn } from "@/lib/utils";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 
-// 1. Cập nhật props để nhận cả hai hàm
 interface GetColumnsProps {
   onEdit: (staff: FullStaffProfile) => void;
   onUpdateStatus: (staffId: string, newStatus: "active" | "inactive") => void;
@@ -83,56 +71,50 @@ export const columns = ({
     cell: ({ row }) => {
       const staff = row.original;
       const isInactive = staff.status === "inactive";
+      const actionText = isInactive ? "Kích hoạt lại" : "Vô hiệu hóa";
 
       return (
-        <AlertDialog>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-              {/* 2. Thêm onClick cho nút Chỉnh sửa */}
-              <DropdownMenuItem onClick={() => onEdit(staff)}>
-                Chỉnh sửa
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <AlertDialogTrigger asChild>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Hành động</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => onEdit(staff)}>
+              Chỉnh sửa
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+
+            {/* SỬ DỤNG CONFIRMATION MODAL */}
+            <ConfirmationModal
+              trigger={
                 <DropdownMenuItem
-                  className={cn(
+                  onSelect={(e) => e.preventDefault()}
+                  className={
                     isInactive
                       ? "text-primary focus:text-primary"
                       : "text-destructive focus:text-destructive"
-                  )}
+                  }
                 >
-                  {isInactive ? "Kích hoạt lại" : "Vô hiệu hóa"}
+                  {actionText}
                 </DropdownMenuItem>
-              </AlertDialogTrigger>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Bạn có chắc chắn?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Hành động này sẽ thay đổi trạng thái của nhân viên
-                <span className="font-medium"> {staff.name}</span>.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Hủy</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() =>
-                  onUpdateStatus(staff.id, isInactive ? "active" : "inactive")
-                }
-              >
-                Tiếp tục
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+              }
+              title={`Xác nhận ${actionText.toLowerCase()} nhân viên`}
+              description={
+                <>
+                  Hành động này sẽ thay đổi trạng thái của nhân viên{" "}
+                  <strong>{staff.name}</strong>.
+                </>
+              }
+              onConfirm={() =>
+                onUpdateStatus(staff.id, isInactive ? "active" : "inactive")
+              }
+              isDestructive={!isInactive}
+            />
+          </DropdownMenuContent>
+        </DropdownMenu>
       );
     },
   },

@@ -13,27 +13,34 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useEffect } from "react";
+import {} from "@/features/customer/types";
 
 import {
   customerFormSchema,
   CustomerFormValues,
 } from "@/features/customer/schemas";
-import { ImageUploader } from "@/components/ui/ImageUploader"; // Import component mới
+import { FullCustomerProfile } from "@/features/customer/types";
+import { ImageUploader } from "@/components/ui/ImageUploader";
 
-interface AddCustomerFormProps {
+interface CustomerFormProps {
+  initialData?: FullCustomerProfile;
   onFormSubmit: (data: CustomerFormValues) => void;
   onClose: () => void;
   isSubmitting?: boolean;
 }
 
-export default function AddCustomerForm({
+export default function CustomerForm({
+  initialData,
   onFormSubmit,
   onClose,
   isSubmitting,
-}: AddCustomerFormProps) {
+}: CustomerFormProps) {
+  const isEditMode = !!initialData;
+
   const form = useForm<CustomerFormValues>({
     resolver: zodResolver(customerFormSchema),
-    defaultValues: {
+    defaultValues: initialData || {
       name: "",
       email: "",
       phone: "",
@@ -42,27 +49,25 @@ export default function AddCustomerForm({
     },
   });
 
-  function onSubmit(data: CustomerFormValues) {
-    console.log("Submitting data:", data);
-    onFormSubmit(data);
-  }
+  useEffect(() => {
+    if (isEditMode && initialData) {
+      form.reset(initialData);
+    }
+  }, [initialData, isEditMode, form]);
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
-          {/* Các trường name, email, phone, notes giữ nguyên */}
+      <form onSubmit={form.handleSubmit(onFormSubmit)}>
+        <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto -m-6">
+          {/* Các trường input giữ nguyên */}
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  Họ và tên{" "}
-                  <span className="text-muted-foreground">(bắt buộc)</span>
-                </FormLabel>
+                <FormLabel>Họ và tên</FormLabel>
                 <FormControl>
-                  <Input placeholder="Nhập họ tên khách hàng" {...field} />
+                  <Input {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -73,12 +78,9 @@ export default function AddCustomerForm({
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  Email{" "}
-                  <span className="text-muted-foreground">(bắt buộc)</span>
-                </FormLabel>
+                <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="email@example.com" {...field} />
+                  <Input {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -89,12 +91,9 @@ export default function AddCustomerForm({
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  Số điện thoại{" "}
-                  <span className="text-muted-foreground">(bắt buộc)</span>
-                </FormLabel>
+                <FormLabel>Số điện thoại</FormLabel>
                 <FormControl>
-                  <Input placeholder="Nhập số điện thoại" {...field} />
+                  <Input {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -108,7 +107,7 @@ export default function AddCustomerForm({
                 <FormLabel>Ghi chú</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Nhập các thông tin cần lưu ý về khách hàng..."
+                    placeholder="Nhập các thông tin cần lưu ý..."
                     {...field}
                   />
                 </FormControl>
@@ -117,7 +116,7 @@ export default function AddCustomerForm({
             )}
           />
 
-          {/* Phần Upload Ảnh */}
+          {/* 4. Thêm phần upload ảnh đã hoàn thiện */}
           <FormField
             control={form.control}
             name="avatar"
@@ -144,7 +143,11 @@ export default function AddCustomerForm({
             Hủy
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Đang lưu..." : "Lưu khách hàng"}
+            {isSubmitting
+              ? "Đang lưu..."
+              : isEditMode
+              ? "Lưu thay đổi"
+              : "Lưu khách hàng"}{" "}
           </Button>
         </div>
       </form>

@@ -15,17 +15,7 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal"; // Import component mới
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat("vi-VN", {
@@ -87,51 +77,46 @@ export const columns = ({
     cell: ({ row }) => {
       const product = row.original;
       const isInactive = product.status === "inactive";
-      return (
-        <AlertDialog>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Mở menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => onEdit(product)}>
-                Sửa thông tin
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <AlertDialogTrigger asChild>
-                <DropdownMenuItem className="text-destructive focus:text-destructive">
-                  {isInactive ? "Kích hoạt" : "Vô hiệu hóa"}
-                </DropdownMenuItem>
-              </AlertDialogTrigger>
-            </DropdownMenuContent>
-          </DropdownMenu>
+      const actionText = isInactive ? "Kích hoạt" : "Vô hiệu hóa";
 
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>
-                Xác nhận {isInactive ? "kích hoạt" : "vô hiệu hóa"} sản phẩm
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                Hành động này sẽ thay đổi trạng thái của sản phẩm {product.name}
-                .
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Hủy</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() =>
-                  onUpdateStatus(product.id, isInactive ? "active" : "inactive")
-                }
-              >
-                Tiếp tục
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Mở menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Hành động</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => onEdit(product)}>
+              Sửa thông tin
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+
+            <ConfirmationModal
+              trigger={
+                <DropdownMenuItem
+                  onSelect={(e) => e.preventDefault()} // Ngăn dropdown tự đóng
+                  className="text-destructive focus:text-destructive"
+                >
+                  {actionText}
+                </DropdownMenuItem>
+              }
+              title={`Xác nhận ${actionText.toLowerCase()} sản phẩm`}
+              description={
+                <>
+                  Hành động này sẽ thay đổi trạng thái của sản phẩm{" "}
+                  <strong>{product.name}</strong>.
+                </>
+              }
+              onConfirm={() =>
+                onUpdateStatus(product.id, isInactive ? "active" : "inactive")
+              }
+              isDestructive={!isInactive} // Hành động "Vô hiệu hóa" là destructive
+            />
+          </DropdownMenuContent>
+        </DropdownMenu>
       );
     },
   },
