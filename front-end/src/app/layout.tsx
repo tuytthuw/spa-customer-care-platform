@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ReactQueryProvider>
           {" "}

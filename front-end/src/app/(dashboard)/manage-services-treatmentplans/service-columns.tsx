@@ -57,7 +57,16 @@ export const columns = ({
       </div>
     ),
   },
-  { accessorKey: "category", header: "Danh mục" },
+  {
+    accessorKey: "categories",
+    header: "Danh mục",
+    cell: ({ row }) => {
+      const categories = row.original.categories;
+      return (
+        <span>{Array.isArray(categories) ? categories.join(", ") : ""}</span>
+      );
+    },
+  },
   {
     accessorKey: "price",
     header: () => <div className="text-right">Giá</div>,
