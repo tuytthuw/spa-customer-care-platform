@@ -47,7 +47,7 @@ export const treatmentPlanColumns = ({
     cell: ({ row }) => (
       <div className="flex items-center gap-4">
         <Image
-          src={row.original.imageUrl}
+          src={row.original.imageUrl || "/images/product-placeholder.png"}
           alt={row.original.name}
           width={40}
           height={40}
@@ -57,6 +57,17 @@ export const treatmentPlanColumns = ({
       </div>
     ),
   },
+  {
+    accessorKey: "categories",
+    header: "Danh mục",
+    cell: ({ row }) => {
+      const categories = row.original.categories;
+      return (
+        <span>{Array.isArray(categories) ? categories.join(", ") : ""}</span>
+      );
+    },
+  },
+
   {
     accessorKey: "price",
     header: "Giá bán",

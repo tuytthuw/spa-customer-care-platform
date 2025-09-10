@@ -66,10 +66,7 @@
       "phone": "0911223344",
       "role": "technician",
       "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=tech-1",
-      "serviceIds": [
-        "1",
-        "2"
-      ],
+      "serviceIds": ["1", "2"],
       "status": "active"
     },
     {
@@ -100,10 +97,7 @@
       "duration": 60,
       "imageUrl": "/images/service-1.jpg",
       "status": "active",
-      "categories": [
-        "Nguyễn Thu An",
-        "sfdghj"
-      ]
+      "categories": ["Nguyễn Thu An", "sfdghj"]
     },
     {
       "id": "2",
@@ -125,9 +119,7 @@
       "id": "6e1bf3d0-1952-42d4-a254-9ef6801ae741",
       "name": "Áo phông",
       "description": "rtyuilhgkuytrewq",
-      "categories": [
-        "Áo phông"
-      ],
+      "categories": ["Áo phông"],
       "price": 333000,
       "duration": 30,
       "status": "active",
@@ -137,9 +129,7 @@
       "id": "1205794a-f0be-4da1-a359-48f387e8c267",
       "name": "23t4y5uyvh",
       "description": "qưeretryukb",
-      "categories": [
-        "Nguyễn Thu An"
-      ],
+      "categories": ["Nguyễn Thu An"],
       "price": 22000,
       "duration": 30,
       "status": "active",
@@ -149,9 +139,7 @@
       "id": "585aca97-60dd-4c40-9cdb-7dac252434fb",
       "name": "qưerty",
       "description": "23r4tryjukil",
-      "categories": [
-        "Nguyễn Thu An"
-      ],
+      "categories": ["Nguyễn Thu An"],
       "price": 3456000,
       "duration": 30,
       "status": "active",
@@ -581,7 +569,7 @@
       "id": "plan-1",
       "name": "Liệu trình Phục hồi da toàn diện",
       "description": "Gói 5 buổi kết hợp làm sạch sâu và massage nâng cơ, giúp tái tạo làn da, mang lại vẻ sáng khỏe và mịn màng.",
-      "category": "Chăm sóc da",
+      "categories": "Chăm sóc da",
       "price": 2500000,
       "imageUrl": "/images/service-1.jpg",
       "status": "active",
@@ -589,35 +577,23 @@
       "steps": [
         {
           "step": 1,
-          "serviceIds": [
-            "1"
-          ]
+          "serviceIds": ["1"]
         },
         {
           "step": 2,
-          "serviceIds": [
-            "1",
-            "2"
-          ]
+          "serviceIds": ["1", "2"]
         },
         {
           "step": 3,
-          "serviceIds": [
-            "2"
-          ]
+          "serviceIds": ["2"]
         },
         {
           "step": 4,
-          "serviceIds": [
-            "1"
-          ]
+          "serviceIds": ["1"]
         },
         {
           "step": 5,
-          "serviceIds": [
-            "1",
-            "2"
-          ]
+          "serviceIds": ["1", "2"]
         }
       ]
     },
@@ -625,7 +601,7 @@
       "id": "plan-2",
       "name": "Liệu trình Thư giãn cao cấp",
       "description": "Combo 3 buổi massage toàn thân và 2 buổi chăm sóc da chuyên sâu, giúp giảm căng thẳng và phục hồi năng lượng.",
-      "category": "Massage",
+      "categories": "Massage",
       "price": 3000000,
       "imageUrl": "/images/service-2.jpg",
       "status": "active",
@@ -633,33 +609,23 @@
       "steps": [
         {
           "step": 1,
-          "serviceIds": [
-            "2"
-          ]
+          "serviceIds": ["2"]
         },
         {
           "step": 2,
-          "serviceIds": [
-            "1"
-          ]
+          "serviceIds": ["1"]
         },
         {
           "step": 3,
-          "serviceIds": [
-            "2"
-          ]
+          "serviceIds": ["2"]
         },
         {
           "step": 4,
-          "serviceIds": [
-            "1"
-          ]
+          "serviceIds": ["1"]
         },
         {
           "step": 5,
-          "serviceIds": [
-            "2"
-          ]
+          "serviceIds": ["2"]
         }
       ]
     }
@@ -674,9 +640,7 @@
         {
           "id": "cts-1",
           "treatmentPlanStep": 1,
-          "serviceIds": [
-            "1"
-          ],
+          "serviceIds": ["1"],
           "date": "2025-07-20T14:00:00.000Z",
           "technicianId": "tech-1",
           "status": "completed",
@@ -685,10 +649,7 @@
         {
           "id": "cts-2",
           "treatmentPlanStep": 2,
-          "serviceIds": [
-            "1",
-            "2"
-          ],
+          "serviceIds": ["1", "2"],
           "date": "2025-07-27T14:00:00.000Z",
           "technicianId": "tech-1",
           "status": "completed",
@@ -697,9 +658,7 @@
         {
           "id": "cts-3",
           "treatmentPlanStep": 3,
-          "serviceIds": [
-            "2"
-          ],
+          "serviceIds": ["2"],
           "date": "2025-09-03T02:30:00.000Z",
           "technicianId": "",
           "status": "upcoming",
@@ -708,9 +667,7 @@
         {
           "id": "cts-4",
           "treatmentPlanStep": 4,
-          "serviceIds": [
-            "1"
-          ],
+          "serviceIds": ["1"],
           "date": "",
           "technicianId": "",
           "status": "upcoming",
@@ -719,10 +676,7 @@
         {
           "id": "cts-5",
           "treatmentPlanStep": 5,
-          "serviceIds": [
-            "1",
-            "2"
-          ],
+          "serviceIds": ["1", "2"],
           "date": "",
           "technicianId": "",
           "status": "upcoming",
