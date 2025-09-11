@@ -48,10 +48,20 @@ export default function CategoryForm({
     },
   });
 
+  const processSubmit = (data: CategoryFormValues) => {
+    // Chuẩn hóa tên danh mục: Viết hoa chữ cái đầu, xóa khoảng trắng thừa
+    const normalizedData = {
+      ...data,
+      name:
+        data.name.trim().charAt(0).toUpperCase() + data.name.trim().slice(1),
+    };
+    onFormSubmit(normalizedData);
+  };
+
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onFormSubmit)}
+        onSubmit={form.handleSubmit(processSubmit)}
         className="space-y-4 pt-4"
       >
         <FormField

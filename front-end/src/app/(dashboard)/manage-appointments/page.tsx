@@ -24,6 +24,10 @@ export default function AppointmentsManagementPage() {
   const [selectedAppointmentId, setSelectedAppointmentId] = useState<
     string | null
   >(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [selectedDateForNew, setSelectedDateForNew] = useState<Date | null>(
+    null
+  );
 
   // --- Fetch tất cả dữ liệu cần thiết từ API ---
   const { data: appointments = [], isLoading: loadingAppointments } =
@@ -65,6 +69,18 @@ export default function AppointmentsManagementPage() {
     },
     onError: (error) => {
       toast.error(`Cập nhật thất bại: ${error.message}`);
+    },
+  });
+
+  const createAppointmentMutation = useMutation({
+    mutationFn: createAppointment, // Giả sử bạn có hàm createAppointment trong api
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+      toast.success("Tạo lịch hẹn thành công!");
+      setIsCreateModalOpen(false);
+    },
+    onError: (error) => {
+      toast.error(`Tạo lịch hẹn thất bại: ${error.message}`);
     },
   });
 
@@ -136,4 +152,7 @@ export default function AppointmentsManagementPage() {
       )}
     </div>
   );
+}
+function createAppointment(variables: void): Promise<unknown> {
+  throw new Error("Function not implemented.");
 }

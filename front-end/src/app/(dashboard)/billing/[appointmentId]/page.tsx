@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Invoice, InvoiceItem } from "@/features/billing/types";
 import { Product } from "@/features/product/types";
 import { Service } from "@/features/service/types";
@@ -57,7 +57,6 @@ type PaymentMethod = "cash" | "card" | "transfer";
 
 export default function BillingPage() {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const params = useParams();
   const { appointmentId } = params;
 
