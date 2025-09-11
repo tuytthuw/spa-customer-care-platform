@@ -3,15 +3,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { getResources } from "@/features/resource/api/resource.api";
 import { getAppointments } from "@/features/appointment/api/appointment.api";
-import {
-  getCustomers,
-  FullCustomerProfile,
-} from "@/features/customer/api/customer.api";
+import { getCustomers } from "@/features/customer/api/customer.api";
+import { FullCustomerProfile } from "@/features/customer/types";
 import { getStaff } from "@/features/staff/api/staff.api";
 import ResourceCalendar from "@/features/resource/components/ResourceCalendar";
 import { Appointment } from "@/features/appointment/types";
 import { Resource } from "@/features/resource/types";
 import { Staff } from "@/features/staff/types";
+import { PageHeader } from "@/components/common/PageHeader";
 
 export default function ResourceSchedulePage() {
   // Fetch tất cả dữ liệu cần thiết
@@ -50,12 +49,10 @@ export default function ResourceSchedulePage() {
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold">Lịch trình Tổng thể</h1>
-        <p className="text-muted-foreground">
-          Quản lý lịch hẹn theo Kỹ thuật viên, Phòng và Thiết bị.
-        </p>
-      </div>
+      <PageHeader
+        title="Lịch trình Tổng thể"
+        description="Quản lý lịch hẹn theo Kỹ thuật viên, Phòng và Thiết bị."
+      />
       {/* Đặt chiều cao cho calendar để nó hiển thị đúng */}
       <div className="h-[75vh]">
         <ResourceCalendar

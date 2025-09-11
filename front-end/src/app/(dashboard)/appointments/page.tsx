@@ -20,7 +20,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContexts";
 import { getCustomers } from "@/features/customer/api/customer.api";
 import { FullCustomerProfile } from "@/features/customer/types";
-
+import { PageHeader } from "@/components/common/PageHeader";
 export default function AppointmentsPage() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -193,8 +193,7 @@ export default function AppointmentsPage() {
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
-      <h1 className="text-3xl font-bold mb-6">Lịch hẹn của tôi</h1>
-
+      <PageHeader title="Lịch hẹn của tôi" />
       <Tabs defaultValue="upcoming">
         <TabsList>
           <TabsTrigger value="upcoming">

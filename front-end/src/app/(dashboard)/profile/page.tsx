@@ -7,6 +7,7 @@ import { getCustomers } from "@/features/customer/api/customer.api";
 import { getStaffProfiles } from "@/features/staff/api/staff.api";
 import { FullCustomerProfile } from "@/features/customer/types";
 import { FullStaffProfile } from "@/features/staff/types";
+import { PageHeader } from "@/components/common/PageHeader";
 
 export default function ProfilePage() {
   const { user } = useAuth();
@@ -47,7 +48,7 @@ export default function ProfilePage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Hồ sơ của tôi</h1>
+      <PageHeader title="Hồ sơ của tôi" />
       <ProfileForm
         defaultValues={{
           name: userProfile.name,

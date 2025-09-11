@@ -22,6 +22,7 @@ import { columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
 import { toast } from "sonner";
 import { useCustomers } from "@/features/customer/hooks/useCustomers";
+import { PageHeader } from "@/components/common/PageHeader";
 
 // Lấy type từ Zod schema
 type CustomerFormValues = {
@@ -120,27 +121,29 @@ export default function CustomersPage() {
 
   return (
     <div className="p-6 bg-muted min-h-full">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Quản lý khách hàng</h2>
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Thêm khách hàng
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Thêm khách hàng mới</DialogTitle>
-            </DialogHeader>
-            <CustomerForm
-              onFormSubmit={handleAddCustomer}
-              onClose={() => setIsAddDialogOpen(false)}
-              isSubmitting={addCustomerMutation.isPending}
-            />
-          </DialogContent>
-        </Dialog>
-      </div>
+      <PageHeader
+        title="Quản lý khách hàng"
+        actionNode={
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Thêm khách hàng
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Thêm khách hàng mới</DialogTitle>
+              </DialogHeader>
+              <CustomerForm
+                onFormSubmit={handleAddCustomer}
+                onClose={() => setIsAddDialogOpen(false)}
+                isSubmitting={addCustomerMutation.isPending}
+              />
+            </DialogContent>
+          </Dialog>
+        }
+      />
 
       <DataTable
         columns={columns({

@@ -17,10 +17,11 @@ import { getStaffProfiles } from "@/features/staff/api/staff.api";
 import { useAuth } from "@/contexts/AuthContexts";
 import { AppointmentDetailsModal } from "@/features/schedule/components/AppointmentDetailsModal";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { RegisterScheduleModal } from "@/features/schedule/components/RegisterScheduleModal";
 import { toast } from "sonner";
 import { ScheduleRegistrationData } from "@/features/schedule/types";
+import { PageHeader } from "@/components/common/PageHeader";
+import { Button } from "@/components/ui/button";
 
 export default function SchedulePage() {
   const queryClient = useQueryClient();
@@ -106,11 +107,7 @@ export default function SchedulePage() {
     setIsDetailsModalOpen(true);
   };
 
-  const handleUpdateAppointment = (
-    id: string,
-    notes: string,
-    status: "completed"
-  ) => {
+  const handleUpdateAppointment = (id: string, notes: string) => {
     updateAppointmentMutation.mutate({ id, notes });
   };
 
@@ -126,12 +123,14 @@ export default function SchedulePage() {
   return (
     <>
       <div className="container mx-auto p-4 md:p-6 lg:p-8">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-3xl font-bold tracking-tight">Lịch làm việc</h2>
-          <Button onClick={() => setIsRegisterModalOpen(true)}>
-            Đăng ký lịch tuần tới
-          </Button>
-        </div>
+        <PageHeader
+          title="Lịch làm việc"
+          actionNode={
+            <Button onClick={() => setIsRegisterModalOpen(true)}>
+              Đăng ký lịch tuần tới
+            </Button>
+          }
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-1">

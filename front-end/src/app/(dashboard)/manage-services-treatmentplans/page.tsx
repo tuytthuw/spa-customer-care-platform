@@ -33,6 +33,7 @@ import { ServiceFormValues } from "@/features/service/schemas";
 import { TreatmentPlanFormValues } from "@/features/treatment/schemas";
 import { useServices } from "@/features/service/hooks/useServices";
 import { useTreatmentPlans } from "@/features/treatment/hooks/useTreatmentPlans";
+import { PageHeader } from "@/components/common/PageHeader";
 
 export default function ServicesManagementPage() {
   const [isServiceAddOpen, setIsServiceAddOpen] = useState(false);
@@ -178,7 +179,7 @@ export default function ServicesManagementPage() {
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
-      <h1 className="text-3xl font-bold mb-6">Quản lý Dịch vụ & Liệu trình</h1>
+      <PageHeader title="Quản lý Dịch vụ & Liệu trình" />
       <Tabs defaultValue="services">
         <TabsList className="grid w-full grid-cols-2 md:w-[400px]">
           <TabsTrigger value="services">Dịch vụ lẻ</TabsTrigger>

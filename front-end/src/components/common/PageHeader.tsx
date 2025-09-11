@@ -1,31 +1,27 @@
 // src/components/common/PageHeader.tsx
 
-import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
 import React from "react";
 
 interface PageHeaderProps {
   title: string;
-  actionButtonText: string;
-  onActionButtonClick: () => void;
-  // Thêm prop tùy chọn để ẩn nút hành động nếu cần
-  hideActionButton?: boolean;
+  description?: string; // Thêm mô tả tùy chọn
+  actionNode?: React.ReactNode; // Thay thế cho các props cũ
 }
 
 export const PageHeader = ({
   title,
-  actionButtonText,
-  onActionButtonClick,
-  hideActionButton = false,
+  description,
+  actionNode,
 }: PageHeaderProps) => {
   return (
-    <div className="flex justify-between items-center mb-6">
-      <h1 className="text-3xl font-bold">{title}</h1>
-      {!hideActionButton && (
-        <Button onClick={onActionButtonClick}>
-          <PlusCircle className="mr-2 h-4 w-4" /> {actionButtonText}
-        </Button>
-      )}
+    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+      <div>
+        <h1 className="text-3xl font-bold">{title}</h1>
+        {description && (
+          <p className="text-muted-foreground mt-1">{description}</p>
+        )}
+      </div>
+      {actionNode && <div>{actionNode}</div>}
     </div>
   );
 };
