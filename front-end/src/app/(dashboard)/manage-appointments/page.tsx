@@ -17,6 +17,7 @@ import { useAppointments } from "@/features/appointment/hooks/useAppointments";
 import { useCustomers } from "@/features/customer/hooks/useCustomers";
 import { useServices } from "@/features/service/hooks/useServices";
 import { useStaffs } from "@/features/staff/hooks/useStaffs";
+import { PageHeader } from "@/components/common/PageHeader";
 
 export default function AppointmentsManagementPage() {
   const queryClient = useQueryClient();
@@ -104,6 +105,7 @@ export default function AppointmentsManagementPage() {
 
   return (
     <div className="flex h-full bg-muted/30">
+      <PageHeader title="Quản lý Lịch hẹn" />
       <StatisticsSidebar appointments={appointments} staff={staff} />
       <div
         className={cn(

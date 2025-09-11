@@ -575,6 +575,16 @@
       "id": "cat-c2e612f9-6ce3-4c89-939e-bea66b394821",
       "name": "Nguyễn Thu An",
       "type": "service"
+    },
+    {
+      "id": "cat-5d5529c1-88cb-4c32-bf92-8f54b6277ba6",
+      "name": "Áo phông",
+      "type": "product"
+    },
+    {
+      "id": "cat-df635a54-244d-462b-bdc3-72b41e7e28f8",
+      "name": "Áo phông",
+      "type": "treatment"
     }
   ],
   "treatmentPlans": [

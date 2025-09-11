@@ -77,19 +77,7 @@ export default function ManageCategoriesPage() {
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
-      <PageHeader
-        title="Quản lý Danh mục"
-        actionButtonText="Thêm danh mục"
-        onActionButtonClick={() => handleOpenDialog()}
-      />
-
-      <DataTable
-        columns={columns({
-          onEdit: handleOpenDialog,
-          onDelete: (id) => deleteCategoryMutation.mutate(id),
-        })}
-        data={categories}
-      />
+      <PageHeader title="Quản lý Danh mục" />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>

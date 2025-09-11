@@ -5,7 +5,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FullStaffProfile } from "@/features/staff/types";
 import { columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -23,6 +22,9 @@ import { toast } from "sonner";
 import { useStaffs } from "@/features/staff/hooks/useStaffs";
 import { useServices } from "@/features/service/hooks/useServices";
 import { FullPageLoader } from "@/components/ui/spinner";
+import { PageHeader } from "@/components/common/PageHeader";
+import { Button } from "@/components/ui/button";
+import { PlusCircle } from "lucide-react";
 
 type StaffFormValues = {
   name: string;
@@ -131,24 +133,29 @@ export default function StaffManagementPage() {
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Quản lý Nhân viên</h1>
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>Thêm nhân viên mới</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Tạo hồ sơ nhân viên mới</DialogTitle>
-            </DialogHeader>
-            <StaffForm
-              services={services}
-              onFormSubmit={handleAddStaff}
-              onClose={() => setIsAddDialogOpen(false)}
-            />
-          </DialogContent>
-        </Dialog>
-      </div>
+      <PageHeader
+        title="Quản lý Nhân viên"
+        actionNode={
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Thêm nhân viên mới
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Tạo hồ sơ nhân viên mới</DialogTitle>
+              </DialogHeader>
+              <StaffForm
+                services={services}
+                onFormSubmit={handleAddStaff}
+                onClose={() => setIsAddDialogOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
+        }
+      />
       <DataTable
         columns={columns({
           onEdit: handleEditStaff,

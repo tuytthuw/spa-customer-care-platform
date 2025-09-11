@@ -6,7 +6,7 @@ import { columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
 import { getUsers, updateUserStatus } from "@/features/user/api/user.api";
 import { toast } from "sonner";
-
+import { PageHeader } from "@/components/common/PageHeader";
 export default function ManageUsersPage() {
   const queryClient = useQueryClient();
 
@@ -48,9 +48,7 @@ export default function ManageUsersPage() {
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Quản lý Tài khoản Người dùng</h1>
-      </div>
+      <PageHeader title="Quản lý Người dùng" />
       <DataTable
         columns={columns({ onUpdateStatus: handleUpdateStatus })}
         data={users}

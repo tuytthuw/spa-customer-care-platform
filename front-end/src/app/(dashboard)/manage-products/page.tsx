@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import ProductForm from "@/features/product/components/ProductForm";
 import { ProductFormValues } from "@/features/product/schemas";
 import { useProducts } from "@/features/product/hooks/useProducts";
+import { PageHeader } from "@/components/common/PageHeader";
 
 export default function ManageProductsPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -103,27 +104,28 @@ export default function ManageProductsPage() {
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Quản lý Sản phẩm</h1>
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <PlusCircle className="mr-2 h-4 w-4" /> Thêm sản phẩm
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Thêm sản phẩm mới</DialogTitle>
-            </DialogHeader>
-            {/* 3. Sử dụng ProductForm cho việc "Thêm" */}
-            <ProductForm
-              onFormSubmit={handleAddProduct}
-              onClose={() => setIsAddDialogOpen(false)}
-              isSubmitting={addProductMutation.isPending}
-            />
-          </DialogContent>
-        </Dialog>
-      </div>
+      <PageHeader
+        title="Quản lý Sản phẩm"
+        actionNode={
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <PlusCircle className="mr-2 h-4 w-4" /> Thêm sản phẩm
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Thêm sản phẩm mới</DialogTitle>
+              </DialogHeader>
+              <ProductForm
+                onFormSubmit={handleAddProduct}
+                onClose={() => setIsAddDialogOpen(false)}
+                isSubmitting={addProductMutation.isPending}
+              />
+            </DialogContent>
+          </Dialog>
+        }
+      />
       <DataTable
         columns={columns({
           onEdit: handleEdit,

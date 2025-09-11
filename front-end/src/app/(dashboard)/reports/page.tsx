@@ -5,12 +5,12 @@ import { StatsCard } from "@/features/reports/components/StatsCard";
 import RevenueChart from "@/features/reports/components/RevenueChart";
 import ServiceBreakdownChart from "@/features/reports/components/ServiceBreakdownChart";
 import { DollarSign, BookUser, UserPlus, Star } from "lucide-react";
+import { PageHeader } from "@/components/common/PageHeader";
 
 const ReportsPage = () => {
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
-      <h1 className="text-3xl font-bold mb-6">Báo cáo & Thống kê</h1>
-
+      <PageHeader title="Báo cáo & Thống kê" />
       {/* 2. Sửa lại cách gọi component và thêm prop "description" */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
         <StatsCard

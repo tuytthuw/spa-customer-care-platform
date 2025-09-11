@@ -15,6 +15,7 @@ import { getServices } from "@/features/service/api/service.api";
 import TreatmentCard from "@/features/treatment/components/TreatmentCard";
 import { getCustomers } from "@/features/customer/api/customer.api";
 import { FullCustomerProfile } from "@/features/customer/types";
+import { PageHeader } from "@/components/common/PageHeader";
 
 export default function TreatmentsPage() {
   const { user } = useAuth();
@@ -72,7 +73,7 @@ export default function TreatmentsPage() {
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
-      <h1 className="text-3xl font-bold mb-6">Liệu trình của tôi</h1>
+      <PageHeader title="Liệu trình của tôi" />
       {customerTreatments.length > 0 ? (
         <div className="space-y-6">
           {customerTreatments.map((pkg) => {
