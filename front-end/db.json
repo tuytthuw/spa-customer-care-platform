@@ -66,10 +66,7 @@
       "phone": "0911223344",
       "role": "technician",
       "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=tech-1",
-      "serviceIds": [
-        "1",
-        "2"
-      ],
+      "serviceIds": ["1", "2"],
       "status": "inactive"
     },
     {
@@ -100,10 +97,7 @@
       "duration": 60,
       "imageUrl": "/images/service-1.jpg",
       "status": "active",
-      "categories": [
-        "Nguyễn Thu An",
-        "sfdghj"
-      ]
+      "categories": ["Chăm sóc da mặt", "Massage & Trị liệu"]
     },
     {
       "id": "2",
@@ -113,49 +107,7 @@
       "duration": 90,
       "imageUrl": "/images/service-2.jpg",
       "status": "active",
-      "categories": [
-        "Chăm sóc da mặt",
-        "Massage & Trị liệu",
-        "Áo phông",
-        "Nguyễn Thu An",
-        "Tím"
-      ]
-    },
-    {
-      "id": "6e1bf3d0-1952-42d4-a254-9ef6801ae741",
-      "name": "Áo phông",
-      "description": "rtyuilhgkuytrewq",
-      "categories": [
-        "Áo phông"
-      ],
-      "price": 333000,
-      "duration": 30,
-      "status": "active",
-      "imageUrl": "/images/service-3.jpg"
-    },
-    {
-      "id": "1205794a-f0be-4da1-a359-48f387e8c267",
-      "name": "23t4y5uyvh",
-      "description": "qưeretryukb",
-      "categories": [
-        "Nguyễn Thu An"
-      ],
-      "price": 22000,
-      "duration": 30,
-      "status": "active",
-      "imageUrl": "/images/service-3.jpg"
-    },
-    {
-      "id": "585aca97-60dd-4c40-9cdb-7dac252434fb",
-      "name": "qưerty",
-      "description": "23r4tryjukil",
-      "categories": [
-        "Nguyễn Thu An"
-      ],
-      "price": 3456000,
-      "duration": 30,
-      "status": "active",
-      "imageUrl": "/images/service-1.jpg"
+      "categories": ["Chăm sóc da mặt", "Massage & Trị liệu"]
     }
   ],
   "appointments": [
@@ -458,7 +410,7 @@
       "id": "prod-1",
       "name": "Serum dưỡng ẩm Hyaluronic Acid",
       "description": "Serum cấp ẩm sâu, giúp da căng bóng và mịn màng.",
-      "category": "Dưỡng ẩm",
+      "categories": ["Dưỡng ẩm"],
       "price": 750000,
       "stock": 50,
       "imageUrl": "/images/product-1.jpg",
@@ -468,7 +420,7 @@
       "id": "prod-2",
       "name": "Kem chống nắng SPF 50+",
       "description": "Bảo vệ da tối ưu khỏi tia UVA/UVB, không gây bết dính.",
-      "category": "Chống nắng",
+      "categories": ["Chống nắng"],
       "price": 550000,
       "stock": 100,
       "imageUrl": "/images/product-2.jpg",
@@ -502,89 +454,9 @@
       "type": "product"
     },
     {
-      "id": "cat-80abca47-26e3-4914-a11e-14aaa2d22c92",
-      "name": "Áo phông",
+      "id": "cat-6",
+      "name": "Chăm sóc cơ thể",
       "type": "service"
-    },
-    {
-      "id": "cat-d56520d4-4add-4ea4-a206-94e67f3be930",
-      "name": "Nguyễn Thu An",
-      "type": "service"
-    },
-    {
-      "id": "cat-3ba12454-5b74-41da-a5ca-37c99d8a1627",
-      "name": "Tím",
-      "type": "service"
-    },
-    {
-      "id": "cat-554aaf69-07a8-4776-a993-33aa89fb6c1b",
-      "name": "Nguyễn Thu An",
-      "type": "service"
-    },
-    {
-      "id": "cat-8d068294-6786-4706-9cff-8c08f2aaa666",
-      "name": "Áo phông",
-      "type": "service"
-    },
-    {
-      "id": "cat-43d3645a-78b7-4b95-883c-c1b08b5365b4",
-      "name": "hgfghjkl;",
-      "type": "service"
-    },
-    {
-      "id": "cat-6e44c960-17ad-407a-adc6-1b7b0f254f7e",
-      "name": "Áo phông",
-      "type": "service"
-    },
-    {
-      "id": "cat-7366b650-cd53-41b9-8932-224cafdf3fc3",
-      "name": "ếtrytdy",
-      "type": "service"
-    },
-    {
-      "id": "cat-393978a6-31ce-4b45-acd3-e23685b106a4",
-      "name": "ưerthy",
-      "type": "service"
-    },
-    {
-      "id": "cat-9705282b-0dcf-4157-80e4-d49c2201a82c",
-      "name": "adfghjhk",
-      "type": "service"
-    },
-    {
-      "id": "cat-11a7f86e-44b7-4817-a20f-f54bfdc1d116",
-      "name": "sfdghj",
-      "type": "service"
-    },
-    {
-      "id": "cat-b6af6295-14b0-45e6-8c6e-0ce5059aa6f2",
-      "name": "sfdghj",
-      "type": "service"
-    },
-    {
-      "id": "cat-2e78beaa-1cb8-44fc-896b-1b5a4afccc1a",
-      "name": "jkljhgf",
-      "type": "service"
-    },
-    {
-      "id": "cat-391dec40-49ab-4e51-9a52-53280b3f0cb4",
-      "name": "qửetrty",
-      "type": "service"
-    },
-    {
-      "id": "cat-c2e612f9-6ce3-4c89-939e-bea66b394821",
-      "name": "Nguyễn Thu An",
-      "type": "service"
-    },
-    {
-      "id": "cat-5d5529c1-88cb-4c32-bf92-8f54b6277ba6",
-      "name": "Áo phông",
-      "type": "product"
-    },
-    {
-      "id": "cat-df635a54-244d-462b-bdc3-72b41e7e28f8",
-      "name": "Áo phông",
-      "type": "treatment"
     }
   ],
   "treatmentPlans": [
@@ -592,10 +464,7 @@
       "id": "plan-1",
       "name": "Liệu trình Phục hồi da toàn diện",
       "description": "Gói 5 buổi kết hợp làm sạch sâu và massage nâng cơ, giúp tái tạo làn da, mang lại vẻ sáng khỏe và mịn màng.",
-      "categories": [
-        "Chăm sóc da",
-        "Áo phông"
-      ],
+      "categories": ["Chăm sóc da", "Áo phông"],
       "price": 2500000,
       "imageUrl": "/images/service-1.jpg",
       "status": "active",
@@ -603,35 +472,23 @@
       "steps": [
         {
           "step": 1,
-          "serviceIds": [
-            "1"
-          ]
+          "serviceIds": ["1"]
         },
         {
           "step": 2,
-          "serviceIds": [
-            "1",
-            "2"
-          ]
+          "serviceIds": ["1", "2"]
         },
         {
           "step": 3,
-          "serviceIds": [
-            "2"
-          ]
+          "serviceIds": ["2"]
         },
         {
           "step": 4,
-          "serviceIds": [
-            "1"
-          ]
+          "serviceIds": ["1"]
         },
         {
           "step": 5,
-          "serviceIds": [
-            "1",
-            "2"
-          ]
+          "serviceIds": ["1", "2"]
         }
       ]
     },
@@ -639,10 +496,7 @@
       "id": "plan-2",
       "name": "Liệu trình Thư giãn cao cấp",
       "description": "Combo 3 buổi massage toàn thân và 2 buổi chăm sóc da chuyên sâu, giúp giảm căng thẳng và phục hồi năng lượng.",
-      "categories": [
-        "Massage",
-        "Chăm sóc da"
-      ],
+      "categories": ["Massage", "Chăm sóc da"],
       "price": 3000000,
       "imageUrl": "/images/service-2.jpg",
       "status": "active",
@@ -650,33 +504,23 @@
       "steps": [
         {
           "step": 1,
-          "serviceIds": [
-            "2"
-          ]
+          "serviceIds": ["2"]
         },
         {
           "step": 2,
-          "serviceIds": [
-            "1"
-          ]
+          "serviceIds": ["1"]
         },
         {
           "step": 3,
-          "serviceIds": [
-            "2"
-          ]
+          "serviceIds": ["2"]
         },
         {
           "step": 4,
-          "serviceIds": [
-            "1"
-          ]
+          "serviceIds": ["1"]
         },
         {
           "step": 5,
-          "serviceIds": [
-            "2"
-          ]
+          "serviceIds": ["2"]
         }
       ]
     }
@@ -691,9 +535,7 @@
         {
           "id": "cts-1",
           "treatmentPlanStep": 1,
-          "serviceIds": [
-            "1"
-          ],
+          "serviceIds": ["1"],
           "date": "2025-07-20T14:00:00.000Z",
           "technicianId": "tech-1",
           "status": "completed",
@@ -702,10 +544,7 @@
         {
           "id": "cts-2",
           "treatmentPlanStep": 2,
-          "serviceIds": [
-            "1",
-            "2"
-          ],
+          "serviceIds": ["1", "2"],
           "date": "2025-07-27T14:00:00.000Z",
           "technicianId": "tech-1",
           "status": "completed",
@@ -714,9 +553,7 @@
         {
           "id": "cts-3",
           "treatmentPlanStep": 3,
-          "serviceIds": [
-            "2"
-          ],
+          "serviceIds": ["2"],
           "date": "2025-09-03T02:30:00.000Z",
           "technicianId": "",
           "status": "upcoming",
@@ -725,9 +562,7 @@
         {
           "id": "cts-4",
           "treatmentPlanStep": 4,
-          "serviceIds": [
-            "1"
-          ],
+          "serviceIds": ["1"],
           "date": "",
           "technicianId": "",
           "status": "upcoming",
@@ -736,10 +571,7 @@
         {
           "id": "cts-5",
           "treatmentPlanStep": 5,
-          "serviceIds": [
-            "1",
-            "2"
-          ],
+          "serviceIds": ["1", "2"],
           "date": "",
           "technicianId": "",
           "status": "upcoming",
