@@ -1,10 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
 import {
-  Form,
   FormControl,
   FormField,
   FormItem,
@@ -19,66 +15,33 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  categoryFormSchema,
-  CategoryFormValues,
-} from "@/features/category/schemas";
-import { Category } from "../types";
 
-interface CategoryFormProps {
-  initialData?: Category | null;
-  onFormSubmit: (data: CategoryFormValues) => void;
-  onClose: () => void;
-  isSubmitting?: boolean;
+interface CategoryFormFieldsProps {
+  // Prop để ẩn trường 'type' khi thêm nhanh từ form khác
+  hideTypeField?: boolean;
 }
 
-export default function CategoryForm({
-  initialData,
-  onFormSubmit,
-  onClose,
-  isSubmitting,
-}: CategoryFormProps) {
-  const isEditMode = !!initialData;
-
-  const form = useForm<CategoryFormValues>({
-    resolver: zodResolver(categoryFormSchema),
-    defaultValues: initialData || {
-      name: "",
-      type: "service", // Mặc định là 'service' khi tạo mới
-    },
-  });
-
-  const processSubmit = (data: CategoryFormValues) => {
-    // Chuẩn hóa tên danh mục: Viết hoa chữ cái đầu, xóa khoảng trắng thừa
-    const normalizedData = {
-      ...data,
-      name:
-        data.name.trim().charAt(0).toUpperCase() + data.name.trim().slice(1),
-    };
-    onFormSubmit(normalizedData);
-  };
-
+// Đổi tên component để thể hiện rõ vai trò chỉ chứa các trường của form
+export default function CategoryFormFields({
+  hideTypeField = false,
+}: CategoryFormFieldsProps) {
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(processSubmit)}
-        className="space-y-4 pt-4"
-      >
+    <>
+      <FormField
+        name="name"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Tên danh mục</FormLabel>
+            <FormControl>
+              <Input placeholder="VD: Chăm sóc da chuyên sâu" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {!hideTypeField && (
         <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tên danh mục</FormLabel>
-              <FormControl>
-                <Input placeholder="VD: Chăm sóc da chuyên sâu" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
           name="type"
           render={({ field }) => (
             <FormItem>
@@ -99,20 +62,7 @@ export default function CategoryForm({
             </FormItem>
           )}
         />
-        <div className="flex justify-end gap-2 pt-4">
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={onClose}
-            disabled={isSubmitting}
-          >
-            Hủy
-          </Button>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Đang lưu..." : isEditMode ? "Lưu thay đổi" : "Lưu"}
-          </Button>
-        </div>
-      </form>
-    </Form>
+      )}
+    </>
   );
 }

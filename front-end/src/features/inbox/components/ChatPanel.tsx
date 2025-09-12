@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getCustomers } from "@/features/customer/api/customer.api";
-import { FullCustomerProfile } from "@/features/customer/types";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
 import { sendMessage } from "@/features/inbox/api/inbox.api";
 import { useState } from "react";
+import { useCustomers } from "@/features/customer/hooks/useCustomers";
 
 interface ChatPanelProps {
   conversation: Conversation | null;
@@ -21,10 +21,7 @@ const ChatPanel = ({ conversation }: ChatPanelProps) => {
   const [input, setInput] = useState("");
 
   // Fetch danh sách khách hàng
-  const { data: customers = [] } = useQuery<FullCustomerProfile[]>({
-    queryKey: ["customers"],
-    queryFn: getCustomers,
-  });
+  const { data: customers = [] } = useCustomers();
 
   // Mutation để gửi tin nhắn**
   const sendMessageMutation = useMutation({

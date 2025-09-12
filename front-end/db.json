@@ -66,8 +66,11 @@
       "phone": "0911223344",
       "role": "technician",
       "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=tech-1",
-      "serviceIds": ["1", "2"],
-      "status": "inactive"
+      "serviceIds": [
+        "1",
+        "2"
+      ],
+      "status": "active"
     },
     {
       "id": "rec-1",
@@ -97,7 +100,10 @@
       "duration": 60,
       "imageUrl": "/images/service-1.jpg",
       "status": "active",
-      "categories": ["Chăm sóc da mặt", "Massage & Trị liệu"]
+      "categories": [
+        "Chăm sóc da mặt",
+        "Massage & Trị liệu"
+      ]
     },
     {
       "id": "2",
@@ -107,7 +113,10 @@
       "duration": 90,
       "imageUrl": "/images/service-2.jpg",
       "status": "active",
-      "categories": ["Chăm sóc da mặt", "Massage & Trị liệu"]
+      "categories": [
+        "Chăm sóc da mặt",
+        "Massage & Trị liệu"
+      ]
     }
   ],
   "appointments": [
@@ -410,7 +419,9 @@
       "id": "prod-1",
       "name": "Serum dưỡng ẩm Hyaluronic Acid",
       "description": "Serum cấp ẩm sâu, giúp da căng bóng và mịn màng.",
-      "categories": ["Dưỡng ẩm"],
+      "categories": [
+        "Dưỡng ẩm"
+      ],
       "price": 750000,
       "stock": 50,
       "imageUrl": "/images/product-1.jpg",
@@ -420,7 +431,9 @@
       "id": "prod-2",
       "name": "Kem chống nắng SPF 50+",
       "description": "Bảo vệ da tối ưu khỏi tia UVA/UVB, không gây bết dính.",
-      "categories": ["Chống nắng"],
+      "categories": [
+        "Chống nắng"
+      ],
       "price": 550000,
       "stock": 100,
       "imageUrl": "/images/product-2.jpg",
@@ -431,7 +444,7 @@
     {
       "id": "cat-1",
       "name": "Chăm sóc da mặt",
-      "type": "service"
+      "type": "product"
     },
     {
       "id": "cat-2",
@@ -464,31 +477,54 @@
       "id": "plan-1",
       "name": "Liệu trình Phục hồi da toàn diện",
       "description": "Gói 5 buổi kết hợp làm sạch sâu và massage nâng cơ, giúp tái tạo làn da, mang lại vẻ sáng khỏe và mịn màng.",
-      "categories": ["Chăm sóc da", "Áo phông"],
+      "categories": [
+        "Chăm sóc da",
+        "Áo phông"
+      ],
       "price": 2500000,
       "imageUrl": "/images/service-1.jpg",
       "status": "active",
-      "totalSessions": 5,
+      "totalSessions": 6,
       "steps": [
         {
-          "step": 1,
-          "serviceIds": ["1"]
+          "serviceIds": [
+            "1",
+            "2"
+          ],
+          "step": 1
         },
         {
-          "step": 2,
-          "serviceIds": ["1", "2"]
+          "serviceIds": [
+            "2"
+          ],
+          "step": 2
         },
         {
-          "step": 3,
-          "serviceIds": ["2"]
+          "serviceIds": [
+            "1"
+          ],
+          "step": 3
         },
         {
-          "step": 4,
-          "serviceIds": ["1"]
+          "serviceIds": [
+            "1",
+            "2"
+          ],
+          "step": 4
         },
         {
-          "step": 5,
-          "serviceIds": ["1", "2"]
+          "serviceIds": [
+            "1",
+            "2"
+          ],
+          "step": 5
+        },
+        {
+          "serviceIds": [
+            "1",
+            "2"
+          ],
+          "step": 6
         }
       ]
     },
@@ -496,7 +532,10 @@
       "id": "plan-2",
       "name": "Liệu trình Thư giãn cao cấp",
       "description": "Combo 3 buổi massage toàn thân và 2 buổi chăm sóc da chuyên sâu, giúp giảm căng thẳng và phục hồi năng lượng.",
-      "categories": ["Massage", "Chăm sóc da"],
+      "categories": [
+        "Massage",
+        "Chăm sóc da"
+      ],
       "price": 3000000,
       "imageUrl": "/images/service-2.jpg",
       "status": "active",
@@ -504,23 +543,33 @@
       "steps": [
         {
           "step": 1,
-          "serviceIds": ["2"]
+          "serviceIds": [
+            "2"
+          ]
         },
         {
           "step": 2,
-          "serviceIds": ["1"]
+          "serviceIds": [
+            "1"
+          ]
         },
         {
           "step": 3,
-          "serviceIds": ["2"]
+          "serviceIds": [
+            "2"
+          ]
         },
         {
           "step": 4,
-          "serviceIds": ["1"]
+          "serviceIds": [
+            "1"
+          ]
         },
         {
           "step": 5,
-          "serviceIds": ["2"]
+          "serviceIds": [
+            "2"
+          ]
         }
       ]
     }
@@ -535,7 +584,9 @@
         {
           "id": "cts-1",
           "treatmentPlanStep": 1,
-          "serviceIds": ["1"],
+          "serviceIds": [
+            "1"
+          ],
           "date": "2025-07-20T14:00:00.000Z",
           "technicianId": "tech-1",
           "status": "completed",
@@ -544,7 +595,10 @@
         {
           "id": "cts-2",
           "treatmentPlanStep": 2,
-          "serviceIds": ["1", "2"],
+          "serviceIds": [
+            "1",
+            "2"
+          ],
           "date": "2025-07-27T14:00:00.000Z",
           "technicianId": "tech-1",
           "status": "completed",
@@ -553,7 +607,9 @@
         {
           "id": "cts-3",
           "treatmentPlanStep": 3,
-          "serviceIds": ["2"],
+          "serviceIds": [
+            "2"
+          ],
           "date": "2025-09-03T02:30:00.000Z",
           "technicianId": "",
           "status": "upcoming",
@@ -562,7 +618,9 @@
         {
           "id": "cts-4",
           "treatmentPlanStep": 4,
-          "serviceIds": ["1"],
+          "serviceIds": [
+            "1"
+          ],
           "date": "",
           "technicianId": "",
           "status": "upcoming",
@@ -571,7 +629,10 @@
         {
           "id": "cts-5",
           "treatmentPlanStep": 5,
-          "serviceIds": ["1", "2"],
+          "serviceIds": [
+            "1",
+            "2"
+          ],
           "date": "",
           "technicianId": "",
           "status": "upcoming",

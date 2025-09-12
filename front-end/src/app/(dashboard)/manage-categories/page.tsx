@@ -1,27 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import { Category } from "@/features/category/types";
+import {
+  CategoryFormValues,
+  categoryFormSchema,
+} from "@/features/category/schemas";
 import {
   addCategory,
   updateCategory,
   deleteCategory,
 } from "@/features/category/api/category.api";
-import { DataTable } from "@/components/ui/data-table";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { columns } from "./columns";
-import { toast } from "sonner";
 import { useCategories } from "@/features/category/hooks/useCategories";
-import { FullPageLoader } from "@/components/ui/spinner";
+
+import { DataTable } from "@/components/ui/data-table";
+import { Button } from "@/components/ui/button";
+import { PlusCircle } from "lucide-react";
+import { toast } from "sonner";
+import { columns } from "./columns";
 import { PageHeader } from "@/components/common/PageHeader";
-import { CategoryFormValues } from "@/features/category/schemas";
-import CategoryForm from "@/features/category/components/CategoryForm";
+import { FormDialog } from "@/components/common/FormDialog";
+import { FullPageLoader } from "@/components/ui/spinner";
+import CategoryFormFields from "@/features/category/components/CategoryForm";
 
 export default function ManageCategoriesPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -29,6 +33,20 @@ export default function ManageCategoriesPage() {
   const queryClient = useQueryClient();
 
   const { data: categories = [], isLoading, error } = useCategories();
+
+  const form = useForm<CategoryFormValues>({
+    resolver: zodResolver(categoryFormSchema),
+  });
+
+  useEffect(() => {
+    if (isDialogOpen) {
+      if (editingCategory) {
+        form.reset(editingCategory);
+      } else {
+        form.reset({ name: "", type: "service" });
+      }
+    }
+  }, [isDialogOpen, editingCategory, form]); // ✅ Đã thêm `form` vào dependency array
 
   const handleMutationSuccess = (message: string) => {
     queryClient.invalidateQueries({ queryKey: ["categories"] });
@@ -77,25 +95,35 @@ export default function ManageCategoriesPage() {
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
-      <PageHeader title="Quản lý Danh mục" />
+      <PageHeader
+        title="Quản lý Danh mục"
+        actionNode={
+          <Button onClick={() => handleOpenDialog()}>
+            <PlusCircle className="mr-2 h-4 w-4" /> Thêm danh mục
+          </Button>
+        }
+      />
+      <DataTable
+        columns={columns({
+          onEdit: handleOpenDialog,
+          onDelete: deleteCategoryMutation.mutate,
+        })}
+        data={categories}
+      />
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {editingCategory ? "Chỉnh sửa danh mục" : "Tạo danh mục mới"}
-            </DialogTitle>
-          </DialogHeader>
-          <CategoryForm
-            initialData={editingCategory}
-            onFormSubmit={handleSubmit}
-            onClose={() => setIsDialogOpen(false)}
-            isSubmitting={
-              addCategoryMutation.isPending || updateCategoryMutation.isPending
-            }
-          />
-        </DialogContent>
-      </Dialog>
+      <FormDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        title={editingCategory ? "Chỉnh sửa danh mục" : "Tạo danh mục mới"}
+        form={form}
+        onFormSubmit={handleSubmit}
+        isSubmitting={
+          addCategoryMutation.isPending || updateCategoryMutation.isPending
+        }
+        submitText={editingCategory ? "Lưu" : "Tạo mới"}
+      >
+        <CategoryFormFields />
+      </FormDialog>
     </div>
   );
 }

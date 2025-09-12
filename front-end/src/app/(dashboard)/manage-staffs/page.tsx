@@ -1,69 +1,74 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import { FullStaffProfile } from "@/features/staff/types";
-import { columns } from "./columns";
-import { DataTable } from "@/components/ui/data-table";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import StaffForm from "@/features/staff/components/StaffForm";
+import { StaffFormValues, staffFormSchema } from "@/features/staff/schemas";
 import {
   addStaff,
   updateStaff,
   updateStaffStatus,
 } from "@/features/staff/api/staff.api";
-import { toast } from "sonner";
 import { useStaffs } from "@/features/staff/hooks/useStaffs";
 import { useServices } from "@/features/service/hooks/useServices";
-import { FullPageLoader } from "@/components/ui/spinner";
-import { PageHeader } from "@/components/common/PageHeader";
+
+import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
-
-type StaffFormValues = {
-  name: string;
-  email: string;
-  phone: string;
-  role: "technician" | "receptionist" | "manager";
-  status: "active" | "inactive";
-  serviceIds?: string[];
-  avatar?: File | undefined;
-};
-
+import { toast } from "sonner";
+import { columns } from "./columns";
+import { PageHeader } from "@/components/common/PageHeader";
+import { FormDialog } from "@/components/common/FormDialog";
+import { FullPageLoader } from "@/components/ui/spinner";
+import StaffFormFields from "@/features/staff/components/StaffForm";
 export default function StaffManagementPage() {
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingStaff, setEditingStaff] = useState<FullStaffProfile | null>(
     null
   );
-
   const queryClient = useQueryClient();
 
   const { data: staff = [], isLoading, error } = useStaffs();
-
-  // Thêm query để lấy danh sách dịch vụ
   const { data: services = [], isLoading: isLoadingServices } = useServices();
 
-  // Mutation để thêm nhân viên
-  const addStaffMutation = useMutation({
-    mutationFn: addStaff,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["staff"] });
-      setIsAddDialogOpen(false);
-      toast.success("Thêm nhân viên thành công!");
-    },
-    onError: (err) => {
-      toast.error(`Thêm nhân viên thất bại: ${err.message}`);
-    },
+  const form = useForm<StaffFormValues>({
+    resolver: zodResolver(staffFormSchema),
   });
 
-  // Thêm mutation để chỉnh sửa thông tin
+  useEffect(() => {
+    if (isDialogOpen) {
+      if (editingStaff) {
+        form.reset(editingStaff);
+      } else {
+        form.reset({
+          name: "",
+          email: "",
+          phone: "",
+          role: "technician",
+          status: "active",
+          serviceIds: [],
+          avatar: undefined,
+        });
+      }
+    }
+  }, [isDialogOpen, editingStaff, form]);
+
+  const handleMutationSuccess = (message: string) => {
+    queryClient.invalidateQueries({ queryKey: ["staff"] });
+    setIsDialogOpen(false);
+    setEditingStaff(null);
+    toast.success(message);
+  };
+
+  const addStaffMutation = useMutation({
+    mutationFn: addStaff,
+    onSuccess: () => handleMutationSuccess("Thêm nhân viên thành công!"),
+    onError: (err) => toast.error(`Thêm thất bại: ${err.message}`),
+  });
+
   const updateStaffMutation = useMutation({
     mutationFn: ({
       staffId,
@@ -72,17 +77,10 @@ export default function StaffManagementPage() {
       staffId: string;
       data: StaffFormValues;
     }) => updateStaff(staffId, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["staff"] });
-      setIsEditDialogOpen(false);
-      toast.success("Cập nhật thông tin thành công!");
-    },
-    onError: (error) => {
-      toast.error(`Cập nhật thông tin thất bại: ${error.message}`);
-    },
+    onSuccess: () => handleMutationSuccess("Cập nhật thông tin thành công!"),
+    onError: (err) => toast.error(`Cập nhật thất bại: ${err.message}`),
   });
 
-  // Thêm mutation để cập nhật trạng thái
   const updateStatusMutation = useMutation({
     mutationFn: ({
       staffId,
@@ -95,24 +93,19 @@ export default function StaffManagementPage() {
       queryClient.invalidateQueries({ queryKey: ["staff"] });
       toast.success("Cập nhật trạng thái thành công!");
     },
-    onError: (error) => {
-      toast.error(`Cập nhật trạng thái thất bại: ${error.message}`);
-    },
+    onError: (err) => toast.error(`Cập nhật thất bại: ${err.message}`),
   });
 
-  const handleAddStaff = (data: StaffFormValues) => {
-    addStaffMutation.mutate(data);
-  };
-
-  // 6. Thêm các hàm xử lý mới
-  const handleEditStaff = (staffMember: FullStaffProfile) => {
+  const handleOpenDialog = (staffMember: FullStaffProfile | null = null) => {
     setEditingStaff(staffMember);
-    setIsEditDialogOpen(true);
+    setIsDialogOpen(true);
   };
 
-  const handleUpdateStaff = (data: StaffFormValues) => {
+  const handleFormSubmit = (data: StaffFormValues) => {
     if (editingStaff) {
       updateStaffMutation.mutate({ staffId: editingStaff.id, data });
+    } else {
+      addStaffMutation.mutate(data);
     }
   };
 
@@ -126,7 +119,6 @@ export default function StaffManagementPage() {
   if (isLoading || isLoadingServices) {
     return <FullPageLoader text="Đang tải danh sách nhân viên..." />;
   }
-
   if (error) {
     return <div>Đã xảy ra lỗi: {error.message}</div>;
   }
@@ -136,53 +128,37 @@ export default function StaffManagementPage() {
       <PageHeader
         title="Quản lý Nhân viên"
         actionNode={
-          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-            <DialogTrigger asChild>
-              <Button>
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Thêm nhân viên mới
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Tạo hồ sơ nhân viên mới</DialogTitle>
-              </DialogHeader>
-              <StaffForm
-                services={services}
-                onFormSubmit={handleAddStaff}
-                onClose={() => setIsAddDialogOpen(false)}
-              />
-            </DialogContent>
-          </Dialog>
+          <Button onClick={() => handleOpenDialog()}>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Thêm nhân viên mới
+          </Button>
         }
       />
       <DataTable
         columns={columns({
-          onEdit: handleEditStaff,
+          onEdit: handleOpenDialog,
           onUpdateStatus: handleUpdateStatus,
         })}
         data={staff}
       />
 
-      {/* 7. Thêm Dialog cho việc chỉnh sửa */}
-      {editingStaff && (
-        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                Chỉnh sửa thông tin: {editingStaff.name}
-              </DialogTitle>
-            </DialogHeader>
-            <StaffForm
-              initialData={editingStaff}
-              services={services}
-              onFormSubmit={handleUpdateStaff}
-              onClose={() => setIsEditDialogOpen(false)}
-              isSubmitting={updateStaffMutation.isPending}
-            />
-          </DialogContent>
-        </Dialog>
-      )}
+      <FormDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        title={
+          editingStaff
+            ? `Chỉnh sửa: ${editingStaff.name}`
+            : "Tạo hồ sơ nhân viên"
+        }
+        form={form}
+        onFormSubmit={handleFormSubmit}
+        isSubmitting={
+          addStaffMutation.isPending || updateStaffMutation.isPending
+        }
+        submitText={editingStaff ? "Lưu thay đổi" : "Tạo mới"}
+      >
+        <StaffFormFields services={services} />
+      </FormDialog>
     </div>
   );
 }
