@@ -1,44 +1,22 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { getResources } from "@/features/resource/api/resource.api";
-import { getAppointments } from "@/features/appointment/api/appointment.api";
-import { getCustomers } from "@/features/customer/api/customer.api";
-import { FullCustomerProfile } from "@/features/customer/types";
-import { getStaff } from "@/features/staff/api/staff.api";
 import ResourceCalendar from "@/features/resource/components/ResourceCalendar";
-import { Appointment } from "@/features/appointment/types";
-import { Resource } from "@/features/resource/types";
-import { Staff } from "@/features/staff/types";
 import { PageHeader } from "@/components/common/PageHeader";
+import { useCustomers } from "@/features/customer/hooks/useCustomers";
+import { useStaffs } from "@/features/staff/hooks/useStaffs";
+import { useAppointments } from "@/features/appointment/hooks/useAppointments";
+import { useResources } from "@/features/resource/hooks/useResources";
 
 export default function ResourceSchedulePage() {
   // Fetch tất cả dữ liệu cần thiết
-  const { data: resources = [], isLoading: loadingResources } = useQuery<
-    Resource[]
-  >({
-    queryKey: ["resources"],
-    queryFn: getResources,
-  });
+  const { data: resources = [], isLoading: loadingResources } = useResources();
 
-  const { data: appointments = [], isLoading: loadingAppointments } = useQuery<
-    Appointment[]
-  >({
-    queryKey: ["appointments"],
-    queryFn: getAppointments,
-  });
+  const { data: appointments = [], isLoading: loadingAppointments } =
+    useAppointments();
 
-  const { data: customers = [], isLoading: loadingCustomers } = useQuery<
-    FullCustomerProfile[]
-  >({
-    queryKey: ["customers"],
-    queryFn: getCustomers,
-  });
+  const { data: customers = [], isLoading: loadingCustomers } = useCustomers();
 
-  const { data: staff = [], isLoading: loadingStaff } = useQuery<Staff[]>({
-    queryKey: ["staff"],
-    queryFn: getStaff,
-  });
+  const { data: staff = [], isLoading: loadingStaff } = useStaffs();
 
   const isLoading =
     loadingResources || loadingAppointments || loadingCustomers || loadingStaff;

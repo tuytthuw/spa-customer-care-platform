@@ -1,10 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
 import {
-  Form,
   FormControl,
   FormField,
   FormItem,
@@ -13,144 +9,78 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useEffect } from "react";
-import {} from "@/features/customer/types";
-
-import {
-  customerFormSchema,
-  CustomerFormValues,
-} from "@/features/customer/schemas";
-import { FullCustomerProfile } from "@/features/customer/types";
 import { ImageUploader } from "@/components/ui/ImageUploader";
 
-interface CustomerFormProps {
-  initialData?: FullCustomerProfile;
-  onFormSubmit: (data: CustomerFormValues) => void;
-  onClose: () => void;
-  isSubmitting?: boolean;
-}
-
-export default function CustomerForm({
-  initialData,
-  onFormSubmit,
-  onClose,
-  isSubmitting,
-}: CustomerFormProps) {
-  const isEditMode = !!initialData;
-
-  const form = useForm<CustomerFormValues>({
-    resolver: zodResolver(customerFormSchema),
-    defaultValues: initialData || {
-      name: "",
-      email: "",
-      phone: "",
-      notes: "",
-      avatar: undefined,
-    },
-  });
-
-  useEffect(() => {
-    if (isEditMode && initialData) {
-      form.reset(initialData);
-    }
-  }, [initialData, isEditMode, form]);
-
+/**
+ * Component này chỉ chứa các trường nhập liệu cho form khách hàng.
+ * Nó sẽ được đặt bên trong component `FormDialog` để hiển thị.
+ */
+export default function CustomerFormFields() {
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onFormSubmit)}>
-        <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto -m-6">
-          {/* Các trường input giữ nguyên */}
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Họ và tên</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Số điện thoại</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="notes"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Ghi chú</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Nhập các thông tin cần lưu ý..."
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* 4. Thêm phần upload ảnh đã hoàn thiện */}
-          <FormField
-            control={form.control}
-            name="avatar"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Ảnh đại diện (Tùy chọn)</FormLabel>
-                <FormControl>
-                  <ImageUploader
-                    onFileSelect={(file) => field.onChange(file)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="flex justify-end gap-2 p-4 border-t border-border">
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={onClose}
-            disabled={isSubmitting}
-          >
-            Hủy
-          </Button>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting
-              ? "Đang lưu..."
-              : isEditMode
-              ? "Lưu thay đổi"
-              : "Lưu khách hàng"}{" "}
-          </Button>
-        </div>
-      </form>
-    </Form>
+    <>
+      <FormField
+        name="name"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Họ và tên</FormLabel>
+            <FormControl>
+              <Input {...field} placeholder="Nguyễn Văn A" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        name="email"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Email</FormLabel>
+            <FormControl>
+              <Input {...field} placeholder="email@example.com" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        name="phone"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Số điện thoại</FormLabel>
+            <FormControl>
+              <Input {...field} placeholder="09xxxxxxxx" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        name="notes"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Ghi chú</FormLabel>
+            <FormControl>
+              <Textarea
+                placeholder="Nhập các thông tin cần lưu ý về khách hàng..."
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        name="avatar"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Ảnh đại diện (Tùy chọn)</FormLabel>
+            <FormControl>
+              <ImageUploader onFileSelect={(file) => field.onChange(file)} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </>
   );
 }
