@@ -35,7 +35,7 @@ import { Separator } from "@/components/ui/separator";
 import { ImageUploader } from "@/components/ui/ImageUploader";
 import { useServices } from "@/features/service/hooks/useServices";
 import { useCategories } from "@/features/category/hooks/useCategories";
-import CategoryForm from "@/features/category/components/CategoryForm";
+import AddCategoryForm from "@/features/category/components/AddCategoryForm";
 
 export default function TreatmentPlanFormFields() {
   const queryClient = useQueryClient();
@@ -199,7 +199,7 @@ export default function TreatmentPlanFormFields() {
                     <DialogHeader>
                       <DialogTitle>Tạo danh mục liệu trình mới</DialogTitle>
                     </DialogHeader>
-                    <CategoryForm
+                    <AddCategoryForm
                       categoryType="treatment"
                       onFormSubmit={(data) => addCategoryMutation.mutate(data)}
                       onClose={() => setIsAddCategoryOpen(false)}

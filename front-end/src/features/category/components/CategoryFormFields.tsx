@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useFormContext } from "react-hook-form";
 
 interface CategoryFormFieldsProps {
   // Prop để ẩn trường 'type' khi thêm nhanh từ form khác
@@ -25,9 +26,12 @@ interface CategoryFormFieldsProps {
 export default function CategoryFormFields({
   hideTypeField = false,
 }: CategoryFormFieldsProps) {
+  const { control } = useFormContext();
+
   return (
     <>
       <FormField
+        control={control}
         name="name"
         render={({ field }) => (
           <FormItem>
@@ -42,6 +46,7 @@ export default function CategoryFormFields({
 
       {!hideTypeField && (
         <FormField
+          control={control}
           name="type"
           render={({ field }) => (
             <FormItem>

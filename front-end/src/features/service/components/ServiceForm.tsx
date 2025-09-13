@@ -22,7 +22,6 @@ import { ChevronsUpDown, Plus } from "lucide-react";
 import { ServiceFormValues } from "@/features/service/schemas";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addCategory } from "@/features/category/api/category.api";
-import CategoryForm from "@/features/category/components/CategoryForm";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Popover,
@@ -35,6 +34,7 @@ import { Separator } from "@radix-ui/react-dropdown-menu";
 import { ImageUploader } from "@/components/ui/ImageUploader";
 import { useCategories } from "@/features/category/hooks/useCategories";
 import { useEffect, useState } from "react";
+import AddCategoryForm from "@/features/category/components/AddCategoryForm";
 
 export default function ServiceFormFields() {
   const queryClient = useQueryClient();
@@ -193,7 +193,7 @@ export default function ServiceFormFields() {
                     <DialogHeader>
                       <DialogTitle>Tạo danh mục dịch vụ mới</DialogTitle>
                     </DialogHeader>
-                    <CategoryForm
+                    <AddCategoryForm
                       categoryType="service"
                       onFormSubmit={(data) => addCategoryMutation.mutate(data)}
                       onClose={() => setIsAddCategoryOpen(false)}
