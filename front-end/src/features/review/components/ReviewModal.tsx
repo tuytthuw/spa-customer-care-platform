@@ -1,27 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import StarRating from "@/features/review/components/StarRating";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FormDialog } from "@/components/common/FormDialog";
+import ReviewFormFields from "./ReviewFormFields";
+import { ReviewFormValues, reviewFormSchema } from "@/features/review/schemas";
+import { useEffect } from "react";
 
-// **THAY ĐỔI: Cập nhật props để rõ ràng và hiệu quả hơn**
 interface ReviewModalProps {
   isOpen: boolean;
   onClose: () => void;
-  // Hàm để xử lý khi người dùng gửi đánh giá
-  onSubmit: (rating: number, comment: string) => void;
-  // Chỉ cần truyền tên của dịch vụ/liệu trình
+  onSubmit: (data: ReviewFormValues) => void;
   itemName: string;
   isSubmitting?: boolean;
 }
@@ -33,69 +22,33 @@ export const ReviewModal = ({
   itemName,
   isSubmitting = false,
 }: ReviewModalProps) => {
-  const [rating, setRating] = useState(5);
-  const [comment, setComment] = useState("");
+  const form = useForm<ReviewFormValues>({
+    resolver: zodResolver(reviewFormSchema),
+    defaultValues: {
+      rating: 5,
+      comment: "",
+    },
+  });
 
-  // Reset state khi modal được mở lại
+  // Reset form khi modal mở ra
   useEffect(() => {
     if (isOpen) {
-      setRating(5);
-      setComment("");
+      form.reset({ rating: 5, comment: "" });
     }
-  }, [isOpen]);
-
-  const handleSubmit = () => {
-    if (comment.trim() && rating > 0) {
-      onSubmit(rating, comment);
-    }
-  };
+  }, [isOpen, form]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Đánh giá: {itemName}</DialogTitle>
-          <DialogDescription>
-            Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng chia sẻ trải nghiệm của bạn.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="space-y-4 py-4">
-          <div>
-            <Label className="mb-2 block">Xếp hạng của bạn</Label>
-            {/* Giả sử StarRating nhận onRatingChange */}
-            <StarRating rating={rating} onRatingChange={setRating} />
-          </div>
-          <div>
-            <Label htmlFor="comment" className="mb-2 block">
-              Nhận xét của bạn
-            </Label>
-            <Textarea
-              id="comment"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Dịch vụ tuyệt vời, nhân viên chuyên nghiệp..."
-              rows={4}
-            />
-          </div>
-          <div>
-            <Label htmlFor="images">Thêm hình ảnh (tùy chọn)</Label>
-            <Input
-              id="images"
-              type="file"
-              multiple
-              // Logic xử lý upload sẽ được thêm sau
-            />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button type="button" variant="outline" onClick={onClose}>
-            Hủy
-          </Button>
-          <Button onClick={handleSubmit} disabled={isSubmitting}>
-            {isSubmitting ? "Đang gửi..." : "Gửi đánh giá"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <FormDialog
+      isOpen={isOpen}
+      onClose={onClose}
+      title={`Đánh giá: ${itemName}`}
+      description="Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng chia sẻ trải nghiệm của bạn."
+      form={form}
+      onFormSubmit={onSubmit}
+      isSubmitting={isSubmitting}
+      submitText="Gửi đánh giá"
+    >
+      <ReviewFormFields />
+    </FormDialog>
   );
 };

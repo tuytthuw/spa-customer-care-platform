@@ -1,5 +1,4 @@
-import { TreatmentPackage } from "@/features/treatment/types";
-import { Service } from "@/features/service/types";
+import { TreatmentPackage, TreatmentPlan } from "@/features/treatment/types";
 import {
   Card,
   CardContent,
@@ -12,34 +11,31 @@ import Image from "next/image";
 
 interface TreatmentReviewCardProps {
   treatmentPackage: TreatmentPackage;
-  services: Service[];
+  treatmentPlan?: TreatmentPlan;
   onWriteReview: () => void;
 }
 
 const TreatmentReviewCard = ({
   treatmentPackage,
-  services,
+  treatmentPlan,
   onWriteReview,
 }: TreatmentReviewCardProps) => {
-  const service = services.find((s) => s.id === treatmentPackage.serviceId);
-
-  if (!service) {
+  if (!treatmentPlan) {
     return null;
   }
-
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{service.name}</CardTitle>
+        <CardTitle>{treatmentPlan.name}</CardTitle>
         <CardDescription>
-          Liệu trình {treatmentPackage.totalSessions} buổi
+          Liệu trình {treatmentPlan.totalSessions} buổi
         </CardDescription>
       </CardHeader>
       <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
         <div className="col-span-1">
           <Image
-            src={service.imageUrl}
-            alt={service.name}
+            src={treatmentPlan.imageUrl}
+            alt={treatmentPlan.name}
             width={200}
             height={200}
             className="rounded-lg object-cover"
