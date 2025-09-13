@@ -3,8 +3,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addCategory } from "@/features/category/api/category.api";
-import CategoryForm from "@/features/category/components/CategoryForm";
-
+import AddCategoryForm from "@/features/category/components/AddCategoryForm";
 import { toast } from "sonner";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { useFormContext } from "react-hook-form";
@@ -195,7 +194,7 @@ export default function ProductFormFields() {
                     <DialogHeader>
                       <DialogTitle>Tạo danh mục sản phẩm mới</DialogTitle>
                     </DialogHeader>
-                    <CategoryForm
+                    <AddCategoryForm
                       categoryType="product"
                       onFormSubmit={(data) => addCategoryMutation.mutate(data)}
                       onClose={() => setIsAddCategoryOpen(false)}

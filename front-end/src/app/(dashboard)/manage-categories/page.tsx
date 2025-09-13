@@ -25,7 +25,7 @@ import { columns } from "./columns";
 import { PageHeader } from "@/components/common/PageHeader";
 import { FormDialog } from "@/components/common/FormDialog";
 import { FullPageLoader } from "@/components/ui/spinner";
-import CategoryFormFields from "@/features/category/components/CategoryForm";
+import CategoryFormFields from "@/features/category/components/CategoryFormFields";
 
 export default function ManageCategoriesPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
