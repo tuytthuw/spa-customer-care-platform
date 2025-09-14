@@ -1,7 +1,7 @@
 export interface TreatmentSession {
   id: string;
   treatmentPlanStep: number;
-  serviceId: string[];
+  serviceIds: string[];
   date: string;
   technicianId: string;
   notes: string;
@@ -14,7 +14,8 @@ export interface TreatmentPackage {
   treatmentPlanId: string;
   purchaseDate: string;
   sessions: TreatmentSession[];
-  serviceId?: string;
+  totalSessions: number;
+  completedSessions: number;
 }
 
 export interface TreatmentPlan {

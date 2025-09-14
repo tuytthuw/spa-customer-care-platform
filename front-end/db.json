@@ -45,6 +45,7 @@
       "permissions": {
         "dashboard": ["read"],
         "appointments": ["read", "write"],
+        "appointments_management": ["read", "write"],
         "customers": ["read", "write"],
         "staff": ["read", "write"],
         "services": ["read", "write"],
@@ -53,6 +54,8 @@
         "resources": ["read", "write"],
         "schedules": ["read", "write"],
         "reports": ["read"],
+        "billing": ["read", "write"],
+
         "users": ["read", "write"],
         "roles": ["read", "write"]
       }
@@ -65,12 +68,14 @@
       "permissions": {
         "dashboard": ["read"],
         "appointments": ["read", "write"],
+        "appointments_management": ["read", "write"],
         "customers": ["read", "write"],
         "staff": ["read"],
         "services": ["read"],
         "products": ["read"],
         "categories": ["read"],
         "resources": ["read"],
+        "billing": ["read", "write"],
         "schedules": [],
         "reports": [],
         "users": [],
@@ -103,9 +108,9 @@
       "description": "Quyền cơ bản cho khách hàng sử dụng portal.",
       "status": "active",
       "permissions": {
-        "dashboard": ["read"],
         "appointments": ["read", "write"],
         "treatments": ["read"],
+        "billing": ["read"],
         "reviews": ["read", "write"],
         "profile": ["read", "write"]
       }
@@ -120,7 +125,16 @@
       "avatar": "/images/avatars/avatar-1.jpg",
       "notes": "Khách hàng VIP, da nhạy cảm.",
       "totalAppointments": 5,
-      "lastVisit": "2025-08-15T14:00:00.000Z"
+      "lastVisit": "2025-08-15T14:00:00.000Z",
+      "preferences": {
+        "allergies": "Dị ứng với tinh dầu bạc hà.",
+        "serviceNotes": "Thích massage lực mạnh, không thích nói chuyện nhiều trong lúc làm dịch vụ.",
+        "favoriteTechnicianIds": ["tech-1"]
+      },
+      "notificationSettings": {
+        "allowPromotions": true,
+        "allowReminders": true
+      }
     },
     {
       "id": "cus-2",
@@ -221,6 +235,13 @@
       "serviceId": "1",
       "date": "2025-09-03T08:30:00.000Z",
       "status": "upcoming"
+    },
+    {
+      "id": "appt-b8007b52-a37a-49af-9f9f-ac62f21631cf",
+      "customerId": "guest-user",
+      "serviceId": "1",
+      "date": "2025-09-20T02:00:00.000Z",
+      "status": "upcoming"
     }
   ],
   "resources": [
@@ -272,11 +293,18 @@
           "quantity": 1,
           "price": 750000,
           "type": "product"
+        },
+        {
+          "id": "prod-2",
+          "name": "Kem chống nắng SPF 50+",
+          "quantity": 1,
+          "price": 550000,
+          "type": "product"
         }
       ],
-      "subtotal": 1250000,
+      "subtotal": 1800000,
       "discount": 0,
-      "total": 1250000,
+      "total": 1800000,
       "paymentMethod": "card",
       "status": "paid",
       "createdAt": "2025-08-25T10:00:00.000Z"
@@ -456,6 +484,54 @@
           "timestamp": "2025-08-26T15:00:00.000Z"
         }
       ]
+    },
+    {
+      "id": "conv-c37ecfac-d908-41de-8dd6-a1c6fa4ce950",
+      "customerId": "guest-user",
+      "lastMessage": "thư",
+      "lastMessageTimestamp": "2025-09-14T08:14:11.617Z",
+      "isRead": true,
+      "messages": [
+        {
+          "id": "msg-4fd4d938-3edd-4b32-b4cf-78941a72bbcd",
+          "sender": "bot",
+          "text": "Xin chào! Tôi có thể giúp gì cho bạn?",
+          "timestamp": "2025-09-14T08:12:51.087Z"
+        },
+        {
+          "id": "msg-449eb751-c786-43f0-9a99-39d92818e0c6",
+          "sender": "customer",
+          "text": "thư",
+          "timestamp": "2025-09-14T08:12:51.087Z"
+        },
+        {
+          "id": "msg-96837356-6c2c-4bc6-be91-ffb5da08221a",
+          "sender": "staff",
+          "text": "thư",
+          "timestamp": "2025-09-14T08:14:11.617Z"
+        }
+      ]
+    },
+    {
+      "id": "conv-c6406268-6172-4f13-ab8b-a183cf845fcf",
+      "customerId": "user-rec-1",
+      "lastMessage": "thư",
+      "lastMessageTimestamp": "2025-09-14T08:14:41.545Z",
+      "isRead": false,
+      "messages": [
+        {
+          "id": "msg-d68de6e3-79cc-4b97-9ba6-e78782d03db1",
+          "sender": "bot",
+          "text": "Xin chào! Tôi có thể giúp gì cho bạn?",
+          "timestamp": "2025-09-14T08:14:41.545Z"
+        },
+        {
+          "id": "msg-fead4f41-4e30-4823-95fb-8e9a85f73b7a",
+          "sender": "customer",
+          "text": "thư",
+          "timestamp": "2025-09-14T08:14:41.545Z"
+        }
+      ]
     }
   ],
   "reviews": [
@@ -478,6 +554,30 @@
       "rating": 4,
       "comment": "Không gian spa thư giãn, nhân viên thân thiện. Sẽ tốt hơn nếu có thêm nhạc nhẹ.",
       "createdAt": "2025-08-22T18:00:00.000Z"
+    },
+    {
+      "id": "rev-b7dc5078-e8b8-4e72-8cac-7ffdd07740ea",
+      "appointmentId": "appt-1",
+      "customerId": "cus-1",
+      "technicianId": "tech-1",
+      "serviceId": "1",
+      "rating": 5,
+      "comment": "ẻthyjghfgj",
+      "imageUrl": "",
+      "imageUrls": [],
+      "createdAt": "2025-09-14T09:02:30.580Z"
+    },
+    {
+      "id": "rev-846eb845-ef31-4463-99e2-028a2f0cd2b3",
+      "appointmentId": "pkg-ct-1",
+      "customerId": "cus-1",
+      "technicianId": "N/A",
+      "serviceId": "plan-1",
+      "rating": 5,
+      "comment": "tryukgjhgfx",
+      "imageUrl": "",
+      "imageUrls": [],
+      "createdAt": "2025-09-14T10:22:34.577Z"
     }
   ],
   "products": [
@@ -543,7 +643,7 @@
       "price": 2500000,
       "imageUrl": "/images/service-1.jpg",
       "status": "active",
-      "totalSessions": 6,
+      "totalSessions": 5,
       "steps": [
         {
           "serviceIds": ["1", "2"],
@@ -564,10 +664,6 @@
         {
           "serviceIds": ["1", "2"],
           "step": 5
-        },
-        {
-          "serviceIds": ["1", "2"],
-          "step": 6
         }
       ]
     },
@@ -610,6 +706,8 @@
       "customerId": "cus-1",
       "treatmentPlanId": "plan-1",
       "purchaseDate": "2025-07-15T10:00:00.000Z",
+      "totalSessions": 5,
+      "completedSessions": 5,
       "sessions": [
         {
           "id": "cts-1",
@@ -634,26 +732,26 @@
           "treatmentPlanStep": 3,
           "serviceIds": ["2"],
           "date": "2025-09-03T02:30:00.000Z",
-          "technicianId": "",
-          "status": "upcoming",
+          "technicianId": "tech-1",
+          "status": "completed",
           "notes": ""
         },
         {
           "id": "cts-4",
           "treatmentPlanStep": 4,
           "serviceIds": ["1"],
-          "date": "",
-          "technicianId": "",
-          "status": "upcoming",
+          "date": "2025-09-10T14:00:00.000Z",
+          "technicianId": "tech-1",
+          "status": "completed",
           "notes": ""
         },
         {
           "id": "cts-5",
           "treatmentPlanStep": 5,
           "serviceIds": ["1", "2"],
-          "date": "",
-          "technicianId": "",
-          "status": "upcoming",
+          "date": "2025-09-17T14:00:00.000Z",
+          "technicianId": "tech-1",
+          "status": "completed",
           "notes": ""
         }
       ]

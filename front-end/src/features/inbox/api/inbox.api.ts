@@ -9,14 +9,24 @@ export const getConversations = async (): Promise<Conversation[]> => {
     if (!response.ok) {
       throw new Error("Failed to fetch conversations.");
     }
-    return await response.json();
+    // Sắp xếp để tin nhắn chưa đọc lên đầu
+    const conversations: Conversation[] = await response.json();
+    return conversations.sort((a, b) => {
+      if (a.isRead !== b.isRead) {
+        return a.isRead ? 1 : -1;
+      }
+      return (
+        new Date(b.lastMessageTimestamp).getTime() -
+        new Date(a.lastMessageTimestamp).getTime()
+      );
+    });
   } catch (error) {
     console.error("Error fetching conversations:", error);
     return [];
   }
 };
 
-// Hàm gửi tin nhắn mới
+// Hàm gửi tin nhắn mới (cho nhân viên)
 export const sendMessage = async ({
   conversationId,
   text,
@@ -62,4 +72,64 @@ export const sendMessage = async ({
   }
 
   return await response.json();
+};
+
+// ✅ MỚI: Hàm xử lý tin nhắn từ khách hàng
+export const handleCustomerSendMessage = async (
+  text: string,
+  customerId: string = "guest-user"
+): Promise<void> => {
+  // Vì là demo, chúng ta sẽ giả sử guest-user chỉ có 1 cuộc hội thoại
+  // Trong thực tế, bạn sẽ dùng userId hoặc một định danh duy nhất trong localStorage
+  const convRes = await fetch(
+    `${CONVERSATIONS_API_URL}?customerId=${customerId}`
+  );
+  const existingConvs: Conversation[] = await convRes.json();
+
+  const newMessage: Message = {
+    id: `msg-${uuidv4()}`,
+    sender: "customer",
+    text,
+    timestamp: new Date().toISOString(),
+  };
+
+  if (existingConvs.length > 0) {
+    // Cập nhật cuộc hội thoại đã có
+    const conversation = existingConvs[0];
+    const updatedConversation = {
+      ...conversation,
+      messages: [...conversation.messages, newMessage],
+      lastMessage: text,
+      lastMessageTimestamp: newMessage.timestamp,
+      isRead: false, // Tin nhắn mới từ khách, nhân viên chưa đọc
+    };
+    await fetch(`${CONVERSATIONS_API_URL}/${conversation.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedConversation),
+    });
+  } else {
+    // Tạo cuộc hội thoại mới
+    const newConversation: Conversation = {
+      id: `conv-${uuidv4()}`,
+      customerId,
+      lastMessage: text,
+      lastMessageTimestamp: newMessage.timestamp,
+      isRead: false,
+      messages: [
+        {
+          id: `msg-${uuidv4()}`,
+          sender: "bot",
+          text: "Xin chào! Tôi có thể giúp gì cho bạn?",
+          timestamp: new Date().toISOString(),
+        },
+        newMessage,
+      ],
+    };
+    await fetch(CONVERSATIONS_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newConversation),
+    });
+  }
 };

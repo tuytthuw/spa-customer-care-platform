@@ -13,7 +13,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export const columns: ColumnDef<Resource>[] = [
+// ✅ Mới: Thêm props cho hàm columns
+interface GetColumnsProps {
+  onEdit: (resource: Resource) => void;
+}
+
+export const columns = ({ onEdit }: GetColumnsProps): ColumnDef<Resource>[] => [
   {
     accessorKey: "name",
     header: "Tên tài nguyên",
@@ -53,6 +58,7 @@ export const columns: ColumnDef<Resource>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
+      const resource = row.original; // Lấy thông tin của dòng hiện tại
       return (
         <div className="text-right">
           <DropdownMenu>
@@ -64,8 +70,11 @@ export const columns: ColumnDef<Resource>[] = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-              <DropdownMenuItem>Sửa thông tin</DropdownMenuItem>
-              <DropdownMenuItem>Xem lịch sử dụng</DropdownMenuItem>
+              {/* ✅ THAY ĐỔI: Thêm onClick handler */}
+              <DropdownMenuItem onClick={() => onEdit(resource)}>
+                Sửa thông tin
+              </DropdownMenuItem>
+              <DropdownMenuItem>Xem lịch sử sử dụng</DropdownMenuItem>
               <DropdownMenuItem className="text-destructive">
                 Báo bảo trì
               </DropdownMenuItem>

@@ -46,10 +46,16 @@ export default function SessionHistory({
               (s) => s.id === session.technicianId
             );
             // Lấy danh sách tên dịch vụ
-            const sessionServices = session.serviceId
+            const sessionServices = (session.serviceIds || [])
               .map((id) => serviceList.find((s) => s.id === id)?.name)
               .filter(Boolean) // Lọc bỏ các giá trị undefined
               .join(", ");
+
+            const firstServiceId =
+              session.serviceIds && session.serviceIds.length > 0
+                ? session.serviceIds[0]
+                : "";
+
             return (
               <TableRow key={session.id}>
                 <TableCell>Buổi {session.treatmentPlanStep}</TableCell>
@@ -72,15 +78,17 @@ export default function SessionHistory({
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right">
-                  {session.status === "upcoming" && !session.date && (
-                    <Button asChild size="sm">
-                      <Link
-                        href={`/booking?treatmentPackageId=${treatmentPackageId}&sessionId=${session.id}&serviceId=${session.serviceId}`}
-                      >
-                        Đặt lịch
-                      </Link>
-                    </Button>
-                  )}
+                  {session.status === "upcoming" &&
+                    !session.date &&
+                    firstServiceId && (
+                      <Button asChild size="sm">
+                        <Link
+                          href={`/booking?treatmentPackageId=${treatmentPackageId}&sessionId=${session.id}&serviceId=${firstServiceId}`}
+                        >
+                          Đặt lịch
+                        </Link>
+                      </Button>
+                    )}
                 </TableCell>
               </TableRow>
             );

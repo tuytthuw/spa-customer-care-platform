@@ -8,6 +8,7 @@ import { toast } from "sonner";
 // Import các types cần thiết
 import { Appointment } from "@/features/appointment/types";
 import { TreatmentPackage } from "@/features/treatment/types";
+import { Product } from "@/features/product/types";
 import { NewReviewData } from "@/features/review/types";
 import { ReviewFormValues } from "@/features/review/schemas";
 
@@ -22,18 +23,26 @@ import { useStaffs } from "@/features/staff/hooks/useStaffs";
 import { useReviews } from "@/features/review/hooks/useReviews";
 import { useTreatments } from "@/features/treatment/hooks/useTreatments";
 import { useTreatmentPlans } from "@/features/treatment/hooks/useTreatmentPlans";
+import { useProducts } from "@/features/product/hooks/useProducts";
+import { useInvoices } from "@/features/billing/hooks/useInvoices";
 
 // Import các components UI
-import ReviewCard from "@/features/review/components/ServiceReviewCard";
+import SerViceReviewCard from "@/features/review/components/ServiceReviewCard";
 import TreatmentReviewCard from "@/features/review/components/TreatmentReviewCard";
+import ProductReviewCard from "@/features/review/components/ProductReviewCard";
 import { ReviewModal } from "@/features/review/components/ReviewModal";
 import { PageHeader } from "@/components/common/PageHeader";
 import { FullPageLoader } from "@/components/ui/spinner";
+import { Service } from "@/features/service/types";
+import { TreatmentPlan } from "@/features/treatment/types";
 
 const ReviewsPage = () => {
   const queryClient = useQueryClient();
   const [selectedItem, setSelectedItem] = useState<
-    Appointment | TreatmentPackage | null
+    | { type: "appointment"; data: Appointment }
+    | { type: "treatment"; data: TreatmentPackage }
+    | { type: "product"; data: Product }
+    | null
   >(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuth();
@@ -49,6 +58,8 @@ const ReviewsPage = () => {
   const { data: reviews = [], isLoading: loadingReviews } = useReviews();
   const { data: treatmentPlans = [], isLoading: loadingPlans } =
     useTreatmentPlans();
+  const { data: products = [], isLoading: loadingProducts } = useProducts();
+  const { data: invoices = [], isLoading: loadingInvoices } = useInvoices();
 
   const currentUserProfile = customers.find((c) => c.userId === user?.id);
 
@@ -62,8 +73,19 @@ const ReviewsPage = () => {
     onError: (error) => toast.error(`Gửi đánh giá thất bại: ${error.message}`),
   });
 
-  const handleWriteReview = (item: Appointment | TreatmentPackage) => {
-    setSelectedItem(item);
+  const handleWriteReview = (
+    item: Appointment | TreatmentPackage | Product
+  ) => {
+    if ("date" in item) {
+      // Phân biệt bằng thuộc tính duy nhất 'date' của Appointment
+      setSelectedItem({ type: "appointment", data: item as Appointment });
+    } else if ("treatmentPlanId" in item) {
+      // Phân biệt bằng 'treatmentPlanId' của TreatmentPackage
+      setSelectedItem({ type: "treatment", data: item as TreatmentPackage });
+    } else {
+      // Còn lại là Product
+      setSelectedItem({ type: "product", data: item as Product });
+    }
     setIsModalOpen(true);
   };
 
@@ -77,50 +99,74 @@ const ReviewsPage = () => {
 
     let reviewData: NewReviewData | null = null;
 
-    if ("date" in selectedItem) {
-      // Đây là Appointment
-      if (!selectedItem.technicianId) return;
+    if (selectedItem.type === "appointment") {
+      const appointment = selectedItem.data;
+      if (!appointment.technicianId) return;
       reviewData = {
-        appointmentId: selectedItem.id,
+        appointmentId: appointment.id,
         customerId: currentUserProfile.id,
-        technicianId: selectedItem.technicianId,
-        serviceId: selectedItem.serviceId,
+        technicianId: appointment.technicianId,
+        serviceId: appointment.serviceId,
         rating: data.rating,
         comment: data.comment,
+        imageUrl: "",
+        imageUrls: [],
       };
-    } else {
-      // Đây là TreatmentPackage
+    } else if (selectedItem.type === "treatment") {
+      const pkg = selectedItem.data;
       reviewData = {
-        appointmentId: `pkg-${selectedItem.id}`,
+        appointmentId: `pkg-${pkg.id}`,
+        customerId: currentUserProfile.id,
+        technicianId: "N/A", // Đánh giá cho cả liệu trình
+        serviceId: pkg.treatmentPlanId, // Lưu ID của plan
+        rating: data.rating,
+        comment: data.comment,
+        imageUrl: "",
+        imageUrls: [],
+      };
+    } else if (selectedItem.type === "product") {
+      const product = selectedItem.data;
+      reviewData = {
+        appointmentId: `prod-${product.id}`, // Dùng ID sản phẩm để định danh
         customerId: currentUserProfile.id,
         technicianId: "N/A",
-        serviceId: selectedItem.treatmentPlanId,
+        serviceId: product.id, // Lưu ID sản phẩm vào serviceId cho tiện
         rating: data.rating,
         comment: data.comment,
       };
     }
 
     if (reviewData) {
-      createReviewMutation.mutate(reviewData);
+      const finalReviewData = {
+        ...reviewData,
+        imageUrl: "",
+        imageUrls: [],
+      };
+      createReviewMutation.mutate(finalReviewData);
     }
   };
 
   const getSelectedItemName = () => {
     if (!selectedItem) return "";
-    if ("serviceId" in selectedItem && "date" in selectedItem) {
-      // Appointment
-      return services.find((s) => s.id === selectedItem.serviceId)?.name || "";
-    } else if ("treatmentPlanId" in selectedItem) {
-      // TreatmentPackage
-      return (
-        treatmentPlans.find((p) => p.id === selectedItem.treatmentPlanId)
-          ?.name || ""
+    if (selectedItem.type === "appointment") {
+      const service = services.find(
+        (s: Service) => s.id === selectedItem.data.serviceId
       );
+      return service?.name || "Dịch vụ";
     }
+    if (selectedItem.type === "treatment") {
+      const plan = treatmentPlans.find(
+        (p: TreatmentPlan) => p.id === selectedItem.data.treatmentPlanId
+      );
+      return plan?.name || "Liệu trình";
+    }
+    if (selectedItem.type === "product") {
+      return selectedItem.data.name || "Sản phẩm";
+    }
+
     return "";
   };
 
-  // --- SỬA LỖI Ở ĐÂY: XỬ LÝ TRẠNG THÁI LOADING VÀ LỌC DỮ LIỆU ---
   const isLoading =
     loadingCustomers ||
     loadingAppts ||
@@ -128,7 +174,9 @@ const ReviewsPage = () => {
     loadingServices ||
     loadingStaff ||
     loadingReviews ||
-    loadingPlans;
+    loadingPlans ||
+    loadingProducts ||
+    loadingInvoices;
 
   if (isLoading) return <FullPageLoader text="Đang tải dữ liệu đánh giá..." />;
 
@@ -147,7 +195,8 @@ const ReviewsPage = () => {
       (s) => s.status === "completed"
     ).length;
 
-    const isTreatmentCompleted = completedCount === plan.totalSessions;
+    // Logic được giữ nguyên nhưng giờ sẽ có dữ liệu để hoạt động
+    const isTreatmentCompleted = completedCount >= plan.totalSessions;
     const hasReviewed = reviews.some(
       (r) => r.appointmentId === `pkg-${pkg.id}`
     );
@@ -155,55 +204,85 @@ const ReviewsPage = () => {
     return isTreatmentCompleted && !hasReviewed;
   });
 
+  const purchasedProducts = invoices
+    .filter(
+      (inv) =>
+        inv.customerId === currentUserProfile?.id && inv.status === "paid"
+    )
+    .flatMap((inv) => inv.items)
+    .filter((item) => item.type === "product");
+
+  const productsToReview = products.filter(
+    (product) =>
+      purchasedProducts.some((p) => p.id === product.id) &&
+      !reviews.some((r) => r.appointmentId === `prod-${product.id}`)
+  );
+
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
-      <PageHeader title="Đánh giá dịch vụ & Liệu trình" />
+      <PageHeader title="Đánh giá của bạn" />
 
+      {/* Dịch vụ lẻ */}
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Dịch vụ lẻ cần đánh giá</h2>
-        <div className="space-y-4">
-          {appointmentsToReview.length > 0 ? (
-            appointmentsToReview.map((appointment) => (
-              <ReviewCard
-                key={appointment.id}
-                appointment={appointment}
-                services={services}
-                staff={staff}
-                onWriteReview={() => handleWriteReview(appointment)}
-              />
-            ))
-          ) : (
-            <p className="text-muted-foreground">
-              Bạn không có dịch vụ lẻ nào cần đánh giá.
-            </p>
-          )}
-        </div>
+        {appointmentsToReview.length > 0 ? (
+          appointmentsToReview.map((appointment) => (
+            <SerViceReviewCard
+              key={appointment.id}
+              appointment={appointment}
+              services={services}
+              staff={staff}
+              onWriteReview={() => handleWriteReview(appointment)}
+            />
+          ))
+        ) : (
+          <p className="text-muted-foreground">
+            Bạn không có dịch vụ lẻ nào cần đánh giá.
+          </p>
+        )}
       </section>
 
-      <section>
+      {/* Liệu trình */}
+      <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Liệu trình cần đánh giá</h2>
-        <div className="space-y-4">
-          {treatmentsToReview.length > 0 ? (
-            treatmentsToReview.map((pkg) => {
-              // ✅ SỬA Ở ĐÂY: Tìm plan tương ứng
-              const plan = treatmentPlans.find(
-                (p) => p.id === pkg.treatmentPlanId
-              );
-              return (
-                <TreatmentReviewCard
-                  key={pkg.id}
-                  treatmentPackage={pkg}
-                  treatmentPlan={plan} // Truyền plan vào
-                  onWriteReview={() => handleWriteReview(pkg)}
-                />
-              );
-            })
-          ) : (
-            <p className="text-muted-foreground">
-              Bạn không có liệu trình nào cần đánh giá.
-            </p>
-          )}
-        </div>
+        {treatmentsToReview.length > 0 ? (
+          treatmentsToReview.map((pkg) => {
+            const plan = treatmentPlans.find(
+              (p) => p.id === pkg.treatmentPlanId
+            );
+            if (!plan) return null;
+            return (
+              <TreatmentReviewCard
+                key={pkg.id}
+                treatmentPackage={pkg}
+                treatmentPlan={plan}
+                onWriteReview={() => handleWriteReview(pkg)}
+              />
+            );
+          })
+        ) : (
+          <p className="text-muted-foreground">
+            Bạn không có liệu trình nào cần đánh giá.
+          </p>
+        )}
+      </section>
+
+      {/* Sản phẩm */}
+      <section>
+        <h2 className="text-2xl font-semibold mb-4">Sản phẩm cần đánh giá</h2>
+        {productsToReview.length > 0 ? (
+          productsToReview.map((product) => (
+            <ProductReviewCard
+              key={product.id}
+              product={product}
+              onWriteReview={() => handleWriteReview(product)}
+            />
+          ))
+        ) : (
+          <p className="text-muted-foreground">
+            Bạn không có sản phẩm nào cần đánh giá.
+          </p>
+        )}
       </section>
 
       {selectedItem && (

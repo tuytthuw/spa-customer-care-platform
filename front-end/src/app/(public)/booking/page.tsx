@@ -15,7 +15,7 @@ import { BookingSteps } from "@/features/booking/components/BookingSteps";
 import useBookingStore from "@/stores/booking-store";
 import { getServiceById } from "@/features/service/api/service.api";
 import { createAppointment } from "@/features/appointment/api/appointment.api";
-import { bookTreatmentSession } from "@/features/treatment/api/treatment.api"; // ✅ Import hàm mới
+import { bookTreatmentSession } from "@/features/treatment/api/treatment.api";
 import { toast } from "sonner";
 import { Service } from "@/features/service/types";
 

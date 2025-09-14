@@ -7,6 +7,15 @@ export interface Customer {
   totalAppointments: number;
   lastVisit: string; // ISO date string
   notes?: string;
+  preferences?: {
+    allergies?: string;
+    serviceNotes?: string;
+    favoriteTechnicianIds?: string[];
+  };
+  notificationSettings?: {
+    allowPromotions: boolean;
+    allowReminders: boolean;
+  };
 }
 
 export type FullCustomerProfile = Customer & {

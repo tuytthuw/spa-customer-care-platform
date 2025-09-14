@@ -8,8 +8,8 @@ export interface Review {
   rating: number;
   comment: string;
   createdAt: string;
-  imageUrl: string;
-  imageUrls: string[];
+  imageUrl?: string;
+  imageUrls?: string[];
 }
 
 export type NewReviewData = Omit<Review, "id" | "createdAt">;

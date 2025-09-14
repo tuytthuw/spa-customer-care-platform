@@ -41,3 +41,18 @@ export const otpSchema = z.object({
     message: "Mã OTP phải có 6 chữ số.",
   }),
 });
+
+export const changePasswordSchema = z
+  .object({
+    oldPassword: z
+      .string()
+      .min(1, { message: "Mật khẩu không được để trống." }),
+    newPassword: passwordSchema,
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Mật khẩu xác nhận không khớp.",
+    path: ["confirmPassword"],
+  });
+
+export type ChangePasswordFormValues = z.infer<typeof changePasswordSchema>;

@@ -11,6 +11,7 @@ export type Appointment = {
   customerId: string;
   serviceId: string;
   technicianId?: string;
+  resourceId?: string;
   date: string;
   status: AppointmentStatus;
   technicianNotes?: string;

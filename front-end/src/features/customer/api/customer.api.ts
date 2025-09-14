@@ -162,3 +162,30 @@ export const updateCustomer = async (
   if (!response.ok) throw new Error("Failed to update customer profile");
   return response.json();
 };
+
+type UpdateCustomerProfileData = Partial<
+  Pick<
+    FullCustomerProfile,
+    "name" | "phone" | "preferences" | "notificationSettings"
+  >
+> & { avatar?: File | string };
+
+export const updateCustomerProfile = async (
+  customerId: string,
+  dataToUpdate: UpdateCustomerProfileData
+): Promise<Customer> => {
+  const updatePayload = { ...dataToUpdate };
+
+  // Xử lý upload avatar (mô phỏng)
+  if (dataToUpdate.avatar && dataToUpdate.avatar instanceof File) {
+    updatePayload.avatar = `https://api.dicebear.com/7.x/notionists/svg?seed=${new Date().getTime()}`;
+  }
+
+  const response = await fetch(`${CUSTOMERS_API_URL}/${customerId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updatePayload),
+  });
+  if (!response.ok) throw new Error("Failed to update customer profile");
+  return response.json();
+};

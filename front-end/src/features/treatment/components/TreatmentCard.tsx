@@ -24,6 +24,9 @@ interface TreatmentCardProps {
   planInfo: TreatmentPlan;
   staffList: Staff[];
   serviceList: Service[];
+  hasReviewed: boolean;
+  isCompleted: boolean;
+  onWriteReview: () => void;
 }
 
 export default function TreatmentCard({
@@ -31,6 +34,9 @@ export default function TreatmentCard({
   planInfo,
   staffList,
   serviceList,
+  hasReviewed,
+  isCompleted,
+  onWriteReview,
 }: TreatmentCardProps) {
   const [isHistoryVisible, setIsHistoryVisible] = useState(false);
 
@@ -77,20 +83,28 @@ export default function TreatmentCard({
           />
         )}
       </CardContent>
-      <CardFooter className="border-t pt-4">
+      <CardFooter className="border-t pt-4 justify-between">
         <Button
           variant="ghost"
           size="sm"
           onClick={() => setIsHistoryVisible(!isHistoryVisible)}
-          className="w-full"
         >
-          {isHistoryVisible ? "Ẩn chi tiết" : "Xem chi tiết liệu trình"}
+          {isHistoryVisible ? "Ẩn chi tiết" : "Xem chi tiết"}
           {isHistoryVisible ? (
             <ChevronUp className="w-4 h-4 ml-2" />
           ) : (
             <ChevronDown className="w-4 h-4 ml-2" />
           )}
         </Button>
+
+        {isCompleted && !hasReviewed && (
+          <Button onClick={onWriteReview}>Viết đánh giá</Button>
+        )}
+        {isCompleted && hasReviewed && (
+          <Button variant="outline" disabled>
+            Đã đánh giá
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );
