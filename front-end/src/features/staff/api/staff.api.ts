@@ -30,7 +30,7 @@ export const getStaffProfiles = async (): Promise<FullStaffProfile[]> => {
           return {
             ...staffMember,
             email: user.email,
-            // status đã có sẵn trong Staff type nên không cần lấy từ user
+            status: user.status, // Lấy status từ user object
           };
         }
         return null;
@@ -43,7 +43,6 @@ export const getStaffProfiles = async (): Promise<FullStaffProfile[]> => {
     return [];
   }
 };
-
 // Lấy danh sách nhân viên
 export const getStaff = async (): Promise<Staff[]> => {
   console.log("Fetching staff from API...");
@@ -142,6 +141,37 @@ export const updateStaffStatus = async (
 
   if (!response.ok) {
     throw new Error("Failed to update staff status");
+  }
+
+  return response.json();
+};
+
+type UpdateStaffProfileData = Pick<FullStaffProfile, "name" | "phone"> & {
+  avatar?: File | string;
+};
+
+export const updateStaffProfile = async (
+  staffId: string,
+  dataToUpdate: UpdateStaffProfileData
+): Promise<Staff> => {
+  // Nếu avatar là một File, tức là người dùng đã tải ảnh mới
+  const newAvatarUrl =
+    dataToUpdate.avatar instanceof File
+      ? `https://api.dicebear.com/7.x/notionists/svg?seed=${new Date().getTime()}`
+      : dataToUpdate.avatar; // Giữ lại url cũ nếu không thay đổi
+
+  const response = await fetch(`${STAFF_API_URL}/${staffId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: dataToUpdate.name,
+      phone: dataToUpdate.phone,
+      avatar: newAvatarUrl,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update staff profile");
   }
 
   return response.json();

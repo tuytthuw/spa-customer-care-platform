@@ -43,3 +43,22 @@ export const createInvoice = async (
     throw error;
   }
 };
+
+export const getInvoicesByCustomerId = async (
+  customerId: string
+): Promise<Invoice[]> => {
+  if (!customerId) return [];
+  try {
+    const response = await fetch(
+      `${INVOICES_API_URL}?customerId=${customerId}`,
+      { cache: "no-store" }
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch invoices for customer.");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching invoices by customer:", error);
+    return [];
+  }
+};

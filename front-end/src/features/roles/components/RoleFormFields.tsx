@@ -17,7 +17,8 @@ import { FEATURES, Permission } from "@/features/roles/types";
 // Labels cho các tính năng để hiển thị trên UI
 const featureLabels: Record<keyof typeof FEATURES, string> = {
   dashboard: "Bảng điều khiển",
-  appointments: "Quản lý Lịch hẹn",
+  appointments: "Lịch hẹn của tôi",
+  appointments_management: "Quản lý Lịch hẹn",
   customers: "Quản lý Khách hàng",
   staff: "Quản lý Nhân viên",
   services: "Dịch vụ & Liệu trình",
@@ -26,6 +27,7 @@ const featureLabels: Record<keyof typeof FEATURES, string> = {
   resources: "Phòng & Thiết bị",
   schedules: "Lịch làm việc",
   reports: "Báo cáo",
+  billing: "Hóa đơn & Thanh toán",
   users: "Tài khoản người dùng",
   roles: "Phân quyền",
   treatments: "Liệu trình (Khách hàng)",

@@ -14,10 +14,11 @@ import {
   ClipboardCheck,
   FolderKanban,
   UserCog,
-  ShieldCheck, // Icon mới cho Phân quyền
-  BarChart2,
+  ShieldCheck,
   Package,
   Star,
+  ReceiptText,
+  BarChart2,
 } from "lucide-react";
 import { Feature } from "@/features/roles/types";
 
@@ -26,7 +27,7 @@ interface NavLink {
   href: string;
   label: string;
   icon: React.ElementType;
-  requiredFeature: Feature; // Tính năng mà link này thuộc về
+  requiredFeature: Feature;
 }
 
 // ✅ Tạo một danh sách TẤT CẢ các link có thể có trong hệ thống
@@ -50,8 +51,14 @@ const allNavLinks: NavLink[] = [
     requiredFeature: "treatments",
   },
   {
+    href: "/invoices",
+    label: "Lịch sử mua hàng",
+    icon: ReceiptText,
+    requiredFeature: "billing",
+  },
+  {
     href: "/reviews",
-    label: "Đánh giá dịch vụ",
+    label: "Đánh giá",
     icon: Star,
     requiredFeature: "reviews",
   },
@@ -65,7 +72,7 @@ const allNavLinks: NavLink[] = [
     href: "/appointments-management",
     label: "Quản lý Lịch hẹn",
     icon: Calendar,
-    requiredFeature: "appointments",
+    requiredFeature: "appointments_management",
   },
   {
     href: "/customers",

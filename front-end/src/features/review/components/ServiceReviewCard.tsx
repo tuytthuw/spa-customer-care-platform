@@ -12,7 +12,7 @@ interface ReviewCardProps {
   onWriteReview: () => void;
 }
 
-const ReviewCard = ({
+const SerViceReviewCard = ({
   appointment,
   services,
   staff,
@@ -64,4 +64,4 @@ const ReviewCard = ({
   );
 };
 
-export default ReviewCard;
+export default SerViceReviewCard;

@@ -10,6 +10,7 @@ export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
 export const FEATURES = {
   dashboard: "dashboard",
   appointments: "appointments",
+  appointments_management: "appointments_management",
   customers: "customers",
   staff: "staff",
   services: "services",
@@ -18,6 +19,7 @@ export const FEATURES = {
   resources: "resources",
   schedules: "schedules",
   reports: "reports",
+  billing: "billing",
   users: "users",
   roles: "roles",
   treatments: "treatments",

@@ -1,17 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { TreatmentPlan } from "@/types/treatmentPlan";
-import {
-  getCustomers,
-  FullCustomerProfile,
-} from "@/features/customer/api/customer.api";
-import { getTreatmentPlans } from "@/features/treatment/api/treatment.api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
-import { TreatmentPackage } from "@/features/treatment/types"; // Import type này
+import { TreatmentPackage } from "@/features/treatment/types";
 
 import {
   Card,
@@ -43,6 +37,8 @@ import {
 } from "@/components/ui/popover";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useCustomers } from "@/features/customer/hooks/useCustomers";
+import { useTreatmentPlans } from "@/features/treatment/hooks/useTreatmentPlans";
 
 export default function NewTreatmentPage() {
   const router = useRouter();
@@ -53,25 +49,12 @@ export default function NewTreatmentPage() {
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
   const [openCustomerSearch, setOpenCustomerSearch] = useState(false);
 
-  const { data: customers = [], isLoading: loadingCustomers } = useQuery<
-    FullCustomerProfile[]
-  >({
-    queryKey: ["customers"],
-    queryFn: getCustomers,
-  });
-
-  const { data: treatmentPlans = [], isLoading: loadingPlans } = useQuery<
-    TreatmentPlan[]
-  >({
-    queryKey: ["treatmentPlans"],
-    queryFn: getTreatmentPlans,
-  });
+  const { data: customers = [], isLoading: loadingCustomers } = useCustomers();
+  const { data: treatmentPlans = [], isLoading: loadingPlans } =
+    useTreatmentPlans();
 
   const addCustomerTreatmentMutation = useMutation({
-    // Định nghĩa kiểu dữ liệu cho biến newPackage
-    mutationFn: (
-      newPackage: Omit<TreatmentPackage, "serviceId"> & { serviceId?: string }
-    ) =>
+    mutationFn: (newPackage: TreatmentPackage) =>
       fetch("http://localhost:3001/customerTreatments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -104,26 +87,24 @@ export default function NewTreatmentPage() {
       return;
     }
 
-    const newPackage: Omit<TreatmentPackage, "serviceId"> & {
-      serviceId?: string;
-    } = {
+    // ✅ SỬA LỖI: Tạo dữ liệu session đầy đủ ngay từ đầu
+    const newPackage: TreatmentPackage = {
       id: `ct-${uuidv4()}`,
       customerId: customer.id,
       treatmentPlanId: plan.id,
       purchaseDate: new Date().toISOString(),
       totalSessions: plan.totalSessions,
       completedSessions: 0,
-      sessions: Array.from({ length: plan.totalSessions }).map((_, i) => ({
+      sessions: plan.steps.map((step) => ({
         id: `cts-${uuidv4()}`,
+        treatmentPlanStep: step.step,
+        serviceIds: step.serviceIds, // Lấy serviceIds từ plan
         date: "",
         technicianId: "",
         status: "upcoming",
-        notes: `Buổi ${i + 1}`,
+        notes: `Buổi ${step.step}`,
       })),
     };
-    if (plan.serviceIds && plan.serviceIds.length > 0) {
-      newPackage.serviceId = plan.serviceIds[0];
-    }
 
     addCustomerTreatmentMutation.mutate(newPackage);
   };
@@ -131,7 +112,6 @@ export default function NewTreatmentPage() {
   const selectedCustomer = customers.find((c) => c.id === selectedCustomerId);
   const selectedPlan = treatmentPlans.find((p) => p.id === selectedPlanId);
 
-  // Sử dụng các biến loading
   if (loadingCustomers || loadingPlans) {
     return <div className="p-8">Đang tải dữ liệu...</div>;
   }
