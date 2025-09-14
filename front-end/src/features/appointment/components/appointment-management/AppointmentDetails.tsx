@@ -133,17 +133,16 @@ export const AppointmentDetails = ({
             Bắt đầu thực hiện
           </Button>
         )}
+        {/* KHI ĐANG THỰC HIỆN, NÚT SẼ CHUYỂN ĐẾN TRANG THANH TOÁN */}
         {appointment.status === "in-progress" && (
-          <Button
-            className="w-full"
-            onClick={() => onStatusChange(appointment.id, "completed")}
-          >
-            Hoàn thành
-          </Button>
-        )}
-        {appointment.status === "completed" && (
           <Button asChild className="w-full">
             <Link href={`/billing/${appointment.id}`}>Đi đến thanh toán</Link>
+          </Button>
+        )}
+        {/* Nút này chỉ hiển thị khi đã thanh toán xong */}
+        {appointment.status === "completed" && (
+          <Button disabled className="w-full">
+            Đã hoàn thành & Thanh toán
           </Button>
         )}
         {["upcoming", "checked-in"].includes(appointment.status) && (

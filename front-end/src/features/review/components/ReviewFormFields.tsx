@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import StarRating from "@/features/review/components/StarRating";
+import { MultiImageUploader } from "@/components/ui/MultiImageUploader";
 
 export default function ReviewFormFields() {
   const { control } = useFormContext();
@@ -43,6 +44,21 @@ export default function ReviewFormFields() {
                 placeholder="Dịch vụ tuyệt vời, nhân viên chuyên nghiệp..."
                 rows={4}
                 {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={control}
+        name="imageFiles"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Thêm ảnh minh họa (tùy chọn)</FormLabel>
+            <FormControl>
+              <MultiImageUploader
+                onFilesSelect={(files) => field.onChange(files)}
               />
             </FormControl>
             <FormMessage />

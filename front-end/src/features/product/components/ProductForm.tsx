@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ImageUploader } from "@/components/ui/ImageUploader";
+import { MultiImageUploader } from "@/components/ui/MultiImageUploader";
 import { useState, useEffect } from "react";
 import { ProductFormValues } from "../schemas";
 import { useCategories } from "@/features/category/hooks/useCategories";
@@ -250,6 +251,7 @@ export default function ProductFormFields() {
           )}
         />
       </div>
+      {/* Field cho Ảnh chính */}
       <FormField
         name="imageFile"
         render={({ field }) => (
@@ -257,6 +259,22 @@ export default function ProductFormFields() {
             <FormLabel>Hình ảnh sản phẩm (Tùy chọn)</FormLabel>
             <FormControl>
               <ImageUploader onFileSelect={(file) => field.onChange(file)} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {/* Field cho các Ảnh phụ */}
+      <FormField
+        name="imageFiles"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Thư viện ảnh</FormLabel>
+            <FormControl>
+              <MultiImageUploader
+                onFilesSelect={(files) => field.onChange(files)}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>

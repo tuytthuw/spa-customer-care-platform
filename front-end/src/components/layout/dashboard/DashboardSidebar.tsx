@@ -7,103 +7,131 @@ import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
   Calendar,
-  User,
   Users,
-  ClipboardList,
-  Settings,
-  CalendarDays,
-  LucideIcon,
   Briefcase,
-  Star,
-  Package,
-  Inbox,
-  UserCog,
   ShoppingBag,
   Building,
   ClipboardCheck,
   FolderKanban,
+  UserCog,
+  ShieldCheck, // Icon mới cho Phân quyền
+  BarChart2,
+  Package,
+  Star,
 } from "lucide-react";
+import { Feature } from "@/features/roles/types";
 
-// Định nghĩa cấu trúc của một link điều hướng
+// ✅ Định nghĩa cấu trúc cho một link, bao gồm cả quyền yêu cầu
 interface NavLink {
   href: string;
   label: string;
-  icon: LucideIcon;
+  icon: React.ElementType;
+  requiredFeature: Feature; // Tính năng mà link này thuộc về
 }
 
-// Định nghĩa các bộ link cho từng vai trò
-const customerLinks: NavLink[] = [
-  { href: "/dashboard", label: "Tổng quan", icon: LayoutDashboard },
-  { href: "/profile", label: "Hồ sơ", icon: User },
-  { href: "/appointments", label: "Lịch hẹn của tôi", icon: Calendar },
-  { href: "/treatments", label: "Liệu trình của tôi", icon: Package },
-  { href: "/reviews", label: "Đánh giá dịch vụ", icon: Star },
-];
-
-const technicianLinks: NavLink[] = [
-  { href: "/dashboard", label: "Tổng quan", icon: LayoutDashboard },
-  { href: "/schedule", label: "Lịch làm việc", icon: CalendarDays },
-  { href: "/profile", label: "Hồ sơ", icon: User },
-];
-
-const receptionistLinks: NavLink[] = [
+// ✅ Tạo một danh sách TẤT CẢ các link có thể có trong hệ thống
+const allNavLinks: NavLink[] = [
   {
-    href: "/dashboard/inbox",
-    label: "Hộp thư",
-    icon: Inbox,
+    href: "/dashboard",
+    label: "Tổng quan",
+    icon: LayoutDashboard,
+    requiredFeature: "dashboard",
   },
   {
-    href: "/appointments-management",
-    label: "Quản lý Lịch hẹn",
+    href: "/appointments",
+    label: "Lịch hẹn của tôi",
     icon: Calendar,
-  },
-  { href: "/customers", label: "Quản lý Khách hàng", icon: Users },
-  { href: "/profile", label: "Hồ sơ", icon: User },
-];
-
-const managerLinks: NavLink[] = [
-  { href: "/dashboard", label: "Tổng quan", icon: LayoutDashboard },
-  {
-    href: "/appointments-management",
-    label: "Quản lý Lịch hẹn",
-    icon: Calendar,
+    requiredFeature: "appointments",
   },
   {
-    href: "/services-management",
-    label: "Quản lý Dịch vụ",
-    icon: ClipboardList,
+    href: "/treatments",
+    label: "Liệu trình của tôi",
+    icon: Package,
+    requiredFeature: "treatments",
   },
-  { href: "/customers", label: "Quản lý Khách hàng", icon: Users },
-  { href: "/staff-management", label: "Quản lý Nhân viên", icon: Briefcase },
   {
-    href: "/dashboard/manage-users",
-    label: "Quản lý người dùng",
+    href: "/reviews",
+    label: "Đánh giá dịch vụ",
+    icon: Star,
+    requiredFeature: "reviews",
+  },
+  {
+    href: "/profile",
+    label: "Hồ sơ cá nhân",
     icon: UserCog,
+    requiredFeature: "profile",
   },
   {
-    href: "/dashboard/manage-products",
-    label: "Quản lý Sản phẩm",
+    href: "/appointments-management",
+    label: "Quản lý Lịch hẹn",
+    icon: Calendar,
+    requiredFeature: "appointments",
+  },
+  {
+    href: "/customers",
+    label: "Quản lý Khách hàng",
+    icon: Users,
+    requiredFeature: "customers",
+  },
+  {
+    href: "/manage-staffs",
+    label: "Quản lý Nhân viên",
+    icon: Briefcase,
+    requiredFeature: "staff",
+  },
+  {
+    href: "/manage-services-treatmentplans",
+    label: "Dịch vụ & Liệu trình",
+    icon: Package,
+    requiredFeature: "services",
+  },
+  {
+    href: "/manage-products",
+    label: "Sản phẩm",
     icon: ShoppingBag,
-  },
-  {
-    href: "/work-schedule-management",
-    label: "Quản lý Lịch làm việc",
-    icon: Settings,
-  },
-  {
-    href: "/manage-resources",
-    label: "Quản lý Tài nguyên",
-    icon: Building,
-  },
-  {
-    href: "/resource-schedule",
-    label: "Lịch trình Tài nguyên",
-    icon: ClipboardCheck,
+    requiredFeature: "products",
   },
   {
     href: "/manage-categories",
-    label: "Quản lý Danh mục",
+    label: "Danh mục",
     icon: FolderKanban,
+    requiredFeature: "categories",
+  },
+  {
+    href: "/manage-resources",
+    label: "Tài nguyên",
+    icon: Building,
+    requiredFeature: "resources",
+  },
+  {
+    href: "/resource-schedule",
+    label: "Lịch trình tài nguyên",
+    icon: ClipboardCheck,
+    requiredFeature: "resources",
+  },
+  {
+    href: "/manage-schedules",
+    label: "Lịch làm việc",
+    icon: Calendar,
+    requiredFeature: "schedules",
+  },
+  {
+    href: "/reports",
+    label: "Báo cáo",
+    icon: BarChart2,
+    requiredFeature: "reports",
+  },
+  {
+    href: "/manage-users",
+    label: "Quản lý người dùng",
+    icon: UserCog,
+    requiredFeature: "users",
+  },
+  {
+    href: "/manage-roles",
+    label: "Phân quyền",
+    icon: ShieldCheck,
+    requiredFeature: "roles",
   },
 ];
 
@@ -111,26 +139,10 @@ export default function Sidebar() {
   const pathname = usePathname();
   const { user } = useAuth();
 
-  // Chọn bộ link phù hợp dựa trên vai trò của người dùng
-  let navLinks: NavLink[] = [];
-  switch (user?.role) {
-    case "customer":
-      navLinks = customerLinks;
-      break;
-    case "technician":
-      navLinks = technicianLinks;
-      break;
-    case "receptionist":
-      navLinks = receptionistLinks;
-      break;
-    case "manager":
-      navLinks = managerLinks;
-      break;
-    default:
-      // Mặc định là link của khách hàng nếu không có vai trò
-      navLinks = customerLinks;
-      break;
-  }
+  // ✅ Lọc ra các link mà người dùng có quyền "đọc" (read)
+  const accessibleNavLinks = allNavLinks.filter((link) =>
+    user?.permissions[link.requiredFeature]?.includes("read")
+  );
 
   return (
     <aside className="hidden border-r bg-muted/40 md:block">
@@ -140,9 +152,9 @@ export default function Sidebar() {
             <span className="">MySpa Platform</span>
           </Link>
         </div>
-        <div className="flex-1">
+        <div className="flex-1 overflow-y-auto">
           <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-            {navLinks.map((link) => {
+            {accessibleNavLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
                 <Link

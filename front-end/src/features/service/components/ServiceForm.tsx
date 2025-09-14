@@ -32,6 +32,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { ImageUploader } from "@/components/ui/ImageUploader";
+import { MultiImageUploader } from "@/components/ui/MultiImageUploader";
 import { useCategories } from "@/features/category/hooks/useCategories";
 import { useEffect, useState } from "react";
 import AddCategoryForm from "@/features/category/components/AddCategoryForm";
@@ -256,14 +257,30 @@ export default function ServiceFormFields() {
           )}
         />
       </div>
+      {/* Field cho Ảnh chính */}
       <FormField
-        control={form.control}
         name="imageFile"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Hình ảnh dịch vụ (Tùy chọn)</FormLabel>
             <FormControl>
               <ImageUploader onFileSelect={(file) => field.onChange(file)} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {/* Field cho các Ảnh phụ */}
+      <FormField
+        name="imageFiles"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Thư viện ảnh</FormLabel>
+            <FormControl>
+              <MultiImageUploader
+                onFilesSelect={(files) => field.onChange(files)}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>

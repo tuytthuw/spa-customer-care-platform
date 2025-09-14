@@ -33,6 +33,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ImageUploader } from "@/components/ui/ImageUploader";
+import { MultiImageUploader } from "@/components/ui/MultiImageUploader";
 import { useServices } from "@/features/service/hooks/useServices";
 import { useCategories } from "@/features/category/hooks/useCategories";
 import AddCategoryForm from "@/features/category/components/AddCategoryForm";
@@ -345,14 +346,30 @@ export default function TreatmentPlanFormFields() {
         </FormMessage>
       </div>
 
+      {/* Field cho Ảnh chính */}
       <FormField
-        control={control}
         name="imageFile"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Hình ảnh liệu trình (Tùy chọn)</FormLabel>
             <FormControl>
               <ImageUploader onFileSelect={(file) => field.onChange(file)} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {/* Field cho các Ảnh phụ */}
+      <FormField
+        name="imageFiles"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Thư viện ảnh</FormLabel>
+            <FormControl>
+              <MultiImageUploader
+                onFilesSelect={(files) => field.onChange(files)}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>

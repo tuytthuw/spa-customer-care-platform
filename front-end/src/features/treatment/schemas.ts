@@ -1,5 +1,10 @@
 // src/features/treatment/schemas.ts
-import { descriptionSchema, nameSchema, priceSchema } from "@/lib/schemas";
+import {
+  descriptionSchema,
+  nameSchema,
+  priceSchema,
+  imageFileSchema,
+} from "@/lib/schemas";
 import { z } from "zod";
 
 const treatmentPlanStepSchema = z.object({
@@ -16,7 +21,8 @@ export const treatmentPlanFormSchema = z.object({
   steps: z
     .array(treatmentPlanStepSchema)
     .min(1, "Liệu trình phải có ít nhất một buổi."),
-  imageFile: z.any().optional(),
+  imageFile: imageFileSchema,
+  imageFiles: z.array(z.any()).optional(),
 });
 
 export type TreatmentPlanFormValues = z.infer<typeof treatmentPlanFormSchema>;
