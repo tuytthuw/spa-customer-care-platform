@@ -7,5 +7,6 @@ export interface Service {
   duration: number; // in minutes
   categories: string[];
   imageUrl: string;
+  imageUrls: string[];
   status: "active" | "inactive";
 }

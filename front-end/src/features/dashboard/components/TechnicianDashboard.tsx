@@ -31,7 +31,8 @@ export default function TechnicianDashboard() {
   >({
     queryKey: ["appointments", "technician", currentTechnician?.id],
     queryFn: getAppointments,
-    enabled: !!currentTechnician,
+    enabled: !!currentTechnician, // ✅ CHỈ FETCH KHI ĐÃ CÓ THÔNG TIN KTV
+    // ✅ TỐI ƯU: Lọc dữ liệu ngay sau khi fetch bằng `select`
     select: (data) => {
       if (!currentTechnician) return [];
       const today = new Date().toDateString();

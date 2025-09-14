@@ -7,39 +7,11 @@ import {
   ReactNode,
   useEffect,
 } from "react";
-import { Permission, Role, PERMISSIONS } from "@/types/permissions";
 import { User } from "@/features/user/types";
+import { Role } from "@/features/roles/types";
 
-const mockRoles: Role[] = [
-  {
-    id: "customer",
-    name: "Khách hàng",
-    permissions: [
-      PERMISSIONS.VIEW_APPOINTMENTS,
-      PERMISSIONS.VIEW_TREATMENTS,
-      PERMISSIONS.VIEW_REVIEWS,
-    ],
-  },
-  {
-    id: "technician",
-    name: "Kỹ thuật viên",
-    permissions: [PERMISSIONS.VIEW_SCHEDULE],
-  },
-  {
-    id: "receptionist",
-    name: "Lễ tân",
-    permissions: [PERMISSIONS.MANAGE_APPOINTMENTS, PERMISSIONS.VIEW_INBOX],
-  },
-  {
-    id: "manager",
-    name: "Quản lý",
-    permissions: Object.values(PERMISSIONS), // Quản lý có tất cả các quyền
-  },
-];
-
-//AuthUser là User, cộng thêm permissions
 export type AuthUser = User & {
-  permissions: Permission[];
+  permissions: Role["permissions"];
   name?: string;
   phone?: string;
 };
@@ -54,34 +26,40 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [roles, setRoles] = useState<Role[]>([]);
 
   useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/roles");
+        const data = await response.json();
+        setRoles(data);
+      } catch (error) {
+        console.error("Failed to fetch roles:", error);
+      }
+    };
+
+    fetchRoles();
+
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       try {
         setUser(JSON.parse(storedUser));
       } catch (error) {
-        console.error(
-          "Không thể phân tích dữ liệu người dùng từ localStorage",
-          error
-        );
+        console.error("Failed to parse user from localStorage", error);
         localStorage.removeItem("user");
       }
     }
   }, []);
 
-  const getPermissionsForRole = (
-    role: "customer" | "receptionist" | "technician" | "manager"
-  ): Permission[] => {
-    const rolePermissions = mockRoles.find((r) => r.id === role);
-    return rolePermissions ? rolePermissions.permissions : [];
-  };
-
   const login = (userData: User & { name?: string; phone?: string }) => {
-    const permissions = getPermissionsForRole(userData.role);
+    // ✅ Tìm quyền hạn tương ứng với vai trò của người dùng
+    const userRole = roles.find((r) => r.id === userData.role);
+
     const userToStore: AuthUser = {
       ...userData,
-      permissions,
+      // Gán object permissions, hoặc một object rỗng nếu không tìm thấy
+      permissions: userRole?.permissions || {},
     };
     setUser(userToStore);
     localStorage.setItem("user", JSON.stringify(userToStore));

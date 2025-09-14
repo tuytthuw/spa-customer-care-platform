@@ -14,6 +14,7 @@ export const productFormSchema = z.object({
   price: priceSchema,
   stock: z.number().int().min(0, "Số lượng tồn kho không được âm."),
   imageFile: imageFileSchema,
+  imageFiles: z.array(z.any()).optional(),
 });
 
 export type ProductFormValues = z.infer<typeof productFormSchema>;

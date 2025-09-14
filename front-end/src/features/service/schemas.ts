@@ -14,6 +14,7 @@ export const serviceFormSchema = z.object({
   price: priceSchema,
   duration: z.number().int().min(5, "Thời lượng phải ít nhất 5 phút."),
   imageFile: imageFileSchema,
+  imageFiles: z.array(z.any()).optional(),
 });
 
 export type ServiceFormValues = z.infer<typeof serviceFormSchema>;

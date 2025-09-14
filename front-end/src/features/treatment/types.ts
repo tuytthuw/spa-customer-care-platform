@@ -25,6 +25,7 @@ export interface TreatmentPlan {
   steps: TreatmentPlanStep[];
   price: number;
   imageUrl: string;
+  imageUrls: string[];
   status: "active" | "inactive";
   totalSessions: number;
 }

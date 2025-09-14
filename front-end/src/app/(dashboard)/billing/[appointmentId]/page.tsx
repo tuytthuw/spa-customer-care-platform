@@ -1,19 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+// Types
 import { Invoice, InvoiceItem } from "@/features/billing/types";
 import { Product } from "@/features/product/types";
 import { Service } from "@/features/service/types";
 import { TreatmentPlan } from "@/features/treatment/types";
-import { getCustomers } from "@/features/customer/api/customer.api";
 import { FullCustomerProfile } from "@/features/customer/types";
-import { getServices } from "@/features/service/api/service.api";
-import { getProducts } from "@/features/product/api/product.api";
-import { getTreatmentPlans } from "@/features/treatment/api/treatment.api";
-import { createInvoice } from "@/features/billing/api/invoice.api";
 
+// API & Hooks
+import { createInvoice } from "@/features/billing/api/invoice.api";
+import { updateAppointmentStatus } from "@/features/appointment/api/appointment.api";
+import { useCustomers } from "@/features/customer/hooks/useCustomers";
+import { useServices } from "@/features/service/hooks/useServices";
+import { useProducts } from "@/features/product/hooks/useProducts";
+import { useTreatmentPlans } from "@/features/treatment/hooks/useTreatmentPlans";
+import { useAppointments } from "@/features/appointment/hooks/useAppointments";
+
+// Components
 import BillingDetails from "@/features/billing/components/BillingDetails";
 import InvoiceReceipt from "@/features/billing/components/InvoiceReceipt";
 import {
@@ -51,6 +58,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Printer, X } from "lucide-react";
+import { FullPageLoader } from "@/components/ui/spinner";
 
 type InvoiceCreationData = Omit<Invoice, "id" | "createdAt">;
 type PaymentMethod = "cash" | "card" | "transfer";
@@ -58,6 +66,7 @@ type PaymentMethod = "cash" | "card" | "transfer";
 export default function BillingPage() {
   const router = useRouter();
   const params = useParams();
+  const queryClient = useQueryClient();
   const { appointmentId } = params;
 
   const [items, setItems] = useState<InvoiceItem[]>([]);
@@ -71,27 +80,62 @@ export default function BillingPage() {
     null
   );
 
-  const { data: customers = [] } = useQuery<FullCustomerProfile[]>({
-    queryKey: ["customers"],
-    queryFn: getCustomers,
-  });
-  const { data: services = [] } = useQuery<Service[]>({
-    queryKey: ["services"],
-    queryFn: getServices,
-  });
-  const { data: products = [] } = useQuery<Product[]>({
-    queryKey: ["products"],
-    queryFn: getProducts,
-  });
-  const { data: treatmentPlans = [] } = useQuery<TreatmentPlan[]>({
-    queryKey: ["treatmentPlans"],
-    queryFn: getTreatmentPlans,
+  const { data: customers = [], isLoading: isLoadingCustomers } =
+    useCustomers();
+  const { data: services = [], isLoading: isLoadingServices } = useServices();
+  const { data: products = [], isLoading: isLoadingProducts } = useProducts();
+  const { data: treatmentPlans = [], isLoading: isLoadingPlans } =
+    useTreatmentPlans();
+  const { data: appointments = [], isLoading: isLoadingAppointments } =
+    useAppointments();
+
+  const isLoading =
+    isLoadingCustomers ||
+    isLoadingServices ||
+    isLoadingProducts ||
+    isLoadingPlans ||
+    isLoadingAppointments;
+
+  useEffect(() => {
+    if (!isLoading && appointmentId && appointmentId !== "new") {
+      const appointment = appointments.find((app) => app.id === appointmentId);
+      if (appointment) {
+        const customer = customers.find((c) => c.id === appointment.customerId);
+        const service = services.find((s) => s.id === appointment.serviceId);
+
+        if (customer) setSelectedCustomer(customer);
+        if (service) {
+          setItems([
+            {
+              id: service.id,
+              name: service.name,
+              quantity: 1,
+              price: service.price,
+              type: "service",
+            },
+          ]);
+        }
+      }
+    }
+  }, [appointmentId, appointments, customers, services, isLoading]);
+
+  const updateAppointmentStatusMutation = useMutation({
+    mutationFn: (id: string) => updateAppointmentStatus(id, "completed"),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+    },
+    onError: (error) => {
+      toast.error(`Lỗi cập nhật lịch hẹn: ${error.message}`);
+    },
   });
 
   const createInvoiceMutation = useMutation({
     mutationFn: createInvoice,
     onSuccess: (newInvoice) => {
       toast.success(`Tạo hóa đơn #${newInvoice.id} thành công!`);
+      if (typeof appointmentId === "string" && appointmentId !== "new") {
+        updateAppointmentStatusMutation.mutate(appointmentId);
+      }
       setIsConfirmingPayment(false);
       setCompletedInvoice(newInvoice);
     },
@@ -198,8 +242,12 @@ export default function BillingPage() {
     setItems([]);
     setSelectedCustomer(null);
     setPaymentMethod(null);
-    router.push("/billing/new");
+    router.push("/manage-appointments");
   };
+
+  if (isLoading) {
+    return <FullPageLoader text="Đang tải dữ liệu thanh toán..." />;
+  }
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
@@ -216,6 +264,7 @@ export default function BillingPage() {
                 const customer = customers.find((c) => c.id === customerId);
                 setSelectedCustomer(customer || null);
               }}
+              disabled={appointmentId !== "new"}
             >
               <SelectTrigger id="customer-select" className="w-[300px]">
                 <SelectValue placeholder="Chọn khách hàng..." />

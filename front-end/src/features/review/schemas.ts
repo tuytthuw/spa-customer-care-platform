@@ -6,6 +6,7 @@ export const reviewFormSchema = z.object({
     .string()
     .trim()
     .min(10, { message: "Bình luận cần ít nhất 10 ký tự." }),
+  imageFiles: z.array(z.any()).optional(),
 });
 
 export type ReviewFormValues = z.infer<typeof reviewFormSchema>;
