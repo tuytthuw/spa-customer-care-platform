@@ -1,4 +1,3 @@
-// src/components/ui/data-table.tsx (Component tái sử dụng)
 "use client";
 
 import {
@@ -6,9 +5,9 @@ import {
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
-  getFilteredRowModel,
+  getFilteredRowModel, // Thêm getFilteredRowModel
   useReactTable,
-  ColumnFiltersState,
+  ColumnFiltersState, // Thêm ColumnFiltersState
 } from "@tanstack/react-table";
 
 import {
@@ -20,8 +19,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { Input } from "@/components/ui/input"; // Import Input
+import { useState } from "react"; // Import useState
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -32,15 +31,15 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [globalFilter, setGlobalFilter] = useState("");
+  const [globalFilter, setGlobalFilter] = useState(""); // State cho tìm kiếm
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onGlobalFilterChange: setGlobalFilter,
+    getFilteredRowModel: getFilteredRowModel(), // Kích hoạt filter
+    onGlobalFilterChange: setGlobalFilter, // Cập nhật state khi filter
     state: {
       globalFilter,
     },
@@ -48,9 +47,10 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
+      {/* Thanh tìm kiếm */}
       <div className="flex items-center py-4">
         <Input
-          placeholder="Tìm kiếm..."
+          placeholder="Tìm kiếm tất cả các cột..."
           value={globalFilter ?? ""}
           onChange={(event) => setGlobalFilter(event.target.value)}
           className="max-w-sm"
@@ -106,6 +106,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
+      {/* Phân trang */}
       <div className="flex items-center justify-end space-x-2 py-4">
         <Button
           variant="outline"
