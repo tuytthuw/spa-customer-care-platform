@@ -1,34 +1,48 @@
+// src/features/booking/components/date-time-step.tsx
 "use client";
 
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
+import { Service } from "@/features/service/types";
 
-const availableTimes = [
-  "09:00",
-  "09:30",
-  "10:00",
-  "10:30",
-  "11:00",
-  "11:30",
-  "13:00",
-  "13:30",
-  "14:00",
-  "14:30",
-  "15:30",
-];
-const bookedTimes = ["12:00", "12:30", "15:00"];
+interface DateTimeStepProps {
+  onNextStep: (date: Date, time: string) => void;
+  onPrevStep: () => void;
+  bookingDetails: {
+    service: Service | null;
+    date: Date;
+    time: string;
+  };
+  isTreatmentBooking: boolean;
+}
 
 export default function DateTimeStep({
   onNextStep,
   onPrevStep,
   bookingDetails,
-}: any) {
+  isTreatmentBooking, // Thêm prop để xác định luồng đặt lịch
+}: DateTimeStepProps) {
   const [date, setDate] = useState<Date | undefined>(bookingDetails.date);
   const [selectedTime, setSelectedTime] = useState<string | null>(
     bookingDetails.time || null
   );
+
+  const availableTimes = [
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:30",
+  ];
+  const bookedTimes = ["12:00", "12:30", "15:00"];
 
   const handleNext = () => {
     if (date && selectedTime) {
@@ -47,7 +61,10 @@ export default function DateTimeStep({
           className="text-foreground"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Quay lại chọn dịch vụ
+          {/* Thay đổi nội dung nút dựa vào luồng đặt lịch */}
+          {isTreatmentBooking
+            ? "Quay lại chi tiết liệu trình"
+            : "Quay lại chọn dịch vụ"}
         </Button>
         {bookingDetails.service && (
           <div className="p-3 bg-card rounded-lg border border-border shadow-sm text-right">
@@ -66,7 +83,6 @@ export default function DateTimeStep({
       <div className="bg-card rounded-lg shadow-sm border border-border p-6">
         <h2 className="text-2xl mb-6 text-foreground">Chọn ngày và giờ</h2>
         <div className="flex flex-col md:flex-row gap-6">
-          {/* Calendar */}
           <div className="w-full md:w-1/2">
             <h3 className="text-lg mb-3">Chọn ngày</h3>
             <Calendar
@@ -80,7 +96,6 @@ export default function DateTimeStep({
             />
           </div>
 
-          {/* Time Slots */}
           <div className="w-full md:w-1/2">
             <h3 className="text-lg mb-3">
               Chọn giờ - {date?.toLocaleDateString("vi-VN")}
@@ -91,19 +106,12 @@ export default function DateTimeStep({
                   key={time}
                   variant={selectedTime === time ? "default" : "outline"}
                   onClick={() => setSelectedTime(time)}
-                  className={`${
-                    selectedTime === time ? "bg-primary border-primary" : ""
-                  }`}
                 >
                   {time}
                 </Button>
               ))}
               {bookedTimes.map((time) => (
-                <Button
-                  key={time}
-                  disabled
-                  className="cursor-not-allowed bg-muted text-muted-foreground"
-                >
+                <Button key={time} disabled className="cursor-not-allowed">
                   {time} (Đã đặt)
                 </Button>
               ))}
@@ -112,7 +120,7 @@ export default function DateTimeStep({
               <Button
                 onClick={handleNext}
                 disabled={!date || !selectedTime}
-                className="w-full py-3 bg-primary text-primary-foreground hover:bg-primary/90"
+                className="w-full"
               >
                 Tiếp tục
               </Button>

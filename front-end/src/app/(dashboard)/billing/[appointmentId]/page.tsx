@@ -13,7 +13,11 @@ import { FullCustomerProfile } from "@/features/customer/types";
 
 // API & Hooks
 import { createInvoice } from "@/features/billing/api/invoice.api";
-import { updateAppointmentStatus } from "@/features/appointment/api/appointment.api";
+import {
+  updateAppointmentStatus,
+  updateAppointmentPaymentStatus,
+} from "@/features/appointment/api/appointment.api";
+import { PaymentStatus } from "@/features/appointment/types";
 import { useCustomers } from "@/features/customer/hooks/useCustomers";
 import { useServices } from "@/features/service/hooks/useServices";
 import { useProducts } from "@/features/product/hooks/useProducts";
@@ -129,12 +133,25 @@ export default function BillingPage() {
     },
   });
 
+  const updatePaymentStatusMutation = useMutation({
+    mutationFn: (data: { appointmentId: string; status: PaymentStatus }) =>
+      updateAppointmentPaymentStatus(data.appointmentId, data.status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+      toast.success("Đã cập nhật trạng thái thanh toán của lịch hẹn.");
+    },
+    onError: (error) => {
+      toast.error(`Lỗi cập nhật trạng thái thanh toán: ${error.message}`);
+    },
+  });
+
   const createInvoiceMutation = useMutation({
     mutationFn: createInvoice,
     onSuccess: (newInvoice) => {
       toast.success(`Tạo hóa đơn #${newInvoice.id} thành công!`);
       if (typeof appointmentId === "string" && appointmentId !== "new") {
         updateAppointmentStatusMutation.mutate(appointmentId);
+        updatePaymentStatusMutation.mutate({ appointmentId, status: "paid" });
       }
       setIsConfirmingPayment(false);
       setCompletedInvoice(newInvoice);

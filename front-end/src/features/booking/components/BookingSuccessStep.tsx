@@ -1,8 +1,17 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Check, CalendarPlus, House } from "lucide-react";
+import { Service } from "@/features/service/types";
 
-export default function BookingSuccessStep({ bookingDetails }: any) {
+interface BookingSuccessStepProps {
+  bookingDetails: {
+    service: Service | null;
+    date: Date;
+    time: string;
+  };
+}
+
+export default function BookingSuccessStep({ bookingDetails }: BookingSuccessStepProps) {
   return (
     <div className="bg-card rounded-lg shadow-sm border border-border p-8 text-center">
       <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">

@@ -1,3 +1,8 @@
+export interface PurchasedService {
+  serviceId: string;
+  quantity: number;
+}
+
 export interface Customer {
   id: string;
   userId: string;
@@ -7,6 +12,7 @@ export interface Customer {
   totalAppointments: number;
   lastVisit: string; // ISO date string
   notes?: string;
+  purchasedServices?: PurchasedService[];
   preferences?: {
     allergies?: string;
     serviceNotes?: string;

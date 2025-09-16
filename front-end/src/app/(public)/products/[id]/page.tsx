@@ -81,8 +81,13 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
       }
       purchaseActions={
         <PurchaseActions
-          itemName={product.name}
-          buyNowLink={`/auth/login?redirectTo=/checkout?productId=${product.id}`}
+          item={{
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            imageUrl: product.imageUrl,
+            type: "product",
+          }}
           disabled={product.stock === 0}
         />
       }

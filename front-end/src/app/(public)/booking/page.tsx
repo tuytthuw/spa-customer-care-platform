@@ -1,12 +1,11 @@
 // src/app/(public)/booking/page.tsx
-
 "use client";
 
 import React, { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-import DateTimeStep from "@/features/booking/components/date-time-step";
+import DateTimeStep from "@/features/booking/components/DateTimeStep";
 import ConfirmationStep from "@/features/booking/components/ConfirmationStep";
 import ServiceSelectionStep from "@/features/booking/components/ServiceSelectionStep";
 import BookingSuccessStep from "@/features/booking/components/BookingSuccessStep";
@@ -17,21 +16,32 @@ import { getServiceById } from "@/features/service/api/service.api";
 import { createAppointment } from "@/features/appointment/api/appointment.api";
 import { bookTreatmentSession } from "@/features/treatment/api/treatment.api";
 import { toast } from "sonner";
-import { Service } from "@/features/service/types";
+import { useAuth } from "@/contexts/AuthContexts";
+import { useCustomers } from "@/features/customer/hooks/useCustomers";
+
+interface CustomerInfo {
+  name: string;
+  phone: string;
+  email: string;
+  note: string;
+}
 
 export default function BookingPage() {
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const { user } = useAuth();
+  const { data: customers = [] } = useCustomers();
   const { step, service, date, time, actions } = useBookingStore();
   const { setService, setDateTime, nextStep, prevStep, reset } = actions;
 
-  // ✅ Lấy các tham số từ URL
+  const currentUserProfile = customers.find((c) => c.userId === user?.id);
+
   const treatmentPackageId = searchParams.get("treatmentPackageId");
   const sessionId = searchParams.get("sessionId");
   const serviceId = searchParams.get("serviceId");
+  const isTreatmentBooking = !!treatmentPackageId;
 
-  // Nếu có serviceId từ URL (dù là đặt mới hay từ liệu trình),
-  // fetch thông tin dịch vụ và tự động chuyển bước.
   useQuery({
     queryKey: ["booking_service", serviceId],
     queryFn: async () => {
@@ -41,16 +51,15 @@ export default function BookingPage() {
       }
       return fetchedService;
     },
-    enabled: !!serviceId && !service, // Chỉ chạy khi có serviceId và service trong store chưa được set
+    enabled: !!serviceId && !service,
   });
 
   useEffect(() => {
     return () => {
-      reset(); // Reset khi rời khỏi trang
+      reset();
     };
   }, [reset]);
 
-  // Logic tạo lịch hẹn mới (cho dịch vụ lẻ)
   const createAppointmentMutation = useMutation({
     mutationFn: createAppointment,
     onSuccess: () => {
@@ -60,39 +69,57 @@ export default function BookingPage() {
     onError: (error) => toast.error(`Đặt lịch thất bại: ${error.message}`),
   });
 
-  // ✅ Logic đặt lịch cho liệu trình đã mua
   const bookTreatmentSessionMutation = useMutation({
     mutationFn: bookTreatmentSession,
     onSuccess: () => {
       toast.success("Đặt lịch cho buổi trị liệu thành công!");
-      queryClient.invalidateQueries({ queryKey: ["customerTreatments"] }); // Cập nhật lại dữ liệu liệu trình
+      queryClient.invalidateQueries({ queryKey: ["customerTreatments"] });
       nextStep();
     },
     onError: (error) => toast.error(`Đặt lịch thất bại: ${error.message}`),
   });
 
-  const handleConfirmBooking = () => {
-    // Kết hợp ngày và giờ
+  const handleConfirmBooking = (customerInfo: CustomerInfo) => {
     const [hours, minutes] = time.split(":").map(Number);
     const appointmentDate = new Date(date);
     appointmentDate.setHours(hours, minutes, 0, 0);
 
-    // ✅ KIỂM TRA: Đây là đặt lịch cho liệu trình hay đặt mới?
     if (treatmentPackageId && sessionId && service) {
-      // Đặt cho liệu trình
       bookTreatmentSessionMutation.mutate({
         treatmentPackageId,
         sessionId,
         date: appointmentDate.toISOString(),
-        // technicianId sẽ được thêm ở bước sau nếu có
       });
     } else if (service) {
-      // Đặt dịch vụ lẻ mới
-      createAppointmentMutation.mutate({
-        customerId: "guest-user", // Sẽ lấy từ user đang đăng nhập
-        serviceId: service.id,
-        date: appointmentDate.toISOString(),
-      });
+      // Luồng đặt dịch vụ lẻ: Phân biệt khách đã đăng nhập và khách vãng lai
+      if (user && currentUserProfile) {
+        // Khách hàng đã đăng nhập
+        createAppointmentMutation.mutate({
+          customerId: currentUserProfile.id,
+          serviceId: service.id,
+          date: appointmentDate.toISOString(),
+          customerNote: customerInfo.note,
+        });
+      } else {
+        // Khách vãng lai (chưa đăng nhập)
+        createAppointmentMutation.mutate({
+          customerId: "guest-user",
+          serviceId: service.id,
+          date: appointmentDate.toISOString(),
+          guestName: customerInfo.name,
+          guestPhone: customerInfo.phone,
+          guestEmail: customerInfo.email,
+          customerNote: customerInfo.note,
+        });
+      }
+    }
+  };
+
+  const handlePrevStep = () => {
+    if (isTreatmentBooking) {
+      router.back(); // Quay lại trang trước đó (trang chi tiết liệu trình)
+    } else {
+      prevStep(); // Quay lại bước chọn dịch vụ như cũ
     }
   };
 
@@ -104,8 +131,9 @@ export default function BookingPage() {
         return (
           <DateTimeStep
             onNextStep={setDateTime}
-            onPrevStep={prevStep}
+            onPrevStep={handlePrevStep} // Sử dụng hàm xử lý mới
             bookingDetails={{ service, date, time }}
+            isTreatmentBooking={isTreatmentBooking} // Truyền prop xác định luồng
           />
         );
       case 3:
