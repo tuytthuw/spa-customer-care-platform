@@ -1,28 +1,70 @@
-// src/components/layout/dashboard/Header.tsx
 "use client";
 
 import React from "react";
 import { useAuth } from "@/contexts/AuthContexts";
 import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+import { LogOut, Bell, Settings } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import Link from "next/link";
 
-const Header = () => {
+const DashboardHeader = () => {
   const { user, logout } = useAuth();
 
   return (
-    <header className="bg-white shadow-sm p-4 flex justify-between items-center">
-      <div>
-        <h1 className="text-xl font-semibold">Chào mừng trở lại!</h1>
+    <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-6">
+      <div className="flex-1">
+        {/* Có thể thêm Breadcrumb hoặc Search bar ở đây */}
       </div>
-      <div className="flex items-center">
-        <span className="mr-4">Xin chào, {user?.name || "Guest"}</span>
-        <Button variant="outline" size="sm" onClick={logout}>
-          <LogOut className="w-4 h-4 mr-2" />
-          Đăng xuất
+      <div className="flex items-center gap-4">
+        <Button variant="ghost" size="icon" className="rounded-full">
+          <Bell className="h-5 w-5" />
+          <span className="sr-only">Thông báo</span>
         </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+              <Avatar>
+                <AvatarImage
+                  src={`https://api.dicebear.com/7.x/notionists/svg?seed=${user?.id}`}
+                  alt={user?.name}
+                />
+                <AvatarFallback>{user?.name?.[0].toUpperCase()}</AvatarFallback>
+              </Avatar>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56" align="end" forceMount>
+            <DropdownMenuLabel className="font-normal">
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm font-medium leading-none">{user?.name}</p>
+                <p className="text-xs leading-none text-muted-foreground">
+                  {user?.email}
+                </p>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href="/profile">
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Cài đặt tài khoản</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={logout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Đăng xuất</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );
 };
 
-export default Header;
+export default DashboardHeader;
