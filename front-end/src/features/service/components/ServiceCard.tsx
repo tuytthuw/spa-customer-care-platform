@@ -20,7 +20,7 @@ export default function ServiceCard({ service }: ServiceCardProps) {
             <Clock className="w-4 h-4" />
             <span>{service.duration} phút</span>
           </div>
-          <span className="text-lg font-semibold">
+          <span className="text-lg font-semibold text-primary">
             {new Intl.NumberFormat("vi-VN", {
               style: "currency",
               currency: "VND",

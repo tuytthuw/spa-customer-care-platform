@@ -1,11 +1,10 @@
-// src/app/(public)/treatments/page.tsx
+// src/app/(public)/treatment-plans/page.tsx
 
 import { getTreatmentPlans } from "@/features/treatment/api/treatment.api";
 import TreatmentPlanCard from "@/features/treatment/components/TreatmentPlanCard";
 import { Input } from "@/components/ui/input";
 
 export default async function TreatmentPlansPage() {
-  // Lấy dữ liệu liệu trình ngay trên server
   const treatmentPlans = await getTreatmentPlans();
 
   return (
@@ -20,7 +19,6 @@ export default async function TreatmentPlansPage() {
         </p>
       </header>
 
-      {/* Thanh tìm kiếm (chức năng sẽ được thêm sau) */}
       <div className="mb-8 max-w-md mx-auto">
         <Input
           type="search"
@@ -29,7 +27,6 @@ export default async function TreatmentPlansPage() {
         />
       </div>
 
-      {/* Lưới hiển thị các liệu trình */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {treatmentPlans.map((plan) => (
           <TreatmentPlanCard key={plan.id} plan={plan} />

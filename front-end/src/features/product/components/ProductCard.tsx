@@ -1,8 +1,6 @@
-// src/features/product/components/ProductCard.tsx
-
 import { Product } from "@/features/product/types";
-import DisplayCard from "@/components/common/DisplayCard"; // Import component mới
-import { Button } from "@/components/ui/button";
+import DisplayCard from "@/components/common/DisplayCard";
+import { Badge } from "@/components/ui/badge";
 
 interface ProductCardProps {
   product: Product;
@@ -14,18 +12,19 @@ export default function ProductCard({ product }: ProductCardProps) {
       href={`/products/${product.id}`}
       imageUrl={product.imageUrl}
       title={product.name}
-      imageFit="contain" // Sản phẩm thường đẹp hơn với 'contain'
+      description={product.description}
+      imageFit="contain"
       footerContent={
-        <div className="flex flex-col items-center w-full text-center">
-          <p className="text-xl font-semibold text-primary mb-4">
+        <div className="flex justify-between items-center w-full">
+          <Badge variant={product.stock > 0 ? "outline" : "destructive"}>
+            {product.stock > 0 ? `Còn hàng: ${product.stock}` : "Hết hàng"}
+          </Badge>
+          <span className="text-lg font-semibold text-primary">
             {new Intl.NumberFormat("vi-VN", {
               style: "currency",
               currency: "VND",
             }).format(product.price)}
-          </p>
-          <Button className="w-full" tabIndex={-1}>
-            Xem chi tiết
-          </Button>
+          </span>
         </div>
       }
     />
