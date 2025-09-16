@@ -8,8 +8,8 @@ import { notFound } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useReviews } from "@/features/review/hooks/useReviews";
 import { FullPageLoader } from "@/components/ui/spinner";
-import { PurchaseActions } from "@/components/common/PurchaseActions";
 import { DetailPageLayout } from "@/components/common/DetailPageLayout";
+import { PurchaseActions } from "@/components/common/PurchaseActions";
 
 interface ServiceDetailPageProps {
   params: { id: string };
@@ -81,8 +81,14 @@ export default function ServiceDetailPage({ params }: ServiceDetailPageProps) {
       }
       purchaseActions={
         <PurchaseActions
-          itemName={service.name}
-          buyNowLink={`/booking?serviceId=${service.id}`}
+          item={{
+            id: service.id,
+            name: service.name,
+            price: service.price,
+            imageUrl: service.imageUrl,
+            type: "service",
+          }}
+          bookNowLink={`/booking?serviceId=${service.id}`}
         />
       }
     >

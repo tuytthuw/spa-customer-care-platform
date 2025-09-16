@@ -13,7 +13,8 @@ interface DetailPageLayoutProps {
   description: React.ReactNode;
   details: React.ReactNode;
   purchaseActions: React.ReactNode;
-  children: React.ReactNode; // Dành cho nội dung phụ bên dưới
+  children: React.ReactNode;
+  treatmentSteps?: React.ReactNode;
 }
 
 export const DetailPageLayout = ({
@@ -26,6 +27,7 @@ export const DetailPageLayout = ({
   details,
   purchaseActions,
   children,
+  treatmentSteps,
 }: DetailPageLayoutProps) => {
   return (
     <div className="container mx-auto py-12">
@@ -61,16 +63,15 @@ export const DetailPageLayout = ({
           </div>
         </div>
 
-        {/* Cột thông tin */}
         <div>
           {title}
           {description}
           <div className="flex items-center gap-6 my-6">{details}</div>
           {purchaseActions}
+          {/* Hiển thị TreatmentSteps nếu được cung cấp */}
+          {treatmentSteps && <div className="mt-8">{treatmentSteps}</div>}
         </div>
       </div>
-
-      {/* Nội dung phụ như đánh giá, mô tả chi tiết... */}
       {children}
     </div>
   );

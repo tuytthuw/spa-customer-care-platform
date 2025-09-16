@@ -3,7 +3,14 @@
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContexts";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Phone, User, LogOut, LayoutDashboard } from "lucide-react";
+import {
+  Sparkles,
+  Phone,
+  User,
+  LogOut,
+  LayoutDashboard,
+  ShoppingCart,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -15,6 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import useCartStore from "@/stores/cart-store";
 
 const navLinks = [
   { href: "/", label: "Trang Chủ" },
@@ -27,6 +35,8 @@ const navLinks = [
 export default function PublicHeader() {
   const { user, logout } = useAuth();
   const pathname = usePathname();
+  const { items } = useCartStore();
+  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -62,6 +72,19 @@ export default function PublicHeader() {
             <Phone className="mr-2 h-4 w-4" />
             1900 9424
           </Button>
+
+          <Button variant="ghost" size="icon" className="relative" asChild>
+            <Link href="/cart">
+              <ShoppingCart className="h-5 w-5" />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                  {totalItems}
+                </span>
+              )}
+              <span className="sr-only">Giỏ hàng</span>
+            </Link>
+          </Button>
+
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

@@ -1,5 +1,9 @@
 // src/services/appointmentService.ts
-import { Appointment, AppointmentStatus } from "@/features/appointment/types"; // <-- 1. THÊM AppointmentStatus VÀO IMPORT
+import {
+  Appointment,
+  AppointmentStatus,
+  PaymentStatus,
+} from "@/features/appointment/types"; // <-- 1. THÊM AppointmentStatus VÀO IMPORT
 import { v4 as uuidv4 } from "uuid";
 
 // URL API mới trỏ đến json-server
@@ -56,7 +60,8 @@ export const createAppointment = async (
       body: JSON.stringify({
         ...appointmentData,
         id: `appt-${uuidv4()}`, // Tạo ID ngẫu nhiên
-        status: "upcoming", // Trạng thái mặc định là "sắp tới"
+        status: "upcoming",
+        paymentStatus: "unpaid",
       }),
     });
 
@@ -136,4 +141,20 @@ export const getAppointmentsByCustomerId = async (
     console.error("Error fetching appointments by customer:", error);
     return [];
   }
+};
+export const updateAppointmentPaymentStatus = async (
+  appointmentId: string,
+  paymentStatus: PaymentStatus
+): Promise<Appointment> => {
+  const response = await fetch(`${APPOINTMENTS_API_URL}/${appointmentId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ paymentStatus }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update appointment payment status");
+  }
+
+  return response.json();
 };

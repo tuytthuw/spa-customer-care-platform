@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Appointment } from "@/features/appointment/types";
+import { Appointment, PaymentStatus } from "@/features/appointment/types";
 import { Service } from "@/features/service/types";
 import { Staff } from "@/features/staff/types";
 import {
@@ -49,6 +49,16 @@ const AppointmentCard = ({
     }
   };
 
+  const getPaymentStatusInfo = (status?: PaymentStatus) => {
+    if (status === "paid") {
+      return { text: "Đã thanh toán", variant: "default" as const };
+    }
+    return { text: "Chưa thanh toán", variant: "destructive" as const };
+  };
+
+  const statusInfo = getStatusVariant(appointment.status);
+  const paymentStatusInfo = getPaymentStatusInfo(appointment.paymentStatus);
+
   const handleConfirmCancel = (reason: string) => {
     onCancel(appointment.id, reason);
     setIsCancelModalOpen(false);
@@ -70,10 +80,13 @@ const AppointmentCard = ({
                 })}
               </CardDescription>
             </div>
-            <Badge variant={getStatusVariant(appointment.status)}>
+            <Badge variant={statusInfo}>
               {appointment.status === "upcoming" && "Sắp tới"}
               {appointment.status === "completed" && "Đã hoàn thành"}
               {appointment.status === "cancelled" && "Đã hủy"}
+            </Badge>
+            <Badge variant={paymentStatusInfo.variant}>
+              {paymentStatusInfo.text}
             </Badge>
           </div>
         </CardHeader>

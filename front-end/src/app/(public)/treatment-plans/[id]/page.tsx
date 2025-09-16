@@ -1,13 +1,16 @@
+// src/app/(public)/treatment-plans/[id]/page.tsx
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
 import { getTreatmentPlanById } from "@/features/treatment/api/treatment.api";
 import { ReviewList } from "@/features/review/components/ReviewList";
+import TreatmentSteps from "@/features/treatment/components/TreatmentSteps";
 import { notFound } from "next/navigation";
 import { PackageCheck, Tag } from "lucide-react";
 import { useState, useEffect } from "react";
 import { FullPageLoader } from "@/components/ui/spinner";
 import { useReviews } from "@/features/review/hooks/useReviews";
+import { useServices } from "@/features/service/hooks/useServices";
 import { PurchaseActions } from "@/components/common/PurchaseActions";
 import { DetailPageLayout } from "@/components/common/DetailPageLayout";
 
@@ -31,6 +34,8 @@ export default function TreatmentPlanDetailPage({
   });
 
   const { data: allReviews = [], isLoading: isLoadingReviews } = useReviews();
+  const { data: allServices = [], isLoading: isLoadingServices } =
+    useServices();
 
   useEffect(() => {
     if (plan?.imageUrl) {
@@ -40,7 +45,7 @@ export default function TreatmentPlanDetailPage({
     }
   }, [plan]);
 
-  const isLoading = isLoadingPlan || isLoadingReviews;
+  const isLoading = isLoadingPlan || isLoadingReviews || isLoadingServices;
 
   if (isLoading) {
     return <FullPageLoader text="Đang tải chi tiết liệu trình..." />;
@@ -82,12 +87,20 @@ export default function TreatmentPlanDetailPage({
       }
       purchaseActions={
         <PurchaseActions
-          itemName={plan.name}
-          buyNowLink={`/auth/login?redirectTo=/purchase/plan/${plan.id}`}
+          item={{
+            id: plan.id,
+            name: plan.name,
+            price: plan.price,
+            imageUrl: plan.imageUrl,
+            type: "treatment",
+          }}
         />
       }
+      treatmentSteps={<TreatmentSteps plan={plan} allServices={allServices} />}
     >
-      <ReviewList reviews={planReviews} />
+      <div className="mt-12">
+        <ReviewList reviews={planReviews} />
+      </div>
     </DetailPageLayout>
   );
 }

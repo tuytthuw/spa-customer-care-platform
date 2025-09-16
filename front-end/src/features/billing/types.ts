@@ -14,7 +14,14 @@ export interface Invoice {
   subtotal: number;
   discount: number;
   total: number;
-  paymentMethod: "cash" | "card" | "transfer" | null;
+  paymentMethod: "cash" | "card" | "transfer" | "cod" | null;
   status: "pending" | "paid";
   createdAt: string;
+  shippingAddress?: {
+    name: string;
+    phone: string;
+    address: string;
+    city: string;
+    notes?: string;
+  };
 }
