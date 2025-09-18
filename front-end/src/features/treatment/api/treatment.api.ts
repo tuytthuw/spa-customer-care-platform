@@ -1,11 +1,8 @@
 // src/services/treatmentPlanService.ts
-import {
-  TreatmentPlan,
-  TreatmentPackage,
-  TreatmentPlanStep,
-} from "@/features/treatment/types";
+import { TreatmentPlan, TreatmentPackage } from "@/features/treatment/types";
 import { v4 as uuidv4 } from "uuid";
 import { TreatmentPlanFormValues } from "@/features/treatment/schemas";
+import { createAppointment } from "@/features/appointment/api/appointment.api";
 
 const PLANS_API_URL = "http://localhost:3001/treatmentPlans";
 const CUSTOMER_TREATMENTS_API_URL = "http://localhost:3001/customerTreatments";
@@ -120,8 +117,17 @@ export const bookTreatmentSession = async (bookingData: {
   sessionId: string;
   date: string; // ISO String
   technicianId?: string;
+  customerId: string; // <-- Thêm customerId
+  serviceId: string; // <-- Thêm serviceId (của dịch vụ trong buổi đó)
 }): Promise<TreatmentPackage> => {
-  const { treatmentPackageId, sessionId, date, technicianId } = bookingData;
+  const {
+    treatmentPackageId,
+    sessionId,
+    date,
+    technicianId,
+    customerId,
+    serviceId,
+  } = bookingData;
 
   // 1. Lấy gói liệu trình hiện tại từ server
   const pkgResponse = await fetch(
@@ -144,14 +150,28 @@ export const bookTreatmentSession = async (bookingData: {
   treatmentPackage.sessions[sessionIndex] = {
     ...treatmentPackage.sessions[sessionIndex],
     date: date,
-    technicianId: technicianId || "", // Gán kỹ thuật viên nếu có
+    technicianId: technicianId || "",
+    status: "completed", // <-- Giả định khi đặt lịch là hoàn thành buổi đó (có thể điều chỉnh logic này)
   };
+  treatmentPackage.completedSessions += 1;
+
+  // --- LOGIC MỚI: TẠO MỘT APPOINTMENT TƯƠNG ỨNG ---
+  await createAppointment({
+    customerId,
+    serviceId,
+    date,
+    technicianId,
+    paymentStatus: "paid", // Luôn là "paid" vì thuộc liệu trình đã mua
+    treatmentPackageId: treatmentPackageId, // <--- Dấu vết 1
+    treatmentSessionId: sessionId, // <--- Dấu vết 2
+  });
+  // --- KẾT THÚC LOGIC MỚI ---
 
   // 3. Gửi lại toàn bộ đối tượng gói liệu trình đã được cập nhật lên server
   const response = await fetch(
     `${CUSTOMER_TREATMENTS_API_URL}/${treatmentPackageId}`,
     {
-      method: "PUT", // Dùng PUT để thay thế toàn bộ
+      method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(treatmentPackage),
     }

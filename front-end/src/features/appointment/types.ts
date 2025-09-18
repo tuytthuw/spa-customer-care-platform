@@ -17,6 +17,8 @@ export type Appointment = {
   date: string;
   status: AppointmentStatus;
   paymentStatus?: PaymentStatus;
+  treatmentPackageId?: string;
+  treatmentSessionId?: string;
   technicianNotes?: string;
   customerNote?: string;
   // Các trường dành cho khách vãng lai

@@ -16,11 +16,14 @@ import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import CancelAppointmentModal from "./CancelAppointmentModal";
+import { TreatmentPackage, TreatmentPlan } from "@/features/treatment/types";
 
 interface AppointmentCardProps {
   appointment: Appointment;
   service: Service;
-  technician?: Staff; // Kỹ thuật viên có thể không được chỉ định
+  technician?: Staff;
+  treatmentPackage?: TreatmentPackage;
+  treatmentPlan?: TreatmentPlan;
   onCancel: (id: string, reason: string) => void;
   onReview: (appointment: Appointment) => void;
   hasReviewed: boolean;
@@ -30,6 +33,8 @@ const AppointmentCard = ({
   appointment,
   service,
   technician,
+  treatmentPackage,
+  treatmentPlan,
   onCancel,
   onReview,
   hasReviewed,
@@ -101,6 +106,20 @@ const AppointmentCard = ({
             />
           </div>
           <div className="col-span-1 md:col-span-2">
+            {treatmentPackage && treatmentPlan && (
+              <div className="mb-3 p-2 bg-muted/50 rounded-md text-sm">
+                <p className="font-semibold text-primary">
+                  Thuộc liệu trình: {treatmentPlan.name}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  (Gói mua ngày:{" "}
+                  {new Date(treatmentPackage.purchaseDate).toLocaleDateString(
+                    "vi-VN"
+                  )}
+                  )
+                </p>
+              </div>
+            )}
             <p className="font-semibold">Kỹ thuật viên:</p>
             <p>{technician ? technician.name : "Hệ thống tự sắp xếp"}</p>
             <p className="font-semibold mt-2">Thời gian:</p>

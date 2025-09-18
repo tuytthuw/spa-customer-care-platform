@@ -41,6 +41,7 @@ export const createInvoice = async (
 
     const newInvoice: Invoice = await response.json();
 
+    // --- LOGIC MỚI BẮT ĐẦU TỪ ĐÂY ---
     const servicesToUpdate = newInvoice.items.filter(
       (item) => item.type === "service"
     );
@@ -51,7 +52,6 @@ export const createInvoice = async (
       );
       if (customerRes.ok) {
         const customer: Customer = await customerRes.json();
-        // <-- THAY ĐỔI: Sử dụng 'const' thay vì 'let' -->
         const purchasedServices = customer.purchasedServices || [];
 
         servicesToUpdate.forEach((item) => {
@@ -75,6 +75,7 @@ export const createInvoice = async (
         });
       }
     }
+    // --- KẾT THÚC LOGIC MỚI ---
 
     return newInvoice;
   } catch (error) {

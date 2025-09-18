@@ -189,3 +189,40 @@ export const updateCustomerProfile = async (
   if (!response.ok) throw new Error("Failed to update customer profile");
   return response.json();
 };
+export const redeemPurchasedService = async (
+  customerId: string,
+  serviceId: string
+): Promise<Customer> => {
+  // 1. Lấy thông tin khách hàng hiện tại
+  const customerRes = await fetch(`${CUSTOMERS_API_URL}/${customerId}`);
+  if (!customerRes.ok) {
+    throw new Error("Không tìm thấy khách hàng.");
+  }
+  const customer: Customer = await customerRes.json();
+
+  const purchasedServices = customer.purchasedServices || [];
+  const serviceIndex = purchasedServices.findIndex(
+    (s) => s.serviceId === serviceId
+  );
+
+  // 2. Kiểm tra xem khách hàng có dịch vụ này và còn lượt không
+  if (serviceIndex === -1 || purchasedServices[serviceIndex].quantity <= 0) {
+    throw new Error("Khách hàng không có lượt dịch vụ này để sử dụng.");
+  }
+
+  // 3. Trừ đi một lượt
+  purchasedServices[serviceIndex].quantity -= 1;
+
+  // 4. Cập nhật lại hồ sơ khách hàng trên server
+  const response = await fetch(`${CUSTOMERS_API_URL}/${customerId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ purchasedServices }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Cập nhật số lượt dịch vụ thất bại.");
+  }
+
+  return response.json();
+};

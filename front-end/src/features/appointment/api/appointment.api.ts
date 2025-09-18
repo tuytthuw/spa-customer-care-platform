@@ -58,10 +58,10 @@ export const createAppointment = async (
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        ...appointmentData,
-        id: `appt-${uuidv4()}`, // Tạo ID ngẫu nhiên
+        id: `appt-${uuidv4()}`,
         status: "upcoming",
         paymentStatus: "unpaid",
+        ...appointmentData,
       }),
     });
 
