@@ -45,8 +45,8 @@ const allNavLinks: NavLink[] = [
     requiredFeature: "appointments",
   },
   {
-    href: "/treatments",
-    label: "Liệu trình của tôi",
+    href: "/my-packages",
+    label: "Liệu trình & Dịch vụ đã mua",
     icon: Package,
     requiredFeature: "treatments",
   },

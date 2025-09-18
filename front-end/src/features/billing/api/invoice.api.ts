@@ -1,8 +1,9 @@
-// src/services/invoiceService.ts
 import { Invoice } from "@/features/billing/types";
 import { v4 as uuidv4 } from "uuid";
+import { Customer } from "@/features/customer/types";
 
 const INVOICES_API_URL = "http://localhost:3001/invoices";
+const CUSTOMERS_API_URL = "http://localhost:3001/customers";
 
 // Lấy type Omit để loại bỏ các trường không cần thiết khi tạo mới
 type InvoiceCreationData = Omit<Invoice, "id" | "createdAt">;
@@ -37,7 +38,45 @@ export const createInvoice = async (
     if (!response.ok) {
       throw new Error("Failed to create invoice.");
     }
-    return await response.json();
+
+    const newInvoice: Invoice = await response.json();
+
+    const servicesToUpdate = newInvoice.items.filter(
+      (item) => item.type === "service"
+    );
+
+    if (servicesToUpdate.length > 0) {
+      const customerRes = await fetch(
+        `${CUSTOMERS_API_URL}/${newInvoice.customerId}`
+      );
+      if (customerRes.ok) {
+        const customer: Customer = await customerRes.json();
+        // <-- THAY ĐỔI: Sử dụng 'const' thay vì 'let' -->
+        const purchasedServices = customer.purchasedServices || [];
+
+        servicesToUpdate.forEach((item) => {
+          const existingService = purchasedServices.find(
+            (s) => s.serviceId === item.id
+          );
+          if (existingService) {
+            existingService.quantity += item.quantity;
+          } else {
+            purchasedServices.push({
+              serviceId: item.id,
+              quantity: item.quantity,
+            });
+          }
+        });
+
+        await fetch(`${CUSTOMERS_API_URL}/${newInvoice.customerId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ purchasedServices: purchasedServices }),
+        });
+      }
+    }
+
+    return newInvoice;
   } catch (error) {
     console.error("Error creating invoice:", error);
     throw error;
