@@ -41,6 +41,13 @@
       "password": "password",
       "role": "customer",
       "status": "active"
+    },
+    {
+      "id": "user-cus-4",
+      "email": "thuyduong@example.com",
+      "password": "password",
+      "role": "customer",
+      "status": "active"
     }
   ],
   "roles": [
@@ -50,60 +57,20 @@
       "description": "Toàn quyền truy cập hệ thống.",
       "status": "active",
       "permissions": {
-        "dashboard": [
-          "read"
-        ],
-        "appointments": [
-          "read",
-          "write"
-        ],
-        "appointments_management": [
-          "read",
-          "write"
-        ],
-        "customers": [
-          "read",
-          "write"
-        ],
-        "staff": [
-          "read",
-          "write"
-        ],
-        "services": [
-          "read",
-          "write"
-        ],
-        "products": [
-          "read",
-          "write"
-        ],
-        "categories": [
-          "read",
-          "write"
-        ],
-        "resources": [
-          "read",
-          "write"
-        ],
-        "schedules": [
-          "read",
-          "write"
-        ],
-        "reports": [
-          "read"
-        ],
-        "billing": [
-          "read",
-          "write"
-        ],
-        "users": [
-          "read",
-          "write"
-        ],
-        "roles": [
-          "read",
-          "write"
-        ]
+        "dashboard": ["read"],
+        "appointments": ["read", "write"],
+        "appointments_management": ["read", "write"],
+        "customers": ["read", "write"],
+        "staff": ["read", "write"],
+        "services": ["read", "write"],
+        "products": ["read", "write"],
+        "categories": ["read", "write"],
+        "resources": ["read", "write"],
+        "schedules": ["read", "write"],
+        "reports": ["read"],
+        "billing": ["read", "write"],
+        "users": ["read", "write"],
+        "roles": ["read", "write"]
       }
     },
     {
@@ -112,40 +79,16 @@
       "description": "Quản lý lịch hẹn và khách hàng.",
       "status": "active",
       "permissions": {
-        "dashboard": [
-          "read"
-        ],
-        "appointments": [
-          "read",
-          "write"
-        ],
-        "appointments_management": [
-          "read",
-          "write"
-        ],
-        "customers": [
-          "read",
-          "write"
-        ],
-        "staff": [
-          "read"
-        ],
-        "services": [
-          "read"
-        ],
-        "products": [
-          "read"
-        ],
-        "categories": [
-          "read"
-        ],
-        "resources": [
-          "read"
-        ],
-        "billing": [
-          "read",
-          "write"
-        ],
+        "dashboard": ["read"],
+        "appointments": ["read", "write"],
+        "appointments_management": ["read", "write"],
+        "customers": ["read", "write"],
+        "staff": ["read"],
+        "services": ["read"],
+        "products": ["read"],
+        "categories": ["read"],
+        "resources": ["read"],
+        "billing": ["read", "write"],
         "schedules": [],
         "reports": [],
         "users": [],
@@ -158,24 +101,15 @@
       "description": "Xem lịch làm việc và thông tin khách hàng.",
       "status": "active",
       "permissions": {
-        "dashboard": [
-          "read"
-        ],
-        "appointments": [
-          "read"
-        ],
-        "customers": [
-          "read"
-        ],
+        "dashboard": ["read"],
+        "appointments": ["read"],
+        "customers": ["read"],
         "staff": [],
         "services": [],
         "products": [],
         "categories": [],
         "resources": [],
-        "schedules": [
-          "read",
-          "write"
-        ],
+        "schedules": ["read", "write"],
         "reports": [],
         "users": [],
         "roles": []
@@ -187,24 +121,11 @@
       "description": "Quyền cơ bản cho khách hàng sử dụng portal.",
       "status": "active",
       "permissions": {
-        "appointments": [
-          "read",
-          "write"
-        ],
-        "treatments": [
-          "read"
-        ],
-        "billing": [
-          "read"
-        ],
-        "reviews": [
-          "read",
-          "write"
-        ],
-        "profile": [
-          "read",
-          "write"
-        ]
+        "appointments": ["read", "write"],
+        "treatments": ["read"],
+        "billing": ["read"],
+        "reviews": ["read", "write"],
+        "profile": ["read", "write"]
       }
     }
   ],
@@ -221,9 +142,7 @@
       "preferences": {
         "allergies": "Dị ứng với tinh dầu bạc hà.",
         "serviceNotes": "Thích massage lực mạnh, không thích nói chuyện nhiều trong lúc làm dịch vụ.",
-        "favoriteTechnicianIds": [
-          "tech-1"
-        ]
+        "favoriteTechnicianIds": ["tech-1"]
       },
       "notificationSettings": {
         "allowPromotions": true,
@@ -249,6 +168,22 @@
       "totalAppointments": 0,
       "lastVisit": "2025-09-16T10:00:00.000Z",
       "notes": ""
+    },
+    {
+      "id": "cus-4",
+      "userId": "user-cus-4",
+      "name": "Phan Thùy Dương",
+      "phone": "0905123789",
+      "avatar": "/images/avatars/avatar-2.jpg",
+      "notes": "Khách hàng mới, quan tâm đến các gói thư giãn.",
+      "totalAppointments": 0,
+      "lastVisit": "2025-09-18T11:00:00.000Z",
+      "purchasedServices": [
+        {
+          "serviceId": "2",
+          "quantity": 3
+        }
+      ]
     }
   ],
   "staff": [
@@ -259,10 +194,7 @@
       "phone": "0911223344",
       "role": "technician",
       "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=tech-1",
-      "serviceIds": [
-        "1",
-        "2"
-      ],
+      "serviceIds": ["1", "2"],
       "status": "active"
     },
     {
@@ -293,10 +225,7 @@
       "duration": 60,
       "imageUrl": "/images/service-1.jpg",
       "status": "active",
-      "categories": [
-        "Chăm sóc da mặt",
-        "Massage & Trị liệu"
-      ]
+      "categories": ["Chăm sóc da mặt", "Massage & Trị liệu"]
     },
     {
       "id": "2",
@@ -306,10 +235,7 @@
       "duration": 90,
       "imageUrl": "/images/service-2.jpg",
       "status": "active",
-      "categories": [
-        "Chăm sóc da mặt",
-        "Massage & Trị liệu"
-      ]
+      "categories": ["Chăm sóc da mặt", "Massage & Trị liệu"]
     }
   ],
   "appointments": [
@@ -373,6 +299,16 @@
       "guestEmail": "tinvg2918@gmail.com",
       "customerNote": "",
       "status": "upcoming"
+    },
+    {
+      "id": "appt-completed-1",
+      "customerId": "cus-4",
+      "serviceId": "1",
+      "technicianId": "tech-1",
+      "date": "2025-09-15T14:00:00.000Z",
+      "status": "completed",
+      "paymentStatus": "paid",
+      "technicianNotes": "Da khách hàng hấp thụ dưỡng chất tốt, không có dấu hiệu kích ứng. Gợi ý sử dụng thêm serum cấp ẩm tại nhà."
     }
   ],
   "resources": [
@@ -745,9 +681,7 @@
       "id": "prod-1",
       "name": "Serum dưỡng ẩm Hyaluronic Acid",
       "description": "Serum cấp ẩm sâu, giúp da căng bóng và mịn màng.",
-      "categories": [
-        "Dưỡng ẩm"
-      ],
+      "categories": ["Dưỡng ẩm"],
       "price": 750000,
       "stock": 50,
       "imageUrl": "/images/product-1.jpg",
@@ -757,9 +691,7 @@
       "id": "prod-2",
       "name": "Kem chống nắng SPF 50+",
       "description": "Bảo vệ da tối ưu khỏi tia UVA/UVB, không gây bết dính.",
-      "categories": [
-        "Chống nắng"
-      ],
+      "categories": ["Chống nắng"],
       "price": 550000,
       "stock": 100,
       "imageUrl": "/images/product-2.jpg",
@@ -803,46 +735,30 @@
       "id": "plan-1",
       "name": "Liệu trình Phục hồi da toàn diện",
       "description": "Gói 5 buổi kết hợp làm sạch sâu và massage nâng cơ, giúp tái tạo làn da, mang lại vẻ sáng khỏe và mịn màng.",
-      "categories": [
-        "Chăm sóc da",
-        "Áo phông"
-      ],
+      "categories": ["Chăm sóc da", "Áo phông"],
       "price": 2500000,
       "imageUrl": "/images/service-1.jpg",
       "status": "active",
       "totalSessions": 5,
       "steps": [
         {
-          "serviceIds": [
-            "1",
-            "2"
-          ],
+          "serviceIds": ["1", "2"],
           "step": 1
         },
         {
-          "serviceIds": [
-            "2"
-          ],
+          "serviceIds": ["2"],
           "step": 2
         },
         {
-          "serviceIds": [
-            "1"
-          ],
+          "serviceIds": ["1"],
           "step": 3
         },
         {
-          "serviceIds": [
-            "1",
-            "2"
-          ],
+          "serviceIds": ["1", "2"],
           "step": 4
         },
         {
-          "serviceIds": [
-            "1",
-            "2"
-          ],
+          "serviceIds": ["1", "2"],
           "step": 5
         }
       ]
@@ -851,10 +767,7 @@
       "id": "plan-2",
       "name": "Liệu trình Thư giãn cao cấp",
       "description": "Combo 3 buổi massage toàn thân và 2 buổi chăm sóc da chuyên sâu, giúp giảm căng thẳng và phục hồi năng lượng.",
-      "categories": [
-        "Massage",
-        "Chăm sóc da"
-      ],
+      "categories": ["Massage", "Chăm sóc da"],
       "price": 3000000,
       "imageUrl": "/images/service-2.jpg",
       "status": "active",
@@ -862,33 +775,23 @@
       "steps": [
         {
           "step": 1,
-          "serviceIds": [
-            "2"
-          ]
+          "serviceIds": ["2"]
         },
         {
           "step": 2,
-          "serviceIds": [
-            "1"
-          ]
+          "serviceIds": ["1"]
         },
         {
           "step": 3,
-          "serviceIds": [
-            "2"
-          ]
+          "serviceIds": ["2"]
         },
         {
           "step": 4,
-          "serviceIds": [
-            "1"
-          ]
+          "serviceIds": ["1"]
         },
         {
           "step": 5,
-          "serviceIds": [
-            "2"
-          ]
+          "serviceIds": ["2"]
         }
       ]
     }
@@ -905,9 +808,7 @@
         {
           "id": "cts-1",
           "treatmentPlanStep": 1,
-          "serviceIds": [
-            "1"
-          ],
+          "serviceIds": ["1"],
           "date": "2025-07-20T14:00:00.000Z",
           "technicianId": "tech-1",
           "status": "completed",
@@ -916,10 +817,7 @@
         {
           "id": "cts-2",
           "treatmentPlanStep": 2,
-          "serviceIds": [
-            "1",
-            "2"
-          ],
+          "serviceIds": ["1", "2"],
           "date": "2025-07-27T14:00:00.000Z",
           "technicianId": "tech-1",
           "status": "completed",
@@ -928,9 +826,7 @@
         {
           "id": "cts-3",
           "treatmentPlanStep": 3,
-          "serviceIds": [
-            "2"
-          ],
+          "serviceIds": ["2"],
           "date": "2025-09-03T02:30:00.000Z",
           "technicianId": "tech-1",
           "status": "completed",
@@ -939,9 +835,7 @@
         {
           "id": "cts-4",
           "treatmentPlanStep": 4,
-          "serviceIds": [
-            "1"
-          ],
+          "serviceIds": ["1"],
           "date": "2025-09-10T14:00:00.000Z",
           "technicianId": "tech-1",
           "status": "completed",
@@ -950,10 +844,7 @@
         {
           "id": "cts-5",
           "treatmentPlanStep": 5,
-          "serviceIds": [
-            "1",
-            "2"
-          ],
+          "serviceIds": ["1", "2"],
           "date": "2025-09-17T14:00:00.000Z",
           "technicianId": "tech-1",
           "status": "completed",
@@ -972,9 +863,7 @@
         {
           "id": "cts-6",
           "treatmentPlanStep": 1,
-          "serviceIds": [
-            "2"
-          ],
+          "serviceIds": ["2"],
           "date": "2025-09-16T06:00:00.000Z",
           "technicianId": "",
           "status": "upcoming",
@@ -983,9 +872,7 @@
         {
           "id": "cts-7",
           "treatmentPlanStep": 2,
-          "serviceIds": [
-            "1"
-          ],
+          "serviceIds": ["1"],
           "date": "2025-09-16T08:30:00.000Z",
           "technicianId": "",
           "status": "upcoming",
@@ -994,9 +881,7 @@
         {
           "id": "cts-8",
           "treatmentPlanStep": 3,
-          "serviceIds": [
-            "2"
-          ],
+          "serviceIds": ["2"],
           "date": "",
           "technicianId": "",
           "status": "upcoming",
@@ -1005,9 +890,7 @@
         {
           "id": "cts-9",
           "treatmentPlanStep": 4,
-          "serviceIds": [
-            "1"
-          ],
+          "serviceIds": ["1"],
           "date": "",
           "technicianId": "",
           "status": "upcoming",
@@ -1016,9 +899,62 @@
         {
           "id": "cts-10",
           "treatmentPlanStep": 5,
-          "serviceIds": [
-            "2"
-          ],
+          "serviceIds": ["2"],
+          "date": "",
+          "technicianId": "",
+          "status": "upcoming",
+          "notes": "Buổi 5"
+        }
+      ]
+    },
+    {
+      "id": "ct-3",
+      "customerId": "cus-4",
+      "treatmentPlanId": "plan-2",
+      "purchaseDate": "2025-09-18T11:05:00.000Z",
+      "totalSessions": 5,
+      "completedSessions": 0,
+      "sessions": [
+        {
+          "id": "cts-11",
+          "treatmentPlanStep": 1,
+          "serviceIds": ["2"],
+          "date": "",
+          "technicianId": "",
+          "status": "upcoming",
+          "notes": "Buổi 1"
+        },
+        {
+          "id": "cts-12",
+          "treatmentPlanStep": 2,
+          "serviceIds": ["1"],
+          "date": "",
+          "technicianId": "",
+          "status": "upcoming",
+          "notes": "Buổi 2"
+        },
+        {
+          "id": "cts-13",
+          "treatmentPlanStep": 3,
+          "serviceIds": ["2"],
+          "date": "",
+          "technicianId": "",
+          "status": "upcoming",
+          "notes": "Buổi 3"
+        },
+        {
+          "id": "cts-14",
+          "treatmentPlanStep": 4,
+          "serviceIds": ["1"],
+          "date": "",
+          "technicianId": "",
+          "status": "upcoming",
+          "notes": "Buổi 4"
+        },
+        {
+          "id": "cts-15",
+          "treatmentPlanStep": 5,
+          "serviceIds": ["2"],
           "date": "",
           "technicianId": "",
           "status": "upcoming",
