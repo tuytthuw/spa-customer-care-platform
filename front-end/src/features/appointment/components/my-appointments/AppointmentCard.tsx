@@ -17,6 +17,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import CancelAppointmentModal from "./CancelAppointmentModal";
 import { TreatmentPackage, TreatmentPlan } from "@/features/treatment/types";
+import { Separator } from "@/components/ui/separator";
 
 interface AppointmentCardProps {
   appointment: Appointment;
@@ -130,6 +131,17 @@ const AppointmentCard = ({
                 minute: "2-digit",
               })}
             </p>
+
+            {appointment.status === "completed" &&
+              appointment.technicianNotes && (
+                <>
+                  <Separator className="my-3" />
+                  <p className="font-semibold">Ghi chú từ Kỹ thuật viên:</p>
+                  <p className="text-sm text-muted-foreground italic border-l-2 border-primary pl-2 mt-1">
+                    {appointment.technicianNotes}
+                  </p>
+                </>
+              )}
           </div>
         </CardContent>
         <CardFooter className="flex justify-end gap-2">
