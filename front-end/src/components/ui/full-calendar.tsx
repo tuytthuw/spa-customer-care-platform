@@ -6,6 +6,8 @@ import { CalendarOptions } from "@fullcalendar/core";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import interactionPlugin from "@fullcalendar/interaction";
 import { cn } from "@/lib/utils";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import dayGridPlugin from "@fullcalendar/daygrid";
 
 export interface FullCalendarUIProps extends CalendarOptions {
   className?: string;
@@ -18,21 +20,20 @@ const FullCalendarUI = React.forwardRef<FullCalendar, FullCalendarUIProps>(
         <div className={cn("h-full w-full", className)}>
           <FullCalendar
             ref={ref}
-            plugins={[resourceTimelinePlugin, interactionPlugin]}
-            initialView="resourceTimelineDay"
+            plugins={[
+              resourceTimelinePlugin,
+              timeGridPlugin,
+              interactionPlugin,
+              dayGridPlugin,
+            ]}
             schedulerLicenseKey="GPL-My-Project-Is-Open-Source"
-            headerToolbar={{
-              left: "prev,next today",
-              center: "title",
-              right: "resourceTimelineDay,resourceTimelineWeek",
-            }}
-            resourceAreaHeaderContent="Tài nguyên"
             height="100%"
             locale="vi"
             buttonText={{
               today: "Hôm nay",
               day: "Ngày",
               week: "Tuần",
+              month: "Tháng", // Thêm text cho các nút khác
             }}
             editable={true}
             droppable={true}
@@ -144,6 +145,15 @@ const FullCalendarUI = React.forwardRef<FullCalendar, FullCalendarUIProps>(
           .fc-theme-standard .fc-list-day-cushion {
             /* Nền của ngày trong chế độ list */
             background-color: var(--muted);
+          }
+
+          /* --- Tùy chỉnh giao diện TimeGrid --- */
+          .fc-timegrid-event-harness {
+            margin-right: 4px; /* Tạo khoảng hở giữa các event */
+          }
+          .fc-timegrid-event {
+            border-radius: var(--radius-sm);
+            padding: 4px 6px;
           }
         `}</style>
       </>

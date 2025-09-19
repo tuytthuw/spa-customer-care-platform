@@ -2,7 +2,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import { Appointment } from "@/features/appointment/types";
 import { Service } from "@/features/service/types";
 import { Staff } from "@/features/staff/types";

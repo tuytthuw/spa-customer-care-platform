@@ -1,7 +1,10 @@
+// src/features/customer-schedules/components/InteractiveCalendar.tsx
 "use client";
 
 import React, { useState, useMemo } from "react";
 import { Calendar } from "@/components/ui/calendar";
+import { Card, CardContent } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { Appointment } from "@/features/appointment/types";
 import { Service } from "@/features/service/types";
@@ -13,6 +16,27 @@ interface InteractiveCalendarProps {
   onSelectAppointment: (appointment: Appointment) => void;
 }
 
+const CalendarLegend = () => (
+  <Card className="mt-4">
+    <CardContent className="p-3">
+      <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-sm bg-primary"></div>
+          <span>Sắp tới</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-sm bg-[var(--color-success)]"></div>
+          <span>Đã hoàn thành</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-sm bg-[var(--color-destructive)]"></div>
+          <span>Đã hủy</span>
+        </div>
+      </div>
+    </CardContent>
+  </Card>
+);
+
 export default function InteractiveCalendar({
   appointments,
   services,
@@ -20,12 +44,13 @@ export default function InteractiveCalendar({
 }: InteractiveCalendarProps) {
   const [date, setDate] = useState<Date | undefined>(new Date());
 
-  // Sử dụng useMemo để tối ưu, chỉ tính lại danh sách ngày có lịch hẹn khi appointments thay đổi
+  // Ghi nhớ những ngày có lịch hẹn để hiển thị dấu chấm
   const appointmentDates = useMemo(
     () => appointments.map((app) => new Date(app.date)),
     [appointments]
   );
 
+  // Lọc danh sách lịch hẹn tương ứng với ngày đã chọn trên lịch
   const selectedDayAppointments = appointments
     .filter((app) => new Date(app.date).toDateString() === date?.toDateString())
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
@@ -33,74 +58,74 @@ export default function InteractiveCalendar({
   const getStatusColor = (status: string) => {
     switch (status) {
       case "upcoming":
-        return "bg-primary";
+        return "after:bg-primary";
       case "completed":
-        return "bg-success";
+        return "after:bg-[var(--color-success)]";
       case "cancelled":
-        return "bg-destructive";
+        return "after:bg-[var(--color-destructive)]";
       default:
-        return "bg-muted";
+        return "after:bg-muted";
     }
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
-      <div className="md:col-span-2">
+    // Bố cục chính: Lịch bên trái, danh sách lịch hẹn bên phải
+    <div className="flex flex-col gap-6 h-full">
+      <Card className="w-full items-center p-2 md:p-4">
         <Calendar
           mode="single"
           selected={date}
           onSelect={setDate}
-          className="rounded-md border p-0"
-          // Sử dụng modifiers để thêm class tùy chỉnh vào những ngày có lịch hẹn
+          className="p-0"
           modifiers={{ withAppointments: appointmentDates }}
           modifiersClassNames={{
             withAppointments: "has-appointment",
           }}
         />
-      </div>
-      <div className="md:col-span-1">
-        <h4 className="font-semibold mb-3">
-          Lịch hẹn ngày {date?.toLocaleDateString("vi-VN")}
-        </h4>
-        <div className="space-y-3 h-[calc(100vh-14rem)] overflow-y-auto pr-2">
-          {selectedDayAppointments.length > 0 ? (
-            selectedDayAppointments.map((app) => {
-              const service = services.find((s) => s.id === app.serviceId);
-              return (
-                <button
-                  key={app.id}
-                  onClick={() => onSelectAppointment(app)}
-                  className="w-full text-left"
-                >
-                  <div className="p-3 rounded-lg border bg-card hover:bg-muted/50 transition-colors flex items-start gap-3">
-                    <div
-                      className={cn(
-                        "mt-1.5 h-2 w-2 rounded-full flex-shrink-0",
-                        getStatusColor(app.status)
-                      )}
-                    ></div>
-                    <div>
-                      <p className="font-medium text-sm">
-                        {new Date(app.date).toLocaleTimeString("vi-VN", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {service?.name || "Dịch vụ không xác định"}
-                      </p>
-                    </div>
-                  </div>
-                </button>
-              );
-            })
-          ) : (
-            <p className="text-sm text-muted-foreground text-center pt-8">
-              Không có lịch hẹn.
-            </p>
-          )}
+      </Card>
+
+      <Card className="flex-grow flex flex-col">
+        <div className="p-4 border-b">
+          <h4 className="font-semibold">
+            Lịch hẹn ngày {date?.toLocaleDateString("vi-VN")}
+          </h4>
         </div>
-      </div>
+        <ScrollArea className="h-96">
+          {" "}
+          <div className="p-4 space-y-3">
+            {selectedDayAppointments.length > 0 ? (
+              selectedDayAppointments.map((app) => {
+                const service = services.find((s) => s.id === app.serviceId);
+                return (
+                  <button
+                    key={app.id}
+                    onClick={() => onSelectAppointment(app)}
+                    className={cn(
+                      "w-full text-left bg-muted after:bg-primary/70 relative rounded-md p-3 pl-8 text-sm after:absolute after:inset-y-2 after:left-2 after:w-1.5 after:rounded-full transition-colors hover:bg-accent",
+                      getStatusColor(app.status)
+                    )}
+                  >
+                    <div className="font-semibold">
+                      {service?.name || "Dịch vụ"}
+                    </div>
+                    <div className="text-muted-foreground text-xs">
+                      {new Date(app.date).toLocaleTimeString("vi-VN", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </div>
+                  </button>
+                );
+              })
+            ) : (
+              <p className="text-sm text-muted-foreground text-center pt-8">
+                Không có lịch hẹn.
+              </p>
+            )}
+          </div>
+        </ScrollArea>
+        <CalendarLegend />
+      </Card>
     </div>
   );
 }

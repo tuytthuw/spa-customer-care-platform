@@ -82,7 +82,7 @@ export default function ScheduleListView({
     <Tabs defaultValue="actions">
       <TabsList className="grid w-full grid-cols-3 md:w-auto md:max-w-[500px] h-auto">
         <TabsTrigger value="actions">
-          Cần thực hiện ({actionableItems.length})
+          Đã mua({actionableItems.length})
         </TabsTrigger>
         <TabsTrigger value="upcoming">
           Sắp tới ({upcomingAppointments.length})
