@@ -1,7 +1,7 @@
 // src/app/(public)/booking/page.tsx
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -18,6 +18,7 @@ import { bookTreatmentSession } from "@/features/treatment/api/treatment.api";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContexts";
 import { useCustomers } from "@/features/customer/hooks/useCustomers";
+import { redeemPurchasedService } from "@/features/customer/api/customer.api";
 
 interface CustomerInfo {
   name: string;
@@ -55,10 +56,33 @@ export default function BookingPage() {
   });
 
   useEffect(() => {
+    // Reset store when the component unmounts
     return () => {
       reset();
     };
   }, [reset]);
+
+  const [isPrePurchased, setIsPrePurchased] = useState(false);
+
+  useEffect(() => {
+    if (service && currentUserProfile?.purchasedServices) {
+      const purchased = currentUserProfile.purchasedServices.find(
+        (s) => s.serviceId === service.id && s.quantity > 0
+      );
+      setIsPrePurchased(!!purchased);
+    } else {
+      setIsPrePurchased(false);
+    }
+  }, [service, currentUserProfile]);
+
+  const redeemServiceMutation = useMutation({
+    mutationFn: (data: { customerId: string; serviceId: string }) =>
+      redeemPurchasedService(data.customerId, data.serviceId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+    },
+    // Không cần xử lý onError ở đây vì createAppointment sẽ báo lỗi chung
+  });
 
   const createAppointmentMutation = useMutation({
     mutationFn: createAppointment,
@@ -84,24 +108,39 @@ export default function BookingPage() {
     const appointmentDate = new Date(date);
     appointmentDate.setHours(hours, minutes, 0, 0);
 
-    if (treatmentPackageId && sessionId && service) {
+    if (isPrePurchased && service && currentUserProfile) {
+      redeemServiceMutation.mutate({
+        customerId: currentUserProfile.id,
+        serviceId: service.id,
+      });
+      createAppointmentMutation.mutate({
+        customerId: currentUserProfile.id,
+        serviceId: service.id,
+        date: appointmentDate.toISOString(),
+        customerNote: customerInfo.note,
+        paymentStatus: "paid",
+      });
+      return;
+    }
+
+    if (treatmentPackageId && sessionId && service && currentUserProfile) {
       bookTreatmentSessionMutation.mutate({
         treatmentPackageId,
         sessionId,
         date: appointmentDate.toISOString(),
+        customerId: currentUserProfile.id,
+        serviceId: service.id,
       });
     } else if (service) {
-      // Luồng đặt dịch vụ lẻ: Phân biệt khách đã đăng nhập và khách vãng lai
       if (user && currentUserProfile) {
-        // Khách hàng đã đăng nhập
         createAppointmentMutation.mutate({
           customerId: currentUserProfile.id,
           serviceId: service.id,
           date: appointmentDate.toISOString(),
           customerNote: customerInfo.note,
+          paymentStatus: "unpaid",
         });
       } else {
-        // Khách vãng lai (chưa đăng nhập)
         createAppointmentMutation.mutate({
           customerId: "guest-user",
           serviceId: service.id,
@@ -110,6 +149,7 @@ export default function BookingPage() {
           guestPhone: customerInfo.phone,
           guestEmail: customerInfo.email,
           customerNote: customerInfo.note,
+          paymentStatus: "unpaid",
         });
       }
     }
@@ -144,8 +184,10 @@ export default function BookingPage() {
             onConfirm={handleConfirmBooking}
             isSubmitting={
               createAppointmentMutation.isPending ||
-              bookTreatmentSessionMutation.isPending
+              bookTreatmentSessionMutation.isPending ||
+              redeemServiceMutation.isPending
             }
+            isPrePurchased={isPrePurchased}
           />
         );
       case 4:

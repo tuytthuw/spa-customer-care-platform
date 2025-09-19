@@ -1,4 +1,4 @@
-// src/features/treatment/components/PurchasedItemCard.tsx
+// src/features/my-packages/components/PurchasedItemCard.tsx
 "use client";
 
 import { useState } from "react";
@@ -6,11 +6,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChevronDown, ChevronUp, CalendarPlus } from "lucide-react";
 
+// Import tất cả các types cần thiết
 import { TreatmentPackage, TreatmentPlan } from "@/features/treatment/types";
 import { Service } from "@/features/service/types";
 import { Staff } from "@/features/staff/types";
 import { PurchasedService } from "@/features/customer/types";
 
+// Import components UI
 import {
   Card,
   CardContent,
@@ -23,7 +25,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import SessionHistory from "@/features/my-packages/components/SessionHistory";
 
-// Kiểu dữ liệu cho props của component
+// Kiểu dữ liệu cho props của component, bao gồm cả hai loại item
 interface PurchasedItemCardProps {
   item:
     | { type: "treatment"; data: TreatmentPackage; details?: TreatmentPlan }
@@ -50,7 +52,7 @@ export default function PurchasedItemCard({
   const { details } = item;
   const isTreatment = item.type === "treatment";
 
-  // Tính toán tiến độ cho liệu trình
+  // Tính toán tiến độ chỉ khi là liệu trình
   const progress = isTreatment
     ? (item.data.completedSessions / item.data.totalSessions) * 100
     : 0;
@@ -83,13 +85,14 @@ export default function PurchasedItemCard({
             <p className="text-sm text-muted-foreground">
               Ngày mua:{" "}
               {new Date(
-                isTreatment ? item.data.purchaseDate : new Date().toISOString()
+                isTreatment ? item.data.purchaseDate : new Date().toISOString() // Dịch vụ lẻ chưa có ngày mua, tạm dùng ngày hiện tại
               ).toLocaleDateString("vi-VN")}
             </p>
           </div>
         </div>
       </CardHeader>
 
+      {/* Chỉ hiển thị lịch sử buổi cho liệu trình */}
       {isTreatment && isHistoryVisible && (
         <CardContent>
           <SessionHistory
@@ -116,10 +119,11 @@ export default function PurchasedItemCard({
             )}
           </Button>
         ) : (
-          <div /> // Placeholder để giữ layout
+          <div /> // Placeholder để giữ layout cân bằng
         )}
 
         <div className="flex items-center gap-2">
+          {/* Nút Đặt lịch chỉ hiển thị cho dịch vụ lẻ */}
           {!isTreatment && (
             <Button asChild>
               <Link href={`/booking?serviceId=${details.id}`}>
@@ -128,10 +132,11 @@ export default function PurchasedItemCard({
               </Link>
             </Button>
           )}
-          {isCompleted && !hasReviewed && (
+          {/* Nút Đánh giá chỉ hiển thị cho liệu trình đã hoàn thành */}
+          {isCompleted && !hasReviewed && isTreatment && (
             <Button onClick={onWriteReview}>Viết đánh giá</Button>
           )}
-          {isCompleted && hasReviewed && (
+          {isCompleted && hasReviewed && isTreatment && (
             <Button variant="outline" disabled>
               Đã đánh giá
             </Button>

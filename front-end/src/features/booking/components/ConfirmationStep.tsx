@@ -26,6 +26,7 @@ interface ConfirmationStepProps {
     note: string;
   }) => void;
   isSubmitting?: boolean;
+  isPrePurchased?: boolean;
 }
 
 export default function ConfirmationStep({
@@ -33,6 +34,7 @@ export default function ConfirmationStep({
   onPrevStep,
   onConfirm,
   isSubmitting = false,
+  isPrePurchased = false,
 }: ConfirmationStepProps) {
   const { user } = useAuth();
   const { service, date, time } = bookingDetails;
@@ -130,7 +132,14 @@ export default function ConfirmationStep({
         {/* Thông tin khách hàng */}
         <div className="mb-8">
           <h3 className="text-lg mb-4">Thông tin khách hàng</h3>
-          {user ? (
+          {isPrePurchased ? (
+            <div className="p-4 bg-green-100 dark:bg-green-900 border border-green-200 dark:border-green-800 rounded-lg text-green-800 dark:text-green-200">
+              <p className="font-semibold">
+                Bạn đang sử dụng một lượt dịch vụ đã mua trước.
+              </p>
+              <p className="text-sm">Lịch hẹn này đã được thanh toán.</p>
+            </div>
+          ) : user ? (
             <div className="bg-muted p-4 rounded-lg border border-border">
               <div className="flex items-center">
                 <UserCircle className="text-muted-foreground text-xl mr-3" />
@@ -221,7 +230,11 @@ export default function ConfirmationStep({
           className="w-full py-3 bg-primary text-primary-foreground hover:bg-primary/90"
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Đang xử lý..." : "Xác nhận đặt lịch"}
+          {isSubmitting
+            ? "Đang xử lý..."
+            : isPrePurchased
+            ? "Xác nhận sử dụng dịch vụ"
+            : "Xác nhận & Thanh toán"}
         </Button>
       </div>
     </div>

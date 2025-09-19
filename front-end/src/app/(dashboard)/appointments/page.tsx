@@ -3,9 +3,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Appointment } from "@/features/appointment/types";
-import { Service } from "@/features/service/types";
-import { Staff } from "@/features/staff/types";
-import { Review, NewReviewData } from "@/features/review/types";
+import { NewReviewData } from "@/features/review/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AppointmentCard from "@/features/appointment/components/my-appointments/AppointmentCard";
 import { ReviewModal } from "@/features/review/components/ReviewModal";
@@ -13,14 +11,17 @@ import {
   getAppointments,
   updateAppointmentStatus,
 } from "@/features/appointment/api/appointment.api";
-import { getServices } from "@/features/service/api/service.api";
-import { getStaff } from "@/features/staff/api/staff.api";
-import { getReviews, createReview } from "@/features/review/api/review.api";
+import { createReview } from "@/features/review/api/review.api";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContexts";
-import { getCustomers } from "@/features/customer/api/customer.api";
-import { FullCustomerProfile } from "@/features/customer/types";
 import { PageHeader } from "@/components/common/PageHeader";
+import { useTreatments } from "@/features/treatment/hooks/useTreatments";
+import { useTreatmentPlans } from "@/features/treatment/hooks/useTreatmentPlans";
+import { useCustomers } from "@/features/customer/hooks/useCustomers";
+import { useServices } from "@/features/service/hooks/useServices";
+import { useStaffs } from "@/features/staff/hooks/useStaffs";
+import { useReviews } from "@/features/review/hooks/useReviews";
+import { ReviewFormValues } from "@/features/review/schemas";
 export default function AppointmentsPage() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -28,12 +29,8 @@ export default function AppointmentsPage() {
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment | null>(null);
 
-  const { data: customers = [], isLoading: isLoadingCustomers } = useQuery<
-    FullCustomerProfile[]
-  >({
-    queryKey: ["customers"],
-    queryFn: getCustomers,
-  });
+  const { data: customers = [], isLoading: isLoadingCustomers } =
+    useCustomers();
 
   const {
     data: appointments = [],
@@ -57,24 +54,16 @@ export default function AppointmentsPage() {
     data: services = [],
     isLoading: isLoadingServices,
     error: errorServices,
-  } = useQuery<Service[]>({
-    queryKey: ["services"],
-    queryFn: getServices,
-  });
-
+  } = useServices();
   const {
     data: staff = [],
     isLoading: isLoadingStaff,
     error: errorStaff,
-  } = useQuery<Staff[]>({
-    queryKey: ["staff"],
-    queryFn: getStaff,
-  });
+  } = useStaffs();
 
-  const { data: reviews = [] } = useQuery<Review[]>({
-    queryKey: ["reviews"],
-    queryFn: getReviews,
-  });
+  const { data: reviews = [] } = useReviews();
+  const { data: treatments = [] } = useTreatments();
+  const { data: treatmentPlans = [] } = useTreatmentPlans();
 
   const createReviewMutation = useMutation({
     mutationFn: createReview,
@@ -93,7 +82,7 @@ export default function AppointmentsPage() {
     setIsReviewModalOpen(true);
   };
 
-  const handleReviewSubmit = (rating: number, comment: string) => {
+  const handleReviewSubmit = (values: ReviewFormValues) => {
     if (!selectedAppointment || !user || !selectedAppointment.technicianId) {
       toast.error("Thiếu thông tin để gửi đánh giá.");
       return;
@@ -106,8 +95,11 @@ export default function AppointmentsPage() {
       customerId: customerProfile.id,
       technicianId: selectedAppointment.technicianId,
       serviceId: selectedAppointment.serviceId,
-      rating,
-      comment,
+      rating: values.rating, // Lấy từ đối tượng values
+      comment: values.comment, // Lấy từ đối tượng values
+      // Thêm các trường tùy chọn để khớp với type
+      imageUrl: "",
+      imageUrls: [],
     };
     createReviewMutation.mutate(reviewData);
   };
@@ -173,6 +165,14 @@ export default function AppointmentsPage() {
       const hasReviewed = reviews.some(
         (r) => r.appointmentId === appointment.id
       );
+      const treatmentPackage = treatments.find(
+        (pkg) => pkg.id === appointment.treatmentPackageId
+      );
+      const treatmentPlan = treatmentPackage
+        ? treatmentPlans.find(
+            (plan) => plan.id === treatmentPackage.treatmentPlanId
+          )
+        : undefined;
 
       // Chỉ render khi có đủ thông tin dịch vụ
       if (!service) return null;
@@ -183,6 +183,8 @@ export default function AppointmentsPage() {
           appointment={appointment}
           service={service}
           technician={technician}
+          treatmentPackage={treatmentPackage}
+          treatmentPlan={treatmentPlan}
           onCancel={handleCancelAppointment}
           onReview={handleOpenReviewModal}
           hasReviewed={hasReviewed}

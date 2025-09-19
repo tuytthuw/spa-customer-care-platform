@@ -1,28 +1,26 @@
+// src/app/(dashboard)/my-packages/page.tsx
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContexts";
 import { toast } from "sonner";
 
-// Import types
-import { TreatmentPackage } from "@/features/treatment/types";
+// Import các types cần thiết
+import { TreatmentPackage, TreatmentPlan } from "@/features/treatment/types";
 import {
   FullCustomerProfile,
   PurchasedService,
 } from "@/features/customer/types";
 import { ReviewFormValues } from "@/features/review/schemas";
 import { NewReviewData } from "@/features/review/types";
-import { TreatmentPlan } from "@/features/treatment/types";
 
-// Import API actions
+// Import các API actions
 import { getCustomerTreatments } from "@/features/treatment/api/treatment.api";
 import { getCustomers } from "@/features/customer/api/customer.api";
 import { createReview } from "@/features/review/api/review.api";
 
-// Import custom hooks
+// Import các custom hooks
 import { useTreatmentPlans } from "@/features/treatment/hooks/useTreatmentPlans";
 import { useStaffs } from "@/features/staff/hooks/useStaffs";
 import { useServices } from "@/features/service/hooks/useServices";
@@ -33,25 +31,22 @@ import { PageHeader } from "@/components/common/PageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FullPageLoader } from "@/components/ui/spinner";
 import { ReviewModal } from "@/features/review/components/ReviewModal";
-import PurchasedItemCard from "@/features/my-packages/components/PurchasedItemCard";
+import PurchasedItemCard from "@/features/my-packages/components/PurchasedItemCard"; // <--- IMPORT COMPONENT MỚI
 
+// Định nghĩa kiểu cho một item trong danh sách hợp nhất
 type PurchasedItem =
   | { type: "treatment"; data: TreatmentPackage }
   | { type: "service"; data: PurchasedService };
 
-export default function TreatmentsPage() {
+export default function MyPackagesPage() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
-
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
-  const [selectedTreatment, setSelectedTreatment] =
-    useState<TreatmentPackage | null>(null);
   const [selectedItem, setSelectedItem] = useState<{
     type: "treatment";
     data: TreatmentPackage;
   } | null>(null);
 
-  // ✅ BƯỚC 1: Lấy danh sách tất cả khách hàng để tìm profile của user hiện tại
   const { data: customers = [], isLoading: loadingCustomers } = useQuery<
     FullCustomerProfile[]
   >({
@@ -60,14 +55,13 @@ export default function TreatmentsPage() {
     enabled: !!user,
   });
 
-  // Tìm customer profile tương ứng với user đang đăng nhập
   const currentUserProfile = customers.find((c) => c.userId === user?.id);
 
   const { data: customerTreatments = [], isLoading: loadingTreatments } =
     useQuery<TreatmentPackage[]>({
-      queryKey: ["customerTreatments", user?.id], // Lọc theo user ID
-      queryFn: getCustomerTreatments,
-      // Lọc phía client để chỉ lấy liệu trình của user đang đăng nhập
+      queryKey: ["customerTreatments", currentUserProfile?.id],
+      queryFn: () => getCustomerTreatments(),
+      enabled: !!currentUserProfile,
       select: (data) =>
         data.filter((pkg) => pkg.customerId === currentUserProfile?.id),
     });
@@ -91,18 +85,18 @@ export default function TreatmentsPage() {
   });
 
   const handleOpenReviewModal = (pkg: TreatmentPackage) => {
-    setSelectedTreatment(pkg);
+    setSelectedItem({ type: "treatment", data: pkg });
     setIsReviewModalOpen(true);
   };
 
   const handleReviewSubmit = (data: ReviewFormValues) => {
-    if (!selectedTreatment || !currentUserProfile) return;
+    if (!selectedItem || !currentUserProfile) return;
 
     const reviewData: NewReviewData = {
-      appointmentId: `pkg-${selectedTreatment.id}`,
+      appointmentId: `pkg-${selectedItem.data.id}`,
       customerId: currentUserProfile.id,
       technicianId: "N/A",
-      serviceId: selectedTreatment.treatmentPlanId,
+      serviceId: selectedItem.data.treatmentPlanId,
       rating: data.rating,
       comment: data.comment,
     };
@@ -110,7 +104,7 @@ export default function TreatmentsPage() {
   };
 
   const getSelectedItemName = () => {
-    if (!selectedItem || selectedItem.type !== "treatment") return "";
+    if (!selectedItem) return "";
     const plan = treatmentPlans.find(
       (p: TreatmentPlan) => p.id === selectedItem.data.treatmentPlanId
     );
@@ -128,7 +122,8 @@ export default function TreatmentsPage() {
   if (isLoading) {
     return <FullPageLoader text="Đang tải dữ liệu..." />;
   }
-  // --- LOGIC PHÂN LOẠI MỚI ---
+
+  // Phân loại các mục đã mua
   const notStartedItems: PurchasedItem[] = [];
   const inProgressItems: PurchasedItem[] = [];
   const completedItems: PurchasedItem[] = [];
@@ -147,10 +142,11 @@ export default function TreatmentsPage() {
   });
 
   purchasedServices.forEach((service) => {
-    notStartedItems.push({ type: "service", data: service });
+    if (service.quantity > 0) {
+      notStartedItems.push({ type: "service", data: service });
+    }
   });
 
-  // --- HÀM RENDER MỚI SỬ DỤNG COMPONENT ĐỒNG BỘ ---
   const renderItemsList = (list: PurchasedItem[]) => {
     if (list.length === 0) {
       return (
@@ -186,19 +182,20 @@ export default function TreatmentsPage() {
       if (item.type === "service") {
         const purchased = item.data;
         const serviceInfo = services.find((s) => s.id === purchased.serviceId);
+        if (!serviceInfo) return null;
+
         return (
           <PurchasedItemCard
             key={`serv-${purchased.serviceId}`}
             item={{ type: "service", data: purchased, details: serviceInfo }}
             staffList={staff}
             serviceList={services}
-            isCompleted={false} // Dịch vụ lẻ không có trạng thái "hoàn thành" toàn cục
-            hasReviewed={false} // Logic review cho dịch vụ lẻ có thể thêm sau
+            isCompleted={false}
+            hasReviewed={false}
             onWriteReview={() => {}}
           />
         );
       }
-
       return null;
     });
   };
@@ -206,7 +203,6 @@ export default function TreatmentsPage() {
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
       <PageHeader title="Dịch vụ & Liệu trình của tôi" />
-
       <Tabs defaultValue="not-started">
         <TabsList className="grid w-full grid-cols-3 md:w-auto h-auto">
           <TabsTrigger value="not-started">
@@ -223,11 +219,9 @@ export default function TreatmentsPage() {
         <TabsContent value="not-started" className="mt-4">
           <div className="space-y-6">{renderItemsList(notStartedItems)}</div>
         </TabsContent>
-
         <TabsContent value="in-progress" className="mt-4">
           <div className="space-y-6">{renderItemsList(inProgressItems)}</div>
         </TabsContent>
-
         <TabsContent value="completed" className="mt-4">
           <div className="space-y-6">{renderItemsList(completedItems)}</div>
         </TabsContent>
@@ -236,7 +230,7 @@ export default function TreatmentsPage() {
       {selectedItem && (
         <ReviewModal
           isOpen={isReviewModalOpen}
-          onClose={() => setSelectedItem(null)}
+          onClose={() => setIsReviewModalOpen(false)}
           onSubmit={handleReviewSubmit}
           itemName={getSelectedItemName()}
           isSubmitting={createReviewMutation.isPending}
