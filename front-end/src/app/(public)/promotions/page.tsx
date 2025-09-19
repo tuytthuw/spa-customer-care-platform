@@ -4,15 +4,19 @@ import { usePromotions } from "@/features/promotion/hooks/usePromotions";
 import { PromotionCard } from "@/features/promotion/components/PromotionCard";
 import { PageHeader } from "@/components/common/PageHeader";
 import { FullPageLoader } from "@/components/ui/spinner";
+
 export default function PromotionsPage() {
   const { data: promotions, isLoading, error } = usePromotions();
 
   if (isLoading) {
-    return <FullPageLoader text="Đang tải dữ liệu khuyến mãi..." />;
+    return (
+      <FullPageLoader text="Đang tải dữ liệu khuyến mãi.."></FullPageLoader>
+    );
   }
 
   if (error) {
-    return <div>Đã xảy ra lỗi khi tải dữ liệu khuyến mãi.</div>;
+    // Thêm style để thông báo lỗi rõ ràng hơn
+    return <div> Không thể tải khuyến mãi</div>;
   }
 
   return (
