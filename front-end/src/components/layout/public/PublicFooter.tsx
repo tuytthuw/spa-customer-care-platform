@@ -82,7 +82,7 @@ export default function PublicFooter() {
             <h3 className="text-lg font-semibold mb-4">Tìm Chúng Tôi</h3>
             <div className="rounded-lg overflow-hidden shadow-md">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.447174239829!2d106.69727301474939!3d10.77698999232079!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f3a393448f7%3A0x8c72544c37d4f4a6!2sB%E1%BA%A3o%20t%C3%A0ng%20Ch%E1%BB%A9ng%20t%C3%ADch%20Chi%E1%BA%BFn%20tranh!5e0!3m2!1svi!2s!4v1678886460924!5m2!1svi!2s"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.447171129337!2d106.69747921535593!3d10.776983392322353!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f3a3d2fbf4b%3A0x2f8b4b7a1f8b4b7a!2sDinh%20Th%E1%BB%91ng%20Nh%E1%BA%A5t!5e0!3m2!1svi!2s!4v1678886482813!5m2!1svi!2s"
                 width="100%"
                 height="200"
                 style={{ border: 0 }}
@@ -94,9 +94,7 @@ export default function PublicFooter() {
           </div>
         </div>
         <div className="mt-12 pt-8 border-t text-center text-muted-foreground text-sm">
-          <p>
-            &copy; {new Date().getFullYear()} Serenity Spa. All Rights Reserved.
-          </p>
+          <p>© {new Date().getFullYear()} Serenity Spa. All Rights Reserved.</p>
         </div>
       </div>
     </footer>

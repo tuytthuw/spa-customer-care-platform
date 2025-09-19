@@ -14,6 +14,7 @@ export type AuthUser = User & {
   permissions: Role["permissions"];
   name?: string;
   phone?: string;
+  avatar?: string;
 };
 
 interface AuthContextType {
