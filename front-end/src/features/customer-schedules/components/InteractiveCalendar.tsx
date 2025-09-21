@@ -90,8 +90,7 @@ export default function InteractiveCalendar({
             Lịch hẹn ngày {date?.toLocaleDateString("vi-VN")}
           </h4>
         </div>
-        <ScrollArea className="h-96">
-          {" "}
+        <ScrollArea className="flex-grow">
           <div className="p-4 space-y-3">
             {selectedDayAppointments.length > 0 ? (
               selectedDayAppointments.map((app) => {

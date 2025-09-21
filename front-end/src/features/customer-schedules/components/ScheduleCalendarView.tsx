@@ -64,9 +64,9 @@ export default function ScheduleCalendarView(props: ScheduleCalendarViewProps) {
     : undefined;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-4 h-full flex-grow">
-      <div className="hidden lg:block bg-card p-4 rounded-lg border">
-        <h3 className="text-lg font-semibold mb-4">Đã mua- Cần đặt lịch</h3>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full flex-grow">
+      <div className=" lg:block bg-card p-4 rounded-lg border flex flex-col">
+        <h3 className="text-lg font-semibold mb-4">Đã mua - Cần đặt lịch</h3>
         <ActionRequiredList {...props} />
       </div>
 

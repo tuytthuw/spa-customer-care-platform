@@ -21,6 +21,7 @@ export type Appointment = {
   treatmentSessionId?: string;
   technicianNotes?: string;
   customerNote?: string;
+  cancellationReason?: string;
   // Các trường dành cho khách vãng lai
   guestName?: string;
   guestPhone?: string;

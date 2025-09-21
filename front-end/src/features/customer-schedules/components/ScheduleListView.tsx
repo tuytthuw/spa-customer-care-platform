@@ -1,29 +1,30 @@
-// src/features/schedule/components/ScheduleListView.tsx
 "use client";
 
 import { useMemo } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import PurchasedItemCard from "@/features/customer-schedules/components/PurchasedItemCard";
 import AppointmentCard from "@/features/customer-schedules/components/AppointmentCard";
 import { ScheduleDataProps, ActionableItem } from "../types";
 import { Appointment } from "@/features/appointment/types";
+import ActionRequiredList from "./ActionRequiredList";
 
 interface ScheduleListViewProps extends ScheduleDataProps {
   onCancelAppointment: (id: string, reason: string) => void;
   onWriteReview: (appointment: Appointment) => void;
 }
-export default function ScheduleListView({
-  appointments,
-  treatments,
-  services,
-  treatmentPlans,
-  staff,
-  reviews,
-  currentUserProfile,
-  onCancelAppointment,
-  onWriteReview,
-}: ScheduleListViewProps) {
-  // Logic phân loại dữ liệu sử dụng useMemo để tối ưu hiệu suất
+
+export default function ScheduleListView(props: ScheduleListViewProps) {
+  const {
+    appointments,
+    treatments,
+    currentUserProfile,
+    treatmentPlans,
+    services,
+    staff,
+    reviews,
+    onCancelAppointment,
+    onWriteReview,
+  } = props;
+
   const { actionableItems, upcomingAppointments, historyItems } =
     useMemo(() => {
       const customerAppointments = appointments.filter(
@@ -33,7 +34,6 @@ export default function ScheduleListView({
         (t) => t.customerId === currentUserProfile.id
       );
 
-      // 1. Tab "Cần thực hiện"
       const actions: ActionableItem[] = [];
       (currentUserProfile.purchasedServices || []).forEach((ps) => {
         if (ps.quantity > 0) {
@@ -55,7 +55,6 @@ export default function ScheduleListView({
         }
       });
 
-      // 2. Tab "Sắp tới"
       const upcoming = customerAppointments
         .filter(
           (a) =>
@@ -66,14 +65,10 @@ export default function ScheduleListView({
           (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
         );
 
-      // 3. Tab "Lịch sử"
+      const upcomingAppointmentIds = new Set(upcoming.map((app) => app.id));
+
       const history = customerAppointments
-        .filter(
-          (a) =>
-            new Date(a.date) < new Date() ||
-            a.status === "completed" ||
-            a.status === "cancelled"
-        )
+        .filter((a) => !upcomingAppointmentIds.has(a.id))
         .sort(
           (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
         );
@@ -89,7 +84,7 @@ export default function ScheduleListView({
     <Tabs defaultValue="actions">
       <TabsList className="grid w-full grid-cols-3 md:w-auto md:max-w-[500px] h-auto">
         <TabsTrigger value="actions">
-          Đã mua({actionableItems.length})
+          Đã mua ({actionableItems.length})
         </TabsTrigger>
         <TabsTrigger value="upcoming">
           Sắp tới ({upcomingAppointments.length})
@@ -100,55 +95,7 @@ export default function ScheduleListView({
       </TabsList>
 
       <TabsContent value="actions" className="mt-4">
-        <div className="space-y-6">
-          {actionableItems.length > 0 ? (
-            actionableItems.map((item, index) => {
-              if (item.type === "treatment") {
-                const pkg = item.data;
-                const planInfo = treatmentPlans.find(
-                  (p) => p.id === pkg.treatmentPlanId
-                );
-                return (
-                  <PurchasedItemCard
-                    key={`treat-${pkg.id}-${index}`}
-                    item={{ type: "treatment", data: pkg, details: planInfo }}
-                    staffList={staff}
-                    serviceList={services}
-                    isCompleted={false}
-                    hasReviewed={false}
-                    onWriteReview={() => {}}
-                  />
-                );
-              }
-              if (item.type === "service") {
-                const purchased = item.data;
-                const serviceInfo = services.find(
-                  (s) => s.id === purchased.serviceId
-                );
-                return (
-                  <PurchasedItemCard
-                    key={`serv-${purchased.serviceId}-${index}`}
-                    item={{
-                      type: "service",
-                      data: purchased,
-                      details: serviceInfo,
-                    }}
-                    staffList={staff}
-                    serviceList={services}
-                    isCompleted={false}
-                    hasReviewed={false}
-                    onWriteReview={() => {}}
-                  />
-                );
-              }
-              return null;
-            })
-          ) : (
-            <p className="text-muted-foreground p-4 text-center">
-              Tuyệt vời! Bạn không có mục nào cần thực hiện.
-            </p>
-          )}
-        </div>
+        <ActionRequiredList {...props} />
       </TabsContent>
 
       <TabsContent value="upcoming" className="mt-4">
@@ -158,15 +105,15 @@ export default function ScheduleListView({
               const service = services.find((s) => s.id === app.serviceId);
               const technician = staff.find((t) => t.id === app.technicianId);
               if (!service) return null;
-              // Chức năng hủy và review sẽ được tích hợp sau
+
               return (
                 <AppointmentCard
                   key={app.id}
                   appointment={app}
                   service={service}
                   technician={technician}
-                  onCancel={() => {}}
-                  onReview={() => {}}
+                  onCancel={onCancelAppointment}
+                  onReview={onWriteReview}
                   hasReviewed={false}
                 />
               );

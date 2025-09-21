@@ -36,8 +36,8 @@ export default function SchedulePage() {
   const { currentUserProfile, services } = scheduleData;
 
   const cancelAppointmentMutation = useMutation({
-    mutationFn: ({ id }: { id: string }) =>
-      updateAppointmentStatus(id, "cancelled"),
+    mutationFn: ({ id, reason }: { id: string; reason: string }) =>
+      updateAppointmentStatus(id, "cancelled", reason),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["appointments", { customerId: currentUserProfile?.id }],
@@ -57,8 +57,9 @@ export default function SchedulePage() {
     onError: (error) => toast.error(`Gửi đánh giá thất bại: ${error.message}`),
   });
 
-  const handleCancelAppointment = (id: string) => {
-    cancelAppointmentMutation.mutate({ id });
+  const handleCancelAppointment = (id: string, reason: string) => {
+    console.log(`Cancelling appointment ${id} with reason: ${reason}`); // Để debug
+    cancelAppointmentMutation.mutate({ id, reason });
   };
 
   const handleOpenReviewModal = (appointment: Appointment) => {
