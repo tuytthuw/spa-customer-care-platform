@@ -9,18 +9,28 @@ interface BookingSuccessStepProps {
     date: Date;
     time: string;
   };
+  isReschedule?: boolean;
 }
 
-export default function BookingSuccessStep({ bookingDetails }: BookingSuccessStepProps) {
+export default function BookingSuccessStep({
+  bookingDetails,
+  isReschedule = false,
+}: BookingSuccessStepProps) {
   return (
     <div className="bg-card rounded-lg shadow-sm border border-border p-8 text-center">
       <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
         <Check className="text-3xl text-foreground" />
       </div>
-      <h2 className="text-2xl mb-4 text-foreground">Đặt lịch thành công!</h2>
+      <h2 className="text-2xl mb-4 text-foreground">
+        {" "}
+        {isReschedule
+          ? "Thay đổi lịch hẹn thành công!"
+          : "Đặt lịch thành công!"}
+      </h2>
       <p className="text-muted-foreground mb-6">
-        Cảm ơn bạn đã đặt lịch dịch vụ tại Serenity Spa. Chúng tôi đã gửi xác
-        nhận chi tiết qua email của bạn.
+        {isReschedule
+          ? "Lịch hẹn của bạn đã được cập nhật. Chúng tôi đã gửi xác nhận chi tiết qua email của bạn."
+          : "Cảm ơn bạn đã đặt lịch dịch vụ tại Serenity Spa. Chúng tôi đã gửi xác nhận chi tiết qua email của bạn."}
       </p>
       <div className="bg-muted p-4 rounded-lg border border-border mb-6 max-w-md mx-auto">
         <div className="text-left">

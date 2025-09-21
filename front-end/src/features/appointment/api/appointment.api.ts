@@ -95,6 +95,24 @@ export const updateAppointmentDetails = async (
   return response.json();
 };
 
+// **MỚI: Hàm để thay đổi lịch hẹn**
+export const rescheduleAppointment = async (
+  appointmentId: string,
+  newDate: string
+): Promise<Appointment> => {
+  const response = await fetch(`${APPOINTMENTS_API_URL}/${appointmentId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ date: newDate, status: "upcoming" }), // Cập nhật cả status về upcoming
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to reschedule appointment");
+  }
+
+  return response.json();
+};
+
 // Hàm để kỹ thuật viên ghi nhận và hoàn thành lịch hẹn
 export const logAppointmentCompletion = async (
   appointmentId: string,

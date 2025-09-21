@@ -15,7 +15,12 @@ import {
 } from "@/features/customer-schedules/types";
 import PurchasedItemCard from "@/features/my-packages/components/PurchasedItemCard";
 
-export default function ScheduleCalendarView(props: ScheduleDataProps) {
+interface ScheduleCalendarViewProps extends ScheduleDataProps {
+  onCancelAppointment: (id: string, reason: string) => void;
+  onWriteReview: (appointment: Appointment) => void;
+}
+
+export default function ScheduleCalendarView(props: ScheduleCalendarViewProps) {
   const {
     appointments,
     treatments,
@@ -23,6 +28,9 @@ export default function ScheduleCalendarView(props: ScheduleDataProps) {
     treatmentPlans,
     staff,
     currentUserProfile,
+    reviews,
+    onCancelAppointment,
+    onWriteReview,
   } = props;
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment | null>(null);
@@ -136,7 +144,11 @@ export default function ScheduleCalendarView(props: ScheduleDataProps) {
           <AppointmentDetailPanel
             appointment={selectedAppointment}
             onClose={() => setSelectedAppointment(null)}
-            {...props}
+            services={services}
+            staff={staff}
+            reviews={reviews}
+            onCancelAppointment={onCancelAppointment}
+            onWriteReview={onWriteReview}
           />
         )}
       </div>
