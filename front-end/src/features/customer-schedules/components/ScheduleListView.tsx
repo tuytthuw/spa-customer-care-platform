@@ -3,8 +3,8 @@
 
 import { useMemo } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import PurchasedItemCard from "@/features/my-packages/components/PurchasedItemCard";
-import AppointmentCard from "@/features/appointment/components/my-appointments/AppointmentCard";
+import PurchasedItemCard from "@/features/customer-schedules/components/PurchasedItemCard";
+import AppointmentCard from "@/features/customer-schedules/components/AppointmentCard";
 import { ScheduleDataProps, ActionableItem } from "../types";
 import { Appointment } from "@/features/appointment/types";
 

@@ -39,16 +39,10 @@ const allNavLinks: NavLink[] = [
     requiredFeature: "dashboard",
   },
   {
-    href: "/appointments",
-    label: "Lịch hẹn của tôi",
+    href: "/customer-schedules",
+    label: "Lịch Trình của tôi",
     icon: Calendar,
     requiredFeature: "appointments",
-  },
-  {
-    href: "/my-packages",
-    label: "Liệu trình & Dịch vụ đã mua",
-    icon: Package,
-    requiredFeature: "treatments",
   },
   {
     href: "/invoices",

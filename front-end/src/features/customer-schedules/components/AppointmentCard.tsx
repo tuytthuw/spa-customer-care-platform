@@ -15,7 +15,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import CancelAppointmentModal from "./CancelAppointmentModal";
+import CancelAppointmentModal from "../../appointment/components/my-appointments/CancelAppointmentModal";
 import { TreatmentPackage, TreatmentPlan } from "@/features/treatment/types";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
