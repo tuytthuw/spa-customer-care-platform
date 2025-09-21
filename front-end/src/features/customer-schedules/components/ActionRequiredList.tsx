@@ -1,123 +1,106 @@
-// src/features/schedule/components/ActionRequiredList.tsx
+// src/features/customer-schedules/components/ActionRequiredList.tsx
 "use client";
 
 import { useMemo } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createAppointment } from "@/features/appointment/api/appointment.api";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { CalendarPlus } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
 // Import các types cần thiết
 import {
-  
-  FullCustomerProfile,
-} from "@/features/customer/types";
-import { TreatmentPackage } from "@/features/treatment/types";
-import { Service } from "@/features/service/types";
+  ActionableItem,
+  ScheduleDataProps,
+} from "@/features/customer-schedules/types";
+import PurchasedItemCard from "./PurchasedItemCard"; // Sử dụng lại component card đã có
 
-// Định nghĩa kiểu cho props
-interface ActionRequiredListProps {
-  treatments: TreatmentPackage[];
-  services: Service[];
-  currentUserProfile: FullCustomerProfile;
-  // Thêm các props khác nếu cần
-}
-
-export default function ActionRequiredList({
-  treatments,
-  services,
-  currentUserProfile,
-}: ActionRequiredListProps) {
-  const queryClient = useQueryClient();
-
-  // Mutation để tạo lịch hẹn khi người dùng click "Đặt lịch"
-  const createAppointmentMutation = useMutation({
-    mutationFn: createAppointment,
-    onSuccess: () => {
-      toast.success("Đã tạo lịch hẹn mới trên lịch!", {
-        description: "Vui lòng chọn ngày giờ và hoàn tất thông tin.",
-      });
-      queryClient.invalidateQueries({ queryKey: ["appointments"] });
-    },
-    onError: (error) => toast.error(`Tạo lịch hẹn thất bại: ${error.message}`),
-  });
-
-  const handleBookNow = (serviceId: string) => {
-    createAppointmentMutation.mutate({
-      customerId: currentUserProfile.id,
-      serviceId: serviceId,
-      date: new Date().toISOString(), // Tạo tạm với ngày hiện tại, người dùng sẽ kéo thả sau
-      paymentStatus: "paid",
-    });
-  };
+export default function ActionRequiredList(props: ScheduleDataProps) {
+  const {
+    appointments,
+    treatments,
+    services,
+    treatmentPlans,
+    staff,
+    currentUserProfile,
+  } = props;
 
   const actionableItems = useMemo(() => {
-    const items: {
-      id: string;
-      name: string;
-      description: string;
-      serviceId: string;
-    }[] = [];
+    const actions: ActionableItem[] = [];
+    const customerAppointments = appointments.filter(
+      (a) => a.customerId === currentUserProfile.id
+    );
+    const customerTreatments = treatments.filter(
+      (t) => t.customerId === currentUserProfile.id
+    );
 
+    // Lọc các dịch vụ lẻ đã mua còn lượt
     (currentUserProfile.purchasedServices || []).forEach((ps) => {
       if (ps.quantity > 0) {
-        const serviceInfo = services.find((s) => s.id === ps.serviceId);
-        if (serviceInfo) {
-          items.push({
-            id: `service-${ps.serviceId}`,
-            name: serviceInfo.name,
-            description: `Dịch vụ lẻ - Còn lại ${ps.quantity} lần`,
-            serviceId: ps.serviceId,
-          });
+        actions.push({ type: "service", data: ps });
+      }
+    });
+
+    // Lọc các liệu trình còn buổi và chưa có lịch hẹn sắp tới
+    customerTreatments.forEach((pkg) => {
+      const plan = treatmentPlans.find((p) => p.id === pkg.treatmentPlanId);
+      if (plan && pkg.completedSessions < plan.totalSessions) {
+        const hasUpcomingSessionForPackage = customerAppointments.some(
+          (app) =>
+            app.treatmentPackageId === pkg.id && app.status === "upcoming"
+        );
+        if (!hasUpcomingSessionForPackage) {
+          actions.push({ type: "treatment", data: pkg });
         }
       }
     });
 
-    // Logic tương tự cho liệu trình sẽ được thêm ở đây
-
-    return items;
-  }, [currentUserProfile, services, treatments]);
+    return actions;
+  }, [appointments, treatments, currentUserProfile, treatmentPlans]);
 
   return (
-    <ScrollArea className="h-[calc(100vh-12rem)]">
+    <ScrollArea className="h-[calc(100vh-8rem)] mt-4">
       <div className="space-y-4 pr-4">
         {actionableItems.length > 0 ? (
-          actionableItems.map((item) => (
-            <Card key={item.id} className="shadow-sm">
-              <CardHeader className="p-4">
-                <CardTitle className="text-sm font-semibold">
-                  {item.name}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 pt-0">
-                <p className="text-xs text-muted-foreground">
-                  {item.description}
-                </p>
-              </CardContent>
-              <CardFooter className="p-2 pt-0">
-                <Button
-                  size="sm"
-                  className="w-full"
-                  onClick={() => handleBookNow(item.serviceId)}
-                >
-                  <CalendarPlus className="mr-2 h-4 w-4" />
-                  Đặt lịch
-                </Button>
-              </CardFooter>
-            </Card>
-          ))
+          actionableItems.map((item, index) => {
+            if (item.type === "treatment") {
+              const pkg = item.data;
+              const planInfo = treatmentPlans.find(
+                (p) => p.id === pkg.treatmentPlanId
+              );
+              return (
+                <PurchasedItemCard
+                  key={`treat-${pkg.id}-${index}`}
+                  item={{ type: "treatment", data: pkg, details: planInfo }}
+                  staffList={staff}
+                  serviceList={services}
+                  isCompleted={false}
+                  hasReviewed={false}
+                  onWriteReview={() => {}}
+                />
+              );
+            }
+            if (item.type === "service") {
+              const purchased = item.data;
+              const serviceInfo = services.find(
+                (s) => s.id === purchased.serviceId
+              );
+              return (
+                <PurchasedItemCard
+                  key={`serv-${purchased.serviceId}-${index}`}
+                  item={{
+                    type: "service",
+                    data: purchased,
+                    details: serviceInfo,
+                  }}
+                  staffList={staff}
+                  serviceList={services}
+                  isCompleted={false}
+                  hasReviewed={false}
+                  onWriteReview={() => {}}
+                />
+              );
+            }
+            return null;
+          })
         ) : (
           <p className="text-sm text-muted-foreground text-center p-4">
-            Không có mục nào cần thực hiện.
+            Bạn không có mục nào cần thực hiện.
           </p>
         )}
       </div>
