@@ -1,4 +1,4 @@
-// src/features/schedule/components/AppointmentDetailPanel.tsx
+// src/features/customer-schedules/components/AppointmentDetailPanel.tsx
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -8,24 +8,35 @@ import { Staff } from "@/features/staff/types";
 import { Separator } from "@/components/ui/separator";
 import { X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Review } from "@/features/review/types"; // <-- IMPORT THÊM
 
+// THAY ĐỔI 1: Thêm 'reviews', 'onCancelAppointment', và 'onWriteReview' vào props interface
 interface AppointmentDetailPanelProps {
   appointment: Appointment;
   services: Service[];
   staff: Staff[];
+  reviews: Review[]; // <-- THÊM DÒNG NÀY
   onClose: () => void;
+  onCancelAppointment: (id: string, reason: string) => void;
+  onWriteReview: (appointment: Appointment) => void;
 }
 
 export default function AppointmentDetailPanel({
   appointment,
   services,
   staff,
+  reviews, // <-- Nhận prop mới
   onClose,
+  onCancelAppointment, // <-- Nhận hàm mới
+  onWriteReview, // <-- Nhận hàm mới
 }: AppointmentDetailPanelProps) {
   const service = services.find((s) => s.id === appointment.serviceId);
   const technician = staff.find((t) => t.id === appointment.technicianId);
 
   if (!service) return null;
+
+  // THAY ĐỔI 2: Thêm logic kiểm tra đã review hay chưa
+  const hasReviewed = reviews.some((r) => r.appointmentId === appointment.id);
 
   return (
     <div className="bg-card border rounded-lg h-full flex flex-col p-4 shadow-lg">
@@ -75,14 +86,36 @@ export default function AppointmentDetailPanel({
         </div>
       </div>
 
+      {/* THAY ĐỔI 3: Cập nhật lại logic cho các nút bấm */}
       <div className="space-y-2 mt-auto">
         {appointment.status === "upcoming" && (
-          <Button variant="destructive" className="w-full">
+          <Button
+            variant="destructive"
+            className="w-full"
+            // Gọi hàm onCancelAppointment đã được truyền từ props
+            onClick={() =>
+              onCancelAppointment(
+                appointment.id,
+                "Customer cancelled from calendar view"
+              )
+            }
+          >
             Hủy lịch
           </Button>
         )}
-        {appointment.status === "completed" && (
-          <Button className="w-full">Viết đánh giá</Button>
+        {appointment.status === "completed" && !hasReviewed && (
+          <Button
+            className="w-full"
+            // Gọi hàm onWriteReview đã được truyền từ props
+            onClick={() => onWriteReview(appointment)}
+          >
+            Viết đánh giá
+          </Button>
+        )}
+        {appointment.status === "completed" && hasReviewed && (
+          <Button className="w-full" disabled>
+            Đã đánh giá
+          </Button>
         )}
       </div>
     </div>

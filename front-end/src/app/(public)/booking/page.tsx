@@ -13,7 +13,10 @@ import { BookingSteps } from "@/features/booking/components/BookingSteps";
 
 import useBookingStore from "@/stores/booking-store";
 import { getServiceById } from "@/features/service/api/service.api";
-import { createAppointment } from "@/features/appointment/api/appointment.api";
+import {
+  createAppointment,
+  rescheduleAppointment,
+} from "@/features/appointment/api/appointment.api";
 import { bookTreatmentSession } from "@/features/treatment/api/treatment.api";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContexts";
@@ -33,26 +36,45 @@ export default function BookingPage() {
   const router = useRouter();
   const { user } = useAuth();
   const { data: customers = [] } = useCustomers();
-  const { step, service, date, time, actions } = useBookingStore();
-  const { setService, setDateTime, nextStep, prevStep, reset } = actions;
+  const { step, service, date, time, rescheduleId, actions } =
+    useBookingStore();
+  const {
+    setService,
+    setDateTime,
+    nextStep,
+    prevStep,
+    reset,
+    startReschedule,
+  } = actions;
 
   const currentUserProfile = customers.find((c) => c.userId === user?.id);
 
   const treatmentPackageId = searchParams.get("treatmentPackageId");
   const sessionId = searchParams.get("sessionId");
   const serviceId = searchParams.get("serviceId");
+  const rescheduleIdParam = searchParams.get("rescheduleId");
   const isTreatmentBooking = !!treatmentPackageId;
 
   useQuery({
     queryKey: ["booking_service", serviceId],
     queryFn: async () => {
-      const fetchedService = await getServiceById(serviceId!);
-      if (fetchedService) {
-        setService(fetchedService);
+      if (rescheduleIdParam && serviceId) {
+        const fetchedService = await getServiceById(serviceId);
+        if (fetchedService) {
+          startReschedule(fetchedService, rescheduleIdParam);
+        }
+        return fetchedService;
       }
-      return fetchedService;
+      if (serviceId && !service) {
+        const fetchedService = await getServiceById(serviceId);
+        if (fetchedService) {
+          setService(fetchedService);
+        }
+        return fetchedService;
+      }
+      return service;
     },
-    enabled: !!serviceId && !service,
+    enabled: !!serviceId,
   });
 
   useEffect(() => {
@@ -93,6 +115,16 @@ export default function BookingPage() {
     onError: (error) => toast.error(`Đặt lịch thất bại: ${error.message}`),
   });
 
+  const rescheduleMutation = useMutation({
+    mutationFn: ({ id, date }: { id: string; date: string }) =>
+      rescheduleAppointment(id, date),
+    onSuccess: () => {
+      toast.success("Thay đổi lịch hẹn thành công!");
+      nextStep();
+    },
+    onError: (error) => toast.error(`Thay đổi lịch thất bại: ${error.message}`),
+  });
+
   const bookTreatmentSessionMutation = useMutation({
     mutationFn: bookTreatmentSession,
     onSuccess: () => {
@@ -107,6 +139,14 @@ export default function BookingPage() {
     const [hours, minutes] = time.split(":").map(Number);
     const appointmentDate = new Date(date);
     appointmentDate.setHours(hours, minutes, 0, 0);
+
+    if (rescheduleId) {
+      rescheduleMutation.mutate({
+        id: rescheduleId,
+        date: appointmentDate.toISOString(),
+      });
+      return;
+    }
 
     if (isPrePurchased && service && currentUserProfile) {
       redeemServiceMutation.mutate({
@@ -185,13 +225,19 @@ export default function BookingPage() {
             isSubmitting={
               createAppointmentMutation.isPending ||
               bookTreatmentSessionMutation.isPending ||
-              redeemServiceMutation.isPending
+              redeemServiceMutation.isPending ||
+              rescheduleMutation.isPending
             }
             isPrePurchased={isPrePurchased}
           />
         );
       case 4:
-        return <BookingSuccessStep bookingDetails={{ service, date, time }} />;
+        return (
+          <BookingSuccessStep
+            bookingDetails={{ service, date, time }}
+            isReschedule={!!rescheduleId}
+          />
+        );
       default:
         return <ServiceSelectionStep onServiceSelect={setService} />;
     }

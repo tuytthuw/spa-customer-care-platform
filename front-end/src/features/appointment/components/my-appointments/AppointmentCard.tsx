@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import CancelAppointmentModal from "./CancelAppointmentModal";
 import { TreatmentPackage, TreatmentPlan } from "@/features/treatment/types";
 import { Separator } from "@/components/ui/separator";
+import Link from "next/link";
 
 interface AppointmentCardProps {
   appointment: Appointment;
@@ -146,12 +147,21 @@ const AppointmentCard = ({
         </CardContent>
         <CardFooter className="flex justify-end gap-2">
           {appointment.status === "upcoming" && (
-            <Button
-              variant="outline"
-              onClick={() => setIsCancelModalOpen(true)}
-            >
-              Hủy lịch hẹn
-            </Button>
+            <>
+              <Button
+                variant="outline"
+                onClick={() => setIsCancelModalOpen(true)}
+              >
+                Hủy lịch hẹn
+              </Button>
+              <Button asChild>
+                <Link
+                  href={`/booking?rescheduleId=${appointment.id}&serviceId=${service.id}`}
+                >
+                  Thay đổi lịch
+                </Link>
+              </Button>
+            </>
           )}
           {appointment.status === "completed" && !hasReviewed && (
             <Button onClick={() => onReview(appointment)}>Viết đánh giá</Button>

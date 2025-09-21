@@ -6,7 +6,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PurchasedItemCard from "@/features/my-packages/components/PurchasedItemCard";
 import AppointmentCard from "@/features/appointment/components/my-appointments/AppointmentCard";
 import { ScheduleDataProps, ActionableItem } from "../types";
+import { Appointment } from "@/features/appointment/types";
 
+interface ScheduleListViewProps extends ScheduleDataProps {
+  onCancelAppointment: (id: string, reason: string) => void;
+  onWriteReview: (appointment: Appointment) => void;
+}
 export default function ScheduleListView({
   appointments,
   treatments,
@@ -15,7 +20,9 @@ export default function ScheduleListView({
   staff,
   reviews,
   currentUserProfile,
-}: ScheduleDataProps) {
+  onCancelAppointment,
+  onWriteReview,
+}: ScheduleListViewProps) {
   // Logic phân loại dữ liệu sử dụng useMemo để tối ưu hiệu suất
   const { actionableItems, upcomingAppointments, historyItems } =
     useMemo(() => {
@@ -188,8 +195,8 @@ export default function ScheduleListView({
                   appointment={app}
                   service={service}
                   technician={technician}
-                  onCancel={() => {}}
-                  onReview={() => {}}
+                  onCancel={onCancelAppointment}
+                  onReview={onWriteReview}
                   hasReviewed={hasReviewed}
                 />
               );

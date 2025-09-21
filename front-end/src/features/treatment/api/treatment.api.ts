@@ -34,11 +34,18 @@ export const getTreatmentPlanById = async (
   }
 };
 
-export const getCustomerTreatments = async (): Promise<TreatmentPackage[]> => {
+export const getCustomerTreatments = async (
+  customerId: string
+): Promise<TreatmentPackage[]> => {
+  if (!customerId) return []; // Trả về mảng rỗng nếu không có customerId
   try {
-    const response = await fetch(CUSTOMER_TREATMENTS_API_URL, {
-      cache: "no-store",
-    });
+    // Thêm "?customerId=" vào URL để lọc dữ liệu trên json-server
+    const response = await fetch(
+      `${CUSTOMER_TREATMENTS_API_URL}?customerId=${customerId}`,
+      {
+        cache: "no-store",
+      }
+    );
     if (!response.ok) throw new Error("Failed to fetch customer treatments.");
     return await response.json();
   } catch (error) {
