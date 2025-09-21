@@ -5,15 +5,23 @@ import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { Appointment } from "@/features/appointment/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
-// Import các component con
 import InteractiveCalendar from "./InteractiveCalendar";
 import AppointmentDetailPanel from "./AppointmentDetailPanel";
 import {
   ScheduleDataProps,
   ActionableItem,
 } from "@/features/customer-schedules/types";
-import PurchasedItemCard from "@/features/my-packages/components/PurchasedItemCard";
+import PurchasedItemCard from "@/features/customer-schedules/components/PurchasedItemCard";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { PanelLeftOpen } from "lucide-react";
+import ActionRequiredList from "./ActionRequiredList"; // Import component
 
 interface ScheduleCalendarViewProps extends ScheduleDataProps {
   onCancelAppointment: (id: string, reason: string) => void;
@@ -69,7 +77,7 @@ export default function ScheduleCalendarView(props: ScheduleCalendarViewProps) {
     <div className="grid xl:grid-cols-[320px_1fr_auto] gap-6 h-full flex-grow">
       {/* --- Cột 1: Cần đặt lịch --- */}
       <div className="hidden xl:block bg-card p-4 rounded-lg border">
-        <h3 className="text-lg font-semibold mb-4">Cần đặt lịch</h3>
+        <h3 className="text-lg font-semibold mb-4">Đã mua</h3>
         <ScrollArea className="h-[calc(100vh-12rem)]">
           <div className="space-y-4 pr-4">
             {actionableItems.length > 0 ? (
@@ -125,9 +133,27 @@ export default function ScheduleCalendarView(props: ScheduleCalendarViewProps) {
 
       {/* --- Cột 2: Lịch trình --- */}
       <div className="h-full flex flex-col">
+        {/* Nút mở Sheet trên Mobile */}
+        <div className="xl:hidden mb-4">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline">
+                <PanelLeftOpen className="mr-2 h-4 w-4" />
+                Xem các mục đã mua
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[350px] sm:w-[540px]">
+              <SheetHeader>
+                <SheetTitle>Đã mua</SheetTitle>
+              </SheetHeader>
+              <ActionRequiredList {...props} />
+            </SheetContent>
+          </Sheet>
+        </div>
         <div className="flex-grow">
           <InteractiveCalendar
-            {...props}
+            appointments={appointments}
+            services={services}
             onSelectAppointment={setSelectedAppointment}
           />
         </div>

@@ -5,6 +5,9 @@ import {
   PaymentStatus,
 } from "@/features/appointment/types"; // <-- 1. THÊM AppointmentStatus VÀO IMPORT
 import { v4 as uuidv4 } from "uuid";
+import { sendNotificationEmail } from "@/features/notification/api/notification.api";
+import { getCustomerById } from "@/features/customer/api/customer.api";
+import { getServiceById } from "@/features/service/api/service.api";
 
 // URL API mới trỏ đến json-server
 const APPOINTMENTS_API_URL = "http://localhost:3001/appointments";
@@ -29,11 +32,95 @@ export const getAppointments = async (): Promise<Appointment[]> => {
   }
 };
 
-// 2. Hàm cập nhật trạng thái đã hoàn thiện
+export const createAppointment = async (
+  appointmentData: Omit<Appointment, "id" | "status">
+): Promise<Appointment> => {
+  const response = await fetch(APPOINTMENTS_API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      id: `appt-${uuidv4()}`,
+      status: "upcoming",
+      paymentStatus: "unpaid",
+      ...appointmentData,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.text();
+    throw new Error(`Failed to create appointment: ${errorData}`);
+  }
+
+  const newAppointment: Appointment = await response.json();
+
+  // --- LOGIC GỬI EMAIL BẮT ĐẦU ---
+  // Lấy thông tin chi tiết của khách hàng và dịch vụ để gửi email
+  const customer = await getCustomerById(newAppointment.customerId);
+  const service = await getServiceById(newAppointment.serviceId);
+
+  if (customer && service) {
+    await sendNotificationEmail(
+      "confirmation",
+      newAppointment,
+      customer,
+      service
+    );
+  }
+  // --- LOGIC GỬI EMAIL KẾT THÚC ---
+
+  return newAppointment;
+};
+
+// SỬA ĐỔI: hàm rescheduleAppointment
+export const rescheduleAppointment = async (
+  appointmentId: string,
+  newDate: string
+): Promise<Appointment> => {
+  const response = await fetch(`${APPOINTMENTS_API_URL}/${appointmentId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ date: newDate, status: "upcoming" }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to reschedule appointment");
+  }
+
+  const updatedAppointment: Appointment = await response.json();
+
+  // --- LOGIC GỬI EMAIL BẮT ĐẦU ---
+  const customer = await getCustomerById(updatedAppointment.customerId);
+  const service = await getServiceById(updatedAppointment.serviceId);
+
+  if (customer && service) {
+    await sendNotificationEmail(
+      "reschedule",
+      updatedAppointment,
+      customer,
+      service
+    );
+  }
+  // --- LOGIC GỬI EMAIL KẾT THÚC ---
+
+  return updatedAppointment;
+};
+
+// SỬA ĐỔI: hàm updateAppointmentStatus
 export const updateAppointmentStatus = async (
   appointmentId: string,
   newStatus: AppointmentStatus
 ): Promise<Appointment> => {
+  // Đầu tiên, lấy thông tin lịch hẹn để có đủ chi tiết gửi mail
+  const appointmentResponse = await fetch(
+    `${APPOINTMENTS_API_URL}/${appointmentId}`
+  );
+  if (!appointmentResponse.ok) {
+    throw new Error(
+      "Failed to fetch appointment details before updating status."
+    );
+  }
+
+  // Tiếp theo, cập nhật trạng thái
   const response = await fetch(`${APPOINTMENTS_API_URL}/${appointmentId}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
@@ -44,37 +131,25 @@ export const updateAppointmentStatus = async (
     throw new Error("Failed to update appointment status");
   }
 
-  return response.json();
-};
-// **MỚI: Hàm tạo lịch hẹn mới**
-// Kiểu dữ liệu cho form đặt lịch (không bao gồm id, status)
-type AppointmentCreationData = Omit<Appointment, "id" | "status">;
+  const updatedAppointment: Appointment = await response.json();
 
-export const createAppointment = async (
-  appointmentData: AppointmentCreationData
-): Promise<Appointment> => {
-  try {
-    const response = await fetch(APPOINTMENTS_API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: `appt-${uuidv4()}`,
-        status: "upcoming",
-        paymentStatus: "unpaid",
-        ...appointmentData,
-      }),
-    });
+  // --- LOGIC GỬI EMAIL KHI HỦY LỊCH ---
+  if (newStatus === "cancelled") {
+    const customer = await getCustomerById(updatedAppointment.customerId);
+    const service = await getServiceById(updatedAppointment.serviceId);
 
-    if (!response.ok) {
-      const errorData = await response.text();
-      throw new Error(`Failed to create appointment: ${errorData}`);
+    if (customer && service) {
+      await sendNotificationEmail(
+        "cancellation",
+        updatedAppointment,
+        customer,
+        service
+      );
     }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Error creating appointment:", error);
-    throw error; // Ném lỗi ra để react-query có thể xử lý
   }
+  // --- LOGIC GỬI EMAIL KẾT THÚC ---
+
+  return updatedAppointment;
 };
 
 //Hàm cập nhật chi tiết lịch hẹn (cho kéo-thả)
@@ -90,24 +165,6 @@ export const updateAppointmentDetails = async (
 
   if (!response.ok) {
     throw new Error("Failed to update appointment details");
-  }
-
-  return response.json();
-};
-
-// **MỚI: Hàm để thay đổi lịch hẹn**
-export const rescheduleAppointment = async (
-  appointmentId: string,
-  newDate: string
-): Promise<Appointment> => {
-  const response = await fetch(`${APPOINTMENTS_API_URL}/${appointmentId}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ date: newDate, status: "upcoming" }), // Cập nhật cả status về upcoming
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to reschedule appointment");
   }
 
   return response.json();

@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import SessionHistory from "@/features/my-packages/components/SessionHistory";
+import SessionHistory from "@/features/customer-schedules/components/SessionHistory";
 
 // Kiểu dữ liệu cho props của component, bao gồm cả hai loại item
 interface PurchasedItemCardProps {

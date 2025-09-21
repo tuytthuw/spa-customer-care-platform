@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import SessionHistory from "../../my-packages/components/SessionHistory";
+import SessionHistory from "../../customer-schedules/components/SessionHistory";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import Image from "next/image";
 

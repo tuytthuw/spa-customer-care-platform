@@ -31,7 +31,7 @@ import { PageHeader } from "@/components/common/PageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FullPageLoader } from "@/components/ui/spinner";
 import { ReviewModal } from "@/features/review/components/ReviewModal";
-import PurchasedItemCard from "@/features/my-packages/components/PurchasedItemCard"; // <--- IMPORT COMPONENT MỚI
+import PurchasedItemCard from "@/features/customer-schedules/components/PurchasedItemCard"; // <--- IMPORT COMPONENT MỚI
 
 // Định nghĩa kiểu cho một item trong danh sách hợp nhất
 type PurchasedItem =

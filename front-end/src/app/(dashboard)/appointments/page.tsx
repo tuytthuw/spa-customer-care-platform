@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Appointment } from "@/features/appointment/types";
 import { NewReviewData } from "@/features/review/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import AppointmentCard from "@/features/appointment/components/my-appointments/AppointmentCard";
+import AppointmentCard from "@/features/customer-schedules/components/AppointmentCard";
 import { ReviewModal } from "@/features/review/components/ReviewModal";
 import {
   getAppointments,

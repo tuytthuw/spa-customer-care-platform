@@ -7,7 +7,7 @@ import { Appointment } from "@/features/appointment/types";
 import { Service } from "@/features/service/types";
 import { Staff } from "@/features/staff/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import AppointmentCard from "@/features/appointment/components/my-appointments/AppointmentCard";
+import AppointmentCard from "@/features/customer-schedules/components/AppointmentCard";
 import {
   getAppointmentsByCustomerId,
   updateAppointmentStatus,
