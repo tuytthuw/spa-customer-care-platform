@@ -19,10 +19,11 @@ export const useCustomerScheduleData = () => {
   const currentUserProfile = customers.find(
     (c: FullCustomerProfile) => c.userId === user?.id
   );
+
   const { data: appointments = [], isLoading: loadingAppts } = useQuery({
     queryKey: ["appointments", { customerId: currentUserProfile?.id }],
     queryFn: () => getAppointmentsByCustomerId(currentUserProfile!.id),
-    enabled: !!currentUserProfile,
+    enabled: !!currentUserProfile, // Chỉ fetch khi đã có thông tin user
   });
 
   const { data: treatments = [], isLoading: loadingTreatments } = useQuery({

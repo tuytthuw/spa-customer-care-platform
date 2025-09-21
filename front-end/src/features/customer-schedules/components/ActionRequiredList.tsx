@@ -54,7 +54,7 @@ export default function ActionRequiredList(props: ScheduleDataProps) {
   }, [appointments, treatments, currentUserProfile, treatmentPlans]);
 
   return (
-    <ScrollArea className="h-[calc(100vh-8rem)] mt-4">
+    <ScrollArea className="flex-grow mt-4">
       <div className="space-y-4 pr-4">
         {actionableItems.length > 0 ? (
           actionableItems.map((item, index) => {
