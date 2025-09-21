@@ -73,10 +73,14 @@ export default function ScheduleCalendarView(props: ScheduleCalendarViewProps) {
 
     return actions;
   }, [appointments, treatments, currentUserProfile, treatmentPlans]);
+
   return (
-    <div className="grid xl:grid-cols-[320px_1fr_auto] gap-6 h-full flex-grow">
-      {/* --- Cột 1: Cần đặt lịch --- */}
-      <div className="hidden xl:block bg-card p-4 rounded-lg border">
+    // --- THAY ĐỔI CHÍNH ---
+    // Sử dụng grid-cols-1 mặc định, lg:grid-cols-[320px_1fr] và xl:grid-cols-[320px_1fr_auto]
+    // để layout linh hoạt hơn.
+    <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] xl:grid-cols-[320px_1fr_auto] gap-6 h-full flex-grow">
+      {/* --- Cột 1: Cần đặt lịch (Ẩn trên mobile/tablet, hiện từ lg) --- */}
+      <div className="hidden lg:block bg-card p-4 rounded-lg border">
         <h3 className="text-lg font-semibold mb-4">Đã mua</h3>
         <ScrollArea className="h-[calc(100vh-12rem)]">
           <div className="space-y-4 pr-4">
@@ -133,8 +137,8 @@ export default function ScheduleCalendarView(props: ScheduleCalendarViewProps) {
 
       {/* --- Cột 2: Lịch trình --- */}
       <div className="h-full flex flex-col">
-        {/* Nút mở Sheet trên Mobile */}
-        <div className="xl:hidden mb-4">
+        {/* Nút mở Sheet trên màn hình nhỏ (hiện dưới lg) */}
+        <div className="lg:hidden mb-4">
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="outline">
@@ -160,6 +164,7 @@ export default function ScheduleCalendarView(props: ScheduleCalendarViewProps) {
       </div>
 
       {/* --- Cột 3: Chi tiết (Hiện/ẩn) --- */}
+      {/* Ẩn trên màn hình nhỏ hơn xl */}
       <div
         className={cn(
           "transition-all duration-300 ease-in-out overflow-hidden",
@@ -178,6 +183,29 @@ export default function ScheduleCalendarView(props: ScheduleCalendarViewProps) {
           />
         )}
       </div>
+
+      {/* --- Sheet chi tiết cho màn hình nhỏ (hiện dưới xl) --- */}
+      <Sheet
+        open={!!selectedAppointment}
+        onOpenChange={(isOpen) => !isOpen && setSelectedAppointment(null)}
+      >
+        <SheetContent className="xl:hidden w-[380px] sm:w-[540px]">
+          <SheetHeader>
+            <SheetTitle>Chi tiết lịch hẹn</SheetTitle>
+          </SheetHeader>
+          {selectedAppointment && (
+            <AppointmentDetailPanel
+              appointment={selectedAppointment}
+              onClose={() => setSelectedAppointment(null)}
+              services={services}
+              staff={staff}
+              reviews={reviews}
+              onCancelAppointment={onCancelAppointment}
+              onWriteReview={onWriteReview}
+            />
+          )}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
