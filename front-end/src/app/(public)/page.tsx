@@ -6,7 +6,6 @@ import WhyChooseUs from "@/features/landing/components/WhyChooseUs";
 export default function HomePage() {
   return (
     <div>
-      <HeroSection />
       <FeaturedServices />
       <WhyChooseUs />
       <TestimonialsSection />
