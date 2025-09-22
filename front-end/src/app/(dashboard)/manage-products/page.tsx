@@ -4,20 +4,12 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Product } from "@/features/product/types";
-import {
-  addProduct,
-  updateProduct,
-  updateProducteStatus,
-} from "@/features/product/api/product.api";
 import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, Inbox } from "lucide-react";
 import { columns } from "./columns";
 import { toast } from "sonner";
-import {
-  productFormSchema,
-  ProductFormValues,
-} from "@/features/product/schemas";
+
 import { useProducts } from "@/features/product/hooks/useProducts";
 import { PageHeader } from "@/components/common/PageHeader";
 import { FormDialog } from "@/components/common/FormDialog";
@@ -25,16 +17,34 @@ import ProductFormFields from "@/features/product/components/ProductForm";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FullPageLoader } from "@/components/ui/spinner";
+import AddStockFormFields from "@/features/product/components/AddStockForm";
+import {
+  productFormSchema,
+  ProductFormValues,
+  addStockSchema,
+  AddStockFormValues,
+} from "@/features/product/schemas";
+import {
+  addProduct,
+  updateProduct,
+  updateProducteStatus,
+  addProductStock,
+} from "@/features/product/api/product.api";
 
 export default function ManageProductsPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [isAddStockOpen, setIsAddStockOpen] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: products = [], isLoading, error } = useProducts();
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productFormSchema),
+  });
+
+  const addStockForm = useForm<AddStockFormValues>({
+    resolver: zodResolver(addStockSchema),
   });
 
   useEffect(() => {
@@ -58,6 +68,7 @@ export default function ManageProductsPage() {
     queryClient.invalidateQueries({ queryKey: ["products"] });
     setIsDialogOpen(false);
     setEditingProduct(null);
+    setIsAddStockOpen(false);
     toast.success(message);
   };
 
@@ -95,9 +106,19 @@ export default function ManageProductsPage() {
       toast.error(`Cập nhật trạng thái thất bại: ${err.message}`),
   });
 
+  const addStockMutation = useMutation({
+    mutationFn: addProductStock,
+    onSuccess: () => handleMutationSuccess("Nhập kho thành công!"),
+    onError: (err) => toast.error(`Nhập kho thất bại: ${err.message}`),
+  });
+
   const handleOpenDialog = (product: Product | null = null) => {
     setEditingProduct(product);
     setIsDialogOpen(true);
+  };
+
+  const handleAddStockSubmit = (data: AddStockFormValues) => {
+    addStockMutation.mutate(data);
   };
 
   const handleFormSubmit = (data: ProductFormValues) => {
@@ -124,9 +145,14 @@ export default function ManageProductsPage() {
       <PageHeader
         title="Quản lý Sản phẩm"
         actionNode={
-          <Button onClick={() => handleOpenDialog()}>
-            <PlusCircle className="mr-2 h-4 w-4" /> Thêm sản phẩm
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setIsAddStockOpen(true)}>
+              <Inbox className="mr-2 h-4 w-4" /> Nhập kho
+            </Button>
+            <Button onClick={() => handleOpenDialog()}>
+              <PlusCircle className="mr-2 h-4 w-4" /> Thêm sản phẩm
+            </Button>
+          </div>
         }
       />
       <DataTable
@@ -152,6 +178,18 @@ export default function ManageProductsPage() {
         submitText={editingProduct ? "Lưu thay đổi" : "Thêm mới"}
       >
         <ProductFormFields />
+      </FormDialog>
+
+      <FormDialog
+        isOpen={isAddStockOpen}
+        onClose={() => setIsAddStockOpen(false)}
+        title="Nhập kho sản phẩm"
+        form={addStockForm}
+        onFormSubmit={handleAddStockSubmit}
+        isSubmitting={addStockMutation.isPending}
+        submitText="Xác nhận nhập"
+      >
+        <AddStockFormFields products={products} />
       </FormDialog>
     </div>
   );

@@ -30,6 +30,7 @@ import useCart, { CartItem } from "@/stores/cart-store"; // Sửa import
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator"; // Thêm import
+import { ThemeToggle } from "@/components/common/ThemeToggle";
 
 const navLinks = [
   { href: "/", label: "Trang chủ" },
@@ -100,6 +101,8 @@ export default function PublicHeader() {
               </span>
             )}
           </Link>
+
+          <ThemeToggle />
 
           {/* User/Auth Buttons */}
           <div className="flex items-center gap-2">

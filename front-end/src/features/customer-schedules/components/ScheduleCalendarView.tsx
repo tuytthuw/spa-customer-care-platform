@@ -7,21 +7,14 @@ import InteractiveCalendar from "./InteractiveCalendar";
 import AppointmentCard from "./AppointmentCard"; // ✅ THAY ĐỔI: Import AppointmentCard
 import { ScheduleDataProps } from "@/features/customer-schedules/types";
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { PanelLeftOpen } from "lucide-react";
+
 import ActionRequiredList from "./ActionRequiredList";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ScheduleCalendarViewProps extends ScheduleDataProps {
   onCancelAppointment: (id: string, reason: string) => void;
@@ -71,22 +64,6 @@ export default function ScheduleCalendarView(props: ScheduleCalendarViewProps) {
       </div>
 
       <div className="h-full flex flex-col">
-        <div className="lg:hidden mb-4">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline">
-                <PanelLeftOpen className="mr-2 h-4 w-4" />
-                Xem các mục đã mua
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-[350px] sm:w-[540px]">
-              <SheetHeader>
-                <SheetTitle>Đã mua</SheetTitle>
-              </SheetHeader>
-              <ActionRequiredList {...props} />
-            </SheetContent>
-          </Sheet>
-        </div>
         <div className="flex-grow">
           <InteractiveCalendar
             appointments={appointments}
@@ -96,18 +73,16 @@ export default function ScheduleCalendarView(props: ScheduleCalendarViewProps) {
         </div>
       </div>
 
-      {/* --- Dialog chi tiết cho màn hình nhỏ (hiện dưới xl) --- */}
-      <div className="xl:hidden">
-        <Dialog
-          open={!!selectedAppointment}
-          onOpenChange={(isOpen) => !isOpen && setSelectedAppointment(null)}
-        >
-          <DialogContent className="w-[95vw] max-w-[420px] sm:max-w-[540px]">
-            <DialogHeader>
-              <DialogTitle>Chi tiết lịch hẹn</DialogTitle>
-            </DialogHeader>
+      <Dialog
+        open={!!selectedAppointment}
+        onOpenChange={(isOpen) => !isOpen && setSelectedAppointment(null)}
+      >
+        <DialogContent className="w-[95vw] max-w-[420px] sm:max-w-[540px]">
+          <DialogHeader>
+            <DialogTitle>Chi tiết lịch hẹn</DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="max-h-[80vh] pr-4">
             {selectedAppointment && selectedService && (
-              // ✅ THAY ĐỔI: Sử dụng AppointmentCard ở đây
               <AppointmentCard
                 appointment={selectedAppointment}
                 service={selectedService}
@@ -119,9 +94,9 @@ export default function ScheduleCalendarView(props: ScheduleCalendarViewProps) {
                 hasReviewed={hasReviewed}
               />
             )}
-          </DialogContent>
-        </Dialog>
-      </div>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

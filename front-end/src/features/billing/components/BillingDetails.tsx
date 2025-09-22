@@ -87,85 +87,89 @@ const BillingDetails = ({
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
       <div className="md:col-span-2">
         <h3 className="text-lg font-semibold mb-2">Chi tiết hóa đơn</h3>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Mô tả</TableHead>
-              <TableHead className="text-center w-[150px]">Số lượng</TableHead>
-              <TableHead className="text-right">Đơn giá</TableHead>
-              <TableHead className="text-right">Thành tiền</TableHead>
-              <TableHead className="w-[50px]"></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {items.length > 0 ? (
-              items.map((item) => (
-                <TableRow key={`${item.id}-${item.type}`}>
-                  <TableCell className="font-medium">{item.name}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center justify-center gap-2">
+        <div className="rounded-md border overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Mô tả</TableHead>
+                <TableHead className="text-center w-[150px]">
+                  Số lượng
+                </TableHead>
+                <TableHead className="text-right">Đơn giá</TableHead>
+                <TableHead className="text-right">Thành tiền</TableHead>
+                <TableHead className="w-[50px]"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {items.length > 0 ? (
+                items.map((item) => (
+                  <TableRow key={`${item.id}-${item.type}`}>
+                    <TableCell className="font-medium">{item.name}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center justify-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-6 w-6"
+                          onClick={() =>
+                            onUpdateQuantity(
+                              item.id,
+                              item.type,
+                              item.quantity - 1
+                            )
+                          }
+                        >
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                        <span className="font-medium text-center w-4">
+                          {item.quantity}
+                        </span>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-6 w-6"
+                          onClick={() =>
+                            onUpdateQuantity(
+                              item.id,
+                              item.type,
+                              item.quantity + 1
+                            )
+                          }
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {formatCurrency(item.price)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {formatCurrency(item.price * item.quantity)}
+                    </TableCell>
+                    <TableCell>
                       <Button
-                        variant="outline"
+                        variant="ghost"
                         size="icon"
-                        className="h-6 w-6"
-                        onClick={() =>
-                          onUpdateQuantity(
-                            item.id,
-                            item.type,
-                            item.quantity - 1
-                          )
-                        }
+                        onClick={() => onRemoveItem(item.id, item.type)}
                       >
-                        <Minus className="h-4 w-4" />
+                        <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
-                      <span className="font-medium text-center w-4">
-                        {item.quantity}
-                      </span>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-6 w-6"
-                        onClick={() =>
-                          onUpdateQuantity(
-                            item.id,
-                            item.type,
-                            item.quantity + 1
-                          )
-                        }
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {formatCurrency(item.price)}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {formatCurrency(item.price * item.quantity)}
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => onRemoveItem(item.id, item.type)}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={5}
+                    className="text-center h-24 text-muted-foreground"
+                  >
+                    Chưa có sản phẩm/dịch vụ nào trong hóa đơn.
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={5}
-                  className="text-center h-24 text-muted-foreground"
-                >
-                  Chưa có sản phẩm/dịch vụ nào trong hóa đơn.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              )}
+            </TableBody>
+          </Table>
+        </div>
         <Separator className="my-4" />
 
         <Popover open={open} onOpenChange={setOpen}>
@@ -247,7 +251,7 @@ const BillingDetails = ({
           <ToggleGroup
             type="single"
             variant="outline"
-            className="w-full grid grid-cols-3"
+            className="w-full grid grid-cols-1 sm:grid-cols-3"
             value={selectedPaymentMethod || ""}
             onValueChange={(value) => {
               if (value) onPaymentMethodChange(value as PaymentMethod);

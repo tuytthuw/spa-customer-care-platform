@@ -25,6 +25,7 @@ export const FEATURES = {
   treatments: "treatments",
   reviews: "reviews",
   profile: "profile",
+  promotions: "promotions",
 } as const;
 
 export type Feature = (typeof FEATURES)[keyof typeof FEATURES];

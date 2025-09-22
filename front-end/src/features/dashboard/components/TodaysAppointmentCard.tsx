@@ -67,7 +67,7 @@ export default function TodaysAppointmentCard({
 
   return (
     <div className="bg-card rounded-lg shadow-sm border border-border p-6">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
         <div className="flex items-center space-x-4">
           <Image
             src={`https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=${customer.id}`}
@@ -81,7 +81,7 @@ export default function TodaysAppointmentCard({
             <p className="text-lg text-muted-foreground">{customer.phone}</p>
           </div>
         </div>
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center justify-between md:justify-end gap-3">
           <Badge variant={statusInfo.variant}>{statusInfo.text}</Badge>
           <div className="text-right">
             <p className="text-lg text-foreground">
@@ -94,24 +94,25 @@ export default function TodaysAppointmentCard({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         <div>
-          <h4 className="text-lg text-foreground mb-3">Dịch vụ</h4>
+          <h4 className="text-base md:text-lg text-foreground mb-3">Dịch vụ</h4>
           <div className="space-y-2">
             <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
-              <span className="text-base text-foreground">{service.name}</span>
-              <span className="text-base text-foreground">
+              <span className="text-sm md:text-base text-foreground">
+                {service.name}
+              </span>
+              <span className="text-sm md:text-base text-foreground">
                 {service.duration} phút
               </span>
             </div>
           </div>
         </div>
         <div>
-          <h4 className="text-lg text-foreground mb-3">Ghi chú</h4>
-          <div className="p-4 bg-muted rounded-lg">
-            <p className="text-base text-muted-foreground">
-              Khách hàng có da nhạy cảm, tránh sử dụng tinh dầu mạnh. Ưu tiên
-              massage nhẹ nhàng.
+          <h4 className="text-base md:text-lg text-foreground mb-3">Ghi chú</h4>
+          <div className="p-4 bg-muted rounded-lg min-h-[80px]">
+            <p className="text-sm md:text-base text-muted-foreground">
+              {appointment.customerNote || "Không có ghi chú từ khách hàng."}
             </p>
           </div>
         </div>

@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { toast } from "sonner";
 import Link from "next/link";
 import Image from "next/image";
@@ -16,6 +15,7 @@ import useCartStore from "@/stores/cart-store";
 import { useCustomers } from "@/features/customer/hooks/useCustomers";
 import { createInvoice } from "@/features/billing/api/invoice.api";
 import { Invoice } from "@/features/billing/types";
+import { shippingSchema, ShippingFormValues } from "@/features/billing/schemas";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,16 +33,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-
-// Schema cho form thông tin nhận hàng
-const shippingSchema = z.object({
-  address: z
-    .string()
-    .trim()
-    .min(5, { message: "Địa chỉ phải có ít nhất 5 ký tự." }),
-  notes: z.string().optional(),
-});
-type ShippingFormValues = z.infer<typeof shippingSchema>;
 
 type InvoiceCreationData = Omit<Invoice, "id" | "createdAt">;
 type PaymentMethod = "cod" | "transfer";
@@ -160,7 +150,7 @@ export default function CheckoutPage() {
       <FormProvider {...form}>
         <form
           onSubmit={form.handleSubmit(handleConfirmPayment)}
-          className="grid md:grid-cols-2 gap-12"
+          className="flex flex-col-reverse lg:grid lg:grid-cols-2 gap-8 lg:gap-12"
         >
           {/* Cột trái: Thông tin */}
           <div className="space-y-6">
@@ -248,7 +238,7 @@ export default function CheckoutPage() {
 
           {/* Cột phải: Tóm tắt đơn hàng */}
           <div>
-            <Card className="sticky top-24">
+            <Card className="lg:sticky lg:top-24">
               <CardHeader>
                 <CardTitle>Tóm tắt đơn hàng</CardTitle>
               </CardHeader>

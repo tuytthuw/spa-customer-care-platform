@@ -75,7 +75,7 @@ const AppointmentCard = ({
     <>
       <Card>
         <CardHeader>
-          <div className="flex justify-between items-start">
+          <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
             <div>
               <CardTitle>{service.name}</CardTitle>
               <CardDescription>
@@ -87,14 +87,16 @@ const AppointmentCard = ({
                 })}
               </CardDescription>
             </div>
-            <Badge variant={statusInfo}>
-              {appointment.status === "upcoming" && "Sắp tới"}
-              {appointment.status === "completed" && "Đã hoàn thành"}
-              {appointment.status === "cancelled" && "Đã hủy"}
-            </Badge>
-            <Badge variant={paymentStatusInfo.variant}>
-              {paymentStatusInfo.text}
-            </Badge>
+            <div className="flex items-center gap-2">
+              <Badge variant={statusInfo}>
+                {appointment.status === "upcoming" && "Sắp tới"}
+                {appointment.status === "completed" && "Đã hoàn thành"}
+                {appointment.status === "cancelled" && "Đã hủy"}
+              </Badge>
+              <Badge variant={paymentStatusInfo.variant}>
+                {paymentStatusInfo.text}
+              </Badge>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -104,7 +106,7 @@ const AppointmentCard = ({
               alt={service.name}
               width={200}
               height={200}
-              className="rounded-lg object-cover w-full h-auto"
+              className="rounded-lg object-cover w-full h-auto aspect-square"
             />
           </div>
           <div className="col-span-1 md:col-span-2">
@@ -145,7 +147,7 @@ const AppointmentCard = ({
               )}
           </div>
         </CardContent>
-        <CardFooter className="flex justify-end gap-2">
+        <CardFooter className="flex flex-wrap justify-end gap-2">
           {appointment.status === "upcoming" && (
             <>
               <Button
