@@ -4,9 +4,14 @@ import { usePromotions } from "@/features/promotion/hooks/usePromotions";
 import { PromotionCard } from "@/features/promotion/components/PromotionCard";
 import { PageHeader } from "@/components/common/PageHeader";
 import { FullPageLoader } from "@/components/ui/spinner";
+import { useMemo } from "react";
 
 export default function PromotionsPage() {
   const { data: promotions, isLoading, error } = usePromotions();
+
+  const activePromotions = useMemo(() => {
+    return promotions?.filter((promo) => promo.status === "active") || [];
+  }, [promotions]);
 
   if (isLoading) {
     return (
@@ -26,7 +31,7 @@ export default function PromotionsPage() {
         description="Đừng bỏ lỡ những chương trình khuyến mãi hấp dẫn nhất từ Serenity Spa!"
       />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-        {promotions?.map((promo) => (
+        {activePromotions?.map((promo) => (
           <PromotionCard key={promo.id} promotion={promo} />
         ))}
       </div>

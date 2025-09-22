@@ -1,11 +1,13 @@
 import { Invoice } from "@/features/billing/types";
 import { v4 as uuidv4 } from "uuid";
 import { Customer } from "@/features/customer/types";
+import { Product } from "@/features/product/types";
 
 const INVOICES_API_URL = "http://localhost:3001/invoices";
 const CUSTOMERS_API_URL = "http://localhost:3001/customers";
+const PRODUCTS_API_URL = "http://localhost:3001/products";
+const POINTS_PER_VND = 1 / 10000;
 
-// Lấy type Omit để loại bỏ các trường không cần thiết khi tạo mới
 type InvoiceCreationData = Omit<Invoice, "id" | "createdAt">;
 
 export const getInvoices = async (): Promise<Invoice[]> => {
@@ -25,6 +27,7 @@ export const createInvoice = async (
   invoiceData: InvoiceCreationData
 ): Promise<Invoice> => {
   try {
+    // BƯỚC 1: TẠO HÓA ĐƠN
     const response = await fetch(INVOICES_API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -41,7 +44,7 @@ export const createInvoice = async (
 
     const newInvoice: Invoice = await response.json();
 
-    // --- LOGIC MỚI BẮT ĐẦU TỪ ĐÂY ---
+    // BƯỚC 2: CẬP NHẬT CÁC DỊCH VỤ ĐÃ MUA CHO KHÁCH HÀNG (Logic cũ)
     const servicesToUpdate = newInvoice.items.filter(
       (item) => item.type === "service"
     );
@@ -71,11 +74,56 @@ export const createInvoice = async (
         await fetch(`${CUSTOMERS_API_URL}/${newInvoice.customerId}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ purchasedServices: purchasedServices }),
+          body: JSON.stringify({ purchasedServices }),
         });
       }
     }
-    // --- KẾT THÚC LOGIC MỚI ---
+
+    // BƯỚC 3: TRỪ KHO CÁC SẢN PHẨM ĐÃ BÁN (LOGIC MỚI)
+    const productsToUpdate = newInvoice.items.filter(
+      (item) => item.type === "product"
+    );
+
+    if (productsToUpdate.length > 0) {
+      for (const item of productsToUpdate) {
+        // Lấy thông tin sản phẩm hiện tại để biết tồn kho
+        const productRes = await fetch(`${PRODUCTS_API_URL}/${item.id}`);
+        if (productRes.ok) {
+          const product: Product = await productRes.json();
+          const newStock = product.stock - item.quantity;
+
+          // Cập nhật lại tồn kho cho sản phẩm
+          await fetch(`${PRODUCTS_API_URL}/${item.id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ stock: newStock >= 0 ? newStock : 0 }), // Đảm bảo tồn kho không bị âm
+          });
+        }
+      }
+    }
+
+    if (newInvoice.total > 0) {
+      const customerRes = await fetch(
+        `${CUSTOMERS_API_URL}/${newInvoice.customerId}`
+      );
+      if (customerRes.ok) {
+        const customer: Customer = await customerRes.json();
+        const pointsEarned = Math.floor(newInvoice.total * POINTS_PER_VND);
+
+        if (pointsEarned > 0) {
+          const currentPoints = customer.loyaltyPoints || 0;
+          const newTotalPoints = currentPoints + pointsEarned;
+
+          // (Tùy chọn) Logic nâng hạng có thể thêm ở đây sau
+
+          await fetch(`${CUSTOMERS_API_URL}/${newInvoice.customerId}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ loyaltyPoints: newTotalPoints }),
+          });
+        }
+      }
+    }
 
     return newInvoice;
   } catch (error) {

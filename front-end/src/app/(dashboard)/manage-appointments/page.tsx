@@ -18,6 +18,14 @@ import { useCustomers } from "@/features/customer/hooks/useCustomers";
 import { useServices } from "@/features/service/hooks/useServices";
 import { useStaffs } from "@/features/staff/hooks/useStaffs";
 import { PageHeader } from "@/components/common/PageHeader";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { BarChart2 } from "lucide-react";
+import { FullPageLoader } from "@/components/ui/spinner";
+
+function createAppointment(variables: void): Promise<unknown> {
+  throw new Error("Function not implemented.");
+}
 
 export default function AppointmentsManagementPage() {
   const queryClient = useQueryClient();
@@ -120,39 +128,84 @@ export default function AppointmentsManagementPage() {
   }
 
   return (
-    <div className="flex h-full bg-muted/30">
-      <PageHeader title="Quản lý Lịch hẹn" />
-      <StatisticsSidebar appointments={appointments} staff={staff} />
-      <div
-        className={cn(
-          "transition-all duration-300 ease-in-out",
-          selectedAppointment ? "w-[calc(100%-24rem-16rem)]" : "w-full"
-        )}
-      >
-        <AppointmentTimeline
-          appointments={appointments}
-          customers={customers}
-          services={services}
-          onSelectAppointment={(app) => setSelectedAppointmentId(app.id)}
-          staff={staff}
-          onEventDrop={handleEventDrop}
-        />
+    // Sử dụng flex-col cho layout mobile
+    <div className="flex flex-col lg:flex-row h-full">
+      {/* Sidebar Thống kê (hiện cố định trên desktop, ẩn trong Sheet trên mobile) */}
+      <div className="hidden lg:block">
+        <StatisticsSidebar appointments={appointments} staff={staff} />
       </div>
 
-      {selectedAppointment && (
-        <AppointmentDetails
-          key={selectedAppointment.id} // Thêm key để component re-render khi chọn lịch hẹn khác
-          appointment={selectedAppointment}
-          customers={customers}
-          services={services}
-          staff={staff}
-          onStatusChange={handleStatusChange}
-          onClose={() => setSelectedAppointmentId(null)} // Thêm hàm để đóng chi tiết
-        />
-      )}
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col h-full">
+        <div className="p-4 md:p-6 lg:p-8">
+          <PageHeader
+            title="Quản lý Lịch hẹn"
+            actionNode={
+              // Nút mở sidebar thống kê trên mobile
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" className="lg:hidden">
+                    <BarChart2 className="mr-2 h-4 w-4" />
+                    Thống kê
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-[280px] p-0">
+                  <StatisticsSidebar
+                    appointments={appointments}
+                    staff={staff}
+                  />
+                </SheetContent>
+              </Sheet>
+            }
+          />
+        </div>
+        <div className="flex-1 min-h-0">
+          <AppointmentTimeline
+            appointments={appointments}
+            customers={customers}
+            services={services}
+            onSelectAppointment={(app) => setSelectedAppointmentId(app.id)}
+            staff={staff}
+            onEventDrop={handleEventDrop}
+          />
+        </div>
+      </div>
+
+      {/* Sidebar Chi tiết (hiện cố định trên desktop, trong Sheet trên mobile) */}
+      {/* Desktop */}
+      <div className="hidden lg:block">
+        {selectedAppointment && (
+          <AppointmentDetails
+            key={selectedAppointment.id}
+            appointment={selectedAppointment}
+            customers={customers}
+            services={services}
+            staff={staff}
+            onStatusChange={handleStatusChange}
+            onClose={() => setSelectedAppointmentId(null)}
+          />
+        )}
+      </div>
+
+      {/* Mobile (Sheet) */}
+      <Sheet
+        open={!!selectedAppointment}
+        onOpenChange={(isOpen) => !isOpen && setSelectedAppointmentId(null)}
+      >
+        <SheetContent className="lg:hidden p-0 w-full max-w-sm">
+          {selectedAppointment && (
+            <AppointmentDetails
+              key={selectedAppointment.id}
+              appointment={selectedAppointment}
+              customers={customers}
+              services={services}
+              staff={staff}
+              onStatusChange={handleStatusChange}
+              onClose={() => setSelectedAppointmentId(null)}
+            />
+          )}
+        </SheetContent>
+      </Sheet>
     </div>
   );
-}
-function createAppointment(variables: void): Promise<unknown> {
-  throw new Error("Function not implemented.");
 }

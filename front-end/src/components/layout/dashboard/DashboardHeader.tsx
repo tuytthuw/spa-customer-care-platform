@@ -14,16 +14,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
+import { ThemeToggle } from "@/components/common/ThemeToggle";
 
 const DashboardHeader = () => {
   const { user, logout } = useAuth();
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-6">
-      <div className="flex-1">
-        {/* Có thể thêm Breadcrumb hoặc Search bar ở đây */}
-      </div>
+      <div className="flex-1"></div>
       <div className="flex items-center gap-4">
+        <ThemeToggle />
         <Button variant="ghost" size="icon" className="rounded-full">
           <Bell className="h-5 w-5" />
           <span className="sr-only">Thông báo</span>

@@ -5,6 +5,7 @@ import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContexts"; // 1. Import AuthProvider
 import ReactQueryProvider from "@/components/providers/ReactQueryProvider"; // 1. Import provider mới
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,14 +22,19 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ReactQueryProvider>
-          {" "}
-          {/* 2. Bọc ngoài cùng */}
-          <AuthProvider>
-            <main>{children}</main>
-            <Toaster richColors position="top-right" />
-          </AuthProvider>
-        </ReactQueryProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ReactQueryProvider>
+            <AuthProvider>
+              <main>{children}</main>
+              <Toaster richColors position="top-right" />
+            </AuthProvider>
+          </ReactQueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

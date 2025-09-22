@@ -12,17 +12,19 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { ConfirmationModal } from "@/components/common/ConfirmationModal"; // Import component mới
-
+import { cn } from "@/lib/utils";
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",
   }).format(amount);
 };
+
+const LOW_STOCK_THRESHOLD = 10;
 
 interface GetColumnsProps {
   onEdit: (product: Product) => void;
@@ -60,6 +62,22 @@ export const columns = ({
   {
     accessorKey: "stock",
     header: "Tồn kho",
+    // === THAY ĐỔI LOGIC HIỂN THỊ TỒN KHO TẠI ĐÂY ===
+    cell: ({ row }) => {
+      const stock = row.original.stock;
+      const isLowStock = stock <= LOW_STOCK_THRESHOLD;
+
+      return (
+        <div
+          className={cn("flex items-center gap-2", {
+            "text-warning": isLowStock, // SỬ DỤNG MÀU TỪ THEME
+          })}
+        >
+          {isLowStock && <AlertTriangle className="h-4 w-4" />}
+          <span>{stock}</span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "status",

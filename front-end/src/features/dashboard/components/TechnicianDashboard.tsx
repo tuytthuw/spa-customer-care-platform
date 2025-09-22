@@ -11,6 +11,7 @@ import { getServices } from "@/features/service/api/service.api";
 import { useAuth } from "@/contexts/AuthContexts";
 import { getStaffProfiles } from "@/features/staff/api/staff.api";
 import { FullStaffProfile } from "@/features/staff/types";
+import { FullPageLoader } from "@/components/ui/spinner";
 
 export default function TechnicianDashboard() {
   const { user } = useAuth(); // Lấy thông tin user đang đăng nhập
@@ -71,13 +72,7 @@ export default function TechnicianDashboard() {
   });
 
   if (isLoading) {
-    return (
-      <div className="p-6">
-        <h2 className="text-xl text-foreground mb-4">
-          Đang tải lịch hẹn hôm nay...
-        </h2>
-      </div>
-    );
+    return <FullPageLoader text="Đang tải lịch hẹn hôm nay..." />;
   }
 
   // Lọc các lịch hẹn cho kỹ thuật viên đang đăng nhập và trong ngày hôm nay
@@ -93,26 +88,26 @@ export default function TechnicianDashboard() {
   ).length;
 
   return (
-    <main className="bg-muted min-h-screen -m-6 p-6">
+    <main className="bg-muted min-h-screen -m-4 p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
-            <div className="flex items-center justify-between mb-6">
+          <div className="bg-card rounded-lg shadow-sm border border-border p-4 md:p-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-2">
               <h2 className="text-xl text-foreground">Lịch Hẹn Hôm Nay</h2>
-              <div className="text-lg text-muted-foreground">{dateString}</div>
+              <div className="text-base sm:text-lg text-muted-foreground">
+                {dateString}
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6">
               <div className="bg-muted rounded-lg p-4 text-center">
-                <div className="text-2xl text-muted-foreground">
-                  {totalCustomers}
-                </div>
+                <div className="text-2xl text-foreground">{totalCustomers}</div>
                 <div className="text-sm text-muted-foreground">
                   Tổng khách hàng
                 </div>
               </div>
               <div className="bg-muted rounded-lg p-4 text-center">
-                <div className="text-2xl text-muted-foreground">
+                <div className="text-2xl text-foreground">
                   {inProgressCount}
                 </div>
                 <div className="text-sm text-muted-foreground">
@@ -120,9 +115,7 @@ export default function TechnicianDashboard() {
                 </div>
               </div>
               <div className="bg-muted rounded-lg p-4 text-center">
-                <div className="text-2xl text-muted-foreground">
-                  {completedCount}
-                </div>
+                <div className="text-2xl text-foreground">{completedCount}</div>
                 <div className="text-sm text-muted-foreground">
                   Đã hoàn thành
                 </div>

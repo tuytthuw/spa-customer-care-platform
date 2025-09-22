@@ -7,7 +7,6 @@ import {
   getPaginationRowModel,
   getFilteredRowModel, // Thêm getFilteredRowModel
   useReactTable,
-  ColumnFiltersState, // Thêm ColumnFiltersState
 } from "@tanstack/react-table";
 
 import {
@@ -56,7 +55,8 @@ export function DataTable<TData, TValue>({
           className="max-w-sm"
         />
       </div>
-      <div className="rounded-md border">
+
+      <div className="rounded-md border overflow-x-auto">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

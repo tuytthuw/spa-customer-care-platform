@@ -9,4 +9,5 @@ export interface Promotion {
   giftProductIds?: string[];
   startDate: string;
   endDate: string;
+  status: "active" | "inactive";
 }

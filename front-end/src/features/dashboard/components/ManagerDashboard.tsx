@@ -8,6 +8,7 @@ import { Activity, CalendarCheck, DollarSign, Users } from "lucide-react";
 import { useAppointments } from "@/features/appointment/hooks/useAppointments";
 import { useCustomers } from "@/features/customer/hooks/useCustomers";
 import { useInvoices } from "@/features/billing/hooks/useInvoices";
+import { FullPageLoader } from "@/components/ui/spinner";
 
 const formatCurrency = (amount: number) =>
   new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(
@@ -22,14 +23,8 @@ export default function ManagerDashboard() {
 
   const isLoading = loadingAppointments || loadingCustomers || loadingInvoices;
 
-  // 2. Xử lý trạng thái loading
   if (isLoading) {
-    return (
-      <div className="flex-1 space-y-4 p-6 pt-6">
-        <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-        <p>Đang tải dữ liệu...</p>
-      </div>
-    );
+    return <FullPageLoader text="Đang tải lịch hẹn hôm nay..." />;
   }
 
   // 3. Tính toán các số liệu thống kê từ dữ liệu thật
@@ -61,12 +56,12 @@ export default function ManagerDashboard() {
   const occupancyRate = "75%";
 
   return (
-    <div className="flex-1 space-y-4 p-6 pt-6">
+    <div className="flex-1 space-y-6 p-4 md:p-6 lg:p-8">
       <div className="flex items-center justify-between space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
       </div>
-      <div className="space-y-4">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="space-y-6">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           {/* 4. Hiển thị dữ liệu động */}
           <StatsCard
             title="Doanh thu hôm nay"
@@ -94,11 +89,11 @@ export default function ManagerDashboard() {
           />
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-5">
-          <div className="col-span-1 lg:col-span-3">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+          <div className="lg:col-span-3">
             <RevenueChart />
           </div>
-          <div className="col-span-1 lg:col-span-2">
+          <div className="lg:col-span-2">
             <ServiceBreakdownChart />
           </div>
         </div>

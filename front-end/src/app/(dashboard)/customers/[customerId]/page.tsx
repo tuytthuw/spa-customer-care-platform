@@ -32,12 +32,12 @@ export default async function CustomerDetailPage({
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-1">
+      <div className="flex flex-col lg:flex-row gap-6 lg:items-start">
+        <div className="w-full lg:w-1/3 lg:sticky lg:top-24">
           {/* 3. Truyền dữ liệu đã được xử lý ở server xuống component con */}
           <CustomerProfileCard customer={customer} />
         </div>
-        <div className="lg:col-span-2">
+        <div className="w-full lg:w-2/3">
           <AppointmentHistory
             appointments={customerAppointments}
             services={services}

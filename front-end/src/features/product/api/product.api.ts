@@ -1,7 +1,6 @@
 // src/services/productService.ts
 import { Product } from "@/features/product/types";
 import { v4 as uuidv4 } from "uuid";
-import { da } from "zod/v4/locales";
 
 const PRODUCTS_API_URL = "http://localhost:3001/products";
 
@@ -103,6 +102,36 @@ export const updateProducteStatus = async (
 
   if (!response.ok) {
     throw new Error("Failed to update product status");
+  }
+
+  return response.json();
+};
+
+export const addProductStock = async ({
+  productId,
+  quantityToAdd,
+}: {
+  productId: string;
+  quantityToAdd: number;
+}): Promise<Product> => {
+  // 1. Lấy thông tin sản phẩm hiện tại
+  const product = await getProductById(productId);
+  if (!product) {
+    throw new Error("Không tìm thấy sản phẩm.");
+  }
+
+  // 2. Tính toán tồn kho mới
+  const newStock = product.stock + quantityToAdd;
+
+  // 3. Cập nhật lại sản phẩm trên server
+  const response = await fetch(`${PRODUCTS_API_URL}/${productId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ stock: newStock }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Cập nhật tồn kho thất bại.");
   }
 
   return response.json();

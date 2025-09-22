@@ -22,6 +22,8 @@ export interface Customer {
     allowPromotions: boolean;
     allowReminders: boolean;
   };
+  loyaltyPoints?: number;
+  rank?: "Bronze" | "Silver" | "Gold";
 }
 
 export type FullCustomerProfile = Customer & {
