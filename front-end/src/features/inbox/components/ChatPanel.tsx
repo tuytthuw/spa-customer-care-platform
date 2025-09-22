@@ -1,8 +1,10 @@
+// src/features/inbox/components/ChatPanel.tsx
+
 import { Conversation } from "@/features/inbox/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Send } from "lucide-react";
+import { Send, ArrowLeft } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -12,9 +14,10 @@ import { useCustomers } from "@/features/customer/hooks/useCustomers";
 
 interface ChatPanelProps {
   conversation: Conversation | null;
+  onBack: () => void;
 }
 
-const ChatPanel = ({ conversation }: ChatPanelProps) => {
+const ChatPanel = ({ conversation, onBack }: ChatPanelProps) => {
   const queryClient = useQueryClient();
   const [input, setInput] = useState("");
 
@@ -55,6 +58,14 @@ const ChatPanel = ({ conversation }: ChatPanelProps) => {
   return (
     <div className="flex-1 flex flex-col h-full">
       <header className="p-4 border-b flex items-center gap-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="md:hidden"
+          onClick={onBack}
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
         <Avatar>
           <AvatarImage
             src={

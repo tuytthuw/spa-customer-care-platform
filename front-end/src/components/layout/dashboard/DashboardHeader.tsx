@@ -1,9 +1,10 @@
+// src/components/layout/dashboard/DashboardHeader.tsx
 "use client";
 
 import React from "react";
 import { useAuth } from "@/contexts/AuthContexts";
 import { Button } from "@/components/ui/button";
-import { LogOut, Bell, Settings } from "lucide-react";
+import { LogOut, Bell, Settings, Menu } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -15,12 +16,27 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/common/ThemeToggle";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import Sidebar from "./DashboardSidebar";
 
 const DashboardHeader = () => {
   const { user, logout } = useAuth();
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-6">
+      <div className="md:hidden">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="outline" size="icon">
+              <Menu className="h-5 w-5" />
+              <span className="sr-only">Toggle navigation menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="p-0">
+            <Sidebar />
+          </SheetContent>
+        </Sheet>
+      </div>
       <div className="flex-1"></div>
       <div className="flex items-center gap-4">
         <ThemeToggle />

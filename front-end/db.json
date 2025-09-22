@@ -454,8 +454,8 @@
     {
       "id": "conv-1",
       "customerId": "cus-1",
-      "lastMessage": "Cảm ơn spa nhé, mình rất hài lòng!",
-      "lastMessageTimestamp": "2025-08-25T10:30:00.000Z",
+      "lastMessage": "Tuyệt vời, mình sẽ ghé ạ!",
+      "lastMessageTimestamp": "2025-08-25T11:05:00.000Z",
       "isRead": false,
       "messages": [
         {
@@ -467,8 +467,110 @@
         {
           "id": "msg-2",
           "sender": "customer",
-          "text": "Cảm ơn spa nhé, mình rất hài lòng!",
+          "text": "Chào bạn, mình muốn hỏi về liệu trình chăm sóc da.",
+          "timestamp": "2025-08-25T10:01:00.000Z"
+        },
+        {
+          "id": "msg-3",
+          "sender": "staff",
+          "text": "Chào bạn, Serenity Spa rất vui được hỗ trợ. Bạn quan tâm đến dịch vụ chăm sóc da chuyên sâu hay liệu trình điều trị cụ thể nào ạ?",
+          "timestamp": "2025-08-25T10:05:00.000Z"
+        },
+        {
+          "id": "msg-4",
+          "sender": "customer",
+          "text": "Mình muốn một liệu trình cấp ẩm và làm sáng da.",
+          "timestamp": "2025-08-25T10:10:00.000Z"
+        },
+        {
+          "id": "msg-5",
+          "sender": "customer",
+          "text": "Da mình dạo này hơi khô và xỉn màu.",
+          "timestamp": "2025-08-25T10:10:30.000Z"
+        },
+        {
+          "id": "msg-6",
+          "sender": "staff",
+          "text": "Dạ, với tình trạng da của bạn, liệu trình 'Aqua Peel' kết hợp điện di Vitamin C sẽ rất phù hợp. Liệu trình giúp thanh lọc, cấp ẩm sâu và làm đều màu da hiệu quả.",
+          "timestamp": "2025-08-25T10:15:00.000Z"
+        },
+        {
+          "id": "msg-7",
+          "sender": "customer",
+          "text": "Nghe hay quá! Liệu trình này giá bao nhiêu vậy bạn?",
+          "timestamp": "2025-08-25T10:20:00.000Z"
+        },
+        {
+          "id": "msg-8",
+          "sender": "staff",
+          "text": "Dạ, liệu trình đang có giá ưu đãi là 800.000 VNĐ cho một buổi 75 phút ạ.",
+          "timestamp": "2025-08-25T10:22:00.000Z"
+        },
+        {
+          "id": "msg-9",
+          "sender": "customer",
+          "text": "Vậy cho mình đặt một suất vào 3h chiều nay nhé.",
           "timestamp": "2025-08-25T10:30:00.000Z"
+        },
+        {
+          "id": "msg-10",
+          "sender": "staff",
+          "text": "Dạ vâng, mình đã ghi nhận lịch hẹn cho bạn vào lúc 15:00 hôm nay. Spa sẽ gửi xác nhận qua tin nhắn cho bạn ngay ạ.",
+          "timestamp": "2025-08-25T10:35:00.000Z"
+        },
+        {
+          "id": "msg-11",
+          "sender": "customer",
+          "text": "Dạ vâng, cảm ơn spa nhiều ạ!",
+          "timestamp": "2025-08-25T10:40:00.000Z"
+        },
+        {
+          "id": "msg-12",
+          "sender": "staff",
+          "text": "Không có gì ạ. Spa rất hân hạnh được phục vụ bạn.",
+          "timestamp": "2025-08-25T10:41:00.000Z"
+        },
+        {
+          "id": "msg-13",
+          "sender": "customer",
+          "text": "À bạn ơi, cho mình hỏi thêm là sau khi làm liệu trình này có cần kiêng cữ gì không?",
+          "timestamp": "2025-08-25T10:45:00.000Z"
+        },
+        {
+          "id": "msg-14",
+          "sender": "staff",
+          "text": "Dạ, sau liệu trình bạn chỉ cần tránh nắng kỹ và sử dụng kem chống nắng đều đặn thôi ạ. Spa cũng sẽ cung cấp cho bạn một số sản phẩm dưỡng ẩm mini size để dùng thử tại nhà.",
+          "timestamp": "2025-08-25T10:50:00.000Z"
+        },
+        {
+          "id": "msg-15",
+          "sender": "customer",
+          "text": "Ồ tốt quá! Cảm ơn bạn đã tư vấn nhiệt tình.",
+          "timestamp": "2025-08-25T10:52:00.000Z"
+        },
+        {
+          "id": "msg-16",
+          "sender": "staff",
+          "text": "Dạ, không có gì ạ. Hẹn gặp bạn vào chiều nay nhé!",
+          "timestamp": "2025-08-25T10:53:00.000Z"
+        },
+        {
+          "id": "msg-17",
+          "sender": "customer",
+          "text": "Cho mình hỏi thêm một chút, spa có chỗ để xe ô tô không bạn?",
+          "timestamp": "2025-08-25T11:00:00.000Z"
+        },
+        {
+          "id": "msg-18",
+          "sender": "staff",
+          "text": "Dạ có ạ. Spa có hầm để xe rộng rãi, bạn cứ yên tâm nhé.",
+          "timestamp": "2025-08-25T11:02:00.000Z"
+        },
+        {
+          "id": "msg-19",
+          "sender": "customer",
+          "text": "Tuyệt vời, mình sẽ ghé ạ!",
+          "timestamp": "2025-08-25T11:05:00.000Z"
         }
       ]
     },
