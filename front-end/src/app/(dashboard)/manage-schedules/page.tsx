@@ -1,12 +1,6 @@
 "use client";
 
 import { useState } from "react";
-// 1. Import thêm các component cần thiết và dữ liệu mẫu mới
-import {
-  mockStaff,
-  mockWorkSchedules,
-  mockScheduleRequests,
-} from "@/lib/mock-data";
 import {
   Select,
   SelectContent,
@@ -14,24 +8,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"; // Import Tabs
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ScheduleForm from "@/features/schedule/components/ScheduleForm";
 import { WorkSchedule } from "@/features/schedule/types";
-import { ScheduleRequestsTable } from "@/features/schedule/components/ScheduleRequestsTable"; // Import bảng phê duyệt
 import { toast } from "sonner";
+import { useStaffs } from "@/features/staff/hooks/useStaffs";
+import { FullPageLoader } from "@/components/ui/spinner";
+import { useQuery } from "@tanstack/react-query";
 
 export default function WorkScheduleManagementPage() {
-  // State cho Tab "Cấu hình lịch"
   const [selectedStaffId, setSelectedStaffId] = useState<string | null>(null);
 
-  // State cho Tab "Yêu cầu đang chờ"
-  const [requests, setRequests] =
-    useState<WorkSchedule[]>(mockScheduleRequests);
+  const { data: staff = [], isLoading: isLoadingStaff } = useStaffs();
 
-  // --- Logic cho Tab "Cấu hình lịch" (Giữ nguyên) ---
-  const selectedSchedule = mockWorkSchedules.find(
+  // Tạm thời vẫn dùng mock data cho requests và schedules vì chưa có API
+  // Sẽ cần thay thế bằng useQuery khi có API tương ứng
+  const [requests, setRequests] = useState<WorkSchedule[]>([]); // Khởi tạo rỗng
+  const [workSchedules, setWorkSchedules] = useState<WorkSchedule[]>([]); // Khởi tạo rỗng
+
+  const selectedSchedule = workSchedules.find(
     (s) => s.staffId === selectedStaffId
   );
+
   const defaultSchedule: WorkSchedule = {
     staffId: selectedStaffId || "",
     schedule: {
@@ -45,12 +43,12 @@ export default function WorkScheduleManagementPage() {
     },
   };
 
-  // --- Logic cho Tab "Yêu cầu đang chờ" (Mới) ---
   const handleUpdateRequest = (
     staffId: string,
     weekOf: string,
     newStatus: "approved" | "rejected"
   ) => {
+    // Logic này sẽ được thay bằng mutation khi có API
     console.log(
       `Updating request for ${staffId} for week ${weekOf} to ${newStatus}`
     );
@@ -68,28 +66,24 @@ export default function WorkScheduleManagementPage() {
     }
   };
 
+  if (isLoadingStaff) {
+    return <FullPageLoader text="Đang tải dữ liệu nhân viên..." />;
+  }
+
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Quản lý Lịch làm việc</h1>
       </div>
 
-      {/* 2. Sử dụng Tabs để chia giao diện */}
       <Tabs defaultValue="requests">
         <TabsList className="grid w-full grid-cols-2 md:w-[400px]">
           <TabsTrigger value="requests">Yêu cầu đang chờ</TabsTrigger>
           <TabsTrigger value="config">Cấu hình lịch nhân viên</TabsTrigger>
         </TabsList>
 
-        {/* Tab 1: Phê duyệt yêu cầu */}
-        <TabsContent value="requests" className="mt-4">
-          <ScheduleRequestsTable
-            requests={requests.filter((r) => r.status === "pending")}
-            onUpdateRequest={handleUpdateRequest}
-          />
-        </TabsContent>
+        <TabsContent value="requests" className="mt-4"></TabsContent>
 
-        {/* Tab 2: Cấu hình lịch (Giao diện cũ của bạn) */}
         <TabsContent value="config" className="mt-4">
           <div className="mb-8 max-w-sm">
             <label className="block text-sm font-medium mb-2">
@@ -100,9 +94,10 @@ export default function WorkScheduleManagementPage() {
                 <SelectValue placeholder="Chọn một nhân viên để cấu hình..." />
               </SelectTrigger>
               <SelectContent>
-                {mockStaff.map((staff) => (
-                  <SelectItem key={staff.id} value={staff.id}>
-                    {staff.name} ({staff.role})
+                {/* BƯỚC 5: SỬ DỤNG DỮ LIỆU NHÂN VIÊN THẬT */}
+                {staff.map((staffMember) => (
+                  <SelectItem key={staffMember.id} value={staffMember.id}>
+                    {staffMember.name} ({staffMember.role})
                   </SelectItem>
                 ))}
               </SelectContent>

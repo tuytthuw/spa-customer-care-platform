@@ -14,9 +14,10 @@ import {
   forgotPasswordSchema,
 } from "@/features/auth/schemas";
 
-const USERS_API_URL = "http://localhost:3001/users";
-const CUSTOMERS_API_URL = "http://localhost:3001/customers";
-const STAFF_API_URL = "http://localhost:3001/staff";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const USERS_API_URL = `${API_URL}/users`;
+const CUSTOMERS_API_URL = `${API_URL}/customers`;
+const STAFF_API_URL = `${API_URL}/staff`;
 
 type ActionResult = {
   success?: string;

@@ -1,7 +1,7 @@
 import { Conversation, Message } from "@/features/inbox/types";
 import { v4 as uuidv4 } from "uuid";
 
-const CONVERSATIONS_API_URL = "http://localhost:3001/conversations";
+const CONVERSATIONS_API_URL = `${process.env.NEXT_PUBLIC_API_URL}/conversations`;
 
 export const getConversations = async (): Promise<Conversation[]> => {
   try {

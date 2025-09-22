@@ -2,7 +2,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { Review, NewReviewData } from "@/features/review/types";
 
-const REVIEWS_API_URL = "http://localhost:3001/reviews";
+const REVIEWS_API_URL = `${process.env.NEXT_PUBLIC_API_URL}/reviews`;
 
 // Lấy tất cả đánh giá
 export const getReviews = async (): Promise<Review[]> => {

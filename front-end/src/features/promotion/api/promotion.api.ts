@@ -2,7 +2,7 @@ import { Promotion } from "@/features/promotion/types";
 import { PromotionFormValues } from "@/features/promotion/schemas";
 import { uuidv4 } from "zod";
 
-const PROMOTIONS_API_URL = "http://localhost:3001/promotions";
+const PROMOTIONS_API_URL = `${process.env.NEXT_PUBLIC_API_URL}/promotions`;
 
 export const getPromotions = async (): Promise<Promotion[]> => {
   const response = await fetch(PROMOTIONS_API_URL, { cache: "no-store" });

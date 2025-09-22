@@ -2,7 +2,7 @@
 import { Product } from "@/features/product/types";
 import { v4 as uuidv4 } from "uuid";
 
-const PRODUCTS_API_URL = "http://localhost:3001/products";
+const PRODUCTS_API_URL = `${process.env.NEXT_PUBLIC_API_URL}/products`;
 
 export const getProducts = async (): Promise<Product[]> => {
   try {

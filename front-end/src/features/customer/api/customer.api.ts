@@ -3,8 +3,9 @@ import { Customer, FullCustomerProfile } from "@/features/customer/types";
 import { User } from "@/features/user/types";
 import { v4 as uuidv4 } from "uuid";
 
-const CUSTOMERS_API_URL = "http://localhost:3001/customers";
-const USERS_API_URL = "http://localhost:3001/users";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const CUSTOMERS_API_URL = `${API_URL}/customers`;
+const USERS_API_URL = `${API_URL}/users`;
 
 export const getCustomers = async (): Promise<FullCustomerProfile[]> => {
   try {

@@ -10,7 +10,7 @@ import { getCustomerById } from "@/features/customer/api/customer.api";
 import { getServiceById } from "@/features/service/api/service.api";
 
 // URL API mới trỏ đến json-server
-const APPOINTMENTS_API_URL = "http://localhost:3001/appointments";
+const APPOINTMENTS_API_URL = `${process.env.NEXT_PUBLIC_API_URL}/appointments`;
 
 // Mô phỏng việc gọi API để lấy danh sách lịch hẹn
 export const getAppointments = async (): Promise<Appointment[]> => {

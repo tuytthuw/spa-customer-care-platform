@@ -36,6 +36,7 @@ export default function ManageProductsPage() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isAddStockOpen, setIsAddStockOpen] = useState(false);
   const queryClient = useQueryClient();
+  const [globalFilter, setGlobalFilter] = useState("");
 
   const { data: products = [], isLoading, error } = useProducts();
 
