@@ -77,28 +77,31 @@ const ChatPanel = ({ conversation, onBack }: ChatPanelProps) => {
         </Avatar>
         <h3 className="font-semibold">{customer?.name || "Khách vãng lai"}</h3>
       </header>
-      <ScrollArea className="flex-1 p-4 bg-muted/20">
-        <div className="flex flex-col gap-4">
-          {conversation.messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={cn("flex", {
-                "justify-end": msg.sender === "staff",
-                "justify-start": msg.sender !== "staff",
-              })}
-            >
+      <div className="flex-1 overflow-hidden p-4 bg-muted/20">
+        <ScrollArea className="h-full">
+          <div className="flex flex-col gap-4 pr-4">
+            {conversation.messages.map((msg) => (
               <div
-                className={cn("rounded-lg px-4 py-2 max-w-xs", {
-                  "bg-primary text-primary-foreground": msg.sender === "staff",
-                  "bg-card border": msg.sender !== "staff",
+                key={msg.id}
+                className={cn("flex", {
+                  "justify-end": msg.sender === "staff",
+                  "justify-start": msg.sender !== "staff",
                 })}
               >
-                {msg.text}
+                <div
+                  className={cn("rounded-lg px-4 py-2 max-w-xs", {
+                    "bg-primary text-primary-foreground":
+                      msg.sender === "staff",
+                    "bg-card border": msg.sender !== "staff",
+                  })}
+                >
+                  {msg.text}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </ScrollArea>
+            ))}
+          </div>
+        </ScrollArea>
+      </div>
       <footer className="p-4 border-t">
         <div className="flex items-center gap-2">
           <Input
