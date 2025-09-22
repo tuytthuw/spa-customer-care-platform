@@ -1,3 +1,4 @@
+// src/app/(dashboard)/inbox/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -6,6 +7,7 @@ import { Conversation } from "@/features/inbox/types";
 import { getConversations } from "@/features/inbox/api/inbox.api";
 import ConversationList from "@/features/inbox/components/ConversationList";
 import ChatPanel from "@/features/inbox/components/ChatPanel";
+import { cn } from "@/lib/utils";
 
 const InboxPage = () => {
   const { data: conversations = [], isLoading } = useQuery<Conversation[]>({
@@ -25,7 +27,6 @@ const InboxPage = () => {
 
   const handleSelectConversation = (conversation: Conversation) => {
     setSelectedConversation(conversation);
-    // Logic đánh dấu đã đọc sẽ được xử lý ở phía server trong tương lai
   };
 
   if (isLoading) {
@@ -33,13 +34,28 @@ const InboxPage = () => {
   }
 
   return (
-    <div className="flex h-full border-t">
-      <ConversationList
-        conversations={conversations}
-        onSelectConversation={handleSelectConversation}
-        selectedConversationId={selectedConversation?.id}
-      />
-      <ChatPanel conversation={selectedConversation} />
+    <div className="flex h-full overflow-hidden">
+      <div
+        className={cn("w-full md:w-80 border-r overflow-y-auto", {
+          "hidden md:block": selectedConversation,
+        })}
+      >
+        <ConversationList
+          conversations={conversations}
+          onSelectConversation={handleSelectConversation}
+          selectedConversationId={selectedConversation?.id}
+        />
+      </div>
+      <div
+        className={cn("flex-1 h-full", {
+          "hidden md:flex": !selectedConversation,
+        })}
+      >
+        <ChatPanel
+          conversation={selectedConversation}
+          onBack={() => setSelectedConversation(null)}
+        />
+      </div>
     </div>
   );
 };
