@@ -11,7 +11,7 @@ export default function DashboardLayout({
 }) {
   return (
     <AuthProvider>
-      <div className="flex h-screen bg-neutral-50">
+      <div className="flex h-screen bg-muted">
         {/* Sidebar chính (menu điều hướng) */}
         <Sidebar />
         <div className="flex flex-col flex-1 overflow-hidden">
