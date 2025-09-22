@@ -45,32 +45,20 @@ const FullCalendarUI = React.forwardRef<FullCalendar, FullCalendarUIProps>(
         <style jsx global>{`
           /* --- Biến màu gốc của FullCalendar được gán lại bằng biến màu của chúng ta --- */
           .fc {
-            --fc-border-color: var(--border);
+            --fc-border-color: hsl(var(--border));
             --fc-daygrid-event-dot-width: 8px;
             --fc-list-event-dot-width: 10px;
-            --fc-event-text-color: var(--foreground);
-            --fc-event-bg-color: var(--primary);
-            --fc-event-border-color: var(--primary);
-            --fc-button-bg-color: var(--primary);
-            --fc-button-text-color: var(--primary-foreground);
-            --fc-button-border-color: var(--primary);
-            --fc-button-hover-bg-color: hsl(
-              var(--primary-h) var(--primary-s) calc(var(--primary-l) * 0.9)
-            );
-            --fc-button-hover-border-color: hsl(
-              var(--primary-h) var(--primary-s) calc(var(--primary-l) * 0.9)
-            );
-            --fc-button-active-bg-color: hsl(
-              var(--primary-h) var(--primary-s) calc(var(--primary-l) * 0.9)
-            );
-            --fc-button-active-border-color: hsl(
-              var(--primary-h) var(--primary-s) calc(var(--primary-l) * 0.9)
-            );
-            --fc-today-bg-color: color-mix(
-              in oklab,
-              var(--accent),
-              transparent 70%
-            );
+            --fc-event-text-color: hsl(var(--foreground));
+            --fc-event-bg-color: hsl(var(--primary));
+            --fc-event-border-color: hsl(var(--primary));
+            --fc-button-bg-color: hsl(var(--primary));
+            --fc-button-text-color: hsl(var(--primary-foreground));
+            --fc-button-border-color: hsl(var(--primary));
+            --fc-button-hover-bg-color: hsl(var(--primary) / 0.9);
+            --fc-button-hover-border-color: hsl(var(--primary) / 0.9);
+            --fc-button-active-bg-color: hsl(var(--primary) / 0.9);
+            --fc-button-active-border-color: hsl(var(--primary) / 0.9);
+            --fc-today-bg-color: hsl(var(--accent));
           }
 
           /* --- Tùy chỉnh các nút bấm --- */
@@ -107,31 +95,19 @@ const FullCalendarUI = React.forwardRef<FullCalendar, FullCalendarUIProps>(
 
           /* --- Màu sắc cho các sự kiện dựa trên className --- */
           .fc-event.fc-event-technician {
-            background-color: color-mix(
-              in oklab,
-              var(--color-resource-technician),
-              transparent 80%
-            ) !important;
-            border-color: var(--color-resource-technician) !important;
+            background-color: hsl(var(--chart-1) / 0.2) !important;
+            border-color: hsl(var(--chart-1)) !important;
           }
           .fc-event.fc-event-room {
-            background-color: color-mix(
-              in oklab,
-              var(--color-resource-room),
-              transparent 80%
-            ) !important;
-            border-color: var(--color-resource-room) !important;
+            background-color: hsl(var(--chart-2) / 0.2) !important;
+            border-color: hsl(var(--chart-2)) !important;
           }
           .fc-event.fc-event-equipment {
-            background-color: color-mix(
-              in oklab,
-              var(--color-resource-equipment),
-              transparent 80%
-            ) !important;
-            border-color: var(--color-resource-equipment) !important;
+            background-color: hsl(var(--chart-3) / 0.2) !important;
+            border-color: hsl(var(--chart-3)) !important;
           }
           .fc-event .fc-event-title {
-            color: var(--foreground);
+            color: hsl(var(--foreground));
             font-weight: 500;
           }
 
