@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { getCustomers } from "@/features/customer/api/customer.api";
 import { FullCustomerProfile } from "@/features/customer/types";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
 
 interface ConversationListProps {
   conversations: Conversation[];
@@ -28,57 +27,52 @@ const ConversationList = ({
       <div className="p-4 border-b flex-shrink-0">
         <h2 className="text-xl font-bold">Hộp thư</h2>
       </div>
-      <ScrollArea className="flex-1">
-        <nav>
-          <ul>
-            {conversations.map((conv) => {
-              const customer = customers.find((c) => c.id === conv.customerId);
-              const isSelected = conv.id === selectedConversationId;
-              return (
-                <li key={conv.id}>
-                  <button
-                    onClick={() => onSelectConversation(conv)}
-                    className={cn(
-                      "w-full text-left p-4 hover:bg-muted/50 flex items-start gap-4",
-                      { "bg-muted": isSelected }
-                    )}
-                  >
-                    <Avatar>
-                      <AvatarImage
-                        src={
-                          customer?.avatar ||
-                          `https://api.dicebear.com/7.x/notionists/svg?seed=${customer?.id}`
-                        }
-                      />
-                      <AvatarFallback>{customer?.name?.[0]}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 overflow-hidden">
-                      <div className="flex justify-between items-center">
-                        <h3 className="font-semibold truncate">
-                          {customer?.name || "Khách hàng"}
-                        </h3>
-                        {!conv.isRead && (
-                          <span className="w-2 h-2 rounded-full bg-primary"></span>
-                        )}
-                      </div>
-                      <p
-                        className={cn(
-                          "text-sm text-muted-foreground truncate",
-                          {
-                            "font-bold text-foreground": !conv.isRead,
-                          }
-                        )}
-                      >
-                        {conv.lastMessage}
-                      </p>
+      <nav className="flex-1 overflow-y-auto">
+        <ul>
+          {conversations.map((conv) => {
+            const customer = customers.find((c) => c.id === conv.customerId);
+            const isSelected = conv.id === selectedConversationId;
+            return (
+              <li key={conv.id}>
+                <button
+                  onClick={() => onSelectConversation(conv)}
+                  className={cn(
+                    "w-full text-left p-4 hover:bg-muted/50 flex items-start gap-4",
+                    { "bg-muted": isSelected }
+                  )}
+                >
+                  <Avatar>
+                    <AvatarImage
+                      src={
+                        customer?.avatar ||
+                        `https://api.dicebear.com/7.x/notionists/svg?seed=${customer?.id}`
+                      }
+                    />
+                    <AvatarFallback>{customer?.name?.[0]}</AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-center">
+                      <h3 className="font-semibold truncate">
+                        {customer?.name || "Khách hàng"}
+                      </h3>
+                      {!conv.isRead && (
+                        <span className="w-2 h-2 rounded-full bg-primary"></span>
+                      )}
                     </div>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
-      </ScrollArea>
+                    <p
+                      className={cn("text-sm text-muted-foreground truncate", {
+                        "font-bold text-foreground": !conv.isRead,
+                      })}
+                    >
+                      {conv.lastMessage}
+                    </p>
+                  </div>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
     </aside>
   );
 };

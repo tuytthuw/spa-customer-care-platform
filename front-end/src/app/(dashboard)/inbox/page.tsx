@@ -23,7 +23,7 @@ const InboxPage = () => {
     if (!isLoading && conversations.length > 0 && !selectedConversation) {
       setSelectedConversation(conversations[0]);
     }
-  }, [isLoading, conversations, selectedConversation]);
+  }, [isLoading, conversations]);
 
   const handleSelectConversation = (conversation: Conversation) => {
     setSelectedConversation(conversation);
@@ -36,7 +36,7 @@ const InboxPage = () => {
   return (
     <div className="flex h-full overflow-hidden">
       <div
-        className={cn("w-full md:w-80 border-r overflow-y-auto", {
+        className={cn("w-full md:w-80 border-r", {
           "hidden md:block": selectedConversation,
         })}
       >
