@@ -3,8 +3,9 @@ import { Staff, FullStaffProfile } from "@/features/staff/types";
 import { User } from "@/features/user/types";
 import { v4 as uuidv4 } from "uuid";
 
-const STAFF_API_URL = "http://localhost:3001/staff";
-const USERS_API_URL = "http://localhost:3001/users";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const STAFF_API_URL = `${API_URL}/staff`;
+const USERS_API_URL = `${API_URL}/users`;
 
 export const getStaffProfiles = async (): Promise<FullStaffProfile[]> => {
   try {

@@ -2,7 +2,7 @@
 import { User } from "@/features/user/types";
 import { ChangePasswordFormValues } from "@/features/auth/schemas";
 
-const USERS_API_URL = "http://localhost:3001/users";
+const USERS_API_URL = `${process.env.NEXT_PUBLIC_API_URL}/users`;
 
 // Lấy danh sách tất cả người dùng
 export const getUsers = async (): Promise<User[]> => {

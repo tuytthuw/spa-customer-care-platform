@@ -2,7 +2,7 @@
 import { Resource } from "@/features/resource/types";
 import { v4 as uuidv4 } from "uuid";
 
-const RESOURCES_API_URL = "http://localhost:3001/resources";
+const RESOURCES_API_URL = `${process.env.NEXT_PUBLIC_API_URL}/resources`;
 
 export const getResources = async (): Promise<Resource[]> => {
   try {

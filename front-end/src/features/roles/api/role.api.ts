@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Role } from "@/features/roles/types";
 import { RoleFormValues } from "../schemas";
 
-const ROLES_API_URL = "http://localhost:3001/roles";
+const ROLES_API_URL = `${process.env.NEXT_PUBLIC_API_URL}/roles`;
 
 export const getRoles = async (): Promise<Role[]> => {
   const response = await fetch(ROLES_API_URL, { cache: "no-store" });

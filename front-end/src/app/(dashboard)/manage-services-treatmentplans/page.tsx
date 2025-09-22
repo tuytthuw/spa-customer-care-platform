@@ -37,6 +37,7 @@ import ServiceFormFields from "@/features/service/components/ServiceForm";
 import TreatmentPlanFormFields from "@/features/treatment/components/TreatmentPlanForm";
 import { columns as serviceColumns } from "./service-columns";
 import { FullPageLoader } from "@/components/ui/spinner";
+import { PlusCircle } from "lucide-react";
 
 export default function ServicesManagementPage() {
   const [isServiceDialogOpen, setIsServiceDialogOpen] = useState(false);
@@ -238,6 +239,7 @@ export default function ServicesManagementPage() {
         <TabsContent value="services" className="mt-4">
           <div className="text-right mb-4">
             <Button onClick={() => handleOpenServiceDialog()}>
+              <PlusCircle className="mr-2 h-4 w-4" />
               Thêm dịch vụ mới
             </Button>
           </div>
@@ -252,6 +254,7 @@ export default function ServicesManagementPage() {
         <TabsContent value="treatment_plans" className="mt-4">
           <div className="text-right mb-4">
             <Button onClick={() => handleOpenPlanDialog()}>
+              <PlusCircle className="mr-2 h-4 w-4" />
               Thêm Liệu trình mới
             </Button>
           </div>

@@ -2,8 +2,7 @@
 import { Service } from "@/features/service/types";
 import { v4 as uuidv4 } from "uuid";
 
-const SERVICES_API_URL = "http://localhost:3001/services";
-
+const SERVICES_API_URL = `${process.env.NEXT_PUBLIC_API_URL}/services`;
 // Lấy danh sách dịch vụ
 export const getServices = async (): Promise<Service[]> => {
   console.log("Fetching services from API...");

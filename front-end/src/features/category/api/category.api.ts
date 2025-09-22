@@ -2,7 +2,7 @@
 import { Category } from "@/features/category/types";
 import { v4 as uuidv4 } from "uuid";
 
-const CATEGORIES_API_URL = "http://localhost:3001/categories";
+const CATEGORIES_API_URL = `${process.env.NEXT_PUBLIC_API_URL}/categories`;
 
 export const getCategories = async (): Promise<Category[]> => {
   const response = await fetch(CATEGORIES_API_URL, { cache: "no-store" });

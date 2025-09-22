@@ -18,7 +18,7 @@ import {
 import { useCustomers } from "@/features/customer/hooks/useCustomers";
 
 import { Button } from "@/components/ui/button";
-import { Mail, Plus } from "lucide-react";
+import { Mail, PlusCircle } from "lucide-react";
 import { DataTable } from "@/components/ui/data-table";
 import { PageHeader } from "@/components/common/PageHeader";
 import { FormDialog } from "@/components/common/FormDialog";
@@ -195,7 +195,8 @@ export default function CustomersPage() {
               {filteredCustomers.length})
             </Button>
             <Button onClick={() => handleOpenDialog()}>
-              <Plus className="mr-2 h-4 w-4" /> Thêm khách hàng
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Thêm khách hàng
             </Button>
           </div>
         }

@@ -4,8 +4,9 @@ import { v4 as uuidv4 } from "uuid";
 import { TreatmentPlanFormValues } from "@/features/treatment/schemas";
 import { createAppointment } from "@/features/appointment/api/appointment.api";
 
-const PLANS_API_URL = "http://localhost:3001/treatmentPlans";
-const CUSTOMER_TREATMENTS_API_URL = "http://localhost:3001/customerTreatments";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const PLANS_API_URL = `${API_URL}/treatmentPlans`;
+const CUSTOMER_TREATMENTS_API_URL = `${API_URL}/customerTreatments`;
 
 export const getTreatmentPlans = async (): Promise<TreatmentPlan[]> => {
   try {

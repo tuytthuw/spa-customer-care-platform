@@ -3,9 +3,10 @@ import { v4 as uuidv4 } from "uuid";
 import { Customer } from "@/features/customer/types";
 import { Product } from "@/features/product/types";
 
-const INVOICES_API_URL = "http://localhost:3001/invoices";
-const CUSTOMERS_API_URL = "http://localhost:3001/customers";
-const PRODUCTS_API_URL = "http://localhost:3001/products";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const INVOICES_API_URL = `${API_URL}/invoices`;
+const CUSTOMERS_API_URL = `${API_URL}/customers`;
+const PRODUCTS_API_URL = `${API_URL}/products`;
 const POINTS_PER_VND = 1 / 10000;
 
 type InvoiceCreationData = Omit<Invoice, "id" | "createdAt">;
