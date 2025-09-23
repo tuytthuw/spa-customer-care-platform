@@ -516,6 +516,33 @@
       "serviceId": "2",
       "date": "2025-10-04T07:00:00.000Z",
       "customerNote": ""
+    },
+    {
+      "id": "appt-e5b428a4-a8f0-4bbf-8770-aef5fb7baf20",
+      "status": "upcoming",
+      "paymentStatus": "unpaid",
+      "customerId": "cus-1",
+      "serviceId": "1",
+      "date": "2025-09-23T06:00:00.000Z",
+      "customerNote": ""
+    },
+    {
+      "id": "appt-73c80d0c-0230-4b99-a989-6b9c7f418513",
+      "status": "upcoming",
+      "paymentStatus": "unpaid",
+      "customerId": "cus-1",
+      "serviceId": "2",
+      "date": "2025-10-03T08:30:00.000Z",
+      "customerNote": ""
+    },
+    {
+      "id": "appt-691458b5-0118-47d5-8f40-7a388d3973fd",
+      "status": "upcoming",
+      "paymentStatus": "unpaid",
+      "customerId": "cus-1",
+      "serviceId": "2",
+      "date": "2025-09-27T03:00:00.000Z",
+      "customerNote": ""
     }
   ],
   "resources": [

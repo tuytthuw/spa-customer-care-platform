@@ -12,12 +12,21 @@ interface BookingState {
   actions: {
     setService: (service: Service) => void;
     setDateTime: (date: Date, time: string) => void;
-    startReschedule: (service: Service, rescheduleId: string) => void;
     nextStep: () => void;
     prevStep: () => void;
     reset: () => void;
+    startReschedule: (service: Service, appointmentId: string) => void;
   };
 }
+
+// ✅ KHAI BÁO HẰNG SỐ BỊ THIẾU Ở ĐÂY
+const initialState = {
+  step: 1,
+  service: null,
+  date: new Date(),
+  time: "",
+  rescheduleId: null,
+};
 
 const useBookingStore = create<BookingState>((set) => ({
   step: 1,
@@ -26,13 +35,15 @@ const useBookingStore = create<BookingState>((set) => ({
   time: "",
   rescheduleId: null,
   actions: {
-    setService: (service) => set((state) => ({ ...state, service, step: 2 })),
-    setDateTime: (date, time) =>
-      set((state) => ({ ...state, date, time, step: 3 })),
+    // CHỈ CẬP NHẬT DỮ LIỆU, KHÔNG CHUYỂN BƯỚC
+    setService: (service) => set({ service }),
+    setDateTime: (date, time) => set({ date, time }),
+
+    // Các actions khác giữ nguyên
     startReschedule: (service, rescheduleId) =>
       set({ service, rescheduleId, step: 2, date: new Date(), time: "" }),
-    nextStep: () => set((state) => ({ ...state, step: state.step + 1 })),
-    prevStep: () => set((state) => ({ ...state, step: state.step - 1 })),
+    nextStep: () => set((state) => ({ step: state.step + 1 })),
+    prevStep: () => set((state) => ({ step: state.step - 1 })),
     reset: () =>
       set({
         step: 1,

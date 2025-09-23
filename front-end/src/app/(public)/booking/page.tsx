@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContexts";
 import { useCustomers } from "@/features/customer/hooks/useCustomers";
 import { redeemPurchasedService } from "@/features/customer/api/customer.api";
+import { Service } from "@/features/service/types";
 
 interface CustomerInfo {
   name: string;
@@ -51,17 +52,12 @@ export default function BookingPage() {
     const dateParam = searchParams.get("date");
     if (dateParam) {
       const selectedDate = new Date(dateParam);
-      // Kiểm tra ngày hợp lệ trước khi set
       if (!isNaN(selectedDate.getTime())) {
-        // Tự động chọn ngày và chuyển sang bước chọn giờ
+        // Cập nhật ngày trong store nhưng không chuyển bước
         setDateTime(selectedDate, "");
-        if (step === 1 && service) {
-          // Nếu đã có dịch vụ, chuyển bước
-          nextStep();
-        }
       }
     }
-  }, [searchParams, setDateTime, step, service, nextStep]);
+  }, [searchParams, setDateTime]);
 
   const currentUserProfile = customers.find((c) => c.userId === user?.id);
 
@@ -121,6 +117,16 @@ export default function BookingPage() {
     },
     // Không cần xử lý onError ở đây vì createAppointment sẽ báo lỗi chung
   });
+
+  const handleServiceSelect = (selectedService: Service) => {
+    setService(selectedService);
+    nextStep(); // Chuyển từ Bước 1 -> Bước 2
+  };
+
+  const handleDateTimeSelect = (selectedDate: Date, selectedTime: string) => {
+    setDateTime(selectedDate, selectedTime);
+    nextStep(); // Chuyển từ Bước 2 -> Bước 3
+  };
 
   const createAppointmentMutation = useMutation({
     mutationFn: createAppointment,
@@ -222,21 +228,23 @@ export default function BookingPage() {
   const renderStep = () => {
     switch (step) {
       case 1:
-        return <ServiceSelectionStep onServiceSelect={setService} />;
+        // Truyền hàm xử lý mới vào component
+        return <ServiceSelectionStep onServiceSelect={handleServiceSelect} />;
       case 2:
         return (
           <DateTimeStep
-            onNextStep={setDateTime}
-            onPrevStep={handlePrevStep} // Sử dụng hàm xử lý mới
+            // Truyền hàm xử lý mới vào component
+            onNextStep={handleDateTimeSelect}
+            onPrevStep={prevStep} // Dùng trực tiếp prevStep từ store
             bookingDetails={{ service, date, time }}
-            isTreatmentBooking={isTreatmentBooking} // Truyền prop xác định luồng
+            isTreatmentBooking={isTreatmentBooking}
           />
         );
       case 3:
         return (
           <ConfirmationStep
             bookingDetails={{ service, date, time }}
-            onPrevStep={prevStep}
+            onPrevStep={prevStep} // Dùng trực tiếp prevStep từ store
             onConfirm={handleConfirmBooking}
             isSubmitting={
               createAppointmentMutation.isPending ||
@@ -259,9 +267,10 @@ export default function BookingPage() {
           />
         );
       default:
-        return <ServiceSelectionStep onServiceSelect={setService} />;
+        return <ServiceSelectionStep onServiceSelect={handleServiceSelect} />;
     }
   };
+
   return (
     <main className="max-w-6xl mx-auto py-8 px-4">
       {step < 4 && <BookingSteps currentStep={step} />}

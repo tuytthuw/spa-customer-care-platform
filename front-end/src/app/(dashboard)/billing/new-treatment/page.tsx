@@ -223,7 +223,7 @@ export default function NewTreatmentPage() {
           >
             {addCustomerTreatmentMutation.isPending
               ? "Đang xử lý..."
-              : "Xác nhận & Thanh toán"}
+              : "Xác nhận"}
           </Button>
         </CardContent>
       </Card>

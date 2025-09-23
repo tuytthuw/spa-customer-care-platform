@@ -18,9 +18,12 @@ import { ReviewModal } from "@/features/review/components/ReviewModal";
 import { Appointment } from "@/features/appointment/types";
 import { ReviewFormValues } from "@/features/review/schemas";
 import { NewReviewData } from "@/features/review/types";
-import { updateAppointmentStatus } from "@/features/appointment/api/appointment.api";
+import {
+  updateAppointmentStatus,
+  createAppointment,
+} from "@/features/appointment/api/appointment.api";
 import { createReview } from "@/features/review/api/review.api";
-// Import các hooks để fetch dữ liệu
+import useBookingStore from "@/stores/booking-store";
 
 export default function SchedulePage() {
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
@@ -38,7 +41,10 @@ export default function SchedulePage() {
     let url = "/booking";
     if (date) {
       // Format ngày thành YYYY-MM-DD để truyền qua URL
-      const formattedDate = date.toISOString().split("T")[0];
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0"); // Tháng bắt đầu từ 0
+      const day = String(date.getDate()).padStart(2, "0");
+      const formattedDate = `${year}-${month}-${day}`;
       url += `?date=${formattedDate}`;
     }
     router.push(url);
