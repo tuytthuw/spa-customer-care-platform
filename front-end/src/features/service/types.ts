@@ -9,4 +9,9 @@ export interface Service {
   imageUrl: string;
   imageUrls: string[];
   status: "active" | "inactive";
+  consumables?: ServiceConsumable[];
+}
+export interface ServiceConsumable {
+  productId: string;
+  quantityUsed: number;
 }

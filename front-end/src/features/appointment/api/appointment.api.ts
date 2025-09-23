@@ -8,9 +8,11 @@ import { v4 as uuidv4 } from "uuid";
 import { sendNotificationEmail } from "@/features/notification/api/notification.api";
 import { getCustomerById } from "@/features/customer/api/customer.api";
 import { getServiceById } from "@/features/service/api/service.api";
+import { getProductById } from "@/features/product/api/product.api";
 
 // URL API mới trỏ đến json-server
 const APPOINTMENTS_API_URL = `${process.env.NEXT_PUBLIC_API_URL}/appointments`;
+const PRODUCTS_API_URL = `${process.env.NEXT_PUBLIC_API_URL}/products`;
 
 // Mô phỏng việc gọi API để lấy danh sách lịch hẹn
 export const getAppointments = async (): Promise<Appointment[]> => {
@@ -176,8 +178,43 @@ export const logAppointmentCompletion = async (
   appointmentId: string,
   notes: string
 ): Promise<Appointment> => {
+  // ... (code lấy thông tin lịch hẹn và dịch vụ giữ nguyên)
+  const appointmentRes = await fetch(
+    `${APPOINTMENTS_API_URL}/${appointmentId}`
+  );
+  if (!appointmentRes.ok) throw new Error("Không tìm thấy lịch hẹn.");
+  const appointment: Appointment = await appointmentRes.json();
+  const service = await getServiceById(appointment.serviceId);
+
+  // --- LOGIC MỚI: TRỪ KHO SẢN PHẨM TIÊU HAO ---
+  if (service && service.consumables && service.consumables.length > 0) {
+    console.log(
+      `Dịch vụ "${service.name}" có sản phẩm tiêu hao, tiến hành trừ kho...`
+    );
+
+    await Promise.all(
+      service.consumables.map(async (consumable) => {
+        const product = await getProductById(consumable.productId);
+        // Chỉ trừ kho nếu sản phẩm có tỷ lệ quy đổi hợp lệ
+        if (product && product.conversionRate && product.conversionRate > 0) {
+          // CÔNG THỨC TRỪ KHO MỚI
+          const stockUsed = consumable.quantityUsed / product.conversionRate;
+          const newStock = product.stock - stockUsed;
+
+          await fetch(`${PRODUCTS_API_URL}/${product.id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ stock: newStock >= 0 ? newStock : 0 }),
+          });
+          console.log(
+            `Đã trừ kho "${product.name}", tồn kho mới: ${newStock} ${product.baseUnit}`
+          );
+        }
+      })
+    );
+  }
   const updates = {
-    status: "completed",
+    status: "completed" as AppointmentStatus,
     technicianNotes: notes,
   };
 

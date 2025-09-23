@@ -128,7 +128,7 @@ export default function ConfirmationStep({
         <div className="mb-8">
           <h3 className="text-lg mb-4">Thông tin khách hàng</h3>
           {isPrePurchased ? (
-            <div className="p-4 bg-green-100 dark:bg-green-900 border border-green-200 dark:border-green-800 rounded-lg text-green-800 dark:text-green-200">
+            <div className="p-4 bg-success/10 border border-success/20 rounded-lg text-success">
               <p className="font-semibold">
                 Bạn đang sử dụng một lượt dịch vụ đã mua trước.
               </p>

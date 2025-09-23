@@ -1,3 +1,4 @@
+// src/components/layout/dashboard/DashboardSidebar.tsx
 "use client";
 
 import Link from "next/link";
@@ -19,10 +20,12 @@ import {
   Star,
   ReceiptText,
   BarChart2,
+  Gem,
+  Megaphone,
+  Inbox,
 } from "lucide-react";
 import { Feature } from "@/features/roles/types";
 
-// ✅ Định nghĩa cấu trúc cho một link, bao gồm cả quyền yêu cầu
 interface NavLink {
   href: string;
   label: string;
@@ -30,14 +33,23 @@ interface NavLink {
   requiredFeature: Feature;
 }
 
-// ✅ Tạo một danh sách TẤT CẢ các link có thể có trong hệ thống
 const allNavLinks: NavLink[] = [
+  // --- CHUNG ---
   {
     href: "/dashboard",
     label: "Tổng quan",
     icon: LayoutDashboard,
     requiredFeature: "dashboard",
   },
+  {
+    href: "/profile",
+    label: "Hồ sơ cá nhân",
+    icon: UserCog,
+    requiredFeature: "profile",
+  },
+  { href: "/inbox", label: "Hộp thư", icon: Inbox, requiredFeature: "inbox" },
+
+  // --- DÀNH CHO KHÁCH HÀNG ---
   {
     href: "/customer-schedules",
     label: "Lịch Trình của tôi",
@@ -52,18 +64,20 @@ const allNavLinks: NavLink[] = [
   },
   {
     href: "/reviews",
-    label: "Đánh giá",
+    label: "Đánh giá của tôi",
     icon: Star,
     requiredFeature: "reviews",
   },
   {
-    href: "/profile",
-    label: "Hồ sơ cá nhân",
-    icon: UserCog,
-    requiredFeature: "profile",
+    href: "/my-packages",
+    label: "Gói dịch vụ của tôi",
+    icon: Package,
+    requiredFeature: "treatments",
   },
+
+  // --- DÀNH CHO NHÂN VIÊN/QUẢN LÝ ---
   {
-    href: "/appointments-management",
+    href: "/manage-appointments",
     label: "Quản lý Lịch hẹn",
     icon: Calendar,
     requiredFeature: "appointments_management",
@@ -74,6 +88,14 @@ const allNavLinks: NavLink[] = [
     icon: Users,
     requiredFeature: "customers",
   },
+  {
+    href: "/billing/new",
+    label: "Bán hàng & Thanh toán",
+    icon: ReceiptText,
+    requiredFeature: "billing",
+  },
+
+  // --- DÀNH CHO QUẢN LÝ ---
   {
     href: "/manage-staffs",
     label: "Quản lý Nhân viên",
@@ -123,6 +145,18 @@ const allNavLinks: NavLink[] = [
     requiredFeature: "reports",
   },
   {
+    href: "/manage-promotions",
+    label: "Khuyến mãi",
+    icon: Megaphone,
+    requiredFeature: "promotions",
+  },
+  {
+    href: "/manage-loyalty",
+    label: "Khách hàng thân thiết",
+    icon: Gem,
+    requiredFeature: "loyalty",
+  },
+  {
     href: "/manage-users",
     label: "Quản lý người dùng",
     icon: UserCog,
@@ -140,7 +174,6 @@ export default function Sidebar() {
   const pathname = usePathname();
   const { user } = useAuth();
 
-  // ✅ Lọc ra các link mà người dùng có quyền "đọc" (read)
   const accessibleNavLinks = allNavLinks.filter((link) =>
     user?.permissions[link.requiredFeature]?.includes("read")
   );

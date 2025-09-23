@@ -113,60 +113,27 @@
       "description": "Toàn quyền truy cập hệ thống.",
       "status": "active",
       "permissions": {
-        "dashboard": [
-          "read"
-        ],
-        "appointments": [
-          "read",
-          "write"
-        ],
-        "appointments_management": [
-          "read",
-          "write"
-        ],
-        "customers": [
-          "read",
-          "write"
-        ],
-        "staff": [
-          "read",
-          "write"
-        ],
-        "services": [
-          "read",
-          "write"
-        ],
-        "products": [
-          "read",
-          "write"
-        ],
-        "categories": [
-          "read",
-          "write"
-        ],
-        "resources": [
-          "read",
-          "write"
-        ],
-        "schedules": [
-          "read",
-          "write"
-        ],
-        "reports": [
-          "read"
-        ],
-        "billing": [
-          "read",
-          "write"
-        ],
-        "users": [
-          "read",
-          "write"
-        ],
-        "roles": [
-          "read",
-          "write"
-        ]
+        "dashboard": ["read", "write"],
+        "appointments": ["read", "write"],
+        "appointments_management": ["read", "write"],
+        "customers": ["read", "write"],
+        "staff": ["read", "write"],
+        "services": ["read", "write"],
+        "products": ["read", "write"],
+        "categories": ["read", "write"],
+        "resources": ["read", "write"],
+        "schedules": ["read", "write"],
+        "reports": ["read", "write"],
+        "billing": ["read", "write"],
+        "users": ["read", "write"],
+        "roles": ["read", "write"],
+        "treatments": ["read", "write"],
+        "reviews": ["read", "write"],
+        "profile": ["read", "write"],
+        "promotions": ["read", "write"],
+        "loyalty": ["read", "write"],
+        "marketing": ["read", "write"],
+        "inbox": ["read", "write"]
       }
     },
     {
@@ -175,40 +142,16 @@
       "description": "Quản lý lịch hẹn và khách hàng.",
       "status": "active",
       "permissions": {
-        "dashboard": [
-          "read"
-        ],
-        "appointments": [
-          "read",
-          "write"
-        ],
-        "appointments_management": [
-          "read",
-          "write"
-        ],
-        "customers": [
-          "read",
-          "write"
-        ],
-        "staff": [
-          "read"
-        ],
-        "services": [
-          "read"
-        ],
-        "products": [
-          "read"
-        ],
-        "categories": [
-          "read"
-        ],
-        "resources": [
-          "read"
-        ],
-        "billing": [
-          "read",
-          "write"
-        ],
+        "dashboard": ["read"],
+        "appointments": ["read", "write"],
+        "appointments_management": ["read", "write"],
+        "customers": ["read", "write"],
+        "staff": ["read"],
+        "services": ["read"],
+        "products": ["read"],
+        "categories": ["read"],
+        "resources": ["read"],
+        "billing": ["read", "write"],
         "schedules": [],
         "reports": [],
         "users": [],
@@ -221,24 +164,15 @@
       "description": "Xem lịch làm việc và thông tin khách hàng.",
       "status": "active",
       "permissions": {
-        "dashboard": [
-          "read"
-        ],
-        "appointments": [
-          "read"
-        ],
-        "customers": [
-          "read"
-        ],
+        "dashboard": ["read"],
+        "appointments": ["read"],
+        "customers": ["read"],
         "staff": [],
         "services": [],
         "products": [],
         "categories": [],
         "resources": [],
-        "schedules": [
-          "read",
-          "write"
-        ],
+        "schedules": ["read", "write"],
         "reports": [],
         "users": [],
         "roles": []
@@ -250,24 +184,11 @@
       "description": "Quyền cơ bản cho khách hàng sử dụng portal.",
       "status": "active",
       "permissions": {
-        "appointments": [
-          "read",
-          "write"
-        ],
-        "treatments": [
-          "read"
-        ],
-        "billing": [
-          "read"
-        ],
-        "reviews": [
-          "read",
-          "write"
-        ],
-        "profile": [
-          "read",
-          "write"
-        ]
+        "appointments": ["read", "write"],
+        "treatments": ["read"],
+        "billing": ["read"],
+        "reviews": ["read", "write"],
+        "profile": ["read", "write"]
       }
     }
   ],
@@ -417,10 +338,7 @@
       "phone": "0911223344",
       "role": "technician",
       "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=tech-1",
-      "serviceIds": [
-        "1",
-        "2"
-      ],
+      "serviceIds": ["1", "2"],
       "status": "active"
     },
     {
@@ -451,10 +369,7 @@
       "duration": 60,
       "imageUrl": "/images/service-1.jpg",
       "status": "active",
-      "categories": [
-        "Chăm sóc da mặt",
-        "Massage & Trị liệu"
-      ]
+      "categories": ["Chăm sóc da mặt", "Massage & Trị liệu"]
     },
     {
       "id": "2",
@@ -464,13 +379,27 @@
       "duration": 90,
       "imageUrl": "/images/service-2.jpg",
       "status": "active",
-      "categories": [
-        "Chăm sóc da mặt",
-        "Massage & Trị liệu"
+      "categories": ["Chăm sóc da mặt", "Massage & Trị liệu"],
+      "consumables": [
+        {
+          "productId": "df37bf35-1a1f-409b-977c-c1d04bc64c5d",
+          "quantityUsed": 15
+        }
       ]
     }
   ],
   "appointments": [
+    {
+      "id": "appt-test-stock",
+      "customerId": "cus-1",
+      "serviceId": "2",
+      "technicianId": "tech-1",
+      "date": "2025-09-24T10:00:00.000Z",
+      "status": "upcoming",
+      "paymentStatus": "unpaid",
+      "technicianNotes": "",
+      "customerNote": "Khách hàng test trừ kho tự động."
+    },
     {
       "id": "appt-1",
       "customerId": "cus-1",
@@ -903,9 +832,7 @@
       "id": "prod-1",
       "name": "Serum dưỡng ẩm Hyaluronic Acid",
       "description": "Serum cấp ẩm sâu.",
-      "categories": [
-        "Dưỡng ẩm"
-      ],
+      "categories": ["Dưỡng ẩm"],
       "price": 750000,
       "stock": 50,
       "imageUrl": "/images/product-1.jpg",
@@ -915,13 +842,26 @@
       "id": "prod-2",
       "name": "Kem chống nắng SPF 50+",
       "description": "Bảo vệ da tối ưu.",
-      "categories": [
-        "Chống nắng"
-      ],
+      "categories": ["Chống nắng"],
       "price": 550000,
       "stock": 100,
       "imageUrl": "/images/product-2.jpg",
       "status": "inactive"
+    },
+    {
+      "id": "df37bf35-1a1f-409b-977c-c1d04bc64c5d",
+      "name": "Tinh dầu Sả Chanh Cao cấp",
+      "description": "Dùng để massage thư giãn và xông phòng.",
+      "categories": [],
+      "price": 0,
+      "stock": 10,
+      "isRetail": false,
+      "isConsumable": true,
+      "baseUnit": "Chai",
+      "consumableUnit": "ml",
+      "conversionRate": 500,
+      "status": "active",
+      "imageUrl": "/images/service-1.jpg"
     }
   ],
   "categories": [
@@ -946,24 +886,18 @@
       "id": "plan-1",
       "name": "Liệu trình Phục hồi da toàn diện",
       "description": "Gói 5 buổi kết hợp làm sạch sâu và massage nâng cơ.",
-      "categories": [
-        "Chăm sóc da"
-      ],
+      "categories": ["Chăm sóc da"],
       "price": 2500000,
       "imageUrl": "/images/service-1.jpg",
       "status": "active",
       "totalSessions": 5,
       "steps": [
         {
-          "serviceIds": [
-            "1"
-          ],
+          "serviceIds": ["1"],
           "step": 1
         },
         {
-          "serviceIds": [
-            "2"
-          ],
+          "serviceIds": ["2"],
           "step": 2
         }
       ]
@@ -981,9 +915,7 @@
         {
           "id": "cts-1",
           "treatmentPlanStep": 1,
-          "serviceIds": [
-            "1"
-          ],
+          "serviceIds": ["1"],
           "date": "",
           "technicianId": "",
           "status": "upcoming"
@@ -998,9 +930,7 @@
       "description": "Giảm ngay 30% cho tất cả các dịch vụ chăm sóc da mặt.",
       "imageUrl": "/images/service-1.jpg",
       "discountPercent": 30,
-      "applicableServiceIds": [
-        "1"
-      ],
+      "applicableServiceIds": ["1"],
       "startDate": "2025-06-01T00:00:00.000Z",
       "endDate": "2025-06-30T23:59:59.000Z"
     }
