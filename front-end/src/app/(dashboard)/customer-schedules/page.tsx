@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useCustomerScheduleData } from "@/features/customer-schedules/hooks/useCustomerScheduleData";
@@ -17,40 +18,31 @@ import { ReviewModal } from "@/features/review/components/ReviewModal";
 import { Appointment } from "@/features/appointment/types";
 import { ReviewFormValues } from "@/features/review/schemas";
 import { NewReviewData } from "@/features/review/types";
-import CreateAppointmentModal from "@/features/customer-schedules/components/CreateAppointmentModal";
-import { CustomerInfo } from "@/features/booking/types";
-import { createAppointment } from "@/features/appointment/api/appointment.api";
 import { updateAppointmentStatus } from "@/features/appointment/api/appointment.api";
 import { createReview } from "@/features/review/api/review.api";
-
 // Import các hooks để fetch dữ liệu
 
 export default function SchedulePage() {
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [selectedAppointmentForReview, setSelectedAppointmentForReview] =
     useState<Appointment | null>(null);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [initialDateForModal, setInitialDateForModal] = useState<Date>();
 
   const { isLoading, data: scheduleData } = useCustomerScheduleData();
   const { currentUserProfile, services } = scheduleData;
 
-  const createAppointmentMutation = useMutation({
-    mutationFn: createAppointment,
-    onSuccess: () => {
-      toast.success("Đặt lịch hẹn mới thành công!");
-      queryClient.invalidateQueries({
-        queryKey: ["appointments", { customerId: currentUserProfile?.id }],
-      });
-      setIsCreateModalOpen(false);
-    },
-    onError: (error) => {
-      toast.error(`Đặt lịch thất bại: ${error.message}`);
-    },
-  });
+  const handleNavigateToBooking = (date?: Date) => {
+    let url = "/booking";
+    if (date) {
+      // Format ngày thành YYYY-MM-DD để truyền qua URL
+      const formattedDate = date.toISOString().split("T")[0];
+      url += `?date=${formattedDate}`;
+    }
+    router.push(url);
+  };
 
   const cancelAppointmentMutation = useMutation({
     mutationFn: ({ id, reason }: { id: string; reason: string }) =>
@@ -104,33 +96,6 @@ export default function SchedulePage() {
     };
     createReviewMutation.mutate(reviewData);
   };
-  const handleOpenCreateModal = (date?: Date) => {
-    setInitialDateForModal(date || new Date());
-    setIsCreateModalOpen(true);
-  };
-
-  const handleCreateAppointment = (
-    customerInfo: CustomerInfo,
-    serviceId: string,
-    date: Date,
-    time: string
-  ) => {
-    if (!currentUserProfile) {
-      toast.error("Không tìm thấy thông tin của bạn.");
-      return;
-    }
-    const [hours, minutes] = time.split(":").map(Number);
-    const appointmentDate = new Date(date);
-    appointmentDate.setHours(hours, minutes, 0, 0);
-
-    createAppointmentMutation.mutate({
-      customerId: currentUserProfile.id,
-      serviceId: serviceId,
-      date: appointmentDate.toISOString(),
-      customerNote: customerInfo.note,
-      paymentStatus: "unpaid",
-    });
-  };
 
   if (isLoading) {
     return <FullPageLoader text="Đang tải lịch trình của bạn..." />;
@@ -167,7 +132,7 @@ export default function SchedulePage() {
           currentUserProfile={currentUserProfile}
           onCancelAppointment={handleCancelAppointment}
           onWriteReview={handleOpenReviewModal}
-          onCreateAppointment={() => handleOpenCreateModal()}
+          onCreateAppointment={() => handleNavigateToBooking()}
         />
       ) : (
         <ScheduleCalendarView
@@ -175,7 +140,7 @@ export default function SchedulePage() {
           currentUserProfile={currentUserProfile}
           onCancelAppointment={handleCancelAppointment}
           onWriteReview={handleOpenReviewModal}
-          onCreateAppointment={handleOpenCreateModal}
+          onCreateAppointment={handleNavigateToBooking}
         />
       )}
 
@@ -188,14 +153,6 @@ export default function SchedulePage() {
             ?.name || "Dịch vụ"
         }
         isSubmitting={createReviewMutation.isPending}
-      />
-
-      <CreateAppointmentModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onConfirm={handleCreateAppointment}
-        isSubmitting={createAppointmentMutation.isPending}
-        initialDate={initialDateForModal}
       />
     </div>
   );

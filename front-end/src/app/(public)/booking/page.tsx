@@ -47,6 +47,22 @@ export default function BookingPage() {
     startReschedule,
   } = actions;
 
+  useEffect(() => {
+    const dateParam = searchParams.get("date");
+    if (dateParam) {
+      const selectedDate = new Date(dateParam);
+      // Kiểm tra ngày hợp lệ trước khi set
+      if (!isNaN(selectedDate.getTime())) {
+        // Tự động chọn ngày và chuyển sang bước chọn giờ
+        setDateTime(selectedDate, "");
+        if (step === 1 && service) {
+          // Nếu đã có dịch vụ, chuyển bước
+          nextStep();
+        }
+      }
+    }
+  }, [searchParams, setDateTime, step, service, nextStep]);
+
   const currentUserProfile = customers.find((c) => c.userId === user?.id);
 
   const treatmentPackageId = searchParams.get("treatmentPackageId");
@@ -235,14 +251,17 @@ export default function BookingPage() {
         return (
           <BookingSuccessStep
             bookingDetails={{ service, date, time }}
-            isReschedule={!!rescheduleId}
+            isReschedule={false}
+            redirectUrl={user ? "/customer-schedules" : "/"}
+            redirectText={
+              user ? "Quay về Lịch trình của tôi" : "Quay về Trang chủ"
+            }
           />
         );
       default:
         return <ServiceSelectionStep onServiceSelect={setService} />;
     }
   };
-
   return (
     <main className="max-w-6xl mx-auto py-8 px-4">
       {step < 4 && <BookingSteps currentStep={step} />}
