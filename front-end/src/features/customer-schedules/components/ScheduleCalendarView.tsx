@@ -19,6 +19,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 interface ScheduleCalendarViewProps extends ScheduleDataProps {
   onCancelAppointment: (id: string, reason: string) => void;
   onWriteReview: (appointment: Appointment) => void;
+  onCreateAppointment: (date: Date) => void;
 }
 
 export default function ScheduleCalendarView(props: ScheduleCalendarViewProps) {
@@ -31,6 +32,7 @@ export default function ScheduleCalendarView(props: ScheduleCalendarViewProps) {
     onWriteReview,
     treatments,
     treatmentPlans,
+    onCreateAppointment,
   } = props;
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment | null>(null);
@@ -69,6 +71,7 @@ export default function ScheduleCalendarView(props: ScheduleCalendarViewProps) {
             appointments={appointments}
             services={services}
             onSelectAppointment={setSelectedAppointment}
+            onCreateAppointment={onCreateAppointment}
           />
         </div>
       </div>
