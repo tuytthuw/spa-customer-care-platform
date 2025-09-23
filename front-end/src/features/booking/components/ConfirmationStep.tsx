@@ -229,7 +229,7 @@ export default function ConfirmationStep({
             ? "Đang xử lý..."
             : isPrePurchased
             ? "Xác nhận sử dụng dịch vụ"
-            : "Xác nhận & Thanh toán"}
+            : "Xác nhận"}
         </Button>
       </div>
     </div>
