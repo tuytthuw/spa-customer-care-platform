@@ -6,10 +6,13 @@ import AppointmentCard from "@/features/customer-schedules/components/Appointmen
 import { ScheduleDataProps, ActionableItem } from "../types";
 import { Appointment } from "@/features/appointment/types";
 import ActionRequiredList from "./ActionRequiredList";
+import { Button } from "@/components/ui/button";
+import { PlusCircle } from "lucide-react";
 
 interface ScheduleListViewProps extends ScheduleDataProps {
   onCancelAppointment: (id: string, reason: string) => void;
   onWriteReview: (appointment: Appointment) => void;
+  onCreateAppointment: () => void;
 }
 
 export default function ScheduleListView(props: ScheduleListViewProps) {
@@ -23,6 +26,7 @@ export default function ScheduleListView(props: ScheduleListViewProps) {
     reviews,
     onCancelAppointment,
     onWriteReview,
+    onCreateAppointment,
   } = props;
 
   const { actionableItems, upcomingAppointments, historyItems } =
@@ -100,6 +104,12 @@ export default function ScheduleListView(props: ScheduleListViewProps) {
 
       <TabsContent value="upcoming" className="mt-4">
         <div className="space-y-4">
+          <div className="text-right">
+            <Button onClick={onCreateAppointment}>
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Đặt lịch hẹn mới
+            </Button>
+          </div>
           {upcomingAppointments.length > 0 ? (
             upcomingAppointments.map((app) => {
               const service = services.find((s) => s.id === app.serviceId);

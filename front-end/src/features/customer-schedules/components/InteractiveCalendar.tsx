@@ -8,12 +8,15 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { Appointment } from "@/features/appointment/types";
 import { Service } from "@/features/service/types";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 // Định nghĩa props
 interface InteractiveCalendarProps {
   appointments: Appointment[];
   services: Service[];
   onSelectAppointment: (appointment: Appointment) => void;
+  onCreateAppointment: (date: Date) => void;
 }
 
 const CalendarLegend = () => (
@@ -41,6 +44,7 @@ export default function InteractiveCalendar({
   appointments,
   services,
   onSelectAppointment,
+  onCreateAppointment,
 }: InteractiveCalendarProps) {
   const [date, setDate] = useState<Date | undefined>(new Date());
 
@@ -85,10 +89,18 @@ export default function InteractiveCalendar({
       </Card>
 
       <Card className="flex-grow flex flex-col">
-        <div className="p-4 border-b">
+        <div className="p-4 border-b flex justify-between items-center">
           <h4 className="font-semibold">
             Lịch hẹn ngày {date?.toLocaleDateString("vi-VN")}
           </h4>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => date && onCreateAppointment(date)}
+            disabled={!date}
+          >
+            <Plus className="h-5 w-5" />
+          </Button>
         </div>
         <ScrollArea className="flex-grow">
           <div className="p-4 space-y-3">

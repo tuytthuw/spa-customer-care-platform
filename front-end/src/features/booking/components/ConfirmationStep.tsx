@@ -11,6 +11,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContexts";
 import { Service } from "@/features/service/types";
+import { CustomerInfo } from "@/features/booking/types";
 
 interface ConfirmationStepProps {
   bookingDetails: {
@@ -40,7 +41,7 @@ export default function ConfirmationStep({
   const { service, date, time } = bookingDetails;
 
   // Hợp nhất state
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<CustomerInfo>({
     name: user?.name || "",
     phone: user?.phone || "",
     email: user?.email || "",
@@ -68,7 +69,6 @@ export default function ConfirmationStep({
       toast.error("Bạn phải đồng ý với điều khoản dịch vụ.");
       return;
     }
-    // ✅ Truyền toàn bộ thông tin đã được xác thực lên component cha
     onConfirm(formData);
   };
 
