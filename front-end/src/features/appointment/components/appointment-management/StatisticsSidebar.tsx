@@ -76,7 +76,7 @@ export const StatisticsSidebar = ({
                 className={`w-2 h-2 rounded-full mr-2 ${
                   s.status === "active"
                     ? "bg-[var(--status-success)]"
-                    : "bg-gray-400"
+                    : "bg-muted"
                 }`}
               ></div>
               <Image

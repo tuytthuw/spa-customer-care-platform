@@ -1,7 +1,11 @@
 "use client";
 
-import { useFormContext } from "react-hook-form";
-import { Button } from "@/components/ui/button";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { addCategory } from "@/features/category/api/category.api";
+import AddCategoryForm from "@/features/category/components/AddCategoryForm";
+import { toast } from "sonner";
+import { Separator } from "@/components/ui/separator"; // Sửa import từ @radix-ui/react-dropdown-menu
+import { useFieldArray, useFormContext } from "react-hook-form";
 import {
   FormControl,
   FormField,
@@ -11,6 +15,20 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { ImageUploader } from "@/components/ui/ImageUploader";
+import { MultiImageUploader } from "@/components/ui/MultiImageUploader";
+import { useEffect, useState } from "react";
+import { ServiceFormValues } from "@/features/service/schemas";
+import { useCategories } from "@/features/category/hooks/useCategories";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ChevronsUpDown, Plus, PlusCircle, Trash2 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -18,29 +36,28 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ChevronsUpDown, Plus } from "lucide-react";
-import { ServiceFormValues } from "@/features/service/schemas";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addCategory } from "@/features/category/api/category.api";
-import { Checkbox } from "@/components/ui/checkbox";
+import { useProducts } from "@/features/product/hooks/useProducts";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@radix-ui/react-dropdown-menu";
-import { ImageUploader } from "@/components/ui/ImageUploader";
-import { MultiImageUploader } from "@/components/ui/MultiImageUploader";
-import { useCategories } from "@/features/category/hooks/useCategories";
-import { useEffect, useState } from "react";
-import AddCategoryForm from "@/features/category/components/AddCategoryForm";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function ServiceFormFields() {
   const queryClient = useQueryClient();
   const form = useFormContext<ServiceFormValues>();
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
+  const { data: products = [] } = useProducts();
+
+  // Lọc ra các sản phẩm là hàng tiêu hao
+  const consumableProducts = products.filter((p) => p.isConsumable);
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "consumables",
+  });
 
   // Logic xử lý giá tiền
   const [displayPrice, setDisplayPrice] = useState(() =>
@@ -286,6 +303,97 @@ export default function ServiceFormFields() {
           </FormItem>
         )}
       />
+
+      {/* PHẦN MỚI: QUẢN LÝ SẢN PHẨM TIÊU HAO */}
+      <div>
+        <FormLabel>Sản phẩm tiêu hao cho dịch vụ</FormLabel>
+        <div className="space-y-4 mt-2">
+          {fields.map((field, index) => {
+            const selectedProductId = form.watch(
+              `consumables.${index}.productId`
+            );
+            const selectedProduct = consumableProducts.find(
+              (p) => p.id === selectedProductId
+            );
+            return (
+              <div
+                key={field.id}
+                className="flex items-start gap-4 p-4 border rounded-md"
+              >
+                <FormField
+                  control={form.control}
+                  name={`consumables.${index}.productId`}
+                  render={({ field: consumableField }) => (
+                    <FormItem className="flex-1">
+                      <Select
+                        onValueChange={consumableField.onChange}
+                        defaultValue={consumableField.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Chọn sản phẩm tiêu hao..." />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {consumableProducts.map((p) => (
+                            <SelectItem key={p.id} value={p.id}>
+                              {p.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`consumables.${index}.quantityUsed`}
+                  render={({ field: quantityField }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Số lượng ({selectedProduct?.consumableUnit || "đơn vị"})
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          placeholder="Số lượng"
+                          className="w-32"
+                          {...quantityField}
+                          onChange={(e) =>
+                            quantityField.onChange(
+                              parseFloat(e.target.value) || 0
+                            )
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => remove(index)}
+                  className="mt-8" // Căn chỉnh nút xóa
+                >
+                  <Trash2 className="h-4 w-4 text-destructive" />
+                </Button>
+              </div>
+            );
+          })}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => append({ productId: "", quantityUsed: 1 })}
+          >
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Thêm sản phẩm tiêu hao
+          </Button>
+        </div>
+      </div>
     </>
   );
 }

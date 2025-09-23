@@ -53,7 +53,6 @@ const CancelAppointmentModal = ({
             onChange={(e) => setReason(e.target.value)}
           />
         </div>
-        {/* === SỬA LỖI Ở ĐÂY: DÙNG BIẾN MÀU TỪ CSS === */}
         <div className="text-sm text-muted-foreground p-2 bg-muted rounded-md">
           <p>
             <strong>Chính sách hủy lịch:</strong> Hủy lịch trước 24 giờ sẽ được

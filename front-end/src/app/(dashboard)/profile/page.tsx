@@ -23,6 +23,7 @@ import { Customer } from "@/features/customer/types";
 import { Staff } from "@/features/staff/types";
 import { FullPageLoader } from "@/components/ui/spinner";
 import NotificationSettingsForm from "@/features/customer/components/NotificationSettingsForm"; // ✅ MỚI
+import { LoyaltyCard } from "@/features/customer/components/LoyaltyCard";
 
 export default function ProfilePage() {
   const { user } = useAuth();
@@ -103,6 +104,8 @@ export default function ProfilePage() {
           <TabsTrigger value="profile">Hồ sơ</TabsTrigger>
           {user.role === "customer" && (
             <>
+              {" "}
+              <TabsTrigger value="loyalty">Thẻ thành viên</TabsTrigger>
               <TabsTrigger value="preferences">Tùy chọn cá nhân</TabsTrigger>
               <TabsTrigger value="notifications">Thông báo</TabsTrigger>{" "}
               {/* ✅ MỚI */}
@@ -124,6 +127,12 @@ export default function ProfilePage() {
             isSubmitting={profileUpdateMutation.isPending}
           />
         </TabsContent>
+
+        {user.role === "customer" && (
+          <TabsContent value="loyalty" className="mt-4">
+            <LoyaltyCard customer={userProfile as FullCustomerProfile} />
+          </TabsContent>
+        )}
 
         {/* Tab 2: Tùy chọn (Chỉ cho khách hàng) */}
         {user.role === "customer" && (

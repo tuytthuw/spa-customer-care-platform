@@ -1,3 +1,5 @@
+// src/features/roles/types.ts
+
 // Định nghĩa các quyền có thể có
 export const PERMISSIONS = {
   READ: "read",
@@ -8,8 +10,17 @@ export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
 
 // Định nghĩa các module/tính năng trong hệ thống
 export const FEATURES = {
+  // --- Giao diện chung ---
   dashboard: "dashboard",
+
+  // --- Phân hệ Khách hàng ---
   appointments: "appointments",
+  treatments: "treatments",
+  billing: "billing",
+  reviews: "reviews",
+  profile: "profile",
+
+  // --- Phân hệ Quản lý ---
   appointments_management: "appointments_management",
   customers: "customers",
   staff: "staff",
@@ -19,13 +30,12 @@ export const FEATURES = {
   resources: "resources",
   schedules: "schedules",
   reports: "reports",
-  billing: "billing",
   users: "users",
   roles: "roles",
-  treatments: "treatments",
-  reviews: "reviews",
-  profile: "profile",
   promotions: "promotions",
+  loyalty: "loyalty",
+  marketing: "marketing",
+  inbox: "inbox",
 } as const;
 
 export type Feature = (typeof FEATURES)[keyof typeof FEATURES];

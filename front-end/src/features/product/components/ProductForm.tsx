@@ -45,11 +45,12 @@ export default function ProductFormFields() {
       ? new Intl.NumberFormat("vi-VN").format(form.getValues("price") / 1000)
       : ""
   );
-
+  const isRetail = form.watch("isRetail");
   const { data: categories = [] } = useCategories();
   const productCategories = categories.filter((c) => c.type === "product");
   const selectedCategories = form.watch("categories") || [];
-
+  const isConsumable = form.watch("isConsumable");
+  const baseUnit = form.watch("baseUnit");
   useEffect(() => {
     const subscription = form.watch((value) => {
       if (value.price !== undefined) {
@@ -209,12 +210,96 @@ export default function ProductFormFields() {
           </FormItem>
         )}
       />
+      <div className="space-y-2">
+        <FormLabel>Mục đích sử dụng</FormLabel>
+        <div className="flex items-center gap-8 pt-2">
+          <FormField
+            control={form.control}
+            name="isRetail"
+            render={({ field }) => (
+              <FormItem className="flex items-center space-x-2 space-y-0">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormLabel className="font-normal">Sản phẩm bán lẻ</FormLabel>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="isConsumable"
+            render={({ field }) => (
+              <FormItem className="flex items-center space-x-2 space-y-0">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormLabel className="font-normal">
+                  Sản phẩm tiêu hao nội bộ
+                </FormLabel>
+              </FormItem>
+            )}
+          />
+        </div>
+        <FormMessage>{form.formState.errors.isRetail?.message}</FormMessage>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <FormField
+          control={form.control}
+          name="baseUnit"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Đơn vị Cơ sở</FormLabel>
+              <FormControl>
+                <Input placeholder="vd: chai, hũ, tuýp" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="consumableUnit"
+          render={({ field }) => (
+            <FormItem style={{ display: isConsumable ? "block" : "none" }}>
+              <FormLabel>Đơn vị Tiêu hao</FormLabel>
+              <FormControl>
+                <Input placeholder="vd: ml, g, lần nhấn" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="conversionRate"
+          render={({ field }) => (
+            <FormItem style={{ display: isConsumable ? "block" : "none" }}>
+              <FormLabel>Tỷ lệ (1 {baseUnit || "DV cơ sở"} = ?)</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  placeholder="vd: 500"
+                  {...field}
+                  onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <FormField
           control={form.control}
           name="price"
           render={() => (
-            <FormItem>
+            <FormItem style={{ display: isRetail ? "block" : "none" }}>
               <FormLabel>Giá bán</FormLabel>
               <div className="relative">
                 <FormControl>
