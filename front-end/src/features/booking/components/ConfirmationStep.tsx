@@ -20,12 +20,7 @@ interface ConfirmationStepProps {
     time: string;
   };
   onPrevStep: () => void;
-  onConfirm: (customerInfo: {
-    name: string;
-    phone: string;
-    email: string;
-    note: string;
-  }) => void;
+  onConfirm: (customerInfo: CustomerInfo) => void;
   isSubmitting?: boolean;
   isPrePurchased?: boolean;
 }

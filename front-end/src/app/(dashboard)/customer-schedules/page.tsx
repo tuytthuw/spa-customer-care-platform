@@ -20,8 +20,6 @@ import { NewReviewData } from "@/features/review/types";
 import CreateAppointmentModal from "@/features/customer-schedules/components/CreateAppointmentModal";
 import { CustomerInfo } from "@/features/booking/types";
 import { createAppointment } from "@/features/appointment/api/appointment.api";
-
-// Import API actions cho mutations
 import { updateAppointmentStatus } from "@/features/appointment/api/appointment.api";
 import { createReview } from "@/features/review/api/review.api";
 
@@ -34,9 +32,25 @@ export default function SchedulePage() {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [selectedAppointmentForReview, setSelectedAppointmentForReview] =
     useState<Appointment | null>(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [initialDateForModal, setInitialDateForModal] = useState<Date>();
 
   const { isLoading, data: scheduleData } = useCustomerScheduleData();
   const { currentUserProfile, services } = scheduleData;
+
+  const createAppointmentMutation = useMutation({
+    mutationFn: createAppointment,
+    onSuccess: () => {
+      toast.success("Đặt lịch hẹn mới thành công!");
+      queryClient.invalidateQueries({
+        queryKey: ["appointments", { customerId: currentUserProfile?.id }],
+      });
+      setIsCreateModalOpen(false);
+    },
+    onError: (error) => {
+      toast.error(`Đặt lịch thất bại: ${error.message}`);
+    },
+  });
 
   const cancelAppointmentMutation = useMutation({
     mutationFn: ({ id, reason }: { id: string; reason: string }) =>
@@ -90,25 +104,6 @@ export default function SchedulePage() {
     };
     createReviewMutation.mutate(reviewData);
   };
-
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [initialDateForModal, setInitialDateForModal] = useState<Date>();
-
-  const createAppointmentMutation = useMutation({
-    mutationFn: createAppointment,
-    onSuccess: () => {
-      toast.success("Đặt lịch hẹn mới thành công!");
-      queryClient.invalidateQueries({
-        queryKey: ["appointments", { customerId: currentUserProfile?.id }],
-      });
-      setIsCreateModalOpen(false);
-    },
-    onError: (error) => {
-      toast.error(`Đặt lịch thất bại: ${error.message}`);
-    },
-  });
-
-  // THÊM CÁC HÀM XỬ LÝ MỚI
   const handleOpenCreateModal = (date?: Date) => {
     setInitialDateForModal(date || new Date());
     setIsCreateModalOpen(true);
@@ -168,12 +163,7 @@ export default function SchedulePage() {
 
       {viewMode === "list" ? (
         <ScheduleListView
-          appointments={scheduleData.appointments}
-          treatments={scheduleData.treatments}
-          services={scheduleData.services}
-          treatmentPlans={scheduleData.treatmentPlans}
-          staff={scheduleData.staff}
-          reviews={scheduleData.reviews}
+          {...scheduleData}
           currentUserProfile={currentUserProfile}
           onCancelAppointment={handleCancelAppointment}
           onWriteReview={handleOpenReviewModal}
@@ -188,6 +178,7 @@ export default function SchedulePage() {
           onCreateAppointment={handleOpenCreateModal}
         />
       )}
+
       <ReviewModal
         isOpen={isReviewModalOpen}
         onClose={() => setIsReviewModalOpen(false)}
@@ -198,6 +189,7 @@ export default function SchedulePage() {
         }
         isSubmitting={createReviewMutation.isPending}
       />
+
       <CreateAppointmentModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
