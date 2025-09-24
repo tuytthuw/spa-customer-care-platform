@@ -31,8 +31,8 @@ import SerViceReviewCard from "@/features/review/components/ServiceReviewCard";
 import TreatmentReviewCard from "@/features/review/components/TreatmentReviewCard";
 import ProductReviewCard from "@/features/review/components/ProductReviewCard";
 import { ReviewModal } from "@/features/review/components/ReviewModal";
-import { PageHeader } from "@/components/common/PageHeader";
-import { FullPageLoader } from "@/components/ui/spinner";
+import { PageHeader } from "@/features/shared/components/common/PageHeader";
+import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 import { Service } from "@/features/service/types";
 import { TreatmentPlan } from "@/features/treatment/types";
 

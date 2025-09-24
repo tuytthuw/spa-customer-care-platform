@@ -7,18 +7,18 @@ import { Invoice } from "@/features/billing/types";
 import { getInvoicesByCustomerId } from "@/features/billing/api/invoice.api";
 import { useCustomers } from "@/features/customer/hooks/useCustomers";
 
-import { DataTable } from "@/components/ui/data-table";
+import { DataTable } from "@/features/shared/components/ui/data-table";
 import { columns } from "./columns";
-import { PageHeader } from "@/components/common/PageHeader";
-import { FullPageLoader } from "@/components/ui/spinner";
+import { PageHeader } from "@/features/shared/components/common/PageHeader";
+import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from "@/features/shared/components/ui/dialog";
+import { Button } from "@/features/shared/components/ui/button";
 import InvoiceReceipt from "@/features/billing/components/InvoiceReceipt";
 import { Printer, X } from "lucide-react";
 

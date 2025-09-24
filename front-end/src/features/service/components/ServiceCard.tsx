@@ -1,6 +1,6 @@
 // src/components/screens/services/service-card.tsx
 import { Service } from "@/features/service/types";
-import DisplayCard from "@/components/common/DisplayCard";
+import DisplayCard from "@/features/shared/components/common/DisplayCard";
 import { Clock } from "lucide-react";
 
 interface ServiceCardProps {

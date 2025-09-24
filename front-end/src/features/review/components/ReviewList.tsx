@@ -4,7 +4,11 @@ import { useQuery } from "@tanstack/react-query";
 import { Review } from "@/features/review/types";
 import { FullCustomerProfile } from "@/features/customer/types";
 import { getCustomers } from "@/features/customer/api/customer.api";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/features/shared/components/ui/avatar";
 import StarRating from "./StarRating";
 interface ReviewListProps {
   reviews: Review[];

@@ -7,13 +7,13 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { Button } from "@/features/shared/components/ui/button";
+import { Calendar } from "@/features/shared/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@/features/shared/components/ui/popover";
 
 interface DateRangePickerProps extends React.HTMLAttributes<HTMLDivElement> {
   date: DateRange | undefined;

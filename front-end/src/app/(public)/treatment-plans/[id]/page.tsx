@@ -8,11 +8,11 @@ import TreatmentSteps from "@/features/treatment/components/TreatmentSteps";
 import { notFound } from "next/navigation";
 import { PackageCheck, Tag } from "lucide-react";
 import { useState, useEffect } from "react";
-import { FullPageLoader } from "@/components/ui/spinner";
+import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 import { useReviews } from "@/features/review/hooks/useReviews";
 import { useServices } from "@/features/service/hooks/useServices";
-import { PurchaseActions } from "@/components/common/PurchaseActions";
-import { DetailPageLayout } from "@/components/common/DetailPageLayout";
+import { PurchaseActions } from "@/features/shared/components/common/PurchaseActions";
+import { DetailPageLayout } from "@/features/shared/components/common/DetailPageLayout";
 
 interface TreatmentPlanDetailPageProps {
   params: { id: string };

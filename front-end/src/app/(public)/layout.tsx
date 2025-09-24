@@ -1,8 +1,8 @@
 // src/app/(public)/layout.tsx
-import Header from "@/components/layout/public/PublicHeader";
+import Header from "@/features/shared/layout/public/PublicHeader";
 import React from "react";
-import Chatbot from "@/components/chatbot/Chatbot";
-import PublicFooter from "@/components/layout/public/PublicFooter";
+import Chatbot from "@/features/chatbot/components/Chatbot";
+import PublicFooter from "@/features/shared/layout/public/PublicFooter";
 
 export default function PublicLayout({
   children,

@@ -2,8 +2,8 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Resource } from "@/features/resource/types";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@/features/shared/components/ui/badge";
+import { Button } from "@/features/shared/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import {
   DropdownMenu,
@@ -11,7 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/features/shared/components/ui/dropdown-menu";
 
 // ✅ Mới: Thêm props cho hàm columns
 interface GetColumnsProps {

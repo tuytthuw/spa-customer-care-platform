@@ -1,6 +1,6 @@
 import { Product } from "@/features/product/types";
-import DisplayCard from "@/components/common/DisplayCard";
-import { Badge } from "@/components/ui/badge";
+import DisplayCard from "@/features/shared/components/common/DisplayCard";
+import { Badge } from "@/features/shared/components/ui/badge";
 
 interface ProductCardProps {
   product: Product;

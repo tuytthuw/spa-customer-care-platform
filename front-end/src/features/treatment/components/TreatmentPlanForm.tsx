@@ -8,32 +8,32 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/features/shared/components/ui/dialog";
 import { ChevronsUpDown, Plus, PlusCircle, Trash2 } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/features/shared/components/ui/form";
+import { Input } from "@/features/shared/components/ui/input";
+import { Textarea } from "@/features/shared/components/ui/textarea";
 import { useEffect, useState } from "react";
 import { addCategory } from "@/features/category/api/category.api";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox } from "@/features/shared/components/ui/checkbox";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@/features/shared/components/ui/popover";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { ImageUploader } from "@/components/ui/ImageUploader";
-import { MultiImageUploader } from "@/components/ui/MultiImageUploader";
+import { Badge } from "@/features/shared/components/ui/badge";
+import { Separator } from "@/features/shared/components/ui/separator";
+import { ImageUploader } from "@/features/shared/components/ui/ImageUploader";
+import { MultiImageUploader } from "@/features/shared/components/ui/MultiImageUploader";
 import { useServices } from "@/features/service/hooks/useServices";
 import { useCategories } from "@/features/category/hooks/useCategories";
 import AddCategoryForm from "@/features/category/components/AddCategoryForm";

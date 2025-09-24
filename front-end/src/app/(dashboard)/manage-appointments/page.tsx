@@ -17,11 +17,15 @@ import { useAppointments } from "@/features/appointment/hooks/useAppointments";
 import { useCustomers } from "@/features/customer/hooks/useCustomers";
 import { useServices } from "@/features/service/hooks/useServices";
 import { useStaffs } from "@/features/staff/hooks/useStaffs";
-import { PageHeader } from "@/components/common/PageHeader";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { PageHeader } from "@/features/shared/components/common/PageHeader";
+import { Button } from "@/features/shared/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/features/shared/components/ui/sheet";
 import { BarChart2 } from "lucide-react";
-import { FullPageLoader } from "@/components/ui/spinner";
+import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 
 function createAppointment(variables: void): Promise<unknown> {
   throw new Error("Function not implemented.");

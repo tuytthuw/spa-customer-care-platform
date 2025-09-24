@@ -15,14 +15,14 @@ import {
 import { useStaffs } from "@/features/staff/hooks/useStaffs";
 import { useServices } from "@/features/service/hooks/useServices";
 
-import { DataTable } from "@/components/ui/data-table";
-import { Button } from "@/components/ui/button";
+import { DataTable } from "@/features/shared/components/ui/data-table";
+import { Button } from "@/features/shared/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { toast } from "sonner";
 import { columns } from "./columns";
-import { PageHeader } from "@/components/common/PageHeader";
-import { FormDialog } from "@/components/common/FormDialog";
-import { FullPageLoader } from "@/components/ui/spinner";
+import { PageHeader } from "@/features/shared/components/common/PageHeader";
+import { FormDialog } from "@/features/shared/components/common/FormDialog";
+import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 import StaffFormFields from "@/features/staff/components/StaffForm";
 export default function StaffManagementPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);

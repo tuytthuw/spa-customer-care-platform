@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormDialog } from "@/components/common/FormDialog";
+import { FormDialog } from "@/features/shared/components/common/FormDialog";
 import ReviewFormFields from "./ReviewFormFields";
 import { ReviewFormValues, reviewFormSchema } from "@/features/review/schemas";
 import { useEffect } from "react";

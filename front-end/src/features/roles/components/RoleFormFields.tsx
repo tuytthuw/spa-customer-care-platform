@@ -7,11 +7,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Separator } from "@/components/ui/separator";
+} from "@/features/shared/components/ui/form";
+import { Input } from "@/features/shared/components/ui/input";
+import { Textarea } from "@/features/shared/components/ui/textarea";
+import { Checkbox } from "@/features/shared/components/ui/checkbox";
+import { Separator } from "@/features/shared/components/ui/separator";
 import { FEATURES, Permission } from "@/features/roles/types";
 
 // Labels cho các tính năng để hiển thị trên UI

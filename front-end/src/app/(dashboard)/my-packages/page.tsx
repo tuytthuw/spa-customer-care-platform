@@ -27,9 +27,14 @@ import { useServices } from "@/features/service/hooks/useServices";
 import { useReviews } from "@/features/review/hooks/useReviews";
 
 // Import components
-import { PageHeader } from "@/components/common/PageHeader";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FullPageLoader } from "@/components/ui/spinner";
+import { PageHeader } from "@/features/shared/components/common/PageHeader";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/features/shared/components/ui/tabs";
+import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 import { ReviewModal } from "@/features/review/components/ReviewModal";
 import PurchasedItemCard from "@/features/customer-schedules/components/PurchasedItemCard"; // <--- IMPORT COMPONENT MỚI
 

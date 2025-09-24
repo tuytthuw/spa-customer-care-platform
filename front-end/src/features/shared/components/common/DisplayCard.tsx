@@ -6,7 +6,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/features/shared/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
 import { ReactNode } from "react";

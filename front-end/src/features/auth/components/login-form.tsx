@@ -8,7 +8,7 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContexts";
 import { login as loginAction } from "@/features/auth/api/auth.api";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import {
   Form,
   FormControl,
@@ -16,8 +16,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@/features/shared/components/ui/form";
+import { Input } from "@/features/shared/components/ui/input";
 import {
   Card,
   CardContent,
@@ -25,7 +25,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/features/shared/components/ui/card";
 import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
 

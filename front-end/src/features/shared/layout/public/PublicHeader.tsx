@@ -9,13 +9,13 @@ import {
   UserPlus,
   LayoutDashboard,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
   SheetClose,
-} from "@/components/ui/sheet";
+} from "@/features/shared/components/ui/sheet";
 import { useAuth } from "@/contexts/AuthContexts";
 import {
   DropdownMenu,
@@ -24,13 +24,17 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+} from "@/features/shared/components/ui/dropdown-menu";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/features/shared/components/ui/avatar";
 import useCart, { CartItem } from "@/stores/cart-store"; // Sửa import
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator"; // Thêm import
-import { ThemeToggle } from "@/components/common/ThemeToggle";
+import { Separator } from "@/features/shared/components/ui/separator"; // Thêm import
+import { ThemeToggle } from "@/features/shared/components/common/ThemeToggle";
 
 const navLinks = [
   { href: "/", label: "Trang chủ" },

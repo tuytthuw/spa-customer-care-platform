@@ -20,9 +20,9 @@ import {
   CardTitle,
   CardDescription,
   CardFooter,
-} from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
+} from "@/features/shared/components/ui/card";
+import { Progress } from "@/features/shared/components/ui/progress";
+import { Button } from "@/features/shared/components/ui/button";
 import SessionHistory from "@/features/customer-schedules/components/SessionHistory";
 
 // Kiểu dữ liệu cho props của component, bao gồm cả hai loại item

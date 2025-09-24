@@ -27,16 +27,21 @@ import {
 } from "@/features/treatment/api/treatment.api";
 import { useServices } from "@/features/service/hooks/useServices";
 import { useTreatmentPlans } from "@/features/treatment/hooks/useTreatmentPlans";
-import { DataTable } from "@/components/ui/data-table";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DataTable } from "@/features/shared/components/ui/data-table";
+import { Button } from "@/features/shared/components/ui/button";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/features/shared/components/ui/tabs";
 import { toast } from "sonner";
-import { PageHeader } from "@/components/common/PageHeader";
-import { FormDialog } from "@/components/common/FormDialog";
+import { PageHeader } from "@/features/shared/components/common/PageHeader";
+import { FormDialog } from "@/features/shared/components/common/FormDialog";
 import ServiceFormFields from "@/features/service/components/ServiceForm";
 import TreatmentPlanFormFields from "@/features/treatment/components/TreatmentPlanForm";
 import { columns as serviceColumns } from "./service-columns";
-import { FullPageLoader } from "@/components/ui/spinner";
+import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 import { PlusCircle } from "lucide-react";
 
 export default function ServicesManagementPage() {

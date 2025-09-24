@@ -8,7 +8,7 @@ import { Activity, CalendarCheck, DollarSign, Users } from "lucide-react";
 import { useAppointments } from "@/features/appointment/hooks/useAppointments";
 import { useCustomers } from "@/features/customer/hooks/useCustomers";
 import { useInvoices } from "@/features/billing/hooks/useInvoices";
-import { FullPageLoader } from "@/components/ui/spinner";
+import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 
 const formatCurrency = (amount: number) =>
   new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(

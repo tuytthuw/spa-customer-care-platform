@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { User } from "@/features/user/types";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,10 +10,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/features/shared/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { ConfirmationModal } from "@/components/common/ConfirmationModal";
+import { Badge } from "@/features/shared/components/ui/badge";
+import { ConfirmationModal } from "@/features/shared/components/common/ConfirmationModal";
 
 interface GetColumnsProps {
   onUpdateStatus: (userId: string, newStatus: "active" | "inactive") => void;

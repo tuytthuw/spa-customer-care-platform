@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import { ShoppingCart, Bolt, CalendarCheck } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";

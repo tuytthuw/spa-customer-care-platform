@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { ScheduleRegistrationData } from "@/features/schedule/types";
-import { FormDialog } from "@/components/common/FormDialog";
+import { FormDialog } from "@/features/shared/components/common/FormDialog";
 import RegisterScheduleFormFields from "./RegisterScheduleFormFields";
 
 interface RegisterScheduleModalProps {

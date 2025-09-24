@@ -6,7 +6,7 @@ import * as z from "zod";
 import { resetPasswordFormSchema } from "@/features/auth/schemas";
 import { useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import {
   Form,
   FormControl,
@@ -14,15 +14,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@/features/shared/components/ui/form";
+import { Input } from "@/features/shared/components/ui/input";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/features/shared/components/ui/card";
 // 1. Import action thật từ authService và toast
 import { resetPassword } from "@/features/auth/api/auth.api";
 import { toast } from "sonner";

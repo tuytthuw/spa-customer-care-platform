@@ -7,8 +7,8 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+} from "@/features/shared/components/ui/card";
+import { Progress } from "@/features/shared/components/ui/progress";
 import { FullCustomerProfile } from "@/features/customer/types";
 import { Crown } from "lucide-react";
 import { cn } from "@/lib/utils";

@@ -2,7 +2,7 @@
 
 import { getProducts } from "@/features/product/api/product.api";
 import ProductCard from "@/features/product/components/ProductCard";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/features/shared/components/ui/input";
 
 export default async function ProductsPage() {
   // Lấy dữ liệu sản phẩm trên server

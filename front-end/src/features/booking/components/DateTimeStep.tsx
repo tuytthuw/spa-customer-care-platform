@@ -1,8 +1,8 @@
 // src/features/booking/components/date-time-step.tsx
 "use client";
 
-import { Calendar } from "@/components/ui/calendar";
-import { Button } from "@/components/ui/button";
+import { Calendar } from "@/features/shared/components/ui/calendar";
+import { Button } from "@/features/shared/components/ui/button";
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Service } from "@/features/service/types";

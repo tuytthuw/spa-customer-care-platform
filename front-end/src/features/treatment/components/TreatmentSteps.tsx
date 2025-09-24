@@ -4,7 +4,12 @@
 import { TreatmentPlan } from "@/features/treatment/types";
 import { Service } from "@/features/service/types";
 import { CheckCircle } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/features/shared/components/ui/card";
 import Link from "next/link"; // Import Link
 
 interface TreatmentStepsProps {

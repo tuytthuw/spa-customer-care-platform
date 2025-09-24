@@ -6,7 +6,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Appointment } from "@/features/appointment/types";
 import { Service } from "@/features/service/types";
 import { Staff } from "@/features/staff/types";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/features/shared/components/ui/tabs";
 import AppointmentCard from "@/features/customer-schedules/components/AppointmentCard";
 import {
   getAppointmentsByCustomerId,

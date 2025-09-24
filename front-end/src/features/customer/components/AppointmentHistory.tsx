@@ -3,7 +3,12 @@
 import { Appointment } from "@/features/appointment/types";
 import { Service } from "@/features/service/types";
 import { Staff } from "@/features/staff/types";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/features/shared/components/ui/card";
 import {
   Table,
   TableBody,
@@ -11,8 +16,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
+} from "@/features/shared/components/ui/table";
+import { Badge } from "@/features/shared/components/ui/badge";
 
 interface AppointmentHistoryProps {
   appointments: Appointment[];

@@ -1,12 +1,17 @@
 "use client";
 
 import { useState } from "react"; // Import useState
-import { PageHeader } from "@/components/common/PageHeader";
+import { PageHeader } from "@/features/shared/components/common/PageHeader";
 import { useProducts } from "@/features/product/hooks/useProducts";
-import { DataTable } from "@/components/ui/data-table";
+import { DataTable } from "@/features/shared/components/ui/data-table";
 import { columns } from "./columns";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input"; // Import Input
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/features/shared/components/ui/card";
+import { Input } from "@/features/shared/components/ui/input"; // Import Input
 import { Package, PackageX, Sigma } from "lucide-react";
 
 const LOW_STOCK_THRESHOLD = 10;

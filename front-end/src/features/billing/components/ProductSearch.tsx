@@ -7,7 +7,7 @@ import {
   CommandList,
   CommandEmpty,
   CommandItem,
-} from "@/components/ui/command";
+} from "@/features/shared/components/ui/command";
 import { mockProducts } from "@/lib/mock-data";
 import { Product } from "@/features/product/types";
 

@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { FormDialog } from "@/components/common/FormDialog";
+import { FormDialog } from "@/features/shared/components/common/FormDialog";
 import LogStatusFormFields from "./LogStatusFormFields";
 import { Appointment } from "@/features/appointment/types";
 

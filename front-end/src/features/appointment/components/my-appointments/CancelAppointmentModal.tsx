@@ -10,9 +10,9 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+} from "@/features/shared/components/ui/alert-dialog";
+import { Textarea } from "@/features/shared/components/ui/textarea";
+import { Label } from "@/features/shared/components/ui/label";
 
 interface CancelAppointmentModalProps {
   isOpen: boolean;

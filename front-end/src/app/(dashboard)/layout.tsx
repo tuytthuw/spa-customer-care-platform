@@ -1,7 +1,7 @@
 // src/app/(dashboard)/layout.tsx
 import React from "react";
-import Sidebar from "@/components/layout/dashboard/DashboardSidebar";
-import Header from "@/components/layout/dashboard/DashboardHeader";
+import Sidebar from "@/features/shared/layout/dashboard/DashboardSidebar";
+import Header from "@/features/shared/layout/dashboard/DashboardHeader";
 import { AuthProvider } from "@/contexts/AuthContexts";
 
 export default function DashboardLayout({

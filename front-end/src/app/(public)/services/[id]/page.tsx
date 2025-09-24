@@ -7,9 +7,9 @@ import { Clock, Tag } from "lucide-react";
 import { notFound } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useReviews } from "@/features/review/hooks/useReviews";
-import { FullPageLoader } from "@/components/ui/spinner";
-import { DetailPageLayout } from "@/components/common/DetailPageLayout";
-import { PurchaseActions } from "@/components/common/PurchaseActions";
+import { FullPageLoader } from "@/features/shared/components/ui/spinner";
+import { DetailPageLayout } from "@/features/shared/components/common/DetailPageLayout";
+import { PurchaseActions } from "@/features/shared/components/common/PurchaseActions";
 
 interface ServiceDetailPageProps {
   params: { id: string };

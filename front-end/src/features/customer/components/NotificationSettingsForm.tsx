@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { FullCustomerProfile } from "@/features/customer/types";
 import { updateCustomerProfile } from "@/features/customer/api/customer.api";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import {
   Form,
   FormControl,
@@ -17,15 +17,15 @@ import {
   FormItem,
   FormLabel,
   FormDescription,
-} from "@/components/ui/form";
+} from "@/features/shared/components/ui/form";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
+} from "@/features/shared/components/ui/card";
+import { Checkbox } from "@/features/shared/components/ui/checkbox";
 
 // ✅ SỬA LỖI: Schema định nghĩa kiểu dữ liệu cho form
 const notificationSettingsSchema = z.object({

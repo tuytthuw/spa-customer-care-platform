@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Calendar } from "@/components/ui/calendar";
+import { Calendar } from "@/features/shared/components/ui/calendar";
 import { Appointment } from "@/features/appointment/types";
 import { Customer } from "@/features/customer/types";
 import { Service } from "@/features/service/types";
@@ -16,12 +16,12 @@ import { getServices } from "@/features/service/api/service.api";
 import { getStaffProfiles } from "@/features/staff/api/staff.api";
 import { useAuth } from "@/contexts/AuthContexts";
 import { AppointmentDetailsModal } from "@/features/schedule/components/AppointmentDetailsModal";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/features/shared/components/ui/card";
 import { RegisterScheduleModal } from "@/features/schedule/components/RegisterScheduleModal";
 import { toast } from "sonner";
 import { ScheduleRegistrationData } from "@/features/schedule/types";
-import { PageHeader } from "@/components/common/PageHeader";
-import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/features/shared/components/common/PageHeader";
+import { Button } from "@/features/shared/components/ui/button";
 
 export default function SchedulePage() {
   const queryClient = useQueryClient();

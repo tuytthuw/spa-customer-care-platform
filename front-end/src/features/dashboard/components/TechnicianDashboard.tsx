@@ -11,7 +11,7 @@ import { getServices } from "@/features/service/api/service.api";
 import { useAuth } from "@/contexts/AuthContexts";
 import { getStaffProfiles } from "@/features/staff/api/staff.api";
 import { FullStaffProfile } from "@/features/staff/types";
-import { FullPageLoader } from "@/components/ui/spinner";
+import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 
 export default function TechnicianDashboard() {
   const { user } = useAuth(); // Lấy thông tin user đang đăng nhập

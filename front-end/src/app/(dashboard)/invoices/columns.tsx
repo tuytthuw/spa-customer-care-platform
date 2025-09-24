@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Invoice } from "@/features/billing/types";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 
 const formatCurrency = (amount: number) =>

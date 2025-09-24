@@ -33,7 +33,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from "@/features/shared/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -43,26 +43,26 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+} from "@/features/shared/components/ui/alert-dialog";
+import { Button } from "@/features/shared/components/ui/button";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/card";
+} from "@/features/shared/components/ui/card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
+} from "@/features/shared/components/ui/select";
+import { Label } from "@/features/shared/components/ui/label";
 import { toast } from "sonner";
 import { Printer, X } from "lucide-react";
-import { FullPageLoader } from "@/components/ui/spinner";
+import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 
 type InvoiceCreationData = Omit<Invoice, "id" | "createdAt">;
 type PaymentMethod = "cash" | "card" | "transfer";

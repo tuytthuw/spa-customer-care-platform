@@ -11,13 +11,13 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+} from "@/features/shared/components/ui/card";
+import { Badge } from "@/features/shared/components/ui/badge";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import CancelAppointmentModal from "../../appointment/components/my-appointments/CancelAppointmentModal";
 import { TreatmentPackage, TreatmentPlan } from "@/features/treatment/types";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@/features/shared/components/ui/separator";
 import Link from "next/link";
 
 interface AppointmentCardProps {

@@ -4,7 +4,7 @@ import { Resource } from "@/features/resource/types";
 import { Appointment } from "@/features/appointment/types";
 import { FullCustomerProfile } from "@/features/customer/types";
 import { Staff } from "@/features/staff/types";
-import { FullCalendarUI } from "@/components/ui/full-calendar";
+import { FullCalendarUI } from "@/features/shared/components/ui/full-calendar";
 
 interface ResourceCalendarProps {
   resources: Resource[];

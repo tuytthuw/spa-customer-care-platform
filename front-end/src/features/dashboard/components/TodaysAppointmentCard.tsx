@@ -1,10 +1,10 @@
 import { Appointment } from "@/features/appointment/types";
 import { Customer } from "@/features/customer/types";
 import { Service } from "@/features/service/types";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import Image from "next/image";
 import { Clock, Check, Play } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/features/shared/components/ui/badge";
 import { VariantProps } from "class-variance-authority";
 
 interface TodaysAppointmentCardProps {

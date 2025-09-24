@@ -2,16 +2,16 @@
 
 import { motion } from "framer-motion";
 import { Send, User } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/features/shared/components/ui/button";
+import { Input } from "@/features/shared/components/ui/input";
 import {
   Card,
   CardHeader,
   CardTitle,
   CardContent,
   CardFooter,
-} from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from "@/features/shared/components/ui/card";
+import { ScrollArea } from "@/features/shared/components/ui/scroll-area";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContexts"; // ✅ Import useAuth
 import { useMutation, useQueryClient } from "@tanstack/react-query"; // ✅ Import

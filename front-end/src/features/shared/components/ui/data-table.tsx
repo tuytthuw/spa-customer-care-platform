@@ -16,9 +16,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input"; // Import Input
+} from "@/features/shared/components/ui/table";
+import { Button } from "@/features/shared/components/ui/button";
+import { Input } from "@/features/shared/components/ui/input"; // Import Input
 import { useState } from "react"; // Import useState
 
 interface DataTableProps<TData, TValue> {

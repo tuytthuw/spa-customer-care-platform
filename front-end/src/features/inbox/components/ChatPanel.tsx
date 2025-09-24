@@ -1,11 +1,15 @@
 // src/features/inbox/components/ChatPanel.tsx
 
 import { Conversation } from "@/features/inbox/types";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/features/shared/components/ui/avatar";
+import { Input } from "@/features/shared/components/ui/input";
+import { Button } from "@/features/shared/components/ui/button";
 import { Send, ArrowLeft } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/features/shared/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { sendMessage } from "@/features/inbox/api/inbox.api";

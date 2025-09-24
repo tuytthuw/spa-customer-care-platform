@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContexts"; // 1. Import AuthProvider
-import ReactQueryProvider from "@/components/providers/ReactQueryProvider"; // 1. Import provider mới
-import { Toaster } from "@/components/ui/sonner";
-import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import ReactQueryProvider from "@/features/shared/providers/ReactQueryProvider"; // 1. Import provider mới
+import { Toaster } from "@/features/shared/components/ui/sonner";
+import { ThemeProvider } from "@/features/shared/providers/ThemeProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 

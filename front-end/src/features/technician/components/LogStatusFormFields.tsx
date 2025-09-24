@@ -7,8 +7,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/features/shared/components/ui/form";
+import { Textarea } from "@/features/shared/components/ui/textarea";
 
 export default function LogStatusFormFields() {
   const { control } = useFormContext();

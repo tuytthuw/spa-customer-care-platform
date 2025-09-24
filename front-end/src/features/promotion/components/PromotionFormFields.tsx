@@ -7,17 +7,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/features/shared/components/ui/form";
+import { Input } from "@/features/shared/components/ui/input";
+import { Textarea } from "@/features/shared/components/ui/textarea";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
+} from "@/features/shared/components/ui/popover";
+import { Button } from "@/features/shared/components/ui/button";
 import { CalendarIcon } from "lucide-react";
-import { Calendar } from "@/components/ui/calendar";
+import { Calendar } from "@/features/shared/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 

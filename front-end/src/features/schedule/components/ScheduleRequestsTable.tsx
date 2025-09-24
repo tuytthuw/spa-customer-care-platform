@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/card";
+} from "@/features/shared/components/ui/card";
 import {
   Table,
   TableBody,
@@ -17,9 +17,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+} from "@/features/shared/components/ui/table";
+import { Badge } from "@/features/shared/components/ui/badge";
+import { Button } from "@/features/shared/components/ui/button";
 import { Check, X } from "lucide-react";
 
 interface ScheduleRequestsTableProps {

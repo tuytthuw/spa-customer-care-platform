@@ -1,14 +1,18 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/features/shared/components/ui/avatar";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/features/shared/components/ui/card";
 import { getAppointments } from "@/features/appointment/api/appointment.api";
 import { getCustomers } from "@/features/customer/api/customer.api";
 import { getServices } from "@/features/service/api/service.api";

@@ -5,8 +5,8 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+} from "@/features/shared/components/ui/card";
+import { Button } from "@/features/shared/components/ui/button";
 import Image from "next/image";
 
 interface TreatmentReviewCardProps {

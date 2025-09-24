@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addCategory } from "@/features/category/api/category.api";
 import AddCategoryForm from "@/features/category/components/AddCategoryForm";
 import { toast } from "sonner";
-import { Separator } from "@/components/ui/separator"; // Sửa import từ @radix-ui/react-dropdown-menu
+import { Separator } from "@/features/shared/components/ui/separator"; // Sửa import từ @radix-ui/react-dropdown-menu
 import { useFieldArray, useFormContext } from "react-hook-form";
 import {
   FormControl,
@@ -12,11 +12,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { ImageUploader } from "@/components/ui/ImageUploader";
-import { MultiImageUploader } from "@/components/ui/MultiImageUploader";
+} from "@/features/shared/components/ui/form";
+import { Input } from "@/features/shared/components/ui/input";
+import { Textarea } from "@/features/shared/components/ui/textarea";
+import { ImageUploader } from "@/features/shared/components/ui/ImageUploader";
+import { MultiImageUploader } from "@/features/shared/components/ui/MultiImageUploader";
 import { useEffect, useState } from "react";
 import { ServiceFormValues } from "@/features/service/schemas";
 import { useCategories } from "@/features/category/hooks/useCategories";
@@ -24,18 +24,18 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+} from "@/features/shared/components/ui/popover";
+import { Button } from "@/features/shared/components/ui/button";
+import { Badge } from "@/features/shared/components/ui/badge";
 import { ChevronsUpDown, Plus, PlusCircle, Trash2 } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox } from "@/features/shared/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/features/shared/components/ui/dialog";
 import { useProducts } from "@/features/product/hooks/useProducts";
 import {
   Select,
@@ -43,7 +43,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/features/shared/components/ui/select";
 
 export default function ServiceFormFields() {
   const queryClient = useQueryClient();

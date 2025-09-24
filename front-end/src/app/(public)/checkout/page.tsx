@@ -17,22 +17,30 @@ import { createInvoice } from "@/features/billing/api/invoice.api";
 import { Invoice } from "@/features/billing/types";
 import { shippingSchema, ShippingFormValues } from "@/features/billing/schemas";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { FullPageLoader } from "@/components/ui/spinner";
+import { Button } from "@/features/shared/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/features/shared/components/ui/card";
+import { Separator } from "@/features/shared/components/ui/separator";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/features/shared/components/ui/toggle-group";
+import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 import { ArrowLeft } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/features/shared/components/ui/scroll-area";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/features/shared/components/ui/form";
+import { Input } from "@/features/shared/components/ui/input";
+import { Textarea } from "@/features/shared/components/ui/textarea";
 
 type InvoiceCreationData = Omit<Invoice, "id" | "createdAt">;
 type PaymentMethod = "cod" | "transfer";

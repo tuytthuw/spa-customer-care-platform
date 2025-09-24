@@ -1,12 +1,16 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { formatDateRange } from "little-date"
-import { PlusIcon } from "lucide-react"
+import * as React from "react";
+import { formatDateRange } from "little-date";
+import { PlusIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { Button } from "@/features/shared/components/ui/button";
+import { Calendar } from "@/features/shared/components/ui/calendar";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+} from "@/features/shared/components/ui/card";
 
 const events = [
   {
@@ -24,12 +28,12 @@ const events = [
     from: "2025-06-12T14:00:00",
     to: "2025-06-12T15:00:00",
   },
-]
+];
 
 export default function Calendar31() {
   const [date, setDate] = React.useState<Date | undefined>(
     new Date(2025, 5, 12)
-  )
+  );
 
   return (
     <Card className="w-fit py-4">
@@ -76,5 +80,5 @@ export default function Calendar31() {
         </div>
       </CardFooter>
     </Card>
-  )
+  );
 }

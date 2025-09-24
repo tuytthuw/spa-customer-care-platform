@@ -1,18 +1,23 @@
 "use client";
 
 import { useForm, useFieldArray } from "react-hook-form";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
+} from "@/features/shared/components/ui/form";
+import { Input } from "@/features/shared/components/ui/input";
+import { Checkbox } from "@/features/shared/components/ui/checkbox";
 import { WorkSchedule } from "@/features/schedule/types";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/features/shared/components/ui/card";
 import { toast } from "sonner";
 
 interface ScheduleFormProps {

@@ -8,14 +8,14 @@ import { Role } from "@/features/roles/types";
 import { RoleFormValues, roleFormSchema } from "@/features/roles/schemas";
 import { addRole, updateRole, deleteRole } from "@/features/roles/api/role.api";
 import { useRoles } from "@/features/roles/hooks/useRoles";
-import { DataTable } from "@/components/ui/data-table";
-import { Button } from "@/components/ui/button";
+import { DataTable } from "@/features/shared/components/ui/data-table";
+import { Button } from "@/features/shared/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { toast } from "sonner";
 import { columns } from "./columns";
-import { PageHeader } from "@/components/common/PageHeader";
-import { FormDialog } from "@/components/common/FormDialog";
-import { FullPageLoader } from "@/components/ui/spinner";
+import { PageHeader } from "@/features/shared/components/common/PageHeader";
+import { FormDialog } from "@/features/shared/components/common/FormDialog";
+import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 import RoleFormFields from "@/features/roles/components/RoleFormFields";
 
 export default function ManageRolesPage() {

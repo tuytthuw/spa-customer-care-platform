@@ -8,8 +8,8 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from "@/features/shared/components/ui/dialog";
+import { Button } from "@/features/shared/components/ui/button";
 import { Appointment } from "@/features/appointment/types";
 import { Customer } from "@/features/customer/types";
 import { Service } from "@/features/service/types";

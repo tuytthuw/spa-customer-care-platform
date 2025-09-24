@@ -3,7 +3,7 @@
 
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import { UploadCloud, X } from "lucide-react";
 import Image from "next/image";
 

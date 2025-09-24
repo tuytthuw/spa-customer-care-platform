@@ -1,13 +1,13 @@
 // src/features/customer-schedules/components/AppointmentDetailPanel.tsx
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import { Appointment } from "@/features/appointment/types";
 import { Service } from "@/features/service/types";
 import { Staff } from "@/features/staff/types";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@/features/shared/components/ui/separator";
 import { X } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/features/shared/components/ui/badge";
 import { Review } from "@/features/review/types"; // <-- IMPORT THÊM
 
 // THAY ĐỔI 1: Thêm 'reviews', 'onCancelAppointment', và 'onWriteReview' vào props interface

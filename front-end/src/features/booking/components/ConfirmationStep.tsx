@@ -1,10 +1,10 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/features/shared/components/ui/button";
+import { Input } from "@/features/shared/components/ui/input";
+import { Textarea } from "@/features/shared/components/ui/textarea";
+import { Checkbox } from "@/features/shared/components/ui/checkbox";
+import { Label } from "@/features/shared/components/ui/label";
 import Image from "next/image";
 import { ArrowLeft, CalendarDays, UserCircle } from "lucide-react";
 import { useState } from "react";

@@ -15,13 +15,18 @@ import {
 } from "@/features/staff/api/staff.api";
 import { FullCustomerProfile } from "@/features/customer/types";
 import { FullStaffProfile } from "@/features/staff/types";
-import { PageHeader } from "@/components/common/PageHeader";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PageHeader } from "@/features/shared/components/common/PageHeader";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/features/shared/components/ui/tabs";
 import { toast } from "sonner";
 import { PersonFormValues } from "@/lib/schemas";
 import { Customer } from "@/features/customer/types";
 import { Staff } from "@/features/staff/types";
-import { FullPageLoader } from "@/components/ui/spinner";
+import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 import NotificationSettingsForm from "@/features/customer/components/NotificationSettingsForm"; // ✅ MỚI
 import { LoyaltyCard } from "@/features/customer/components/LoyaltyCard";
 

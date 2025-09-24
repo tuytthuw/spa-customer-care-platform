@@ -7,11 +7,11 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/card";
+} from "@/features/shared/components/ui/card";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "@/features/shared/components/ui/button";
+import { Textarea } from "@/features/shared/components/ui/textarea";
+import { Separator } from "@/features/shared/components/ui/separator";
 import { Phone, Mail, Calendar, Edit } from "lucide-react";
 import Link from "next/link";
 

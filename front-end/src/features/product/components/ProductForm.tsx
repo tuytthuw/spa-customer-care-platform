@@ -13,11 +13,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { ImageUploader } from "@/components/ui/ImageUploader";
-import { MultiImageUploader } from "@/components/ui/MultiImageUploader";
+} from "@/features/shared/components/ui/form";
+import { Input } from "@/features/shared/components/ui/input";
+import { Textarea } from "@/features/shared/components/ui/textarea";
+import { ImageUploader } from "@/features/shared/components/ui/ImageUploader";
+import { MultiImageUploader } from "@/features/shared/components/ui/MultiImageUploader";
 import { useState, useEffect } from "react";
 import { ProductFormValues } from "../schemas";
 import { useCategories } from "@/features/category/hooks/useCategories";
@@ -25,18 +25,18 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+} from "@/features/shared/components/ui/popover";
+import { Button } from "@/features/shared/components/ui/button";
+import { Badge } from "@/features/shared/components/ui/badge";
 import { ChevronsUpDown, Plus } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox } from "@/features/shared/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/features/shared/components/ui/dialog";
 
 export default function ProductFormFields() {
   const form = useFormContext<ProductFormValues>();
