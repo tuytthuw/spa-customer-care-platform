@@ -8,7 +8,7 @@ export interface InvoiceItem {
 
 export interface Invoice {
   id: string;
-  appointmentId: string;
+  appointmentId?: string;
   customerId: string;
   items: InvoiceItem[];
   subtotal: number;
@@ -17,6 +17,7 @@ export interface Invoice {
   paymentMethod: "cash" | "card" | "transfer" | "cod" | null;
   status: "pending" | "paid";
   createdAt: string;
+  updatedAt: string;
   shippingAddress?: {
     name: string;
     phone: string;
@@ -24,4 +25,5 @@ export interface Invoice {
     city: string;
     notes?: string;
   };
+  totalAmount: number;
 }

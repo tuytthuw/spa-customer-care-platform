@@ -64,17 +64,17 @@ export const columns = ({
     header: "Tồn kho",
     // === THAY ĐỔI LOGIC HIỂN THỊ TỒN KHO TẠI ĐÂY ===
     cell: ({ row }) => {
-      const stock = row.original.stock;
-      const isLowStock = stock <= LOW_STOCK_THRESHOLD;
+      const product = row.original;
+      const isLowStock = product.stock <= LOW_STOCK_THRESHOLD;
 
       return (
         <div
           className={cn("flex items-center gap-2", {
-            "text-warning": isLowStock, // SỬ DỤNG MÀU TỪ THEME
+            "text-destructive font-semibold": isLowStock,
           })}
         >
           {isLowStock && <AlertTriangle className="h-4 w-4" />}
-          <span>{stock}</span>
+          <span>{`${product.stock} ${product.baseUnit}`}</span>
         </div>
       );
     },

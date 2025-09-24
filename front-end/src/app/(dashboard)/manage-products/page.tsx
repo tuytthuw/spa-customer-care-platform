@@ -17,7 +17,7 @@ import ProductFormFields from "@/features/product/components/ProductForm";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FullPageLoader } from "@/components/ui/spinner";
-import AddStockFormFields from "@/features/product/components/AddStockForm";
+import AddStockFormFields from "@/features/product/components/AddStockFormFields";
 import {
   productFormSchema,
   ProductFormValues,

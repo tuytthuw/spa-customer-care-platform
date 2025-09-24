@@ -24,6 +24,7 @@ export interface Customer {
   };
   loyaltyPoints?: number;
   rank?: "Bronze" | "Silver" | "Gold";
+  joinedDate: string;
 }
 
 export type FullCustomerProfile = Customer & {

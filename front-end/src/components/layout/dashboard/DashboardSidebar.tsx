@@ -23,6 +23,7 @@ import {
   Gem,
   Megaphone,
   Inbox,
+  Warehouse,
 } from "lucide-react";
 import { Feature } from "@/features/roles/types";
 
@@ -139,10 +140,16 @@ const allNavLinks: NavLink[] = [
     requiredFeature: "schedules",
   },
   {
-    href: "/reports",
-    label: "Báo cáo",
+    href: "/reports/revenue",
+    label: "Báo cáo Doanh thu",
     icon: BarChart2,
     requiredFeature: "reports",
+  },
+  {
+    href: "/reports/inventory",
+    label: "Báo cáo Tồn kho",
+    icon: Warehouse,
+    requiredFeature: "reports", // Dùng chung quyền báo cáo
   },
   {
     href: "/manage-promotions",
