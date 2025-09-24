@@ -24,6 +24,7 @@ import {
   Megaphone,
   Inbox,
   Warehouse,
+  CreditCard,
 } from "lucide-react";
 import { Feature } from "@/features/roles/types";
 
@@ -69,11 +70,12 @@ const allNavLinks: NavLink[] = [
     icon: Star,
     requiredFeature: "reviews",
   },
+
   {
-    href: "/my-packages",
-    label: "Gói dịch vụ của tôi",
-    icon: Package,
-    requiredFeature: "treatments",
+    href: "/prepaid-card",
+    label: "Thẻ trả trước",
+    icon: CreditCard,
+    requiredFeature: "billing", // Tái sử dụng quyền 'billing' cho khách hàng
   },
 
   // --- DÀNH CHO NHÂN VIÊN/QUẢN LÝ ---
