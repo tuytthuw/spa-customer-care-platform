@@ -44,7 +44,7 @@ export default function AddStockFormFields({
               <SelectContent>
                 {products.map((product) => (
                   <SelectItem key={product.id} value={product.id}>
-                    {product.name} (Tồn kho: {product.stock})
+                    {product.name} (Tồn kho: {product.stock} {product.baseUnit})
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -64,7 +64,9 @@ export default function AddStockFormFields({
                 type="number"
                 placeholder="0"
                 {...field}
-                onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                onChange={(e) =>
+                  field.onChange(parseFloat(e.target.value) || 0)
+                }
               />
             </FormControl>
             <FormMessage />
