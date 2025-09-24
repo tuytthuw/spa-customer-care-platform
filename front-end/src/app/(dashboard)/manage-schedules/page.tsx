@@ -7,13 +7,18 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from "@/features/shared/components/ui/select";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/features/shared/components/ui/tabs";
 import ScheduleForm from "@/features/schedule/components/ScheduleForm";
 import { WorkSchedule } from "@/features/schedule/types";
 import { toast } from "sonner";
 import { useStaffs } from "@/features/staff/hooks/useStaffs";
-import { FullPageLoader } from "@/components/ui/spinner";
+import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 import { useQuery } from "@tanstack/react-query";
 
 export default function WorkScheduleManagementPage() {

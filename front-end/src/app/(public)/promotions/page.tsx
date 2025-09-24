@@ -2,8 +2,8 @@
 
 import { usePromotions } from "@/features/promotion/hooks/usePromotions";
 import { PromotionCard } from "@/features/promotion/components/PromotionCard";
-import { PageHeader } from "@/components/common/PageHeader";
-import { FullPageLoader } from "@/components/ui/spinner";
+import { PageHeader } from "@/features/shared/components/common/PageHeader";
+import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 import { useMemo } from "react";
 
 export default function PromotionsPage() {

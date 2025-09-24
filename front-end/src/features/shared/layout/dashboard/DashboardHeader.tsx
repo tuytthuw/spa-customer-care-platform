@@ -3,9 +3,13 @@
 
 import React from "react";
 import { useAuth } from "@/contexts/AuthContexts";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import { LogOut, Bell, Settings, Menu } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/features/shared/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,10 +17,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/features/shared/components/ui/dropdown-menu";
 import Link from "next/link";
-import { ThemeToggle } from "@/components/common/ThemeToggle";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { ThemeToggle } from "@/features/shared/components/common/ThemeToggle";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/features/shared/components/ui/sheet";
 import Sidebar from "./DashboardSidebar";
 
 const DashboardHeader = () => {

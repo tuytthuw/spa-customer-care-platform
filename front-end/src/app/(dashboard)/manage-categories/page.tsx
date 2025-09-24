@@ -17,14 +17,14 @@ import {
 } from "@/features/category/api/category.api";
 import { useCategories } from "@/features/category/hooks/useCategories";
 
-import { DataTable } from "@/components/ui/data-table";
-import { Button } from "@/components/ui/button";
+import { DataTable } from "@/features/shared/components/ui/data-table";
+import { Button } from "@/features/shared/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { toast } from "sonner";
 import { columns } from "./columns";
-import { PageHeader } from "@/components/common/PageHeader";
-import { FormDialog } from "@/components/common/FormDialog";
-import { FullPageLoader } from "@/components/ui/spinner";
+import { PageHeader } from "@/features/shared/components/common/PageHeader";
+import { FormDialog } from "@/features/shared/components/common/FormDialog";
+import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 import CategoryFormFields from "@/features/category/components/CategoryFormFields";
 
 export default function ManageCategoriesPage() {

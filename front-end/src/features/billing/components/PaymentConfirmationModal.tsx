@@ -7,8 +7,8 @@ import {
   DialogTitle,
   DialogFooter,
   DialogDescription,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from "@/features/shared/components/ui/dialog";
+import { Button } from "@/features/shared/components/ui/button";
 import { Invoice } from "@/features/billing/types";
 
 interface PaymentConfirmationModalProps {

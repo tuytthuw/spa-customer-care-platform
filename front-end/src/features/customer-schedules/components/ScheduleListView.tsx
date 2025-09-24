@@ -1,12 +1,17 @@
 "use client";
 
 import { useMemo } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/features/shared/components/ui/tabs";
 import AppointmentCard from "@/features/customer-schedules/components/AppointmentCard";
 import { ScheduleDataProps, ActionableItem } from "../types";
 import { Appointment } from "@/features/appointment/types";
 import ActionRequiredList from "./ActionRequiredList";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import { PlusCircle } from "lucide-react";
 
 interface ScheduleListViewProps extends ScheduleDataProps {

@@ -3,7 +3,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Product } from "@/features/product/types";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,11 +11,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
+} from "@/features/shared/components/ui/dropdown-menu";
 import { MoreHorizontal, AlertTriangle } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/features/shared/components/ui/badge";
 import Image from "next/image";
-import { ConfirmationModal } from "@/components/common/ConfirmationModal"; // Import component mới
+import { ConfirmationModal } from "@/features/shared/components/common/ConfirmationModal"; // Import component mới
 import { cn } from "@/lib/utils";
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat("vi-VN", {

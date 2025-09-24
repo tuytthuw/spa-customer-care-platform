@@ -17,15 +17,15 @@ import {
 } from "@/features/customer/api/customer.api";
 import { useCustomers } from "@/features/customer/hooks/useCustomers";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import { Mail, PlusCircle } from "lucide-react";
-import { DataTable } from "@/components/ui/data-table";
-import { PageHeader } from "@/components/common/PageHeader";
-import { FormDialog } from "@/components/common/FormDialog";
+import { DataTable } from "@/features/shared/components/ui/data-table";
+import { PageHeader } from "@/features/shared/components/common/PageHeader";
+import { FormDialog } from "@/features/shared/components/common/FormDialog";
 import { columns } from "./columns";
 import { toast } from "sonner";
 import CustomerFormFields from "@/features/customer/components/CustomerForm"; // Đổi tên import
-import { FullPageLoader } from "@/components/ui/spinner";
+import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 import { sendBulkEmails } from "@/features/marketing/api/marketing.api";
 import {
   marketingEmailSchema,

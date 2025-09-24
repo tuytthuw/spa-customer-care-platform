@@ -7,10 +7,14 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from "@/features/shared/components/ui/dialog";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/features/shared/components/ui/avatar";
+import { Separator } from "@/features/shared/components/ui/separator";
+import { ScrollArea } from "@/features/shared/components/ui/scroll-area";
 import { getAppointments } from "@/features/appointment/api/appointment.api";
 import { getCustomers } from "@/features/customer/api/customer.api";
 import { getServices } from "@/features/service/api/service.api";

@@ -5,7 +5,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Product } from "@/features/product/types";
 import { AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/features/shared/components/ui/badge";
 
 const LOW_STOCK_THRESHOLD = 10;
 

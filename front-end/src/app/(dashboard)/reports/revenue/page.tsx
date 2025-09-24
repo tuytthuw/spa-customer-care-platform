@@ -2,12 +2,17 @@
 "use client";
 
 import { useState } from "react";
-import { PageHeader } from "@/components/common/PageHeader";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PageHeader } from "@/features/shared/components/common/PageHeader";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/features/shared/components/ui/card";
 import { DollarSign, Users, CalendarCheck } from "lucide-react";
 import { useInvoices } from "@/features/billing/hooks/useInvoices";
 import { useCustomers } from "@/features/customer/hooks/useCustomers";
-import { DateRangePicker } from "@/components/ui/date-range-picker"; // Giả định có component này
+import { DateRangePicker } from "@/features/shared/components/ui/date-range-picker"; // Giả định có component này
 import { DateRange } from "react-day-picker";
 import { subDays, startOfDay } from "date-fns";
 import RevenueOverTimeChart from "@/features/reports/components/RevenueOverTimeChart";

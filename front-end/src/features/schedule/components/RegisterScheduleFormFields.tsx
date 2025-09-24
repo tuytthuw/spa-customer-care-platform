@@ -1,15 +1,19 @@
 "use client";
 
 import { useFormContext } from "react-hook-form";
-import { Label } from "@/components/ui/label";
+import { Label } from "@/features/shared/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { FormControl, FormField, FormItem } from "@/components/ui/form";
+} from "@/features/shared/components/ui/select";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+} from "@/features/shared/components/ui/form";
 
 const daysOfWeek = [
   { key: "monday", name: "Thứ Hai" },

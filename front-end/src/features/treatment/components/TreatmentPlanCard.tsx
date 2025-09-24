@@ -1,5 +1,5 @@
 import { TreatmentPlan } from "@/features/treatment/types";
-import DisplayCard from "@/components/common/DisplayCard";
+import DisplayCard from "@/features/shared/components/common/DisplayCard";
 import { PackageCheck } from "lucide-react";
 
 interface TreatmentPlanCardProps {

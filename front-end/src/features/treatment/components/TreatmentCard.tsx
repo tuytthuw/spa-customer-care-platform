@@ -12,9 +12,9 @@ import {
   CardTitle,
   CardDescription,
   CardFooter,
-} from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
+} from "@/features/shared/components/ui/card";
+import { Progress } from "@/features/shared/components/ui/progress";
+import { Button } from "@/features/shared/components/ui/button";
 import SessionHistory from "../../customer-schedules/components/SessionHistory";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import Image from "next/image";

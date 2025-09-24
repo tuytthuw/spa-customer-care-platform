@@ -1,14 +1,14 @@
 "use client";
 
 import React from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import Image from "next/image";
 import { Appointment, AppointmentStatus } from "@/features/appointment/types";
 import { Customer } from "@/features/customer/types";
 import { Service } from "@/features/service/types";
 import { Staff } from "@/features/staff/types";
 import Link from "next/link";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@/features/shared/components/ui/separator";
 import { X } from "lucide-react";
 
 interface AppointmentDetailsProps {

@@ -1,6 +1,10 @@
 // src/features/inbox/components/ConversationList.tsx
 import { Conversation } from "@/features/inbox/types";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/features/shared/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { getCustomers } from "@/features/customer/api/customer.api";

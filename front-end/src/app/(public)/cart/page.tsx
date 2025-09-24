@@ -2,8 +2,8 @@
 "use client";
 
 import useCartStore from "@/stores/cart-store";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/features/shared/components/ui/button";
+import { Input } from "@/features/shared/components/ui/input";
 import {
   Table,
   TableBody,
@@ -11,11 +11,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/features/shared/components/ui/table";
 import { Trash2, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@/features/shared/components/ui/separator";
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity } = useCartStore();

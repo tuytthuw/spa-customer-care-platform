@@ -12,7 +12,7 @@ import {
 } from "@/features/auth/schemas";
 import { changePassword } from "@/features/user/api/user.api";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import {
   Form,
   FormControl,
@@ -20,15 +20,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@/features/shared/components/ui/form";
+import { Input } from "@/features/shared/components/ui/input";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/features/shared/components/ui/card";
 
 export default function ChangePasswordForm() {
   const { user } = useAuth();

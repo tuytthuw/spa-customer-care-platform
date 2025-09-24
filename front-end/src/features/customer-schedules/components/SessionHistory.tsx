@@ -8,9 +8,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+} from "@/features/shared/components/ui/table";
+import { Badge } from "@/features/shared/components/ui/badge";
+import { Button } from "@/features/shared/components/ui/button";
 import Link from "next/link";
 
 interface SessionHistoryProps {

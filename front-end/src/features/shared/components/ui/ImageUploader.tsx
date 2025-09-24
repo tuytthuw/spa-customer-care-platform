@@ -4,7 +4,7 @@
 
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import { UploadCloud, File as FileIcon, X } from "lucide-react";
 
 interface ImageUploaderProps {

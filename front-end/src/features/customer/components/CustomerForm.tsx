@@ -6,10 +6,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { ImageUploader } from "@/components/ui/ImageUploader";
+} from "@/features/shared/components/ui/form";
+import { Input } from "@/features/shared/components/ui/input";
+import { Textarea } from "@/features/shared/components/ui/textarea";
+import { ImageUploader } from "@/features/shared/components/ui/ImageUploader";
 
 /**
  * Component này chỉ chứa các trường nhập liệu cho form khách hàng.

@@ -11,10 +11,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+} from "@/features/shared/components/ui/table";
+import { Button } from "@/features/shared/components/ui/button";
 import { PlusCircle, Trash2, Minus, Plus } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@/features/shared/components/ui/separator";
 import {
   Command,
   CommandEmpty,
@@ -22,14 +22,17 @@ import {
   CommandItem,
   CommandList,
   CommandGroup,
-} from "@/components/ui/command";
+} from "@/features/shared/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@/features/shared/components/ui/popover";
 import React from "react";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/features/shared/components/ui/toggle-group";
 
 type PaymentMethod = "cash" | "card" | "transfer";
 

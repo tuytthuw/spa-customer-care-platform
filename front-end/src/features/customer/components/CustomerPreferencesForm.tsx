@@ -10,7 +10,7 @@ import { Customer, FullCustomerProfile } from "@/features/customer/types";
 import { Staff } from "@/features/staff/types";
 import { updateCustomerProfile } from "@/features/customer/api/customer.api";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import {
   Form,
   FormControl,
@@ -18,15 +18,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/features/shared/components/ui/form";
+import { Textarea } from "@/features/shared/components/ui/textarea";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/features/shared/components/ui/card";
 import {
   Command,
   CommandEmpty,
@@ -34,8 +34,8 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
-import { Badge } from "@/components/ui/badge";
+} from "@/features/shared/components/ui/command";
+import { Badge } from "@/features/shared/components/ui/badge";
 import { X } from "lucide-react";
 
 // Schema validation

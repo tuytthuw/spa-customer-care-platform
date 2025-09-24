@@ -7,18 +7,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@/features/shared/components/ui/form";
+import { Input } from "@/features/shared/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
+} from "@/features/shared/components/ui/select";
+import { Checkbox } from "@/features/shared/components/ui/checkbox";
 import { Service } from "@/features/service/types";
-import { ImageUploader } from "@/components/ui/ImageUploader";
+import { ImageUploader } from "@/features/shared/components/ui/ImageUploader";
 
 interface StaffFormFieldsProps {
   services: Service[];

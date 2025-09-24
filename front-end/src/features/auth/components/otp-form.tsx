@@ -15,20 +15,20 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from "@/features/shared/components/ui/form";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-} from "@/components/ui/input-otp";
+} from "@/features/shared/components/ui/input-otp";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+} from "@/features/shared/components/ui/card";
+import { Button } from "@/features/shared/components/ui/button";
 
 export function OtpForm() {
   const router = useRouter();

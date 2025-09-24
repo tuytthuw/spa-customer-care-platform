@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getServices } from "@/features/service/api/service.api";
 import { Service } from "@/features/service/types";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import Image from "next/image";
 import { Clock, Tag } from "lucide-react";
 

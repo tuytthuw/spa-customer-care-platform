@@ -18,12 +18,12 @@ import {
   updatePromotionStatus,
 } from "@/features/promotion/api/promotion.api";
 
-import { PageHeader } from "@/components/common/PageHeader";
-import { DataTable } from "@/components/ui/data-table";
-import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/features/shared/components/common/PageHeader";
+import { DataTable } from "@/features/shared/components/ui/data-table";
+import { Button } from "@/features/shared/components/ui/button";
 import { PlusCircle } from "lucide-react";
-import { FullPageLoader } from "@/components/ui/spinner";
-import { FormDialog } from "@/components/common/FormDialog";
+import { FullPageLoader } from "@/features/shared/components/ui/spinner";
+import { FormDialog } from "@/features/shared/components/common/FormDialog";
 import PromotionFormFields from "@/features/promotion/components/PromotionFormFields";
 import { columns } from "./columns";
 

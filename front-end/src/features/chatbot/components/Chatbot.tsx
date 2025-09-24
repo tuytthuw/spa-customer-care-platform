@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { MessageCircle, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import ChatWindow from "./ChatWindow";
+import { Button } from "@/features/shared/components/ui/button";
+import ChatWindow from "@/features/chatbot/components/ChatWindow";
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);

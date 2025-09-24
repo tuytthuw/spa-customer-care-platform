@@ -1,6 +1,6 @@
 // src/features/landing/components/WhyChooseUs.tsx
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/features/shared/components/ui/card";
 import { User, Heart, Leaf } from "lucide-react";
 import Image from "next/image";
 

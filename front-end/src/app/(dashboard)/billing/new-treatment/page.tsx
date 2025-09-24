@@ -13,15 +13,15 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+} from "@/features/shared/components/ui/card";
+import { Button } from "@/features/shared/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/features/shared/components/ui/select";
 import {
   Command,
   CommandEmpty,
@@ -29,12 +29,12 @@ import {
   CommandItem,
   CommandList,
   CommandGroup,
-} from "@/components/ui/command";
+} from "@/features/shared/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@/features/shared/components/ui/popover";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCustomers } from "@/features/customer/hooks/useCustomers";

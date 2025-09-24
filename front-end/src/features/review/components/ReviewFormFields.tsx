@@ -7,10 +7,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/features/shared/components/ui/form";
+import { Textarea } from "@/features/shared/components/ui/textarea";
 import StarRating from "@/features/review/components/StarRating";
-import { MultiImageUploader } from "@/components/ui/MultiImageUploader";
+import { MultiImageUploader } from "@/features/shared/components/ui/MultiImageUploader";
 
 export default function ReviewFormFields() {
   const { control } = useFormContext();

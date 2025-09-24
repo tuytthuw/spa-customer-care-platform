@@ -1,6 +1,6 @@
 // src/features/booking/components/BookingSuccessStep.tsx
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import Link from "next/link";
 import { Check, CalendarPlus, House, ArrowLeft } from "lucide-react";
 import { Service } from "@/features/service/types";

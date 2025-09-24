@@ -2,13 +2,13 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Calendar } from "@/components/ui/calendar";
-import { Card, CardContent } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Calendar } from "@/features/shared/components/ui/calendar";
+import { Card, CardContent } from "@/features/shared/components/ui/card";
+import { ScrollArea } from "@/features/shared/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { Appointment } from "@/features/appointment/types";
 import { Service } from "@/features/service/types";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import { Plus } from "lucide-react";
 
 // Định nghĩa props

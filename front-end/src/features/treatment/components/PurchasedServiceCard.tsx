@@ -8,8 +8,8 @@ import {
   CardTitle,
   CardDescription,
   CardFooter,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+} from "@/features/shared/components/ui/card";
+import { Button } from "@/features/shared/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { CalendarPlus, Tag, Clock } from "lucide-react";

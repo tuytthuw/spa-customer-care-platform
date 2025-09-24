@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/card";
+} from "@/features/shared/components/ui/card";
 import {
   LineChart,
   Line,

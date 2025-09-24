@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/features/shared/components/ui/button";
+import { Card, CardContent } from "@/features/shared/components/ui/card";
 import { cn } from "@/lib/utils";
 
 // 1. Sửa lại import để dùng mockStaff và type Staff

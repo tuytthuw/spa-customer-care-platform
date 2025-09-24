@@ -12,8 +12,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+} from "@/features/shared/components/ui/alert-dialog";
+import { Button } from "@/features/shared/components/ui/button";
 import React from "react";
 
 interface ConfirmationModalProps {

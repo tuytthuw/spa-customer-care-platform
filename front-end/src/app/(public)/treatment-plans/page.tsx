@@ -2,7 +2,7 @@
 
 import { getTreatmentPlans } from "@/features/treatment/api/treatment.api";
 import TreatmentPlanCard from "@/features/treatment/components/TreatmentPlanCard";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/features/shared/components/ui/input";
 
 export default async function TreatmentPlansPage() {
   const treatmentPlans = await getTreatmentPlans();

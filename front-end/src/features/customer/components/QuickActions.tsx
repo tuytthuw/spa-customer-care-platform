@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import { UserCheck, Bell, CalendarPlus, BarChart } from "lucide-react";
 
 export const QuickActions = () => {

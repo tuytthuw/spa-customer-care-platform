@@ -1,6 +1,6 @@
 import { Customer } from "@/features/customer/types";
 import { Service } from "@/features/service/types";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import Image from "next/image";
 import { Check, MoreVertical } from "lucide-react";
 

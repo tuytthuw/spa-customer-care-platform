@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/features/shared/components/ui/card";
 import Image from "next/image";
 import { Calendar } from "lucide-react";
 import { Promotion } from "../types";

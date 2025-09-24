@@ -4,19 +4,19 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Product } from "@/features/product/types";
-import { DataTable } from "@/components/ui/data-table";
-import { Button } from "@/components/ui/button";
+import { DataTable } from "@/features/shared/components/ui/data-table";
+import { Button } from "@/features/shared/components/ui/button";
 import { PlusCircle, Inbox } from "lucide-react";
 import { columns } from "./columns";
 import { toast } from "sonner";
 
 import { useProducts } from "@/features/product/hooks/useProducts";
-import { PageHeader } from "@/components/common/PageHeader";
-import { FormDialog } from "@/components/common/FormDialog";
+import { PageHeader } from "@/features/shared/components/common/PageHeader";
+import { FormDialog } from "@/features/shared/components/common/FormDialog";
 import ProductFormFields from "@/features/product/components/ProductForm";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FullPageLoader } from "@/components/ui/spinner";
+import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 import AddStockFormFields from "@/features/product/components/AddStockFormFields";
 import {
   productFormSchema,

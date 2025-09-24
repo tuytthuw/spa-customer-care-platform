@@ -6,15 +6,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@/features/shared/components/ui/form";
+import { Input } from "@/features/shared/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/features/shared/components/ui/select";
 import { useFormContext } from "react-hook-form";
 
 interface CategoryFormFieldsProps {

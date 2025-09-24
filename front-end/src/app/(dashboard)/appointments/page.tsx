@@ -4,7 +4,12 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Appointment } from "@/features/appointment/types";
 import { NewReviewData } from "@/features/review/types";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/features/shared/components/ui/tabs";
 import AppointmentCard from "@/features/customer-schedules/components/AppointmentCard";
 import { ReviewModal } from "@/features/review/components/ReviewModal";
 import {
@@ -14,7 +19,7 @@ import {
 import { createReview } from "@/features/review/api/review.api";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContexts";
-import { PageHeader } from "@/components/common/PageHeader";
+import { PageHeader } from "@/features/shared/components/common/PageHeader";
 import { useTreatments } from "@/features/treatment/hooks/useTreatments";
 import { useTreatmentPlans } from "@/features/treatment/hooks/useTreatmentPlans";
 import { useCustomers } from "@/features/customer/hooks/useCustomers";

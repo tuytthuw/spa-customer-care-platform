@@ -6,7 +6,7 @@ import { Appointment } from "@/features/appointment/types";
 import { Customer } from "@/features/customer/types";
 import { Service } from "@/features/service/types";
 import { Staff } from "@/features/staff/types"; // 1. Import Staff type
-import { FullCalendarUI } from "@/components/ui/full-calendar"; // 2. Import FullCalendarUI
+import { FullCalendarUI } from "@/features/shared/components/ui/full-calendar"; // 2. Import FullCalendarUI
 import { EventClickArg, EventDropArg } from "@fullcalendar/core";
 
 interface AppointmentTimelineProps {

@@ -1,7 +1,7 @@
 "use client";
 
 import ResourceCalendar from "@/features/resource/components/ResourceCalendar";
-import { PageHeader } from "@/components/common/PageHeader";
+import { PageHeader } from "@/features/shared/components/common/PageHeader";
 import { useCustomers } from "@/features/customer/hooks/useCustomers";
 import { useStaffs } from "@/features/staff/hooks/useStaffs";
 import { useAppointments } from "@/features/appointment/hooks/useAppointments";

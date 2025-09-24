@@ -1,7 +1,7 @@
 // src/features/landing/components/FeaturedServices.tsx
 
 import ServiceCard from "@/features/service/components/ServiceCard";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import { Service } from "@/features/service/types";
 import Link from "next/link";
 import { getServices } from "@/features/service/api/service.api";

@@ -5,7 +5,7 @@ import { StatsCard } from "@/features/reports/components/StatsCard";
 import RevenueChart from "@/features/reports/components/RevenueChart";
 import ServiceBreakdownChart from "@/features/reports/components/ServiceBreakdownChart";
 import { DollarSign, BookUser, UserPlus, Star } from "lucide-react";
-import { PageHeader } from "@/components/common/PageHeader";
+import { PageHeader } from "@/features/shared/components/common/PageHeader";
 
 const ReportsPage = () => {
   return (

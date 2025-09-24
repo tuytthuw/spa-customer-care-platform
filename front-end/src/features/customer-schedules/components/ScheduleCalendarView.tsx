@@ -11,10 +11,10 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/features/shared/components/ui/dialog";
 
 import ActionRequiredList from "./ActionRequiredList";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/features/shared/components/ui/scroll-area";
 
 interface ScheduleCalendarViewProps extends ScheduleDataProps {
   onCancelAppointment: (id: string, reason: string) => void;

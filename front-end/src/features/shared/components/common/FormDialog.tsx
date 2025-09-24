@@ -7,8 +7,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from "@/features/shared/components/ui/dialog";
+import { Button } from "@/features/shared/components/ui/button";
 import {
   useForm,
   FormProvider,

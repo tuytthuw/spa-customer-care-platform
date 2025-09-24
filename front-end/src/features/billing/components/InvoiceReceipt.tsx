@@ -2,7 +2,7 @@
 
 import { Invoice } from "@/features/billing/types";
 import { FullCustomerProfile } from "@/features/customer/api/customer.api";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@/features/shared/components/ui/separator";
 
 interface InvoiceReceiptProps {
   invoice: Invoice;

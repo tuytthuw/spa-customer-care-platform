@@ -1,8 +1,8 @@
 // src/app/(dashboard)/manage-loyalty/page.tsx
 "use client";
 
-import { PageHeader } from "@/components/common/PageHeader";
-import { FullPageLoader } from "@/components/ui/spinner";
+import { PageHeader } from "@/features/shared/components/common/PageHeader";
+import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 import LoyaltySettingsForm from "@/features/loyalty/components/LoyaltySettingsForm";
 import { LoyaltySettings } from "@/features/loyalty/types";
 import { useQuery } from "@tanstack/react-query";
