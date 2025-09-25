@@ -12,7 +12,6 @@ import {
 } from "@/features/appointment/api/appointment.api";
 import { toast } from "sonner";
 import { EventDropArg } from "@fullcalendar/core";
-import { cn } from "@/lib/utils";
 import { useAppointments } from "@/features/appointment/hooks/useAppointments";
 import { useCustomers } from "@/features/customer/hooks/useCustomers";
 import { useServices } from "@/features/service/hooks/useServices";
@@ -37,9 +36,6 @@ export default function AppointmentsManagementPage() {
     string | null
   >(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [selectedDateForNew, setSelectedDateForNew] = useState<Date | null>(
-    null
-  );
 
   // --- Fetch tất cả dữ liệu cần thiết từ API ---
   const { data: appointments = [], isLoading: loadingAppointments } =
@@ -128,7 +124,7 @@ export default function AppointmentsManagementPage() {
     loadingServices ||
     loadingStaff
   ) {
-    return <div className="p-8">Đang tải dữ liệu trang quản lý...</div>;
+    return <FullPageLoader text="Đang tải dữ liệu trang quản lý..." />;
   }
 
   return (

@@ -14,7 +14,6 @@ import { TreatmentPlan } from "@/features/treatment/types";
 import { FullCustomerProfile } from "@/features/customer/types";
 import { PrepaidCard } from "@/features/prepaid-card/types";
 import { PaymentStatus } from "@/features/appointment/types";
-import { Promotion } from "@/features/promotion/types";
 
 // API & Hooks
 import {
@@ -72,13 +71,13 @@ import { Label } from "@/features/shared/components/ui/label";
 import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 import { PageHeader } from "@/features/shared/components/common/PageHeader";
 
-const POINT_TO_VND_RATE = 1000;
-
 export default function BillingPage() {
   const router = useRouter();
   const params = useParams();
   const queryClient = useQueryClient();
   const { appointmentId } = params;
+
+  const POINT_TO_VND_RATE = 1000;
 
   // --- STATES ---
   const [items, setItems] = useState<InvoiceItem[]>([]);

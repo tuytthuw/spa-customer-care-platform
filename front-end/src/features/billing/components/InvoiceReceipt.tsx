@@ -1,7 +1,7 @@
 "use client";
 
 import { Invoice } from "@/features/billing/types";
-import { FullCustomerProfile } from "@/features/customer/api/customer.api";
+import { FullCustomerProfile } from "@/features/customer/types";
 import { Separator } from "@/features/shared/components/ui/separator";
 
 interface InvoiceReceiptProps {
