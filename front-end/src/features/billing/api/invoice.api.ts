@@ -2,6 +2,8 @@ import { Invoice } from "@/features/billing/types";
 import { v4 as uuidv4 } from "uuid";
 import { Customer } from "@/features/customer/types";
 import { Product } from "@/features/product/types";
+import { redeemLoyaltyPoints } from "@/features/customer/api/customer.api";
+import { debitPrepaidCard } from "@/features/prepaid-card/api/prepaid-card.api";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const INVOICES_API_URL = `${API_URL}/invoices`;
@@ -9,7 +11,14 @@ const CUSTOMERS_API_URL = `${API_URL}/customers`;
 const PRODUCTS_API_URL = `${API_URL}/products`;
 const POINTS_PER_VND = 1 / 10000;
 
-type InvoiceCreationData = Omit<Invoice, "id" | "createdAt">;
+type InvoiceCreationData = Omit<
+  Invoice,
+  "id" | "createdAt" | "updatedAt" | "totalAmount"
+> & {
+  pointsToRedeem?: number;
+  prepaidCardId?: string;
+  prepaidAmountToUse?: number;
+};
 
 export const getInvoices = async (): Promise<Invoice[]> => {
   try {
@@ -28,14 +37,28 @@ export const createInvoice = async (
   invoiceData: InvoiceCreationData
 ): Promise<Invoice> => {
   try {
-    // BƯỚC 1: TẠO HÓA ĐƠN
+    const newInvoiceId = `inv-${uuidv4()}`;
+    const { customerId, pointsToRedeem, prepaidCardId, prepaidAmountToUse } =
+      invoiceData;
+
+    // BƯỚC 1: XỬ LÝ CÁC KHOẢN THANH TOÁN ĐẶC BIỆT TRƯỚC
+    if (pointsToRedeem && pointsToRedeem > 0) {
+      await redeemLoyaltyPoints(customerId, pointsToRedeem);
+    }
+    if (prepaidCardId && prepaidAmountToUse && prepaidAmountToUse > 0) {
+      await debitPrepaidCard(prepaidCardId, prepaidAmountToUse, newInvoiceId);
+    }
+
+    // BƯỚC 2: TẠO HÓA ĐƠN SAU KHI ĐÃ XỬ LÝ CÁC KHOẢN TRỪ
     const response = await fetch(INVOICES_API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         ...invoiceData,
-        id: `inv-${uuidv4()}`,
+        id: newInvoiceId,
         createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        totalAmount: invoiceData.total, // totalAmount sẽ bằng total
       }),
     });
 
@@ -45,7 +68,7 @@ export const createInvoice = async (
 
     const newInvoice: Invoice = await response.json();
 
-    // BƯỚC 2: CẬP NHẬT CÁC DỊCH VỤ ĐÃ MUA CHO KHÁCH HÀNG (Logic cũ)
+    // BƯỚC 3: CẬP NHẬT DỊCH VỤ ĐÃ MUA CHO KHÁCH HÀNG
     const servicesToUpdate = newInvoice.items.filter(
       (item) => item.type === "service"
     );
@@ -80,29 +103,27 @@ export const createInvoice = async (
       }
     }
 
-    // BƯỚC 3: TRỪ KHO CÁC SẢN PHẨM ĐÃ BÁN (LOGIC MỚI)
+    // BƯỚC 4: TRỪ KHO SẢN PHẨM ĐÃ BÁN
     const productsToUpdate = newInvoice.items.filter(
       (item) => item.type === "product"
     );
 
     if (productsToUpdate.length > 0) {
       for (const item of productsToUpdate) {
-        // Lấy thông tin sản phẩm hiện tại để biết tồn kho
         const productRes = await fetch(`${PRODUCTS_API_URL}/${item.id}`);
         if (productRes.ok) {
           const product: Product = await productRes.json();
           const newStock = product.stock - item.quantity;
-
-          // Cập nhật lại tồn kho cho sản phẩm
           await fetch(`${PRODUCTS_API_URL}/${item.id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ stock: newStock >= 0 ? newStock : 0 }), // Đảm bảo tồn kho không bị âm
+            body: JSON.stringify({ stock: newStock >= 0 ? newStock : 0 }),
           });
         }
       }
     }
 
+    // BƯỚC 5: CỘNG ĐIỂM TÍCH LŨY CHO SỐ TIỀN THỰC TRẢ (NẾU CÓ)
     if (newInvoice.total > 0) {
       const customerRes = await fetch(
         `${CUSTOMERS_API_URL}/${newInvoice.customerId}`
@@ -114,9 +135,6 @@ export const createInvoice = async (
         if (pointsEarned > 0) {
           const currentPoints = customer.loyaltyPoints || 0;
           const newTotalPoints = currentPoints + pointsEarned;
-
-          // (Tùy chọn) Logic nâng hạng có thể thêm ở đây sau
-
           await fetch(`${CUSTOMERS_API_URL}/${newInvoice.customerId}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },

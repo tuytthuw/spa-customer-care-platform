@@ -227,3 +227,40 @@ export const redeemPurchasedService = async (
 
   return response.json();
 };
+
+/**
+ * Sử dụng (trừ) điểm tích lũy của khách hàng.
+ * @param customerId - ID của khách hàng
+ * @param pointsToRedeem - Số điểm cần sử dụng
+ * @returns - Hồ sơ khách hàng sau khi đã cập nhật điểm.
+ */
+export const redeemLoyaltyPoints = async (
+  customerId: string,
+  pointsToRedeem: number
+): Promise<Customer> => {
+  // Lấy thông tin khách hàng hiện tại
+  const customerRes = await fetch(`${CUSTOMERS_API_URL}/${customerId}`);
+  if (!customerRes.ok) throw new Error("Không tìm thấy khách hàng.");
+  const customer: Customer = await customerRes.json();
+
+  const currentPoints = customer.loyaltyPoints || 0;
+  if (currentPoints < pointsToRedeem) {
+    throw new Error("Số điểm tích lũy không đủ.");
+  }
+
+  // Trừ điểm
+  const newTotalPoints = currentPoints - pointsToRedeem;
+
+  // Cập nhật lại trên server
+  const response = await fetch(`${CUSTOMERS_API_URL}/${customerId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ loyaltyPoints: newTotalPoints }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Cập nhật điểm tích lũy thất bại.");
+  }
+
+  return response.json();
+};

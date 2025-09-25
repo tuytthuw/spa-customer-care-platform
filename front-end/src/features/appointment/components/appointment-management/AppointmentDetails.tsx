@@ -146,13 +146,22 @@ export const AppointmentDetails = ({
           </Button>
         )}
         {["upcoming", "checked-in"].includes(appointment.status) && (
-          <Button
-            variant="destructive"
-            className="w-full"
-            onClick={() => onStatusChange(appointment.id, "cancelled")}
-          >
-            Báo hủy
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => onStatusChange(appointment.id, "no-show")}
+            >
+              Báo không đến
+            </Button>
+            <Button
+              variant="destructive"
+              className="w-full"
+              onClick={() => onStatusChange(appointment.id, "cancelled")}
+            >
+              Báo hủy
+            </Button>
+          </div>
         )}
       </div>
     </div>

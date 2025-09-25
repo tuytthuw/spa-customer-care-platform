@@ -33,7 +33,15 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@/features/shared/components/ui/toggle-group";
-
+import { Promotion } from "@/features/promotion/types";
+import { Label } from "@/features/shared/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/features/shared/components/ui/select";
 type PaymentMethod = "cash" | "card" | "transfer";
 
 interface BillingDetailsProps {
@@ -55,6 +63,10 @@ interface BillingDetailsProps {
   onProcessPayment: () => void;
   selectedPaymentMethod: PaymentMethod | null;
   onPaymentMethodChange: (method: PaymentMethod) => void;
+  promotions: Promotion[];
+  onApplyPromotion: (promotionId: string) => void;
+  discount: number;
+  total: number;
 }
 
 const BillingDetails = ({
@@ -69,6 +81,10 @@ const BillingDetails = ({
   onProcessPayment,
   selectedPaymentMethod,
   onPaymentMethodChange,
+  promotions,
+  onApplyPromotion,
+  discount,
+  total,
 }: BillingDetailsProps) => {
   const [open, setOpen] = React.useState(false);
 
@@ -76,8 +92,6 @@ const BillingDetails = ({
     (acc, item) => acc + item.price * item.quantity,
     0
   );
-  const discount = 0;
-  const total = subtotal - discount;
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -239,6 +253,24 @@ const BillingDetails = ({
             <span>Tạm tính:</span>
             <span>{formatCurrency(subtotal)}</span>
           </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="promotion-select">Khuyến mãi</Label>
+            <Select onValueChange={(value) => onApplyPromotion(value)}>
+              <SelectTrigger id="promotion-select">
+                <SelectValue placeholder="Chọn khuyến mãi..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Không áp dụng</SelectItem>
+                {promotions.map((promo) => (
+                  <SelectItem key={promo.id} value={promo.id}>
+                    {promo.title} ({promo.discountPercent}%)
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="flex justify-between">
             <span>Giảm giá:</span>
             <span className="text-destructive">{formatCurrency(discount)}</span>

@@ -3,6 +3,7 @@
 import React from "react";
 import { Button } from "@/features/shared/components/ui/button";
 import { UserCheck, Bell, CalendarPlus, BarChart } from "lucide-react";
+import Link from "next/link";
 
 export const QuickActions = () => {
   return (
@@ -12,11 +13,14 @@ export const QuickActions = () => {
       </h3>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Button
+          asChild // Cho phép Button hoạt động như một Link
           variant="outline"
           className="bg-muted p-4 h-auto flex-col gap-2 hover:bg-accent"
         >
-          <UserCheck className="w-6 h-6" />
-          <span className="text-sm">Check-in hàng loạt</span>
+          <Link href="/manage-appointments/check-in">
+            <UserCheck className="w-6 h-6" />
+            <span className="text-sm">Check-in hàng loạt</span>
+          </Link>
         </Button>
         <Button
           variant="outline"
