@@ -13,7 +13,10 @@ import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContexts";
 import useCartStore from "@/stores/cart-store";
 import { useCustomers } from "@/features/customer/hooks/useCustomers";
-import { createInvoice } from "@/features/billing/api/invoice.api";
+import {
+  createInvoice,
+  InvoiceCreationData,
+} from "@/features/billing/api/invoice.api";
 import { Invoice } from "@/features/billing/types";
 import { shippingSchema, ShippingFormValues } from "@/features/billing/schemas";
 
@@ -42,7 +45,6 @@ import {
 import { Input } from "@/features/shared/components/ui/input";
 import { Textarea } from "@/features/shared/components/ui/textarea";
 
-type InvoiceCreationData = Omit<Invoice, "id" | "createdAt">;
 type PaymentMethod = "cod" | "transfer";
 
 export default function CheckoutPage() {

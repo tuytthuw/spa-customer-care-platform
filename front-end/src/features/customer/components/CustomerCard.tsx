@@ -1,11 +1,16 @@
 import { Customer } from "@/features/customer/types";
 import { Service } from "@/features/service/types";
+import { Staff } from "@/features/staff/types"; // Import Staff type
 import { Button } from "@/features/shared/components/ui/button";
 import Image from "next/image";
 import { Check, MoreVertical } from "lucide-react";
 
 interface CustomerCardProps {
   customer: Customer;
+  // SỬA 1: Nhận service và staff qua props thay vì dùng mock data
+  service: Service;
+  staff?: Staff;
+  status: "waiting" | "in_service" | "completed";
 }
 
 const getStatusInfo = (status: string) => {
@@ -27,11 +32,14 @@ const getStatusInfo = (status: string) => {
   }
 };
 
-export default function CustomerCard({ customer }: CustomerCardProps) {
-  // Giả lập dữ liệu lịch hẹn cho khách hàng
-  const statusInfo = getStatusInfo("waiting");
-  const service = mockServices[0];
-  const staff = mockStaff[0];
+export default function CustomerCard({
+  customer,
+  service,
+  staff,
+  status,
+}: CustomerCardProps) {
+  // SỬA 2: Xóa bỏ việc sử dụng mock data
+  const statusInfo = getStatusInfo(status);
 
   return (
     <div className="bg-card p-4 rounded border border-border shadow-sm">
@@ -65,7 +73,8 @@ export default function CustomerCard({ customer }: CustomerCardProps) {
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-muted-foreground">Nhân viên:</span>
-          <span>{staff.name}</span>
+          {/* SỬA 3: Hiển thị tên nhân viên từ props */}
+          <span>{staff?.name || "Chưa xác định"}</span>
         </div>
       </div>
 

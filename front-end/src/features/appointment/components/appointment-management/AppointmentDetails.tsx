@@ -91,11 +91,16 @@ export const AppointmentDetails = ({
         <div>
           <p className="text-sm text-muted-foreground">Thời gian</p>
           <p className="font-medium">
-            {new Date(appointment.date).toLocaleString("vi-VN", {
+            {new Date(appointment.start).toLocaleTimeString("vi-VN", {
               hour: "2-digit",
               minute: "2-digit",
             })}{" "}
-            - {new Date(appointment.date).toLocaleDateString("vi-VN")}
+            -{" "}
+            {new Date(appointment.end).toLocaleTimeString("vi-VN", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}{" "}
+            ({new Date(appointment.start).toLocaleDateString("vi-VN")})
           </p>
         </div>
         {technician && (

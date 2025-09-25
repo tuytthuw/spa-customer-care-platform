@@ -19,20 +19,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@/features/shared/components/ui/card";
-import { PesonFormValues, personSchema } from "@/lib/schemas";
+import { PersonFormValues, personSchema } from "@/lib/schemas";
 import { toast } from "sonner";
 
 interface ProfileFormProps {
-  defaultValues: PesonFormValues;
+  defaultValues: PersonFormValues;
 }
 
 export default function ProfileForm({ defaultValues }: ProfileFormProps) {
-  const form = useForm<PesonFormValues>({
+  const form = useForm<PersonFormValues>({
     resolver: zodResolver(personSchema),
     defaultValues,
   });
 
-  function onSubmit(data: PesonFormValues) {
+  function onSubmit(data: PersonFormValues) {
     // Đây là nơi bạn sẽ gọi API để cập nhật thông tin
     console.log("Dữ liệu cập nhật:", data);
     toast.success("Cập nhật thông tin thành công!");

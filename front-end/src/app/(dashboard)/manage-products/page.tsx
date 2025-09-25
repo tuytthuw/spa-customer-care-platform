@@ -59,6 +59,11 @@ export default function ManageProductsPage() {
           price: 0,
           stock: 0,
           imageFile: undefined,
+          isRetail: false,
+          isConsumable: false,
+          baseUnit: "",
+          consumableUnit: "",
+          conversionRate: 0,
         });
       }
     }

@@ -8,8 +8,8 @@ import {
   CommandEmpty,
   CommandItem,
 } from "@/features/shared/components/ui/command";
-import { mockProducts } from "@/lib/mock-data";
 import { Product } from "@/features/product/types";
+import { useProducts } from "@/features/product/hooks/useProducts"; // SỬA 1: Import hook để lấy dữ liệu thật
 
 interface ProductSearchProps {
   onAddProduct: (product: Product) => void;
@@ -17,10 +17,14 @@ interface ProductSearchProps {
 
 const ProductSearch = ({ onAddProduct }: ProductSearchProps) => {
   const [query, setQuery] = useState("");
+  const { data: products = [], isLoading } = useProducts(); // SỬA 2: Lấy dữ liệu sản phẩm từ hook
 
+  // Lọc các sản phẩm là hàng bán lẻ và dựa trên query
   const filteredProducts = query
-    ? mockProducts.filter((p) =>
-        p.name.toLowerCase().includes(query.toLowerCase())
+    ? products.filter(
+        (
+          p: Product // SỬA 3: Thêm kiểu dữ liệu cho 'p'
+        ) => p.isRetail && p.name.toLowerCase().includes(query.toLowerCase())
       )
     : [];
 
@@ -33,27 +37,33 @@ const ProductSearch = ({ onAddProduct }: ProductSearchProps) => {
             placeholder="Tìm sản phẩm..."
             value={query}
             onValueChange={setQuery}
+            disabled={isLoading} // Vô hiệu hóa input khi đang tải
           />
-          {filteredProducts.length > 0 && (
-            <CommandList className="absolute top-full z-10 w-full bg-card shadow-md rounded-b-md">
-              <CommandEmpty>Không tìm thấy sản phẩm.</CommandEmpty>
-              {filteredProducts.map((product) => (
-                <CommandItem
-                  key={product.id}
-                  onSelect={() => {
-                    onAddProduct(product);
-                    setQuery("");
-                  }}
-                  className="flex justify-between cursor-pointer"
-                >
-                  <span>{product.name}</span>
-                  <span className="text-muted-foreground">
-                    {new Intl.NumberFormat("vi-VN").format(product.price)} đ
-                  </span>
-                </CommandItem>
-              ))}
-            </CommandList>
-          )}
+          {query.length > 0 &&
+            !isLoading && ( // Chỉ hiển thị danh sách khi có query và không đang tải
+              <CommandList className="absolute top-full z-10 w-full bg-card shadow-md rounded-b-md">
+                <CommandEmpty>Không tìm thấy sản phẩm.</CommandEmpty>
+                {filteredProducts.map(
+                  (
+                    product: Product // SỬA 4: Thêm kiểu dữ liệu cho 'product'
+                  ) => (
+                    <CommandItem
+                      key={product.id}
+                      onSelect={() => {
+                        onAddProduct(product);
+                        setQuery("");
+                      }}
+                      className="flex justify-between cursor-pointer"
+                    >
+                      <span>{product.name}</span>
+                      <span className="text-muted-foreground">
+                        {new Intl.NumberFormat("vi-VN").format(product.price)} đ
+                      </span>
+                    </CommandItem>
+                  )
+                )}
+              </CommandList>
+            )}
         </Command>
       </div>
     </div>

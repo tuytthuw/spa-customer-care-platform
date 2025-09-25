@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import { ScheduleRegistrationData } from "@/features/schedule/types";
 import { PageHeader } from "@/features/shared/components/common/PageHeader";
 import { Button } from "@/features/shared/components/ui/button";
+import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 
 export default function SchedulePage() {
   const queryClient = useQueryClient();
@@ -86,10 +87,10 @@ export default function SchedulePage() {
   const isLoading =
     loadingStaff || loadingAppointments || loadingCustomers || loadingServices;
 
+  // SỬA LỖI 1: Sử dụng `app.start` để lọc ngày
   const dailyAppointments = appointments.filter((app) => {
-    const appDate = new Date(app.date);
+    const appDate = new Date(app.start);
     const selectedDate = date || new Date();
-    // **SỬA LỖI LOGIC**: Chỉ lọc lịch hẹn của đúng kỹ thuật viên này
     return (
       app.technicianId === currentTechnician?.id &&
       appDate.toDateString() === selectedDate.toDateString()
@@ -97,13 +98,11 @@ export default function SchedulePage() {
   });
 
   const handleAppointmentClick = (appointment: Appointment) => {
-    // Tìm customer và service tương ứng từ danh sách đã fetch
     const customer = customers.find((c) => c.id === appointment.customerId);
     const service = services.find((s) => s.id === appointment.serviceId);
-
     setSelectedAppointment(appointment);
-    setSelectedCustomer(customer || null); // Lưu customer vào state
-    setSelectedService(service || null); // Lưu service vào state
+    setSelectedCustomer(customer || null);
+    setSelectedService(service || null);
     setIsDetailsModalOpen(true);
   };
 
@@ -120,11 +119,15 @@ export default function SchedulePage() {
     toast.success("Đã gửi yêu cầu đăng ký lịch tuần tới.");
   };
 
+  if (isLoading) {
+    return <FullPageLoader text="Đang tải dữ liệu lịch làm việc..." />;
+  }
+
   return (
     <>
       <div className="container mx-auto p-4 md:p-6 lg:p-8">
         <PageHeader
-          title="Lịch làm việc"
+          title="Lịch làm việc của tôi"
           actionNode={
             <Button onClick={() => setIsRegisterModalOpen(true)}>
               Đăng ký lịch tuần tới
@@ -140,49 +143,57 @@ export default function SchedulePage() {
                   mode="single"
                   selected={date}
                   onSelect={setDate}
-                  className="p-3"
+                  className="p-3 w-full"
                 />
               </CardContent>
             </Card>
           </div>
           <div className="lg:col-span-2">
-            <h2 className="text-2xl font-bold mb-4">
-              Lịch hẹn ngày {date ? date.toLocaleDateString("vi-VN") : ""}
+            <h2 className="text-xl font-semibold mb-4">
+              Lịch hẹn ngày: {date ? date.toLocaleDateString("vi-VN") : ""}
             </h2>
             <div className="space-y-4">
-              {isLoading ? (
-                <p>Đang tải lịch hẹn...</p>
-              ) : dailyAppointments.length > 0 ? (
-                // **THAY ĐỔI: Hiển thị dữ liệu động**
-                dailyAppointments.map((app) => {
-                  const service = services.find((s) => s.id === app.serviceId);
-                  const customer = customers.find(
-                    (c) => c.id === app.customerId
-                  );
-                  if (!service || !customer) return null;
+              {dailyAppointments.length > 0 ? (
+                dailyAppointments
+                  .sort(
+                    (a, b) =>
+                      new Date(a.start).getTime() - new Date(b.start).getTime()
+                  )
+                  .map((app) => {
+                    const service = services.find(
+                      (s) => s.id === app.serviceId
+                    );
+                    const customer = customers.find(
+                      (c) => c.id === app.customerId
+                    );
+                    if (!service || !customer) return null;
 
-                  return (
-                    <button
-                      key={app.id}
-                      onClick={() => handleAppointmentClick(app)}
-                      className="w-full text-left"
-                    >
-                      <Card className="hover:bg-muted/50 transition-colors">
-                        <CardContent className="p-4">
-                          <p className="font-semibold">
-                            {`${new Date(app.date).toLocaleTimeString("vi-VN", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })} - ${service.name}`}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            Khách hàng: {customer.name}
-                          </p>
-                        </CardContent>
-                      </Card>
-                    </button>
-                  );
-                })
+                    return (
+                      <button
+                        key={app.id}
+                        onClick={() => handleAppointmentClick(app)}
+                        className="w-full text-left"
+                      >
+                        <Card className="hover:bg-muted/50 transition-colors">
+                          <CardContent className="p-4">
+                            <p className="font-semibold">
+                              {/* SỬA LỖI 2: Sử dụng `app.start` để hiển thị giờ */}
+                              {`${new Date(app.start).toLocaleTimeString(
+                                "vi-VN",
+                                {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                }
+                              )} - ${service.name}`}
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              Khách hàng: {customer.name}
+                            </p>
+                          </CardContent>
+                        </Card>
+                      </button>
+                    );
+                  })
               ) : (
                 <p>Không có lịch hẹn nào trong ngày này.</p>
               )}

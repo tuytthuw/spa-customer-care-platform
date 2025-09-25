@@ -1,41 +1,37 @@
-// src/services/appointmentService.ts
+// src/features/appointment/api/appointment.api.ts
+
 import {
   Appointment,
   AppointmentStatus,
   PaymentStatus,
-} from "@/features/appointment/types"; // <-- 1. THÊM AppointmentStatus VÀO IMPORT
+} from "@/features/appointment/types";
 import { v4 as uuidv4 } from "uuid";
 import { sendNotificationEmail } from "@/features/notification/api/notification.api";
 import { getCustomerById } from "@/features/customer/api/customer.api";
 import { getServiceById } from "@/features/service/api/service.api";
 import { getProductById } from "@/features/product/api/product.api";
 
-// URL API mới trỏ đến json-server
 const APPOINTMENTS_API_URL = `${process.env.NEXT_PUBLIC_API_URL}/appointments`;
 const PRODUCTS_API_URL = `${process.env.NEXT_PUBLIC_API_URL}/products`;
 
-// Mô phỏng việc gọi API để lấy danh sách lịch hẹn
+// Lấy danh sách lịch hẹn
 export const getAppointments = async (): Promise<Appointment[]> => {
   console.log("Fetching appointments from API...");
   try {
-    const response = await fetch(APPOINTMENTS_API_URL, {
-      cache: "no-store",
-    });
-
+    const response = await fetch(APPOINTMENTS_API_URL, { cache: "no-store" });
     if (!response.ok) {
       throw new Error("Failed to fetch appointments.");
     }
-
-    const appointments: Appointment[] = await response.json();
-    return appointments;
+    return await response.json();
   } catch (error) {
     console.error("Error fetching appointments:", error);
     return [];
   }
 };
 
+// Tạo lịch hẹn mới
 export const createAppointment = async (
-  appointmentData: Omit<Appointment, "id" | "status">
+  appointmentData: Omit<Appointment, "id" | "status" | "paymentStatus">
 ): Promise<Appointment> => {
   const response = await fetch(APPOINTMENTS_API_URL, {
     method: "POST",
@@ -55,11 +51,9 @@ export const createAppointment = async (
 
   const newAppointment: Appointment = await response.json();
 
-  // --- LOGIC GỬI EMAIL BẮT ĐẦU ---
-  // Lấy thông tin chi tiết của khách hàng và dịch vụ để gửi email
+  // Gửi email xác nhận
   const customer = await getCustomerById(newAppointment.customerId);
   const service = await getServiceById(newAppointment.serviceId);
-
   if (customer && service) {
     await sendNotificationEmail(
       "confirmation",
@@ -68,20 +62,22 @@ export const createAppointment = async (
       service
     );
   }
-  // --- LOGIC GỬI EMAIL KẾT THÚC ---
 
   return newAppointment;
 };
 
-// SỬA ĐỔI: hàm rescheduleAppointment
+/**
+ * SỬA LỖI: Hàm đổi lịch hẹn, nhận vào newStart và newEnd
+ */
 export const rescheduleAppointment = async (
   appointmentId: string,
-  newDate: string
+  newStart: string,
+  newEnd: string
 ): Promise<Appointment> => {
   const response = await fetch(`${APPOINTMENTS_API_URL}/${appointmentId}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ date: newDate, status: "upcoming" }),
+    body: JSON.stringify({ start: newStart, end: newEnd, status: "upcoming" }),
   });
 
   if (!response.ok) {
@@ -90,10 +86,9 @@ export const rescheduleAppointment = async (
 
   const updatedAppointment: Appointment = await response.json();
 
-  // --- LOGIC GỬI EMAIL BẮT ĐẦU ---
+  // Gửi email thông báo đổi lịch
   const customer = await getCustomerById(updatedAppointment.customerId);
   const service = await getServiceById(updatedAppointment.serviceId);
-
   if (customer && service) {
     await sendNotificationEmail(
       "reschedule",
@@ -102,42 +97,28 @@ export const rescheduleAppointment = async (
       service
     );
   }
-  // --- LOGIC GỬI EMAIL KẾT THÚC ---
 
   return updatedAppointment;
 };
 
-// SỬA ĐỔI: hàm updateAppointmentStatus
+// Cập nhật trạng thái lịch hẹn
 export const updateAppointmentStatus = async (
   appointmentId: string,
   newStatus: AppointmentStatus,
-  reason?: string // ✅ Thêm tham số reason (tùy chọn)
+  reason?: string
 ): Promise<Appointment> => {
-  // Đầu tiên, lấy thông tin lịch hẹn để có đủ chi tiết gửi mail
-  const appointmentResponse = await fetch(
-    `${APPOINTMENTS_API_URL}/${appointmentId}`
-  );
-  if (!appointmentResponse.ok) {
-    throw new Error(
-      "Failed to fetch appointment details before updating status."
-    );
-  }
-
-  // ✅ Tạo đối tượng body để gửi đi
   const body: { status: AppointmentStatus; cancellationReason?: string } = {
     status: newStatus,
   };
 
-  // Nếu là hủy lịch và có lý do, thêm vào body
   if (newStatus === "cancelled" && reason) {
     body.cancellationReason = reason;
   }
 
-  // Tiếp theo, cập nhật trạng thái
   const response = await fetch(`${APPOINTMENTS_API_URL}/${appointmentId}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body), // ✅ Gửi body đã được cập nhật
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {
@@ -146,19 +127,20 @@ export const updateAppointmentStatus = async (
 
   const updatedAppointment: Appointment = await response.json();
 
-  // --- LOGIC GỬI EMAIL KHI HỦY LỊCH ---
-  if (newStatus === "cancelled") {
-    // ... (logic gửi mail giữ nguyên)
-  }
-  // --- LOGIC GỬI EMAIL KẾT THÚC ---
+  // Logic gửi email khi hủy lịch có thể thêm ở đây
+  // ...
 
   return updatedAppointment;
 };
 
-//Hàm cập nhật chi tiết lịch hẹn (cho kéo-thả)
+/**
+ * SỬA LỖI: Hàm cập nhật chi tiết (kéo-thả), sử dụng start, end
+ */
 export const updateAppointmentDetails = async (
   appointmentId: string,
-  updates: Partial<Pick<Appointment, "date" | "technicianId">> // Chỉ cho phép cập nhật ngày hoặc technicianId
+  updates: Partial<
+    Pick<Appointment, "start" | "end" | "technicianId" | "resourceId">
+  >
 ): Promise<Appointment> => {
   const response = await fetch(`${APPOINTMENTS_API_URL}/${appointmentId}`, {
     method: "PATCH",
@@ -173,12 +155,11 @@ export const updateAppointmentDetails = async (
   return response.json();
 };
 
-// Hàm để kỹ thuật viên ghi nhận và hoàn thành lịch hẹn
+// Ghi nhận hoàn thành và trừ kho
 export const logAppointmentCompletion = async (
   appointmentId: string,
   notes: string
 ): Promise<Appointment> => {
-  // ... (code lấy thông tin lịch hẹn và dịch vụ giữ nguyên)
   const appointmentRes = await fetch(
     `${APPOINTMENTS_API_URL}/${appointmentId}`
   );
@@ -186,38 +167,37 @@ export const logAppointmentCompletion = async (
   const appointment: Appointment = await appointmentRes.json();
   const service = await getServiceById(appointment.serviceId);
 
-  // --- LOGIC MỚI: TRỪ KHO SẢN PHẨM TIÊU HAO ---
-  if (service && service.consumables && service.consumables.length > 0) {
+  // Trừ kho sản phẩm tiêu hao
+  if (service?.consumables && service.consumables.length > 0) {
     console.log(
       `Dịch vụ "${service.name}" có sản phẩm tiêu hao, tiến hành trừ kho...`
     );
-
     await Promise.all(
       service.consumables.map(async (consumable) => {
         const product = await getProductById(consumable.productId);
-        // Chỉ trừ kho nếu sản phẩm có tỷ lệ quy đổi hợp lệ
-        if (product && product.conversionRate && product.conversionRate > 0) {
-          // CÔNG THỨC TRỪ KHO MỚI
+        if (product?.conversionRate && product.conversionRate > 0) {
           const stockUsed = consumable.quantityUsed / product.conversionRate;
           const newStock = product.stock - stockUsed;
-
           await fetch(`${PRODUCTS_API_URL}/${product.id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ stock: newStock >= 0 ? newStock : 0 }),
+            body: JSON.stringify({ stock: Math.max(0, newStock) }),
           });
           console.log(
-            `Đã trừ kho "${product.name}", tồn kho mới: ${newStock} ${product.baseUnit}`
+            `Đã trừ kho "${product.name}", tồn kho mới: ${newStock.toFixed(
+              2
+            )} ${product.baseUnit}`
           );
         }
       })
     );
   }
+
+  // Cập nhật trạng thái lịch hẹn
   const updates = {
     status: "completed" as AppointmentStatus,
     technicianNotes: notes,
   };
-
   const response = await fetch(`${APPOINTMENTS_API_URL}/${appointmentId}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
@@ -231,7 +211,7 @@ export const logAppointmentCompletion = async (
   return response.json();
 };
 
-// Hàm lấy lịch hẹn theo ID khách hàng
+// Lấy lịch hẹn theo ID khách hàng
 export const getAppointmentsByCustomerId = async (
   customerId: string
 ): Promise<Appointment[]> => {
@@ -244,17 +224,17 @@ export const getAppointmentsByCustomerId = async (
         cache: "no-store",
       }
     );
-
     if (!response.ok) {
       throw new Error("Failed to fetch appointments for customer.");
     }
-
     return await response.json();
   } catch (error) {
     console.error("Error fetching appointments by customer:", error);
     return [];
   }
 };
+
+// Cập nhật trạng thái thanh toán
 export const updateAppointmentPaymentStatus = async (
   appointmentId: string,
   paymentStatus: PaymentStatus

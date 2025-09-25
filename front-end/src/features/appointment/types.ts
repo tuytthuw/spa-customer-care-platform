@@ -14,7 +14,8 @@ export type Appointment = {
   serviceId: string;
   technicianId?: string;
   resourceId?: string;
-  date: string;
+  start: string;
+  end: string;
   status: AppointmentStatus;
   paymentStatus?: PaymentStatus;
   treatmentPackageId?: string;
