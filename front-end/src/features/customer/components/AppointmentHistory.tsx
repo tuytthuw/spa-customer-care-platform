@@ -70,7 +70,7 @@ export function AppointmentHistory({
                 return (
                   <TableRow key={app.id}>
                     <TableCell>
-                      {new Date(app.date).toLocaleDateString("vi-VN")}
+                      {new Date(app.start).toLocaleDateString("vi-VN")}
                     </TableCell>
                     <TableCell className="font-medium">
                       {service?.name || "N/A"}

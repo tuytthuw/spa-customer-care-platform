@@ -79,7 +79,7 @@ const AppointmentCard = ({
             <div>
               <CardTitle>{service.name}</CardTitle>
               <CardDescription>
-                {new Date(appointment.date).toLocaleDateString("vi-VN", {
+                {new Date(appointment.start).toLocaleDateString("vi-VN", {
                   weekday: "long",
                   year: "numeric",
                   month: "long",
@@ -129,7 +129,7 @@ const AppointmentCard = ({
             <p className="font-semibold mt-2">Thời gian:</p>
             {/* Lấy giờ trực tiếp từ dữ liệu lịch hẹn */}
             <p>
-              {new Date(appointment.date).toLocaleTimeString("vi-VN", {
+              {new Date(appointment.start).toLocaleTimeString("vi-VN", {
                 hour: "2-digit",
                 minute: "2-digit",
               })}

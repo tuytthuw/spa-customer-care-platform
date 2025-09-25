@@ -118,7 +118,7 @@ const CustomerProfileModal = ({
                           <div className="flex justify-between items-center">
                             <p className="font-semibold">{service?.name}</p>
                             <p className="text-sm text-muted-foreground">
-                              {new Date(app.date).toLocaleDateString("vi-VN")}
+                              {new Date(app.start).toLocaleDateString("vi-VN")}
                             </p>
                           </div>
                           {app.technicianNotes ? (

@@ -31,12 +31,12 @@ export default function ManagerDashboard() {
   const today = new Date().toDateString();
 
   const totalAppointmentsToday = appointments.filter(
-    (app) => new Date(app.date).toDateString() === today
+    (app) => new Date(app.start).toDateString() === today
   ).length;
 
   const completedAppointmentsToday = appointments.filter(
     (app) =>
-      new Date(app.date).toDateString() === today && app.status === "completed"
+      new Date(app.start).toDateString() === today && app.status === "completed"
   ).length;
 
   const newCustomersToday = customers.filter(

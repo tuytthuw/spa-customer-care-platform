@@ -66,8 +66,8 @@ export default function ResourceCalendar({
       id: app.id,
       resourceIds: resourceIds,
       title: customer ? customer.name : "Khách lẻ",
-      start: new Date(app.date),
-      end: new Date(new Date(app.date).getTime() + 60 * 60 * 1000),
+      start: app.start,
+      end: app.end,
     };
   });
 

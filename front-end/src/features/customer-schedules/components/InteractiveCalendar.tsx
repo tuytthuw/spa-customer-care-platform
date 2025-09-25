@@ -50,14 +50,16 @@ export default function InteractiveCalendar({
 
   // Ghi nhớ những ngày có lịch hẹn để hiển thị dấu chấm
   const appointmentDates = useMemo(
-    () => appointments.map((app) => new Date(app.date)),
+    () => appointments.map((app) => new Date(app.start)),
     [appointments]
   );
 
   // Lọc danh sách lịch hẹn tương ứng với ngày đã chọn trên lịch
   const selectedDayAppointments = appointments
-    .filter((app) => new Date(app.date).toDateString() === date?.toDateString())
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    .filter(
+      (app) => new Date(app.start).toDateString() === date?.toDateString()
+    )
+    .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -120,7 +122,7 @@ export default function InteractiveCalendar({
                       {service?.name || "Dịch vụ"}
                     </div>
                     <div className="text-muted-foreground text-xs">
-                      {new Date(app.date).toLocaleTimeString("vi-VN", {
+                      {new Date(app.start).toLocaleTimeString("vi-VN", {
                         hour: "2-digit",
                         minute: "2-digit",
                       })}

@@ -56,7 +56,7 @@ const SerViceReviewCard = ({
             <p>
               Ngày:{" "}
               <strong>
-                {new Date(appointment.date).toLocaleDateString("vi-VN")}
+                {new Date(appointment.start).toLocaleDateString("vi-VN")}
               </strong>
             </p>
           </div>

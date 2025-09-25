@@ -3,6 +3,7 @@ import { TreatmentPlan, TreatmentPackage } from "@/features/treatment/types";
 import { v4 as uuidv4 } from "uuid";
 import { TreatmentPlanFormValues } from "@/features/treatment/schemas";
 import { createAppointment } from "@/features/appointment/api/appointment.api";
+import { getServiceById } from "@/features/service/api/service.api";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const PLANS_API_URL = `${API_URL}/treatmentPlans`;
@@ -154,6 +155,16 @@ export const bookTreatmentSession = async (bookingData: {
     throw new Error("Không tìm thấy buổi hẹn trong liệu trình.");
   }
 
+  const service = await getServiceById(serviceId);
+  if (!service) {
+    throw new Error("Không tìm thấy dịch vụ tương ứng cho buổi trị liệu.");
+  }
+
+  const appointmentStartDate = new Date(date);
+  const appointmentEndDate = new Date(
+    appointmentStartDate.getTime() + service.duration * 60000
+  );
+
   // Cập nhật thông tin cho buổi hẹn
   treatmentPackage.sessions[sessionIndex] = {
     ...treatmentPackage.sessions[sessionIndex],
@@ -167,7 +178,8 @@ export const bookTreatmentSession = async (bookingData: {
   await createAppointment({
     customerId,
     serviceId,
-    date,
+    start: appointmentStartDate.toISOString(),
+    end: appointmentEndDate.toISOString(),
     technicianId,
     paymentStatus: "paid", // Luôn là "paid" vì thuộc liệu trình đã mua
     treatmentPackageId: treatmentPackageId, // <--- Dấu vết 1

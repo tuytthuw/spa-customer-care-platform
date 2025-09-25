@@ -30,7 +30,7 @@ export default function TodaysAppointmentCard({
   service,
 }: TodaysAppointmentCardProps) {
   const { start, end } = getAppointmentTimes(
-    appointment.date,
+    appointment.start,
     service.duration
   );
 
