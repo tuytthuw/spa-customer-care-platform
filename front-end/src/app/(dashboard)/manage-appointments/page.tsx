@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import StatisticsSidebar from "@/features/appointment/components/appointment-management/StatisticsSidebar";
@@ -127,45 +126,32 @@ export default function AppointmentsManagementPage() {
   }
 
   return (
-    // Sử dụng flex-col cho layout mobile
-    <div className="flex flex-col lg:flex-row h-full">
-      {/* Sidebar Thống kê (hiện cố định trên desktop, ẩn trong Sheet trên mobile) */}
-      <div className="hidden lg:block">
-        <StatisticsSidebar
-          appointments={appointments}
-          staff={staff}
-          onStaffSelect={setSelectedStaffId}
-          selectedStaffId={selectedStaffId}
-        />{" "}
-      </div>
+    <div className="container mx-auto p-4 md:p-6 lg:p-8 flex flex-col h-screen">
+      <PageHeader
+        title="Quản lý Lịch hẹn"
+        actionNode={
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" className="lg:hidden">
+                <BarChart2 className="mr-2 h-4 w-4" />
+                Thống kê
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[280px] p-0">
+              <StatisticsSidebar
+                appointments={appointments}
+                staff={staff}
+                onStaffSelect={setSelectedStaffId}
+                selectedStaffId={selectedStaffId}
+              />
+            </SheetContent>
+          </Sheet>
+        }
+      />
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col h-full">
-        <div className="p-4 md:p-6 lg:p-8">
-          <PageHeader
-            title="Quản lý Lịch hẹn"
-            actionNode={
-              // Nút mở sidebar thống kê trên mobile
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="outline" className="lg:hidden">
-                    <BarChart2 className="mr-2 h-4 w-4" />
-                    Thống kê
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="left" className="w-[280px] p-0">
-                  <StatisticsSidebar
-                    appointments={appointments}
-                    staff={staff}
-                    onStaffSelect={setSelectedStaffId}
-                    selectedStaffId={selectedStaffId}
-                  />
-                </SheetContent>
-              </Sheet>
-            }
-          />
-        </div>
-        <div className="flex-1 min-h-0">
+      <div className="flex-1 grid lg:grid-cols-[1fr_320px] gap-6 min-h-0">
+        {/* Main Content: Timeline */}
+        <div className="flex flex-col h-full min-h-[600px] lg:min-h-full">
           <AppointmentTimeline
             appointments={appointments}
             customers={customers}
@@ -175,25 +161,30 @@ export default function AppointmentsManagementPage() {
             onEventDrop={handleEventDrop}
           />
         </div>
-      </div>
 
-      {/* Sidebar Chi tiết (hiện cố định trên desktop, trong Sheet trên mobile) */}
-      {/* Desktop */}
-      <div className="hidden lg:block">
-        {selectedAppointment && (
-          <AppointmentDetails
-            key={selectedAppointment.id}
-            appointment={selectedAppointment}
-            customers={customers}
-            services={services}
+        {/* Sidebar: Details & Statistics */}
+        <div className="hidden lg:flex flex-col gap-6">
+          <StatisticsSidebar
+            appointments={appointments}
             staff={staff}
-            onStatusChange={handleStatusChange}
-            onClose={() => setSelectedAppointmentId(null)}
+            onStaffSelect={setSelectedStaffId}
+            selectedStaffId={selectedStaffId}
           />
-        )}
+          {selectedAppointment && (
+            <AppointmentDetails
+              key={selectedAppointment.id}
+              appointment={selectedAppointment}
+              customers={customers}
+              services={services}
+              staff={staff}
+              onStatusChange={handleStatusChange}
+              onClose={() => setSelectedAppointmentId(null)}
+            />
+          )}
+        </div>
       </div>
 
-      {/* Mobile (Sheet) */}
+      {/* Mobile (Sheet for Details) */}
       <Sheet
         open={!!selectedAppointment}
         onOpenChange={(isOpen) => !isOpen && setSelectedAppointmentId(null)}

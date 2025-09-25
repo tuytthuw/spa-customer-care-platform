@@ -32,6 +32,7 @@ const DashboardHeader = () => {
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-6">
+      {/* Nút mở Sidebar trên di động */}
       <div className="md:hidden">
         <Sheet>
           <SheetTrigger asChild>
@@ -45,6 +46,8 @@ const DashboardHeader = () => {
           </SheetContent>
         </Sheet>
       </div>
+
+      {/* Phần còn lại của Header */}
       <div className="flex-1"></div>
       <div className="flex items-center gap-4">
         <ThemeToggle />
