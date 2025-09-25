@@ -46,8 +46,7 @@ import { FullCustomerProfile } from "@/features/customer/types";
 import { PrepaidCard } from "@/features/prepaid-card/types";
 import { Gem, Wallet } from "lucide-react";
 import { Input } from "@/features/shared/components/ui/input";
-
-type PaymentMethod = "cash" | "card" | "transfer";
+import { PaymentMethod } from "@/features/billing/types";
 
 const POINT_TO_VND_RATE = 1000;
 

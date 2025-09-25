@@ -21,12 +21,8 @@ import { ReviewModal } from "@/features/review/components/ReviewModal";
 import { Appointment } from "@/features/appointment/types";
 import { ReviewFormValues } from "@/features/review/schemas";
 import { NewReviewData } from "@/features/review/types";
-import {
-  updateAppointmentStatus,
-  createAppointment,
-} from "@/features/appointment/api/appointment.api";
+import { updateAppointmentStatus } from "@/features/appointment/api/appointment.api";
 import { createReview } from "@/features/review/api/review.api";
-import useBookingStore from "@/stores/booking-store";
 
 export default function SchedulePage() {
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");

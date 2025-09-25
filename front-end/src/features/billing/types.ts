@@ -14,7 +14,7 @@ export interface Invoice {
   subtotal: number;
   discount: number;
   total: number;
-  paymentMethod: "cash" | "card" | "transfer" | "cod" | "combined";
+  paymentMethod: PaymentMethod;
   status: "pending" | "paid";
   createdAt: string;
   updatedAt: string;
@@ -27,3 +27,5 @@ export interface Invoice {
   };
   totalAmount: number;
 }
+
+export type PaymentMethod = "cash" | "card" | "transfer" | "cod" | "combined";
