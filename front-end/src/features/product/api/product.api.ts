@@ -88,7 +88,7 @@ export const updateProduct = async (
   return response.json();
 };
 
-export const updateProducteStatus = async (
+export const updateProductStatus = async (
   serviceId: string,
   newStatus: "active" | "inactive"
 ): Promise<Product> => {

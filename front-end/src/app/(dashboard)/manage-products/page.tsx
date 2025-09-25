@@ -27,7 +27,7 @@ import {
 import {
   addProduct,
   updateProduct,
-  updateProducteStatus,
+  updateProductStatus,
   addProductStock,
 } from "@/features/product/api/product.api";
 
@@ -38,21 +38,6 @@ export default function ManageProductsPage() {
   const queryClient = useQueryClient();
 
   const { data: products = [], isLoading, error } = useProducts();
-  const methods = useForm<ProductFormValues>({
-    resolver: zodResolver(productFormSchema),
-    defaultValues: {
-      name: "",
-      price: 0,
-      stock: 0,
-      baseUnit: "",
-      description: "",
-      categories: [],
-      // ✅ ĐẢM BẢO CÓ GIÁ TRỊ MẶC ĐỊNH CHO CÁC TRƯỜNG BOOLEAN NẾU KHÔNG CÓ TRONG SCHEMA HOẶC NẾU SCHEMA CHỈ LÀ z.boolean()
-      isRetail: false, // Thêm nếu chưa có hoặc nếu schema chỉ là z.boolean()
-      isConsumable: false, // Thêm nếu chưa có hoặc nếu schema chỉ là z.boolean()
-      // ... các giá trị mặc định khác
-    },
-  });
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productFormSchema),
@@ -112,7 +97,7 @@ export default function ManageProductsPage() {
     }: {
       productId: string;
       newStatus: "active" | "inactive";
-    }) => updateProducteStatus(productId, newStatus),
+    }) => updateProductStatus(productId, newStatus),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       toast.success("Cập nhật trạng thái thành công!");
