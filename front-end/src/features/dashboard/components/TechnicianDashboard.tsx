@@ -41,7 +41,7 @@ export default function TechnicianDashboard() {
       return data.filter(
         (app) =>
           app.technicianId === currentTechnician.id &&
-          new Date(app.date).toDateString() === today
+          new Date(app.start).toDateString() === today
       );
     },
   });

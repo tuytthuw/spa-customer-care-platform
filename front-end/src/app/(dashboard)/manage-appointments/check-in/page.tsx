@@ -44,11 +44,12 @@ export default function BulkCheckInPage() {
       .filter(
         (app) =>
           app.status === "upcoming" &&
-          new Date(app.date).toDateString() === today
+          new Date(app.start).toDateString() === today
       )
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      .sort(
+        (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
+      );
   }, [appointments]);
-
   const bulkCheckInMutation = useMutation({
     mutationFn: bulkUpdateAppointmentStatus,
     onSuccess: () => {

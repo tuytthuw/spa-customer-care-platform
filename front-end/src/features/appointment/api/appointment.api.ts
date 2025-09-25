@@ -31,7 +31,7 @@ export const getAppointments = async (): Promise<Appointment[]> => {
 
 // Tạo lịch hẹn mới
 export const createAppointment = async (
-  appointmentData: Omit<Appointment, "id" | "status" | "paymentStatus">
+  appointmentData: Omit<Appointment, "id" | "status">
 ): Promise<Appointment> => {
   const response = await fetch(APPOINTMENTS_API_URL, {
     method: "POST",
@@ -39,7 +39,8 @@ export const createAppointment = async (
     body: JSON.stringify({
       id: `appt-${uuidv4()}`,
       status: "upcoming",
-      paymentStatus: "unpaid",
+      // ✅ SỬA LỖI 2: Sử dụng paymentStatus được truyền vào, nếu không có thì mặc định là "unpaid"
+      paymentStatus: appointmentData.paymentStatus || "unpaid",
       ...appointmentData,
     }),
   });

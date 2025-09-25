@@ -48,7 +48,7 @@ export function UpcomingAppointments() {
   // 2. Lọc và sắp xếp dữ liệu từ API
   const upcoming = appointments
     .filter((a) => a.status === "upcoming")
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
     .slice(0, 5);
 
   return (
@@ -91,7 +91,7 @@ export function UpcomingAppointments() {
                   </p>
                 </div>
                 <div className="ml-auto font-medium">
-                  {new Date(appt.date).toLocaleTimeString("vi-VN", {
+                  {new Date(appt.start).toLocaleTimeString("vi-VN", {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}

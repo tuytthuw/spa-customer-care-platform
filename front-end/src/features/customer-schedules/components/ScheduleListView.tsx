@@ -56,7 +56,8 @@ export default function ScheduleListView(props: ScheduleListViewProps) {
             (app) =>
               app.treatmentPackageId === pkg.id &&
               app.status === "upcoming" &&
-              new Date(app.date) > new Date()
+              // ✅ SỬA LỖI: Thay app.date bằng app.start
+              new Date(app.start) > new Date()
           );
           if (!hasUpcomingSessionForPackage) {
             actions.push({ type: "treatment", data: pkg });
@@ -67,11 +68,13 @@ export default function ScheduleListView(props: ScheduleListViewProps) {
       const upcoming = customerAppointments
         .filter(
           (a) =>
-            new Date(a.date) >= new Date() &&
+            // ✅ SỬA LỖI: Thay a.date bằng a.start
+            new Date(a.start) >= new Date() &&
             (a.status === "upcoming" || a.status === "checked-in")
         )
         .sort(
-          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+          // ✅ SỬA LỖI: Thay a.date và b.date bằng a.start và b.start
+          (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
         );
 
       const upcomingAppointmentIds = new Set(upcoming.map((app) => app.id));
@@ -79,7 +82,8 @@ export default function ScheduleListView(props: ScheduleListViewProps) {
       const history = customerAppointments
         .filter((a) => !upcomingAppointmentIds.has(a.id))
         .sort(
-          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+          // ✅ SỬA LỖI: Thay b.date và a.date bằng b.start và a.start
+          (a, b) => new Date(b.start).getTime() - new Date(a.start).getTime()
         );
 
       return {

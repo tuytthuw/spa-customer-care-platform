@@ -51,7 +51,7 @@ export const AppointmentDetailsModal = ({
             <DialogTitle>{service.name}</DialogTitle>
             <DialogDescription>
               Lịch hẹn vào lúc ngày{" "}
-              {new Date(appointment.date).toLocaleDateString("vi-VN")}
+              {new Date(appointment.start).toLocaleDateString("vi-VN")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-2">

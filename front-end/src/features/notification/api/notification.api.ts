@@ -16,7 +16,7 @@ export const sendNotificationEmail = async (
   customer: FullCustomerProfile,
   service: Service
 ) => {
-  const appointmentTime = new Date(appointment.date).toLocaleString("vi-VN", {
+  const appointmentTime = new Date(appointment.start).toLocaleString("vi-VN", {
     hour: "2-digit",
     minute: "2-digit",
     day: "2-digit",

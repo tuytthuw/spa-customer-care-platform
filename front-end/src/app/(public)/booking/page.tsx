@@ -53,7 +53,6 @@ export default function BookingPage() {
     if (dateParam) {
       const selectedDate = new Date(dateParam);
       if (!isNaN(selectedDate.getTime())) {
-        // Cập nhật ngày trong store nhưng không chuyển bước
         setDateTime(selectedDate, "");
       }
     }
@@ -90,7 +89,6 @@ export default function BookingPage() {
   });
 
   useEffect(() => {
-    // Reset store when the component unmounts
     return () => {
       reset();
     };
@@ -115,17 +113,16 @@ export default function BookingPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
     },
-    // Không cần xử lý onError ở đây vì createAppointment sẽ báo lỗi chung
   });
 
   const handleServiceSelect = (selectedService: Service) => {
     setService(selectedService);
-    nextStep(); // Chuyển từ Bước 1 -> Bước 2
+    nextStep();
   };
 
   const handleDateTimeSelect = (selectedDate: Date, selectedTime: string) => {
     setDateTime(selectedDate, selectedTime);
-    nextStep(); // Chuyển từ Bước 2 -> Bước 3
+    nextStep();
   };
 
   const createAppointmentMutation = useMutation({
@@ -138,8 +135,15 @@ export default function BookingPage() {
   });
 
   const rescheduleMutation = useMutation({
-    mutationFn: ({ id, date }: { id: string; date: string }) =>
-      rescheduleAppointment(id, date),
+    mutationFn: ({
+      id,
+      start,
+      end,
+    }: {
+      id: string;
+      start: string;
+      end: string;
+    }) => rescheduleAppointment(id, start, end),
     onSuccess: () => {
       toast.success("Thay đổi lịch hẹn thành công!");
       nextStep();
@@ -158,19 +162,28 @@ export default function BookingPage() {
   });
 
   const handleConfirmBooking = (customerInfo: CustomerInfo) => {
+    if (!service) {
+      toast.error("Lỗi: Không có thông tin dịch vụ.");
+      return;
+    }
     const [hours, minutes] = time.split(":").map(Number);
-    const appointmentDate = new Date(date);
-    appointmentDate.setHours(hours, minutes, 0, 0);
+    const appointmentStartDate = new Date(date);
+    appointmentStartDate.setHours(hours, minutes, 0, 0);
+
+    const appointmentEndDate = new Date(
+      appointmentStartDate.getTime() + service.duration * 60000
+    );
 
     if (rescheduleId) {
       rescheduleMutation.mutate({
         id: rescheduleId,
-        date: appointmentDate.toISOString(),
+        start: appointmentStartDate.toISOString(),
+        end: appointmentEndDate.toISOString(),
       });
       return;
     }
 
-    if (isPrePurchased && service && currentUserProfile) {
+    if (isPrePurchased && currentUserProfile) {
       redeemServiceMutation.mutate({
         customerId: currentUserProfile.id,
         serviceId: service.id,
@@ -178,7 +191,8 @@ export default function BookingPage() {
       createAppointmentMutation.mutate({
         customerId: currentUserProfile.id,
         serviceId: service.id,
-        date: appointmentDate.toISOString(),
+        start: appointmentStartDate.toISOString(),
+        end: appointmentEndDate.toISOString(),
         customerNote: customerInfo.note,
         paymentStatus: "paid",
       });
@@ -189,7 +203,7 @@ export default function BookingPage() {
       bookTreatmentSessionMutation.mutate({
         treatmentPackageId,
         sessionId,
-        date: appointmentDate.toISOString(),
+        date: appointmentStartDate.toISOString(),
         customerId: currentUserProfile.id,
         serviceId: service.id,
       });
@@ -198,7 +212,8 @@ export default function BookingPage() {
         createAppointmentMutation.mutate({
           customerId: currentUserProfile.id,
           serviceId: service.id,
-          date: appointmentDate.toISOString(),
+          start: appointmentStartDate.toISOString(),
+          end: appointmentEndDate.toISOString(),
           customerNote: customerInfo.note,
           paymentStatus: "unpaid",
         });
@@ -206,7 +221,8 @@ export default function BookingPage() {
         createAppointmentMutation.mutate({
           customerId: "guest-user",
           serviceId: service.id,
-          date: appointmentDate.toISOString(),
+          start: appointmentStartDate.toISOString(),
+          end: appointmentEndDate.toISOString(),
           guestName: customerInfo.name,
           guestPhone: customerInfo.phone,
           guestEmail: customerInfo.email,
@@ -219,23 +235,21 @@ export default function BookingPage() {
 
   const handlePrevStep = () => {
     if (isTreatmentBooking) {
-      router.back(); // Quay lại trang trước đó (trang chi tiết liệu trình)
+      router.back();
     } else {
-      prevStep(); // Quay lại bước chọn dịch vụ như cũ
+      prevStep();
     }
   };
 
   const renderStep = () => {
     switch (step) {
       case 1:
-        // Truyền hàm xử lý mới vào component
         return <ServiceSelectionStep onServiceSelect={handleServiceSelect} />;
       case 2:
         return (
           <DateTimeStep
-            // Truyền hàm xử lý mới vào component
             onNextStep={handleDateTimeSelect}
-            onPrevStep={prevStep} // Dùng trực tiếp prevStep từ store
+            onPrevStep={handlePrevStep}
             bookingDetails={{ service, date, time }}
             isTreatmentBooking={isTreatmentBooking}
           />
@@ -244,7 +258,7 @@ export default function BookingPage() {
         return (
           <ConfirmationStep
             bookingDetails={{ service, date, time }}
-            onPrevStep={prevStep} // Dùng trực tiếp prevStep từ store
+            onPrevStep={prevStep}
             onConfirm={handleConfirmBooking}
             isSubmitting={
               createAppointmentMutation.isPending ||
@@ -259,7 +273,7 @@ export default function BookingPage() {
         return (
           <BookingSuccessStep
             bookingDetails={{ service, date, time }}
-            isReschedule={false}
+            isReschedule={!!rescheduleId}
             redirectUrl={user ? "/customer-schedules" : "/"}
             redirectText={
               user ? "Quay về Lịch trình của tôi" : "Quay về Trang chủ"

@@ -32,6 +32,7 @@ function createAppointment(variables: void): Promise<unknown> {
 
 export default function AppointmentsManagementPage() {
   const queryClient = useQueryClient();
+  const [selectedStaffId, setSelectedStaffId] = useState<string | null>(null);
   const [selectedAppointmentId, setSelectedAppointmentId] = useState<
     string | null
   >(null);
@@ -130,7 +131,12 @@ export default function AppointmentsManagementPage() {
     <div className="flex flex-col lg:flex-row h-full">
       {/* Sidebar Thống kê (hiện cố định trên desktop, ẩn trong Sheet trên mobile) */}
       <div className="hidden lg:block">
-        <StatisticsSidebar appointments={appointments} staff={staff} />
+        <StatisticsSidebar
+          appointments={appointments}
+          staff={staff}
+          onStaffSelect={setSelectedStaffId}
+          selectedStaffId={selectedStaffId}
+        />{" "}
       </div>
 
       {/* Main Content */}
@@ -151,6 +157,8 @@ export default function AppointmentsManagementPage() {
                   <StatisticsSidebar
                     appointments={appointments}
                     staff={staff}
+                    onStaffSelect={setSelectedStaffId}
+                    selectedStaffId={selectedStaffId}
                   />
                 </SheetContent>
               </Sheet>
