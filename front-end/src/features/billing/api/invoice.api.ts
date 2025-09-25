@@ -11,7 +11,7 @@ const CUSTOMERS_API_URL = `${API_URL}/customers`;
 const PRODUCTS_API_URL = `${API_URL}/products`;
 const POINTS_PER_VND = 1 / 10000;
 
-type InvoiceCreationData = Omit<
+export type InvoiceCreationData = Omit<
   Invoice,
   "id" | "createdAt" | "updatedAt" | "totalAmount"
 > & {

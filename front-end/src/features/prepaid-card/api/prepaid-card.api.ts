@@ -1,5 +1,8 @@
 // src/features/prepaid-card/api/prepaid-card.api.ts
-import { PrepaidCard } from "@/features/prepaid-card/types";
+import {
+  PrepaidCard,
+  PrepaidCardTransaction,
+} from "@/features/prepaid-card/types";
 import { v4 as uuidv4 } from "uuid";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
