@@ -125,7 +125,7 @@ export default function CheckInList({
                         </div>
                       </TableCell>
                       <TableCell>
-                        {new Date(app.date).toLocaleTimeString("vi-VN", {
+                        {new Date(app.start).toLocaleTimeString("vi-VN", {
                           hour: "2-digit",
                           minute: "2-digit",
                         })}

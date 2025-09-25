@@ -1,105 +1,143 @@
-"use client";
-
-import React from "react";
-import Image from "next/image";
 import { Appointment } from "@/features/appointment/types";
-import { Staff } from "@/features/staff/types"; // Import Staff type
+import { Staff } from "@/features/staff/types";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/features/shared/components/ui/card";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/features/shared/components/ui/avatar";
+import { Badge } from "@/features/shared/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 interface StatisticsSidebarProps {
   appointments: Appointment[];
-  staff: Staff[]; // Nhận danh sách nhân viên từ props
+  staff: Staff[];
+  onStaffSelect: (staffId: string | null) => void;
+  selectedStaffId: string | null;
 }
 
-export const StatisticsSidebar = ({
+const StatisticsSidebar = ({
   appointments,
   staff,
+  onStaffSelect,
+  selectedStaffId,
 }: StatisticsSidebarProps) => {
-  const today = new Date();
-  const dateString = today.toLocaleDateString("vi-VN", {
-    weekday: "long",
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-  });
+  const totalAppointments = appointments.length;
+  const waitingAppointments = appointments.filter(
+    (a) => a.status === "checked-in"
+  ).length;
+  const inServiceAppointments = appointments.filter(
+    (a) => a.status === "in-progress"
+  ).length;
 
-  const total = appointments.length;
-  const checkedIn = appointments.filter(
-    (app) => app.status === "checked-in" || app.status === "in-progress"
-  ).length;
-  const waiting = appointments.filter(
-    (app) => app.status === "upcoming"
-  ).length;
-  const completed = appointments.filter(
-    (app) => app.status === "completed"
-  ).length;
+  // SỬA LỖI: Logic để xác định kỹ thuật viên bận/rảnh
+  const now = new Date();
+
+  // Lấy ID của các kỹ thuật viên đang có lịch hẹn diễn ra
+  const busyTechnicianIds = new Set(
+    appointments
+      .filter((appt) => {
+        const startTime = new Date(appt.start);
+        const endTime = new Date(appt.end);
+        return appt.technicianId && now >= startTime && now < endTime;
+      })
+      .map((appt) => appt.technicianId)
+  );
+
+  // Lọc danh sách nhân viên để chỉ lấy kỹ thuật viên
+  const technicians = staff.filter((s) => s.role === "technician");
+
+  // Chia kỹ thuật viên thành 2 nhóm: bận và rảnh
+  const availableTechnicians = technicians.filter(
+    (tech) => !busyTechnicianIds.has(tech.id)
+  );
+  const busyTechnicians = technicians.filter((tech) =>
+    busyTechnicianIds.has(tech.id)
+  );
 
   return (
-    <div className="w-64 bg-card border-r border-border p-4">
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold mb-2">Hôm nay</h2>
-        <p className="text-muted-foreground">{dateString}</p>
-      </div>
-
-      <div className="mb-6">
-        <h3 className="text-sm uppercase text-muted-foreground mb-2 font-semibold">
-          Thống kê
-        </h3>
-        <div className="grid grid-cols-2 gap-2">
-          <div className="bg-muted p-3 rounded-md">
-            <p className="text-sm text-muted-foreground">Tổng lịch hẹn</p>
-            <p className="text-xl font-bold">{total}</p>
+    <div className="w-full lg:w-80 border-l p-4 space-y-4 overflow-y-auto">
+      <Card>
+        <CardHeader>
+          <CardTitle>Thống kê trong ngày</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          <div className="flex justify-between">
+            <span>Tổng số lịch hẹn:</span>
+            <span className="font-bold">{totalAppointments}</span>
           </div>
-          <div className="bg-muted p-3 rounded-md">
-            <p className="text-sm text-muted-foreground">Đã check-in</p>
-            <p className="text-xl font-bold">{checkedIn}</p>
+          <div className="flex justify-between">
+            <span>Đang chờ:</span>
+            <span className="font-bold">{waitingAppointments}</span>
           </div>
-          <div className="bg-muted p-3 rounded-md">
-            <p className="text-sm text-muted-foreground">Đang chờ</p>
-            <p className="text-xl font-bold">{waiting}</p>
+          <div className="flex justify-between">
+            <span>Đang thực hiện:</span>
+            <span className="font-bold">{inServiceAppointments}</span>
           </div>
-          <div className="bg-muted p-3 rounded-md">
-            <p className="text-sm text-muted-foreground">Hoàn tất</p>
-            <p className="text-xl font-bold">{completed}</p>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h3 className="text-sm uppercase text-muted-foreground mb-2 font-semibold">
-          Nhân viên
-        </h3>
-        <div className="space-y-2">
-          {/* Sử dụng dữ liệu staff thật */}
-          {staff.slice(0, 5).map((s) => (
-            <div key={s.id} className="flex items-center">
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Kỹ thuật viên sẵn sàng</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="font-bold">{availableTechnicians.length}</p>
+          <div className="mt-4 space-y-2">
+            {availableTechnicians.map((s) => (
               <div
-                className={`w-2 h-2 rounded-full mr-2 ${
-                  s.status === "active"
-                    ? "bg-[var(--status-success)]"
-                    : "bg-muted"
-                }`}
-              ></div>
-              <Image
-                src={
-                  s.avatar ||
-                  `https://api.dicebear.com/7.x/notionists/svg?seed=${s.id}`
-                }
-                alt="Avatar"
-                width={24}
-                height={24}
-                className="w-6 h-6 rounded-full mr-2"
-              />
-              <span
-                className={`text-sm ${
-                  s.status === "active" ? "" : "text-muted-foreground"
-                }`}
+                key={s.id}
+                onClick={() => onStaffSelect(s.id)}
+                className={cn(
+                  "flex items-center p-2 rounded-md cursor-pointer hover:bg-muted",
+                  selectedStaffId === s.id && "bg-muted"
+                )}
               >
-                {s.name}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
+                <Avatar className="h-8 w-8 mr-2">
+                  <AvatarImage src={s.avatar} />
+                  <AvatarFallback>{s.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <span>{s.name}</span>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Kỹ thuật viên đang bận</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="font-bold">{busyTechnicians.length}</p>
+          <div className="mt-4 space-y-2">
+            {busyTechnicians.map((s) => (
+              <div
+                key={s.id}
+                onClick={() => onStaffSelect(s.id)}
+                className={cn(
+                  "flex items-center p-2 rounded-md cursor-pointer hover:bg-muted",
+                  selectedStaffId === s.id && "bg-muted"
+                )}
+              >
+                <Avatar className="h-8 w-8 mr-2">
+                  <AvatarImage src={s.avatar} />
+                  <AvatarFallback>{s.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <span>{s.name}</span>
+                <Badge variant="secondary" className="ml-auto">
+                  Đang bận
+                </Badge>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
+
+export default StatisticsSidebar;

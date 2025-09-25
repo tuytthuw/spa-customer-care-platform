@@ -118,6 +118,7 @@ export async function register(
     phone: "",
     totalAppointments: 0,
     lastVisit: new Date().toISOString(),
+    joinedDate: new Date().toISOString(),
   };
   const newCustomerResponse = await fetch(CUSTOMERS_API_URL, {
     method: "POST",
@@ -187,4 +188,25 @@ export const sendPasswordResetOtp = async (
     success:
       "Nếu email của bạn tồn tại trong hệ thống, một mã OTP đã được gửi.",
   };
+};
+export const loginWithGoogle = async (code: string): Promise<ActionResult> => {
+  // Trong thực tế, bạn sẽ gửi 'code' này về backend để xác thực với Google
+  // và nhận lại thông tin người dùng.
+  // Ở đây chúng ta sẽ giả lập một phản hồi thành công.
+  console.log("Simulating login with Google auth code:", code);
+
+  // Giả lập tìm thấy một user Google đã tồn tại
+  const user = {
+    id: "user-google-1",
+    email: "googleuser@example.com",
+    role: "customer" as const, // Thêm 'as const' để TypeScript hiểu đây là một giá trị cụ thể
+    status: "active" as const,
+    name: "Người dùng Google",
+    phone: "0123456789",
+  };
+
+  // Giả lập độ trễ mạng
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  return { success: "Đăng nhập bằng Google thành công!", user };
 };

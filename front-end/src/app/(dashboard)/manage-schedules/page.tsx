@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import { useStaffs } from "@/features/staff/hooks/useStaffs";
 import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 import { useQuery } from "@tanstack/react-query";
+import { ScheduleRequestsTable } from "@/features/schedule/components/ScheduleRequestsTable";
 
 export default function WorkScheduleManagementPage() {
   const [selectedStaffId, setSelectedStaffId] = useState<string | null>(null);
@@ -87,8 +88,14 @@ export default function WorkScheduleManagementPage() {
           <TabsTrigger value="config">Cấu hình lịch nhân viên</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="requests" className="mt-4"></TabsContent>
-
+        <TabsContent value="requests" className="mt-4">
+          {/* THÊM COMPONENT VÀO ĐÂY */}
+          <ScheduleRequestsTable
+            requests={requests}
+            staff={staff}
+            onUpdateRequest={handleUpdateRequest}
+          />
+        </TabsContent>
         <TabsContent value="config" className="mt-4">
           <div className="mb-8 max-w-sm">
             <label className="block text-sm font-medium mb-2">

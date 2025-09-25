@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { StatisticsSidebar } from "@/features/appointment/components/appointment-management/StatisticsSidebar";
+import StatisticsSidebar from "@/features/appointment/components/appointment-management/StatisticsSidebar";
 import { AppointmentTimeline } from "@/features/appointment/components/appointment-management/AppointmentTimeline";
 import { AppointmentDetails } from "@/features/appointment/components/appointment-management/AppointmentDetails";
 import { Appointment, AppointmentStatus } from "@/features/appointment/types";
@@ -69,7 +69,9 @@ export default function AppointmentsManagementPage() {
       updates,
     }: {
       id: string;
-      updates: Partial<Pick<Appointment, "date" | "technicianId">>;
+      updates: Partial<
+        Pick<Appointment, "start" | "end" | "technicianId" | "resourceId">
+      >;
     }) => updateAppointmentDetails(id, updates),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["appointments"] });
@@ -96,20 +98,16 @@ export default function AppointmentsManagementPage() {
     updateStatusMutation.mutate({ id, newStatus });
   };
 
-  // **MỚI: Hàm xử lý sự kiện khi kéo-thả lịch hẹn**
   const handleEventDrop = (info: EventDropArg) => {
     const { event } = info;
-    const updates: Partial<Pick<Appointment, "date" | "technicianId">> = {};
-
-    if (event.start) {
-      updates.date = event.start.toISOString();
-    }
-
-    // `newResource` chỉ tồn tại trong các view resource, nếu bạn dùng nó
-    // if (info.newResource) {
-    //   updates.technicianId = info.newResource.id;
-    // }
-
+    const updates: Partial<
+      Pick<Appointment, "start" | "end" | "technicianId" | "resourceId">
+    > = {
+      start: event.start?.toISOString(),
+      end: event.end?.toISOString(),
+      technicianId: event.getResources()[0]?.id,
+      resourceId: event.getResources()[0]?.id,
+    };
     console.log(`Updating appointment ${event.id} with`, updates);
     updateDetailsMutation.mutate({ id: event.id, updates });
   };

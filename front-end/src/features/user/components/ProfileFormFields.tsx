@@ -19,12 +19,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/features/shared/components/ui/card";
-import { PesonFormValues, personSchema } from "@/lib/schemas";
+import { PersonFormValues, personSchema } from "@/lib/schemas";
 import { ImageUploader } from "@/features/shared/components/ui/ImageUploader";
 
 interface ProfileFormProps {
-  defaultValues: PesonFormValues;
-  onSubmit: (data: PesonFormValues) => void;
+  defaultValues: PersonFormValues;
+  onSubmit: (data: PersonFormValues) => void;
   isSubmitting?: boolean;
 }
 
@@ -33,7 +33,7 @@ export default function ProfileFormFields({
   onSubmit,
   isSubmitting,
 }: ProfileFormProps) {
-  const form = useForm<PesonFormValues>({
+  const form = useForm<PersonFormValues>({
     resolver: zodResolver(personSchema),
     defaultValues,
   });

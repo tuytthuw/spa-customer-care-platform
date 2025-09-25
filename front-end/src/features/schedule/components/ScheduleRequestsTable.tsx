@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { WorkSchedule } from "@/features/schedule/types";
-import { mockStaff } from "@/lib/mock-data";
 import {
   Card,
   CardContent,
@@ -21,9 +20,11 @@ import {
 import { Badge } from "@/features/shared/components/ui/badge";
 import { Button } from "@/features/shared/components/ui/button";
 import { Check, X } from "lucide-react";
+import { Staff } from "@/features/staff/types"; // SỬA 1: Import Staff type
 
 interface ScheduleRequestsTableProps {
   requests: WorkSchedule[];
+  staff: Staff[]; // SỬA 2: Thêm staff vào props
   onUpdateRequest: (
     staffId: string,
     weekOf: string,
@@ -33,6 +34,7 @@ interface ScheduleRequestsTableProps {
 
 export const ScheduleRequestsTable = ({
   requests,
+  staff, // SỬA 3: Nhận staff từ props
   onUpdateRequest,
 }: ScheduleRequestsTableProps) => {
   return (
@@ -55,12 +57,17 @@ export const ScheduleRequestsTable = ({
           </TableHeader>
           <TableBody>
             {requests.map((request) => {
-              const staff = mockStaff.find((s) => s.id === request.staffId);
-              if (!staff || !request.weekOf) return null;
+              // SỬA 4: Sử dụng `staff` từ props thay vì `mockStaff`
+              const staffMember = staff.find(
+                (s: Staff) => s.id === request.staffId
+              );
+              if (!staffMember || !request.weekOf) return null;
 
               return (
                 <TableRow key={`${request.staffId}-${request.weekOf}`}>
-                  <TableCell className="font-medium">{staff.name}</TableCell>
+                  <TableCell className="font-medium">
+                    {staffMember.name}
+                  </TableCell>
                   <TableCell>{`Tuần từ ${new Date(
                     request.weekOf
                   ).toLocaleDateString("vi-VN")}`}</TableCell>
@@ -84,7 +91,7 @@ export const ScheduleRequestsTable = ({
                           className="text-green-600"
                           onClick={() =>
                             onUpdateRequest(
-                              staff!.id,
+                              staffMember!.id,
                               request.weekOf!,
                               "approved"
                             )
@@ -97,7 +104,7 @@ export const ScheduleRequestsTable = ({
                           variant="destructive"
                           onClick={() =>
                             onUpdateRequest(
-                              staff!.id,
+                              staffMember!.id,
                               request.weekOf!,
                               "rejected"
                             )

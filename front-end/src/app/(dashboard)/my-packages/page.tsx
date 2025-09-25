@@ -65,7 +65,7 @@ export default function MyPackagesPage() {
   const { data: customerTreatments = [], isLoading: loadingTreatments } =
     useQuery<TreatmentPackage[]>({
       queryKey: ["customerTreatments", currentUserProfile?.id],
-      queryFn: () => getCustomerTreatments(),
+      queryFn: () => getCustomerTreatments(currentUserProfile!.id), // ĐÃ SỬA
       enabled: !!currentUserProfile,
       select: (data) =>
         data.filter((pkg) => pkg.customerId === currentUserProfile?.id),

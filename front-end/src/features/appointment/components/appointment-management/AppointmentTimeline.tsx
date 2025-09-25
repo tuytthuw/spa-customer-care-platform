@@ -57,7 +57,7 @@ export const AppointmentTimeline = ({
     const service = services.find((s) => s.id === app.serviceId);
 
     // Tính thời gian kết thúc dựa trên duration của dịch vụ
-    const startTime = new Date(app.date);
+    const startTime = new Date(app.start);
     const endTime = service
       ? new Date(startTime.getTime() + service.duration * 60000)
       : new Date(startTime.getTime() + 60 * 60000); // Mặc định 60 phút nếu không có dịch vụ
