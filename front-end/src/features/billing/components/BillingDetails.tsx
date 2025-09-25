@@ -33,8 +33,23 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@/features/shared/components/ui/toggle-group";
+import { Promotion } from "@/features/promotion/types";
+import { Label } from "@/features/shared/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/features/shared/components/ui/select";
+import { FullCustomerProfile } from "@/features/customer/types";
+import { PrepaidCard } from "@/features/prepaid-card/types";
+import { Gem, Wallet } from "lucide-react";
+import { Input } from "@/features/shared/components/ui/input";
 
 type PaymentMethod = "cash" | "card" | "transfer";
+
+const POINT_TO_VND_RATE = 1000;
 
 interface BillingDetailsProps {
   items: InvoiceItem[];
@@ -55,6 +70,16 @@ interface BillingDetailsProps {
   onProcessPayment: () => void;
   selectedPaymentMethod: PaymentMethod | null;
   onPaymentMethodChange: (method: PaymentMethod) => void;
+  promotions: Promotion[];
+  onApplyPromotion: (promotionId: string) => void;
+  customer: FullCustomerProfile | null;
+  prepaidCard: PrepaidCard | undefined;
+  pointsToRedeem: number;
+  onPointsRedeemChange: (points: number) => void;
+  prepaidAmountToUse: number;
+  onPrepaidAmountChange: (amount: number) => void;
+  discount: number;
+  total: number;
 }
 
 const BillingDetails = ({
@@ -69,6 +94,16 @@ const BillingDetails = ({
   onProcessPayment,
   selectedPaymentMethod,
   onPaymentMethodChange,
+  promotions,
+  onApplyPromotion,
+  customer,
+  prepaidCard,
+  pointsToRedeem,
+  onPointsRedeemChange,
+  prepaidAmountToUse,
+  onPrepaidAmountChange,
+  discount,
+  total,
 }: BillingDetailsProps) => {
   const [open, setOpen] = React.useState(false);
 
@@ -76,14 +111,26 @@ const BillingDetails = ({
     (acc, item) => acc + item.price * item.quantity,
     0
   );
-  const discount = 0;
-  const total = subtotal - discount;
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
     }).format(amount);
+  };
+
+  const handlePointsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const points = parseInt(e.target.value, 10) || 0;
+    const maxPoints = customer?.loyaltyPoints || 0;
+    onPointsRedeemChange(Math.min(points, maxPoints));
+  };
+
+  const handlePrepaidAmountChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const amount = parseInt(e.target.value.replace(/[^0-9]/g, ""), 10) || 0;
+    const maxAmount = prepaidCard?.balance || 0;
+    onPrepaidAmountChange(Math.min(amount, maxAmount));
   };
 
   return (
@@ -239,32 +286,98 @@ const BillingDetails = ({
             <span>Tạm tính:</span>
             <span>{formatCurrency(subtotal)}</span>
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="promotion-select">Khuyến mãi</Label>
+            <Select onValueChange={(value) => onApplyPromotion(value)}>
+              <SelectTrigger id="promotion-select">
+                <SelectValue placeholder="Chọn khuyến mãi..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Không áp dụng</SelectItem>
+                {promotions.map((promo) => (
+                  <SelectItem key={promo.id} value={promo.id}>
+                    {promo.title} ({promo.discountPercent}%)
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <div className="flex justify-between">
             <span>Giảm giá:</span>
             <span className="text-destructive">{formatCurrency(discount)}</span>
           </div>
           <Separator />
+          {/* ✅ HIỂN THỊ VÀ NHẬP ĐIỂM THƯỞNG */}
+          {customer && (customer.loyaltyPoints || 0) > 0 && (
+            <div className="space-y-2">
+              <div className="flex justify-between items-center text-sm">
+                <Label htmlFor="points" className="flex items-center gap-2">
+                  <Gem className="h-4 w-4 text-primary" /> Điểm khả dụng
+                </Label>
+                <span>
+                  {customer.loyaltyPoints?.toLocaleString("vi-VN")} điểm
+                </span>
+              </div>
+              <div className="relative">
+                <Input
+                  id="points"
+                  type="number"
+                  placeholder="Nhập số điểm muốn dùng"
+                  value={pointsToRedeem || ""}
+                  onChange={handlePointsChange}
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+                  = {formatCurrency(pointsToRedeem * POINT_TO_VND_RATE)}
+                </span>
+              </div>
+            </div>
+          )}
+          {/* ✅ HIỂN THỊ VÀ NHẬP SỐ DƯ THẺ TRẢ TRƯỚC */}
+          {prepaidCard && prepaidCard.balance > 0 && (
+            <div className="space-y-2">
+              <div className="flex justify-between items-center text-sm">
+                <Label htmlFor="prepaid" className="flex items-center gap-2">
+                  <Wallet className="h-4 w-4 text-primary" /> Thẻ trả trước
+                </Label>
+                <span>SD: {formatCurrency(prepaidCard.balance)}</span>
+              </div>
+              <div className="relative">
+                <Input
+                  id="prepaid"
+                  placeholder="Nhập số tiền muốn dùng"
+                  value={prepaidAmountToUse.toLocaleString("vi-VN")}
+                  onChange={handlePrepaidAmountChange}
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+                  VND
+                </span>
+              </div>
+            </div>
+          )}{" "}
+          <Separator />
           <div className="flex justify-between font-bold text-lg">
-            <span>Tổng cộng:</span>
+            <span>Còn lại phải trả:</span>
             <span>{formatCurrency(total)}</span>
           </div>
         </div>
-        <div className="mt-6">
-          <h4 className="font-semibold mb-2">Phương thức thanh toán</h4>
-          <ToggleGroup
-            type="single"
-            variant="outline"
-            className="w-full grid grid-cols-1 sm:grid-cols-3"
-            value={selectedPaymentMethod || ""}
-            onValueChange={(value) => {
-              if (value) onPaymentMethodChange(value as PaymentMethod);
-            }}
-          >
-            <ToggleGroupItem value="cash">Tiền mặt</ToggleGroupItem>
-            <ToggleGroupItem value="card">Thẻ</ToggleGroupItem>
-            <ToggleGroupItem value="transfer">Chuyển khoản</ToggleGroupItem>
-          </ToggleGroup>
-        </div>
+        {total > 0 && (
+          <div className="mt-6">
+            <h4 className="font-semibold mb-2">Phương thức thanh toán</h4>
+            <ToggleGroup
+              type="single"
+              variant="outline"
+              className="w-full grid grid-cols-1 sm:grid-cols-3"
+              value={selectedPaymentMethod || ""}
+              onValueChange={(value) => {
+                if (value) onPaymentMethodChange(value as PaymentMethod);
+              }}
+            >
+              <ToggleGroupItem value="cash">Tiền mặt</ToggleGroupItem>
+              <ToggleGroupItem value="card">Thẻ</ToggleGroupItem>
+              <ToggleGroupItem value="transfer">Chuyển khoản</ToggleGroupItem>
+            </ToggleGroup>
+          </div>
+        )}
         <Button
           className="w-full mt-6"
           disabled={items.length === 0 || !selectedPaymentMethod}

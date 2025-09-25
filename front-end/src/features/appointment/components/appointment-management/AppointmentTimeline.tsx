@@ -2,7 +2,7 @@
 "use client";
 
 import React from "react";
-import { Appointment } from "@/features/appointment/types";
+import { Appointment, AppointmentStatus } from "@/features/appointment/types";
 import { Customer } from "@/features/customer/types";
 import { Service } from "@/features/service/types";
 import { Staff } from "@/features/staff/types"; // 1. Import Staff type
@@ -17,6 +17,22 @@ interface AppointmentTimelineProps {
   onSelectAppointment: (appointment: Appointment) => void;
   onEventDrop?: (info: EventDropArg) => void;
 }
+
+const getStatusColor = (status: AppointmentStatus) => {
+  switch (status) {
+    case "completed":
+      return "var(--success)"; // Màu xanh lá
+    case "cancelled":
+    case "no-show":
+      return "var(--destructive)"; // Màu đỏ
+    case "in-progress":
+    case "checked-in":
+      return "var(--warning)"; // Màu cam
+    case "upcoming":
+    default:
+      return "var(--primary)"; // Màu mặc định
+  }
+};
 
 export const AppointmentTimeline = ({
   appointments,
@@ -52,13 +68,7 @@ export const AppointmentTimeline = ({
       title: customer ? customer.name : "Khách lẻ",
       start: startTime,
       end: endTime,
-      // Thêm màu sắc dựa trên trạng thái (tùy chọn)
-      color:
-        app.status === "completed"
-          ? "var(--status-success)"
-          : app.status === "in-progress"
-          ? "var(--status-processing)"
-          : "var(--primary)",
+      color: getStatusColor(app.status),
     };
   });
 

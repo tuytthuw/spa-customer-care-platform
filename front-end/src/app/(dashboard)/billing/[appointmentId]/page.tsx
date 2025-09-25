@@ -1,28 +1,37 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { Printer, X } from "lucide-react";
 
 // Types
-import { Invoice, InvoiceItem } from "@/features/billing/types";
+import { Invoice, InvoiceItem, PaymentMethod } from "@/features/billing/types";
 import { Product } from "@/features/product/types";
 import { Service } from "@/features/service/types";
 import { TreatmentPlan } from "@/features/treatment/types";
 import { FullCustomerProfile } from "@/features/customer/types";
+import { PrepaidCard } from "@/features/prepaid-card/types";
+import { PaymentStatus } from "@/features/appointment/types";
+import { Promotion } from "@/features/promotion/types";
 
 // API & Hooks
-import { createInvoice } from "@/features/billing/api/invoice.api";
+import {
+  createInvoice,
+  InvoiceCreationData,
+} from "@/features/billing/api/invoice.api";
 import {
   updateAppointmentStatus,
   updateAppointmentPaymentStatus,
 } from "@/features/appointment/api/appointment.api";
-import { PaymentStatus } from "@/features/appointment/types";
+import { getPrepaidCardByCustomerId } from "@/features/prepaid-card/api/prepaid-card.api";
 import { useCustomers } from "@/features/customer/hooks/useCustomers";
 import { useServices } from "@/features/service/hooks/useServices";
 import { useProducts } from "@/features/product/hooks/useProducts";
 import { useTreatmentPlans } from "@/features/treatment/hooks/useTreatmentPlans";
 import { useAppointments } from "@/features/appointment/hooks/useAppointments";
+import { usePromotions } from "@/features/promotion/hooks/usePromotions";
 
 // Components
 import BillingDetails from "@/features/billing/components/BillingDetails";
@@ -60,12 +69,10 @@ import {
   SelectValue,
 } from "@/features/shared/components/ui/select";
 import { Label } from "@/features/shared/components/ui/label";
-import { toast } from "sonner";
-import { Printer, X } from "lucide-react";
 import { FullPageLoader } from "@/features/shared/components/ui/spinner";
+import { PageHeader } from "@/features/shared/components/common/PageHeader";
 
-type InvoiceCreationData = Omit<Invoice, "id" | "createdAt">;
-type PaymentMethod = "cash" | "card" | "transfer";
+const POINT_TO_VND_RATE = 1000;
 
 export default function BillingPage() {
   const router = useRouter();
@@ -73,6 +80,7 @@ export default function BillingPage() {
   const queryClient = useQueryClient();
   const { appointmentId } = params;
 
+  // --- STATES ---
   const [items, setItems] = useState<InvoiceItem[]>([]);
   const [selectedCustomer, setSelectedCustomer] =
     useState<FullCustomerProfile | null>(null);
@@ -83,7 +91,15 @@ export default function BillingPage() {
   const [completedInvoice, setCompletedInvoice] = useState<Invoice | null>(
     null
   );
+  const [selectedPromotionId, setSelectedPromotionId] = useState<string | null>(
+    null
+  );
+  const [pointsToRedeem, setPointsToRedeem] = useState(0);
+  const [prepaidAmountToUse, setPrepaidAmountToUse] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [discount, setDiscount] = useState(0);
 
+  // --- DATA FETCHING ---
   const { data: customers = [], isLoading: isLoadingCustomers } =
     useCustomers();
   const { data: services = [], isLoading: isLoadingServices } = useServices();
@@ -92,21 +108,77 @@ export default function BillingPage() {
     useTreatmentPlans();
   const { data: appointments = [], isLoading: isLoadingAppointments } =
     useAppointments();
+  const { data: promotions = [], isLoading: isLoadingPromotions } =
+    usePromotions();
+
+  const {
+    data: prepaidCards = [],
+    isLoading: isLoadingPrepaidCards,
+  } = // ✅ FIX: Correct loading state name
+    useQuery<PrepaidCard[]>({
+      queryKey: ["prepaidCards", selectedCustomer?.id],
+      queryFn: () => getPrepaidCardByCustomerId(selectedCustomer!.id),
+      enabled: !!selectedCustomer,
+    });
+
+  const customerPrepaidCard = prepaidCards[0]; // ✅ FIX: Use the correct variable name
 
   const isLoading =
     isLoadingCustomers ||
     isLoadingServices ||
     isLoadingProducts ||
     isLoadingPlans ||
-    isLoadingAppointments;
+    isLoadingAppointments ||
+    isLoadingPromotions ||
+    isLoadingPrepaidCards; // ✅ FIX: Use correct loading state name
 
+  // --- MEMOIZED VALUES ---
+  const activePromotions = useMemo(() => {
+    return promotions.filter((promo) => {
+      const now = new Date();
+      return (
+        promo.status === "active" &&
+        new Date(promo.startDate) <= now &&
+        new Date(promo.endDate) >= now
+      );
+    });
+  }, [promotions]);
+
+  // --- EFFECTS ---
+  // Effect for calculating totals
+  useEffect(() => {
+    const subtotal = items.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
+    let newDiscount = 0;
+    const promotion = promotions.find((p) => p.id === selectedPromotionId);
+    if (promotion) {
+      newDiscount = (subtotal * promotion.discountPercent) / 100;
+    }
+    const amountAfterDiscount = subtotal - newDiscount;
+    const pointsValue = pointsToRedeem * POINT_TO_VND_RATE;
+    const finalTotal = Math.max(
+      0,
+      amountAfterDiscount - pointsValue - prepaidAmountToUse
+    );
+    setDiscount(newDiscount);
+    setTotal(finalTotal);
+  }, [
+    items,
+    selectedPromotionId,
+    promotions,
+    pointsToRedeem,
+    prepaidAmountToUse,
+  ]);
+
+  // Effect for initializing from appointment ID
   useEffect(() => {
     if (!isLoading && appointmentId && appointmentId !== "new") {
       const appointment = appointments.find((app) => app.id === appointmentId);
       if (appointment) {
         const customer = customers.find((c) => c.id === appointment.customerId);
         const service = services.find((s) => s.id === appointment.serviceId);
-
         if (customer) setSelectedCustomer(customer);
         if (service) {
           setItems([
@@ -123,14 +195,12 @@ export default function BillingPage() {
     }
   }, [appointmentId, appointments, customers, services, isLoading]);
 
+  // --- MUTATIONS ---
   const updateAppointmentStatusMutation = useMutation({
     mutationFn: (id: string) => updateAppointmentStatus(id, "completed"),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["appointments"] });
-    },
-    onError: (error) => {
-      toast.error(`Lỗi cập nhật lịch hẹn: ${error.message}`);
-    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["appointments"] }),
+    onError: (error) => toast.error(`Lỗi cập nhật lịch hẹn: ${error.message}`),
   });
 
   const updatePaymentStatusMutation = useMutation({
@@ -140,15 +210,14 @@ export default function BillingPage() {
       queryClient.invalidateQueries({ queryKey: ["appointments"] });
       toast.success("Đã cập nhật trạng thái thanh toán của lịch hẹn.");
     },
-    onError: (error) => {
-      toast.error(`Lỗi cập nhật trạng thái thanh toán: ${error.message}`);
-    },
+    onError: (error) =>
+      toast.error(`Lỗi cập nhật trạng thái thanh toán: ${error.message}`),
   });
 
   const createInvoiceMutation = useMutation({
     mutationFn: createInvoice,
     onSuccess: (newInvoice) => {
-      toast.success(`Tạo hóa đơn #${newInvoice.id} thành công!`);
+      toast.success(`Tạo hóa đơn #${newInvoice.id.slice(0, 8)} thành công!`);
       if (typeof appointmentId === "string" && appointmentId !== "new") {
         updateAppointmentStatusMutation.mutate(appointmentId);
         updatePaymentStatusMutation.mutate({ appointmentId, status: "paid" });
@@ -162,6 +231,7 @@ export default function BillingPage() {
     },
   });
 
+  // --- HANDLERS ---
   const handleAddItem = (
     item: Product | Service | TreatmentPlan,
     type: "product" | "service" | "treatment"
@@ -217,38 +287,47 @@ export default function BillingPage() {
   };
 
   const handleInitiatePayment = () => {
-    if (!selectedCustomer || items.length === 0 || !paymentMethod) {
+    if (
+      !selectedCustomer ||
+      items.length === 0 ||
+      (total > 0 && !paymentMethod)
+    ) {
       toast.warning(
-        "Vui lòng chọn khách hàng, sản phẩm và phương thức thanh toán."
+        "Vui lòng chọn khách hàng, sản phẩm và phương thức thanh toán nếu cần."
       );
       return;
     }
     setIsConfirmingPayment(true);
   };
 
-  const handleConfirmAndPay = () => {
-    if (!selectedCustomer || !paymentMethod) return;
+  const handleApplyPromotion = (promotionId: string) => {
+    setSelectedPromotionId(promotionId === "none" ? null : promotionId);
+  };
 
+  const handleConfirmAndPay = () => {
+    if (!selectedCustomer) return;
     const subtotal = items.reduce(
       (acc, item) => acc + item.price * item.quantity,
       0
     );
-    const discount = 0;
-    const total = subtotal - discount;
+    const finalPaymentMethod: PaymentMethod =
+      total > 0 ? paymentMethod! : "combined";
 
     const invoiceData: InvoiceCreationData = {
       appointmentId: Array.isArray(appointmentId)
         ? appointmentId.join("")
-        : appointmentId || "N/A",
+        : (appointmentId as string) || "N/A",
       customerId: selectedCustomer.id,
       items,
       subtotal,
       discount,
       total,
-      paymentMethod,
+      paymentMethod: finalPaymentMethod,
       status: "paid",
+      pointsToRedeem,
+      prepaidCardId: customerPrepaidCard?.id,
+      prepaidAmountToUse,
     };
-
     createInvoiceMutation.mutate(invoiceData);
   };
 
@@ -268,11 +347,15 @@ export default function BillingPage() {
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
-      <Card>
+      <PageHeader
+        title="Tạo & Thanh toán Hóa đơn"
+        description="Tạo hóa đơn cho dịch vụ, sản phẩm và liệu trình."
+      />
+      <Card className="mt-6">
         <CardHeader>
-          <CardTitle>Tạo & Thanh toán Hóa đơn</CardTitle>
+          <CardTitle>Thông tin Hóa đơn</CardTitle>
           <div className="flex items-center gap-4 pt-2">
-            <Label htmlFor="customer-select" className="mt-2">
+            <Label htmlFor="customer-select" className="mt-2 shrink-0">
               Khách hàng:
             </Label>
             <Select
@@ -281,7 +364,7 @@ export default function BillingPage() {
                 const customer = customers.find((c) => c.id === customerId);
                 setSelectedCustomer(customer || null);
               }}
-              disabled={appointmentId !== "new"}
+              disabled={!!appointmentId && appointmentId !== "new"}
             >
               <SelectTrigger id="customer-select" className="w-[300px]">
                 <SelectValue placeholder="Chọn khách hàng..." />
@@ -315,6 +398,16 @@ export default function BillingPage() {
             onProcessPayment={handleInitiatePayment}
             selectedPaymentMethod={paymentMethod}
             onPaymentMethodChange={setPaymentMethod}
+            promotions={activePromotions}
+            onApplyPromotion={handleApplyPromotion}
+            customer={selectedCustomer}
+            prepaidCard={customerPrepaidCard}
+            pointsToRedeem={pointsToRedeem}
+            onPointsRedeemChange={setPointsToRedeem}
+            prepaidAmountToUse={prepaidAmountToUse}
+            onPrepaidAmountChange={setPrepaidAmountToUse}
+            total={total}
+            discount={discount}
           />
         </CardContent>
       </Card>

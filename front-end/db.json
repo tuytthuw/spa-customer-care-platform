@@ -349,6 +349,279 @@
       "conversionRate": 500
     }
   ],
+  "categories": [
+    { "id": "cat-1", "name": "Chăm sóc da mặt", "type": "service" },
+    { "id": "cat-2", "name": "Massage & Trị liệu", "type": "service" },
+    { "id": "cat-3", "name": "Chăm sóc tóc & da đầu", "type": "service" },
+    { "id": "cat-4", "name": "Triệt lông", "type": "service" },
+    { "id": "cat-5", "name": "Dưỡng ẩm", "type": "product" },
+    { "id": "cat-6", "name": "Chống nắng", "type": "product" },
+    { "id": "cat-7", "name": "Mặt nạ", "type": "product" },
+    { "id": "cat-8", "name": "Tinh dầu", "type": "product" },
+    { "id": "cat-9", "name": "Trị mụn", "type": "treatment" },
+    { "id": "cat-10", "name": "Trẻ hóa da", "type": "treatment" }
+  ],
+  "appointments": [
+    {
+      "id": "appt-1",
+      "customerId": "cus-1",
+      "serviceId": "1",
+      "technicianId": "tech-1",
+      "date": "2025-09-25T10:00:00.000Z",
+      "status": "upcoming",
+      "paymentStatus": "unpaid",
+      "customerNote": "Lần đầu đến, cần tư vấn kỹ."
+    },
+    {
+      "id": "appt-2",
+      "customerId": "cus-2",
+      "serviceId": "2",
+      "technicianId": "tech-2",
+      "date": "2025-09-25T14:30:00.000Z",
+      "status": "upcoming",
+      "paymentStatus": "unpaid"
+    },
+    {
+      "id": "appt-3",
+      "customerId": "cus-1",
+      "serviceId": "3",
+      "date": "2025-08-25T14:00:00.000Z",
+      "status": "completed",
+      "paymentStatus": "paid",
+      "technicianNotes": "Da khách hàng có cải thiện, vùng má giảm mụn, cần cấp ẩm thêm."
+    },
+    {
+      "id": "appt-4",
+      "customerId": "cus-4",
+      "serviceId": "1",
+      "technicianId": "tech-1",
+      "date": "2025-09-26T11:00:00.000Z",
+      "status": "upcoming",
+      "paymentStatus": "unpaid"
+    },
+    {
+      "id": "appt-5",
+      "customerId": "cus-3",
+      "serviceId": "2",
+      "technicianId": "tech-2",
+      "date": "2025-09-20T16:00:00.000Z",
+      "status": "no-show",
+      "paymentStatus": "unpaid",
+      "customerNote": "Khách hẹn nhưng không đến."
+    }
+  ],
+  "invoices": [
+    {
+      "id": "inv-1",
+      "appointmentId": "appt-3",
+      "customerId": "cus-1",
+      "items": [
+        {
+          "id": "3",
+          "name": "Gội đầu dưỡng sinh",
+          "quantity": 1,
+          "price": 350000,
+          "type": "service"
+        }
+      ],
+      "subtotal": 350000,
+      "discount": 0,
+      "total": 350000,
+      "totalAmount": 350000,
+      "paymentMethod": "card",
+      "status": "paid",
+      "createdAt": "2025-08-25T15:00:00.000Z",
+      "updatedAt": "2025-08-25T15:00:00.000Z"
+    },
+    {
+      "id": "inv-2",
+      "customerId": "cus-2",
+      "items": [
+        {
+          "id": "prod-1",
+          "name": "Serum dưỡng ẩm Hyaluronic Acid",
+          "quantity": 1,
+          "price": 750000,
+          "type": "product"
+        }
+      ],
+      "subtotal": 750000,
+      "discount": 50000,
+      "total": 700000,
+      "totalAmount": 700000,
+      "paymentMethod": "cash",
+      "status": "paid",
+      "createdAt": "2025-08-18T11:30:00.000Z",
+      "updatedAt": "2025-08-18T11:30:00.000Z"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "rev-1",
+      "appointmentId": "appt-3",
+      "customerId": "cus-1",
+      "technicianId": "tech-1",
+      "serviceId": "3",
+      "rating": 5,
+      "comment": "Dịch vụ gội đầu ở đây rất tuyệt vời, nhân viên nhiệt tình, không gian thư giãn. Chắc chắn sẽ quay lại!",
+      "createdAt": "2025-08-26T10:00:00.000Z"
+    },
+    {
+      "id": "rev-2",
+      "appointmentId": "prod-1",
+      "customerId": "cus-2",
+      "technicianId": "N/A",
+      "serviceId": "prod-1",
+      "rating": 4,
+      "comment": "Serum dùng rất thích, cấp ẩm tốt, không gây nhờn rít. Sẽ mua lại.",
+      "createdAt": "2025-08-20T18:00:00.000Z"
+    }
+  ],
+  "treatmentPlans": [
+    {
+      "id": "plan-1",
+      "name": "Liệu trình Trị mụn chuyên sâu 5 buổi",
+      "description": "Giải quyết dứt điểm các vấn đề về mụn ẩn, mụn viêm, mụn đầu đen với phác đồ điều trị từ chuyên gia.",
+      "categories": ["Trị mụn", "Chăm sóc da mặt"],
+      "steps": [
+        { "step": 1, "serviceIds": ["1"] },
+        { "step": 2, "serviceIds": ["1"] },
+        { "step": 3, "serviceIds": ["1"] },
+        { "step": 4, "serviceIds": ["1"] },
+        { "step": 5, "serviceIds": ["1"] }
+      ],
+      "price": 2200000,
+      "imageUrl": "/images/service-1.jpg",
+      "imageUrls": [],
+      "status": "active",
+      "totalSessions": 5
+    },
+    {
+      "id": "plan-2",
+      "name": "Liệu trình Trẻ hóa da PRP 3 buổi",
+      "description": "Công nghệ PRP (huyết tương giàu tiểu cầu) giúp tái tạo da, làm mờ nếp nhăn, sẹo rỗ và trẻ hóa làn da toàn diện.",
+      "categories": ["Trẻ hóa da"],
+      "steps": [
+        { "step": 1, "serviceIds": ["4"] },
+        { "step": 2, "serviceIds": ["4"] },
+        { "step": 3, "serviceIds": ["4"] }
+      ],
+      "price": 15000000,
+      "imageUrl": "/images/service-4.jpg",
+      "imageUrls": [],
+      "status": "active",
+      "totalSessions": 3
+    }
+  ],
+  "customerTreatments": [
+    {
+      "id": "ct-1",
+      "customerId": "cus-1",
+      "treatmentPlanId": "plan-1",
+      "purchaseDate": "2025-07-15T09:00:00.000Z",
+      "totalSessions": 5,
+      "completedSessions": 1,
+      "sessions": [
+        {
+          "id": "cts-1-1",
+          "treatmentPlanStep": 1,
+          "serviceIds": ["1"],
+          "date": "2025-07-20T10:00:00.000Z",
+          "technicianId": "tech-1",
+          "status": "completed",
+          "notes": "Buổi 1: Lấy nhân mụn và điện di tinh chất."
+        },
+        {
+          "id": "cts-1-2",
+          "treatmentPlanStep": 2,
+          "serviceIds": ["1"],
+          "date": "",
+          "technicianId": "",
+          "status": "upcoming",
+          "notes": "Buổi 2"
+        },
+        {
+          "id": "cts-1-3",
+          "treatmentPlanStep": 3,
+          "serviceIds": ["1"],
+          "date": "",
+          "technicianId": "",
+          "status": "upcoming",
+          "notes": "Buổi 3"
+        },
+        {
+          "id": "cts-1-4",
+          "treatmentPlanStep": 4,
+          "serviceIds": ["1"],
+          "date": "",
+          "technicianId": "",
+          "status": "upcoming",
+          "notes": "Buổi 4"
+        },
+        {
+          "id": "cts-1-5",
+          "treatmentPlanStep": 5,
+          "serviceIds": ["1"],
+          "date": "",
+          "technicianId": "",
+          "status": "upcoming",
+          "notes": "Buổi 5"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "room-1",
+      "name": "Phòng VIP 1",
+      "type": "room",
+      "status": "available",
+      "notes": "Có bồn tắm thảo dược."
+    },
+    {
+      "id": "room-2",
+      "name": "Phòng đơn 2",
+      "type": "room",
+      "status": "available"
+    },
+    {
+      "id": "equip-1",
+      "name": "Máy Laser Diode",
+      "type": "equipment",
+      "status": "maintenance",
+      "notes": "Bảo trì định kỳ đến 26/09/2025"
+    },
+    {
+      "id": "equip-2",
+      "name": "Máy ánh sáng sinh học Omega Light",
+      "type": "equipment",
+      "status": "in_use"
+    }
+  ],
+  "promotions": [
+    {
+      "id": "promo-1",
+      "title": "Ưu đãi Chào Hè",
+      "description": "Giảm 20% cho tất cả các dịch vụ chăm sóc da mặt trong tháng 6.",
+      "imageUrl": "/images/service-1.jpg",
+      "discountPercent": 20,
+      "applicableServiceIds": ["1"],
+      "startDate": "2025-06-01T00:00:00.000Z",
+      "endDate": "2025-06-30T23:59:59.000Z",
+      "status": "inactive"
+    },
+    {
+      "id": "promo-2",
+      "title": "Đi 2 Tính 1",
+      "description": "Áp dụng cho dịch vụ massage thư giãn toàn thân vào các ngày trong tuần (Thứ 2 - Thứ 6).",
+      "imageUrl": "/images/service-2.jpg",
+      "discountPercent": 50,
+      "applicableServiceIds": ["2"],
+      "startDate": "2025-09-01T00:00:00.000Z",
+      "endDate": "2025-09-30T23:59:59.000Z",
+      "status": "active"
+    }
+  ],
   "prepaidCards": [
     {
       "id": "pc-1",
@@ -391,5 +664,165 @@
         }
       ]
     }
-  ]
+  ],
+  "conversations": [
+    {
+      "id": "conv-1",
+      "customerId": "cus-1",
+      "lastMessage": "Cảm ơn spa nhé!",
+      "lastMessageTimestamp": "2025-09-23T14:00:00.000Z",
+      "isRead": true,
+      "messages": [
+        {
+          "id": "msg-1-1",
+          "sender": "bot",
+          "text": "Xin chào! Tôi có thể giúp gì cho bạn?",
+          "timestamp": "2025-09-23T13:30:00.000Z"
+        },
+        {
+          "id": "msg-1-2",
+          "sender": "customer",
+          "text": "Chào bạn, mình muốn hỏi về liệu trình trị mụn.",
+          "timestamp": "2025-09-23T13:31:00.000Z"
+        },
+        {
+          "id": "msg-1-3",
+          "sender": "staff",
+          "text": "Chào chị Hằng, liệu trình trị mụn chuyên sâu bên em đang có ưu đãi ạ. Chị muốn tư vấn chi tiết hơn không ạ?",
+          "timestamp": "2025-09-23T13:35:00.000Z"
+        },
+        {
+          "id": "msg-1-4",
+          "sender": "customer",
+          "text": "Cảm ơn spa nhé!",
+          "timestamp": "2025-09-23T14:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "conv-2",
+      "customerId": "cus-2",
+      "lastMessage": "Spa có dịch vụ massage cho nam không?",
+      "lastMessageTimestamp": "2025-09-24T11:20:00.000Z",
+      "isRead": false,
+      "messages": [
+        {
+          "id": "msg-2-1",
+          "sender": "customer",
+          "text": "Spa có dịch vụ massage cho nam không?",
+          "timestamp": "2025-09-24T11:20:00.000Z"
+        }
+      ]
+    }
+  ],
+  "workSchedules": [
+    {
+      "staffId": "tech-1",
+      "schedule": {
+        "monday": {
+          "isActive": true,
+          "startTime": "09:00",
+          "endTime": "18:00"
+        },
+        "tuesday": {
+          "isActive": true,
+          "startTime": "09:00",
+          "endTime": "18:00"
+        },
+        "wednesday": {
+          "isActive": true,
+          "startTime": "09:00",
+          "endTime": "18:00"
+        },
+        "thursday": {
+          "isActive": true,
+          "startTime": "09:00",
+          "endTime": "18:00"
+        },
+        "friday": {
+          "isActive": true,
+          "startTime": "09:00",
+          "endTime": "18:00"
+        },
+        "saturday": {
+          "isActive": false,
+          "startTime": "09:00",
+          "endTime": "18:00"
+        },
+        "sunday": {
+          "isActive": false,
+          "startTime": "09:00",
+          "endTime": "18:00"
+        }
+      }
+    },
+    {
+      "staffId": "tech-2",
+      "weekOf": "2025-09-22",
+      "status": "pending",
+      "schedule": {
+        "monday": {
+          "isActive": true,
+          "startTime": "09:00",
+          "endTime": "18:00"
+        },
+        "tuesday": {
+          "isActive": true,
+          "startTime": "09:00",
+          "endTime": "18:00"
+        },
+        "wednesday": {
+          "isActive": false,
+          "startTime": "09:00",
+          "endTime": "18:00"
+        },
+        "thursday": {
+          "isActive": true,
+          "startTime": "09:00",
+          "endTime": "18:00"
+        },
+        "friday": {
+          "isActive": true,
+          "startTime": "09:00",
+          "endTime": "18:00"
+        },
+        "saturday": {
+          "isActive": true,
+          "startTime": "10:00",
+          "endTime": "19:00"
+        },
+        "sunday": {
+          "isActive": false,
+          "startTime": "09:00",
+          "endTime": "18:00"
+        }
+      }
+    }
+  ],
+  "loyaltySettings": {
+    "pointsPerVnd": 10000,
+    "tiers": [
+      {
+        "id": "bronze",
+        "name": "Đồng",
+        "pointGoal": 0,
+        "color": "#cd7f32",
+        "benefits": "Tích điểm sau mỗi lần chi tiêu;Ưu đãi sinh nhật."
+      },
+      {
+        "id": "silver",
+        "name": "Bạc",
+        "pointGoal": 500,
+        "color": "#c0c0c0",
+        "benefits": "Toàn bộ quyền lợi hạng Đồng;Giảm giá 5% cho dịch vụ."
+      },
+      {
+        "id": "gold",
+        "name": "Vàng",
+        "pointGoal": 2000,
+        "color": "#ffd700",
+        "benefits": "Toàn bộ quyền lợi hạng Bạc;Giảm giá 10% cho dịch vụ;Miễn phí 1 lần gội đầu mỗi tháng."
+      }
+    ]
+  }
 }
