@@ -9,6 +9,7 @@ import {
 } from "react";
 import { User } from "@/features/user/types";
 import { Role } from "@/features/roles/types";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 
 export type AuthUser = User & {
   permissions: Role["permissions"];
@@ -28,38 +29,49 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [roles, setRoles] = useState<Role[]>([]);
+  const [isLoading, setIsLoading] = useState(true); // Thêm trạng thái loading
 
   useEffect(() => {
-    const fetchRoles = async () => {
+    const initializeAuth = async () => {
       try {
+        // 1. Tải danh sách vai trò trước
         const response = await fetch("http://localhost:3001/roles");
-        const data = await response.json();
-        setRoles(data);
+        if (!response.ok) {
+          throw new Error("Failed to fetch roles");
+        }
+        const rolesData = await response.json();
+        setRoles(rolesData);
+
+        // 2. Sau khi có vai trò, mới kiểm tra người dùng trong localStorage
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          // Gắn lại permissions từ rolesData mới nhất để đảm bảo luôn đúng
+          const userRole = rolesData.find(
+            (r: Role) => r.id === parsedUser.role
+          );
+          const userWithPermissions: AuthUser = {
+            ...parsedUser,
+            permissions: userRole?.permissions || {},
+          };
+          setUser(userWithPermissions);
+        }
       } catch (error) {
-        console.error("Failed to fetch roles:", error);
+        console.error("Failed to initialize auth state:", error);
+        // Nếu có lỗi, xóa thông tin user cũ để tránh lỗi lặp lại
+        localStorage.removeItem("user");
+      } finally {
+        setIsLoading(false); // Hoàn tất quá trình tải
       }
     };
 
-    fetchRoles();
-
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error("Failed to parse user from localStorage", error);
-        localStorage.removeItem("user");
-      }
-    }
+    initializeAuth();
   }, []);
 
   const login = (userData: User & { name?: string; phone?: string }) => {
-    // ✅ Tìm quyền hạn tương ứng với vai trò của người dùng
     const userRole = roles.find((r) => r.id === userData.role);
-
     const userToStore: AuthUser = {
       ...userData,
-      // Gán object permissions, hoặc một object rỗng nếu không tìm thấy
       permissions: userRole?.permissions || {},
     };
     setUser(userToStore);
@@ -71,6 +83,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("user");
     window.location.href = "/auth/login";
   };
+
+  // Hiển thị màn hình tải trong khi đang khởi tạo
+  if (isLoading) {
+    return <FullPageLoader />;
+  }
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>

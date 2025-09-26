@@ -10,19 +10,17 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <AuthProvider>
-      <div className="flex h-screen bg-muted">
-        {/* Sidebar chính (menu điều hướng) */}
-        <Sidebar />
-        <div className="flex flex-col flex-1 overflow-hidden">
-          {/* Header mới */}
-          <Header />
-          {/* Main content sẽ chiếm phần còn lại */}
-          <main className="flex-1 overflow-x-hidden overflow-y-auto">
-            {children}
-          </main>
-        </div>
+    <div className="flex h-screen bg-muted">
+      {/* Sidebar chính (menu điều hướng) */}
+      <Sidebar />
+      <div className="flex flex-col flex-1 overflow-hidden">
+        {/* Header mới */}
+        <Header />
+        {/* Main content sẽ chiếm phần còn lại */}
+        <main className="flex-1 overflow-x-hidden overflow-y-auto">
+          {children}
+        </main>
       </div>
-    </AuthProvider>
+    </div>
   );
 }
