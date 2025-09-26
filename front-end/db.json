@@ -64,27 +64,90 @@
       "description": "Toàn quyền truy cập hệ thống.",
       "status": "active",
       "permissions": {
-        "dashboard": ["read", "write"],
-        "appointments": ["read", "write"],
-        "appointments_management": ["read", "write"],
-        "customers": ["read", "write"],
-        "staff": ["read", "write"],
-        "services": ["read", "write"],
-        "products": ["read", "write"],
-        "categories": ["read", "write"],
-        "resources": ["read", "write"],
-        "schedules": ["read", "write"],
-        "reports": ["read", "write"],
-        "billing": ["read", "write"],
-        "users": ["read", "write"],
-        "roles": ["read", "write"],
-        "treatments": ["read", "write"],
-        "reviews": ["read", "write"],
-        "profile": ["read", "write"],
-        "promotions": ["read", "write"],
-        "loyalty": ["read", "write"],
-        "marketing": ["read", "write"],
-        "inbox": ["read", "write"]
+        "dashboard": [
+          "read",
+          "write"
+        ],
+        "appointments": [
+          "read",
+          "write"
+        ],
+        "appointments_management": [
+          "read",
+          "write"
+        ],
+        "customers": [
+          "read",
+          "write"
+        ],
+        "staff": [
+          "read",
+          "write"
+        ],
+        "services": [
+          "read",
+          "write"
+        ],
+        "products": [
+          "read",
+          "write"
+        ],
+        "categories": [
+          "read",
+          "write"
+        ],
+        "resources": [
+          "read",
+          "write"
+        ],
+        "schedules": [
+          "read",
+          "write"
+        ],
+        "reports": [
+          "read",
+          "write"
+        ],
+        "billing": [
+          "read",
+          "write"
+        ],
+        "users": [
+          "read",
+          "write"
+        ],
+        "roles": [
+          "read",
+          "write"
+        ],
+        "treatments": [
+          "read",
+          "write"
+        ],
+        "reviews": [
+          "read",
+          "write"
+        ],
+        "profile": [
+          "read",
+          "write"
+        ],
+        "promotions": [
+          "read",
+          "write"
+        ],
+        "loyalty": [
+          "read",
+          "write"
+        ],
+        "marketing": [
+          "read",
+          "write"
+        ],
+        "inbox": [
+          "read",
+          "write"
+        ]
       }
     },
     {
@@ -93,17 +156,44 @@
       "description": "Quản lý lịch hẹn và khách hàng.",
       "status": "active",
       "permissions": {
-        "dashboard": ["read"],
-        "appointments": ["read", "write"],
-        "appointments_management": ["read", "write"],
-        "customers": ["read", "write"],
-        "staff": ["read"],
-        "services": ["read"],
-        "products": ["read"],
-        "categories": ["read"],
-        "resources": ["read"],
-        "billing": ["read", "write"],
-        "inbox": ["read", "write"]
+        "dashboard": [
+          "read"
+        ],
+        "appointments": [
+          "read",
+          "write"
+        ],
+        "appointments_management": [
+          "read",
+          "write"
+        ],
+        "customers": [
+          "read",
+          "write"
+        ],
+        "staff": [
+          "read"
+        ],
+        "services": [
+          "read"
+        ],
+        "products": [
+          "read"
+        ],
+        "categories": [
+          "read"
+        ],
+        "resources": [
+          "read"
+        ],
+        "billing": [
+          "read",
+          "write"
+        ],
+        "inbox": [
+          "read",
+          "write"
+        ]
       }
     },
     {
@@ -112,11 +202,23 @@
       "description": "Xem lịch làm việc và thông tin khách hàng.",
       "status": "active",
       "permissions": {
-        "dashboard": ["read"],
-        "appointments": ["read"],
-        "customers": ["read"],
-        "schedules": ["read", "write"],
-        "profile": ["read", "write"]
+        "dashboard": [
+          "read"
+        ],
+        "appointments": [
+          "read"
+        ],
+        "customers": [
+          "read"
+        ],
+        "schedules": [
+          "read",
+          "write"
+        ],
+        "profile": [
+          "read",
+          "write"
+        ]
       }
     },
     {
@@ -125,11 +227,24 @@
       "description": "Quyền cơ bản cho khách hàng sử dụng portal.",
       "status": "active",
       "permissions": {
-        "appointments": ["read", "write"],
-        "treatments": ["read"],
-        "billing": ["read"],
-        "reviews": ["read", "write"],
-        "profile": ["read", "write"]
+        "appointments": [
+          "read",
+          "write"
+        ],
+        "treatments": [
+          "read"
+        ],
+        "billing": [
+          "read"
+        ],
+        "reviews": [
+          "read",
+          "write"
+        ],
+        "profile": [
+          "read",
+          "write"
+        ]
       }
     }
   ],
@@ -145,11 +260,18 @@
       "notes": "Khách hàng VIP, da nhạy cảm. Thích uống trà gừng sau mỗi liệu trình.",
       "totalAppointments": 5,
       "lastVisit": "2025-08-25T14:00:00.000Z",
-      "purchasedServices": [{ "serviceId": "3", "quantity": 2 }],
+      "purchasedServices": [
+        {
+          "serviceId": "3",
+          "quantity": 2
+        }
+      ],
       "preferences": {
         "allergies": "Dị ứng tinh dầu bạc hà",
         "serviceNotes": "Thích massage lực mạnh, không thích nhạc quá lớn",
-        "favoriteTechnicianIds": ["tech-1"]
+        "favoriteTechnicianIds": [
+          "tech-1"
+        ]
       },
       "notificationSettings": {
         "allowPromotions": true,
@@ -217,7 +339,11 @@
       "email": "thuan@myspa.com",
       "role": "technician",
       "avatar": "/images/avatars/avatar-staff-1.jpg",
-      "serviceIds": ["1", "2", "3"]
+      "serviceIds": [
+        "1",
+        "2",
+        "3"
+      ]
     },
     {
       "id": "tech-2",
@@ -227,7 +353,10 @@
       "email": "ngoclan@myspa.com",
       "role": "technician",
       "avatar": "/images/avatars/avatar-staff-2.jpg",
-      "serviceIds": ["1", "4"]
+      "serviceIds": [
+        "1",
+        "4"
+      ]
     },
     {
       "id": "rec-1",
@@ -257,7 +386,9 @@
       "duration": 60,
       "imageUrl": "/images/service-1.jpg",
       "status": "active",
-      "categories": ["Chăm sóc da mặt"]
+      "categories": [
+        "Chăm sóc da mặt"
+      ]
     },
     {
       "id": "2",
@@ -267,8 +398,15 @@
       "duration": 90,
       "imageUrl": "/images/service-2.jpg",
       "status": "active",
-      "categories": ["Massage & Trị liệu"],
-      "consumables": [{ "productId": "prod-4", "quantityUsed": 15 }]
+      "categories": [
+        "Massage & Trị liệu"
+      ],
+      "consumables": [
+        {
+          "productId": "prod-4",
+          "quantityUsed": 15
+        }
+      ]
     },
     {
       "id": "3",
@@ -278,7 +416,9 @@
       "duration": 45,
       "imageUrl": "/images/service-3.jpg",
       "status": "active",
-      "categories": ["Chăm sóc tóc & da đầu"]
+      "categories": [
+        "Chăm sóc tóc & da đầu"
+      ]
     },
     {
       "id": "4",
@@ -288,7 +428,9 @@
       "duration": 30,
       "imageUrl": "/images/service-4.jpg",
       "status": "inactive",
-      "categories": ["Triệt lông"]
+      "categories": [
+        "Triệt lông"
+      ]
     }
   ],
   "products": [
@@ -296,7 +438,10 @@
       "id": "prod-1",
       "name": "Serum dưỡng ẩm Hyaluronic Acid",
       "description": "Serum cấp ẩm sâu, giúp da căng bóng và mịn màng, phù hợp cho mọi loại da.",
-      "categories": ["Dưỡng ẩm", "Chăm sóc da mặt"],
+      "categories": [
+        "Dưỡng ẩm",
+        "Chăm sóc da mặt"
+      ],
       "price": 750000,
       "stock": 50,
       "imageUrl": "/images/product-1.jpg",
@@ -309,7 +454,9 @@
       "id": "prod-2",
       "name": "Kem chống nắng SPF 50+",
       "description": "Bảo vệ da tối ưu khỏi tia UVA/UVB, kết cấu mỏng nhẹ, không gây bết dính.",
-      "categories": ["Chống nắng"],
+      "categories": [
+        "Chống nắng"
+      ],
       "price": 550000,
       "stock": 8,
       "imageUrl": "/images/product-2.jpg",
@@ -322,7 +469,10 @@
       "id": "prod-3",
       "name": "Mặt nạ đất sét làm sạch sâu",
       "description": "Hút sạch bã nhờn, bụi bẩn và thu nhỏ lỗ chân lông hiệu quả.",
-      "categories": ["Mặt nạ", "Chăm sóc da mặt"],
+      "categories": [
+        "Mặt nạ",
+        "Chăm sóc da mặt"
+      ],
       "price": 480000,
       "stock": 30,
       "imageUrl": "/images/product-3.jpg",
@@ -337,9 +487,11 @@
       "id": "prod-4",
       "name": "Tinh dầu Sả Chanh Cao cấp",
       "description": "Dùng để massage thư giãn và xông phòng, mang lại cảm giác sảng khoái.",
-      "categories": ["Tinh dầu"],
+      "categories": [
+        "Tinh dầu"
+      ],
       "price": 250000,
-      "stock": 42,
+      "stock": 41.97,
       "imageUrl": "/images/product-4.jpg",
       "status": "active",
       "isRetail": true,
@@ -350,16 +502,56 @@
     }
   ],
   "categories": [
-    { "id": "cat-1", "name": "Chăm sóc da mặt", "type": "service" },
-    { "id": "cat-2", "name": "Massage & Trị liệu", "type": "service" },
-    { "id": "cat-3", "name": "Chăm sóc tóc & da đầu", "type": "service" },
-    { "id": "cat-4", "name": "Triệt lông", "type": "service" },
-    { "id": "cat-5", "name": "Dưỡng ẩm", "type": "product" },
-    { "id": "cat-6", "name": "Chống nắng", "type": "product" },
-    { "id": "cat-7", "name": "Mặt nạ", "type": "product" },
-    { "id": "cat-8", "name": "Tinh dầu", "type": "product" },
-    { "id": "cat-9", "name": "Trị mụn", "type": "treatment" },
-    { "id": "cat-10", "name": "Trẻ hóa da", "type": "treatment" }
+    {
+      "id": "cat-1",
+      "name": "Chăm sóc da mặt",
+      "type": "service"
+    },
+    {
+      "id": "cat-2",
+      "name": "Massage & Trị liệu",
+      "type": "service"
+    },
+    {
+      "id": "cat-3",
+      "name": "Chăm sóc tóc & da đầu",
+      "type": "service"
+    },
+    {
+      "id": "cat-4",
+      "name": "Triệt lông",
+      "type": "service"
+    },
+    {
+      "id": "cat-5",
+      "name": "Dưỡng ẩm",
+      "type": "product"
+    },
+    {
+      "id": "cat-6",
+      "name": "Chống nắng",
+      "type": "product"
+    },
+    {
+      "id": "cat-7",
+      "name": "Mặt nạ",
+      "type": "product"
+    },
+    {
+      "id": "cat-8",
+      "name": "Tinh dầu",
+      "type": "product"
+    },
+    {
+      "id": "cat-9",
+      "name": "Trị mụn",
+      "type": "treatment"
+    },
+    {
+      "id": "cat-10",
+      "name": "Trẻ hóa da",
+      "type": "treatment"
+    }
   ],
   "appointments": [
     {
@@ -408,6 +600,30 @@
       "status": "no-show",
       "paymentStatus": "unpaid",
       "customerNote": "Khách hẹn nhưng không đến."
+    },
+    {
+      "id": "appt-tech1-today1",
+      "customerId": "cus-2",
+      "serviceId": "2",
+      "technicianId": "tech-1",
+      "start": "2025-09-26T15:00:00.000Z",
+      "end": "2025-09-26T16:30:00.000Z",
+      "status": "completed",
+      "paymentStatus": "unpaid",
+      "customerNote": "Yêu cầu massage kỹ vùng vai.",
+      "technicianNotes": ""
+    },
+    {
+      "id": "appt-tech1-today2",
+      "customerId": "cus-4",
+      "serviceId": "1",
+      "technicianId": "tech-1",
+      "start": "2025-09-26T09:30:00.000Z",
+      "end": "2025-09-26T10:30:00.000Z",
+      "status": "completed",
+      "paymentStatus": "unpaid",
+      "customerNote": "",
+      "technicianNotes": "rrrr"
     }
   ],
   "invoices": [
@@ -482,13 +698,41 @@
       "id": "plan-1",
       "name": "Liệu trình Trị mụn chuyên sâu 5 buổi",
       "description": "Giải quyết dứt điểm các vấn đề về mụn ẩn, mụn viêm, mụn đầu đen với phác đồ điều trị từ chuyên gia.",
-      "categories": ["Trị mụn", "Chăm sóc da mặt"],
+      "categories": [
+        "Trị mụn",
+        "Chăm sóc da mặt"
+      ],
       "steps": [
-        { "step": 1, "serviceIds": ["1"] },
-        { "step": 2, "serviceIds": ["1"] },
-        { "step": 3, "serviceIds": ["1"] },
-        { "step": 4, "serviceIds": ["1"] },
-        { "step": 5, "serviceIds": ["1"] }
+        {
+          "step": 1,
+          "serviceIds": [
+            "1"
+          ]
+        },
+        {
+          "step": 2,
+          "serviceIds": [
+            "1"
+          ]
+        },
+        {
+          "step": 3,
+          "serviceIds": [
+            "1"
+          ]
+        },
+        {
+          "step": 4,
+          "serviceIds": [
+            "1"
+          ]
+        },
+        {
+          "step": 5,
+          "serviceIds": [
+            "1"
+          ]
+        }
       ],
       "price": 2200000,
       "imageUrl": "/images/service-1.jpg",
@@ -500,11 +744,28 @@
       "id": "plan-2",
       "name": "Liệu trình Trẻ hóa da PRP 3 buổi",
       "description": "Công nghệ PRP (huyết tương giàu tiểu cầu) giúp tái tạo da, làm mờ nếp nhăn, sẹo rỗ và trẻ hóa làn da toàn diện.",
-      "categories": ["Trẻ hóa da"],
+      "categories": [
+        "Trẻ hóa da"
+      ],
       "steps": [
-        { "step": 1, "serviceIds": ["4"] },
-        { "step": 2, "serviceIds": ["4"] },
-        { "step": 3, "serviceIds": ["4"] }
+        {
+          "step": 1,
+          "serviceIds": [
+            "4"
+          ]
+        },
+        {
+          "step": 2,
+          "serviceIds": [
+            "4"
+          ]
+        },
+        {
+          "step": 3,
+          "serviceIds": [
+            "4"
+          ]
+        }
       ],
       "price": 15000000,
       "imageUrl": "/images/service-4.jpg",
@@ -525,7 +786,9 @@
         {
           "id": "cts-1-1",
           "treatmentPlanStep": 1,
-          "serviceIds": ["1"],
+          "serviceIds": [
+            "1"
+          ],
           "date": "2025-07-20T10:00:00.000Z",
           "technicianId": "tech-1",
           "status": "completed",
@@ -534,7 +797,9 @@
         {
           "id": "cts-1-2",
           "treatmentPlanStep": 2,
-          "serviceIds": ["1"],
+          "serviceIds": [
+            "1"
+          ],
           "date": "",
           "technicianId": "",
           "status": "upcoming",
@@ -543,7 +808,9 @@
         {
           "id": "cts-1-3",
           "treatmentPlanStep": 3,
-          "serviceIds": ["1"],
+          "serviceIds": [
+            "1"
+          ],
           "date": "",
           "technicianId": "",
           "status": "upcoming",
@@ -552,7 +819,9 @@
         {
           "id": "cts-1-4",
           "treatmentPlanStep": 4,
-          "serviceIds": ["1"],
+          "serviceIds": [
+            "1"
+          ],
           "date": "",
           "technicianId": "",
           "status": "upcoming",
@@ -561,7 +830,9 @@
         {
           "id": "cts-1-5",
           "treatmentPlanStep": 5,
-          "serviceIds": ["1"],
+          "serviceIds": [
+            "1"
+          ],
           "date": "",
           "technicianId": "",
           "status": "upcoming",
@@ -605,7 +876,9 @@
       "description": "Giảm 20% cho tất cả các dịch vụ chăm sóc da mặt trong tháng 6.",
       "imageUrl": "/images/service-1.jpg",
       "discountPercent": 20,
-      "applicableServiceIds": ["1"],
+      "applicableServiceIds": [
+        "1"
+      ],
       "startDate": "2025-06-01T00:00:00.000Z",
       "endDate": "2025-06-30T23:59:59.000Z",
       "status": "inactive"
@@ -616,7 +889,9 @@
       "description": "Áp dụng cho dịch vụ massage thư giãn toàn thân vào các ngày trong tuần (Thứ 2 - Thứ 6).",
       "imageUrl": "/images/service-2.jpg",
       "discountPercent": 50,
-      "applicableServiceIds": ["2"],
+      "applicableServiceIds": [
+        "2"
+      ],
       "startDate": "2025-09-01T00:00:00.000Z",
       "endDate": "2025-09-30T23:59:59.000Z",
       "status": "active"
@@ -754,7 +1029,8 @@
           "startTime": "09:00",
           "endTime": "18:00"
         }
-      }
+      },
+      "id": "a80d"
     },
     {
       "staffId": "tech-2",
@@ -796,7 +1072,8 @@
           "startTime": "09:00",
           "endTime": "18:00"
         }
-      }
+      },
+      "id": "ce7c"
     }
   ],
   "loyaltySettings": {

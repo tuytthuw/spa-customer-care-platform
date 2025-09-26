@@ -10,7 +10,7 @@ import { useCustomers } from "@/features/customer/hooks/useCustomers";
 import { DataTable } from "@/features/shared/components/ui/data-table";
 import { columns } from "./columns";
 import { PageHeader } from "@/features/shared/components/common/PageHeader";
-import { FullPageLoader } from "@/features/shared/components/ui/spinner";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 import {
   Dialog,
   DialogContent,
@@ -21,7 +21,6 @@ import {
 import { Button } from "@/features/shared/components/ui/button";
 import InvoiceReceipt from "@/features/billing/components/InvoiceReceipt";
 import { Printer, X } from "lucide-react";
-
 export default function InvoicesPage() {
   const { user } = useAuth();
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
@@ -47,7 +46,7 @@ export default function InvoicesPage() {
   const isLoading = loadingCustomers || loadingInvoices;
 
   if (isLoading) {
-    return <FullPageLoader text="Đang tải hóa đơn của bạn..." />;
+    return <FullPageLoader />;
   }
 
   if (!currentUserProfile) {

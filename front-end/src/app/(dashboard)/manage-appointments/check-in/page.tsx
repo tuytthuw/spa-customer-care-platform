@@ -15,7 +15,7 @@ import { updateAppointmentStatus } from "@/features/appointment/api/appointment.
 
 // Components
 import { PageHeader } from "@/features/shared/components/common/PageHeader";
-import { FullPageLoader } from "@/features/shared/components/ui/spinner";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 import CheckInList from "@/features/appointment/components/appointment-management/CheckInList";
 import { Button } from "@/features/shared/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -63,7 +63,7 @@ export default function BulkCheckInPage() {
   });
 
   if (isLoading) {
-    return <FullPageLoader text="Đang tải danh sách check-in..." />;
+    return <FullPageLoader />;
   }
 
   return (

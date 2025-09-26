@@ -22,7 +22,7 @@ import { toast } from "sonner";
 import { columns } from "./columns";
 import { PageHeader } from "@/features/shared/components/common/PageHeader";
 import { FormDialog } from "@/features/shared/components/common/FormDialog";
-import { FullPageLoader } from "@/features/shared/components/ui/spinner";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 import ResourceFormFields from "@/features/resource/components/ResourceFormFields";
 
 export default function ManageResourcesPage() {
@@ -84,7 +84,7 @@ export default function ManageResourcesPage() {
   };
 
   if (isLoading) {
-    return <FullPageLoader text="Đang tải danh sách tài nguyên..." />;
+    return <FullPageLoader />;
   }
 
   return (

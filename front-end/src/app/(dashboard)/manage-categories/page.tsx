@@ -24,7 +24,7 @@ import { toast } from "sonner";
 import { columns } from "./columns";
 import { PageHeader } from "@/features/shared/components/common/PageHeader";
 import { FormDialog } from "@/features/shared/components/common/FormDialog";
-import { FullPageLoader } from "@/features/shared/components/ui/spinner";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 import CategoryFormFields from "@/features/category/components/CategoryFormFields";
 
 export default function ManageCategoriesPage() {
@@ -90,7 +90,7 @@ export default function ManageCategoriesPage() {
     }
   };
 
-  if (isLoading) return <FullPageLoader text="Đang tải danh mục..." />;
+  if (isLoading) return <FullPageLoader />;
   if (error) return <div>Đã xảy ra lỗi: {error.message}</div>;
 
   return (

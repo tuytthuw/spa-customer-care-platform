@@ -34,7 +34,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/features/shared/components/ui/tabs";
-import { FullPageLoader } from "@/features/shared/components/ui/spinner";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 import { ReviewModal } from "@/features/review/components/ReviewModal";
 import PurchasedItemCard from "@/features/customer-schedules/components/PurchasedItemCard"; // <--- IMPORT COMPONENT MỚI
 
@@ -125,7 +125,7 @@ export default function MyPackagesPage() {
     loadingReviews;
 
   if (isLoading) {
-    return <FullPageLoader text="Đang tải dữ liệu..." />;
+    return <FullPageLoader />;
   }
 
   // Phân loại các mục đã mua

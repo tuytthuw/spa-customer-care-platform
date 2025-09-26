@@ -1,35 +1,44 @@
-// src/components/auth/protected-route.tsx
 "use client";
-
 import { useAuth } from "@/contexts/AuthContexts";
 import { useRouter } from "next/navigation";
-import { useEffect, ReactNode } from "react";
+import { useEffect } from "react";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 
-interface ProtectedRouteProps {
-  children: ReactNode;
-}
-
-export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { user } = useAuth();
+export default function ProtectedRoute({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const { user, loading } = useAuth();
   const router = useRouter();
 
-  useEffect(() => {
-    // Kiểm tra nếu component đã được tải xong và không có user
-    if (!user) {
-      // Chuyển hướng về trang đăng nhập
-      router.push("/auth/login");
-    }
-  }, [user, router]);
+  // Thêm log để theo dõi trạng thái
+  console.log("ProtectedRoute render:", { loading, user: !!user });
 
-  // Nếu có user, hiển thị nội dung của trang
-  if (user) {
+  useEffect(() => {
+    // Chỉ hành động khi đã kiểm tra xong
+    if (!loading) {
+      console.log("Auth check complete.");
+      if (!user) {
+        console.log("User not found, redirecting to login...");
+        router.push("/auth/login");
+      }
+    }
+  }, [user, loading, router]);
+
+  // 1. Nếu đang kiểm tra (loading = true), hiển thị màn hình chờ
+  if (loading) {
+    console.log("Auth status: loading...");
+    return <FullPageLoader />;
+  }
+
+  // 2. Nếu kiểm tra xong và có user, hiển thị trang
+  if (!loading && user) {
+    console.log("Auth status: Success, rendering page.");
     return <>{children}</>;
   }
 
-  // Trong khi đang kiểm tra, có thể hiển thị một màn hình loading
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <p>Đang kiểm tra quyền truy cập...</p>
-    </div>
-  );
+  // 3. Nếu kiểm tra xong và không có user, trả về null trong khi chờ useEffect chuyển hướng
+  console.log("Auth status: Not authenticated, waiting for redirect.");
+  return null;
 }

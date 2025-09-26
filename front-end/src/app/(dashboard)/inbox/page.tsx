@@ -8,7 +8,7 @@ import { getConversations } from "@/features/inbox/api/inbox.api";
 import ConversationList from "@/features/inbox/components/ConversationList";
 import ChatPanel from "@/features/inbox/components/ChatPanel";
 import { cn } from "@/lib/utils";
-
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 const InboxPage = () => {
   const { data: conversations = [], isLoading } = useQuery<Conversation[]>({
     queryKey: ["conversations"],
@@ -30,7 +30,7 @@ const InboxPage = () => {
   };
 
   if (isLoading) {
-    return <div className="p-8">Đang tải hộp thư...</div>;
+    return <FullPageLoader />;
   }
 
   return (

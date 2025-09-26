@@ -27,6 +27,7 @@ import { useServices } from "@/features/service/hooks/useServices";
 import { useStaffs } from "@/features/staff/hooks/useStaffs";
 import { useReviews } from "@/features/review/hooks/useReviews";
 import { ReviewFormValues } from "@/features/review/schemas";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 export default function AppointmentsPage() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -138,7 +139,7 @@ export default function AppointmentsPage() {
   const error = errorAppointments || errorServices || errorStaff;
 
   if (isLoading) {
-    return <div className="p-8">Đang tải lịch hẹn của bạn...</div>;
+    return <FullPageLoader />;
   }
 
   if (error) {

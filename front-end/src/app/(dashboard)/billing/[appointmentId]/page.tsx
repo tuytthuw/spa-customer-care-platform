@@ -68,9 +68,8 @@ import {
   SelectValue,
 } from "@/features/shared/components/ui/select";
 import { Label } from "@/features/shared/components/ui/label";
-import { FullPageLoader } from "@/features/shared/components/ui/spinner";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 import { PageHeader } from "@/features/shared/components/common/PageHeader";
-
 export default function BillingPage() {
   const router = useRouter();
   const params = useParams();
@@ -341,7 +340,7 @@ export default function BillingPage() {
   };
 
   if (isLoading) {
-    return <FullPageLoader text="Đang tải dữ liệu thanh toán..." />;
+    return <FullPageLoader />;
   }
 
   return (

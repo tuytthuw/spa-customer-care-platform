@@ -22,7 +22,7 @@ import { toast } from "sonner";
 import { ScheduleRegistrationData } from "@/features/schedule/types";
 import { PageHeader } from "@/features/shared/components/common/PageHeader";
 import { Button } from "@/features/shared/components/ui/button";
-import { FullPageLoader } from "@/features/shared/components/ui/spinner";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 
 export default function SchedulePage() {
   const queryClient = useQueryClient();
@@ -120,7 +120,7 @@ export default function SchedulePage() {
   };
 
   if (isLoading) {
-    return <FullPageLoader text="Đang tải dữ liệu lịch làm việc..." />;
+    return <FullPageLoader />;
   }
 
   return (

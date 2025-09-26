@@ -18,7 +18,7 @@ import ScheduleForm from "@/features/schedule/components/ScheduleForm";
 import { WorkSchedule } from "@/features/schedule/types";
 import { toast } from "sonner";
 import { useStaffs } from "@/features/staff/hooks/useStaffs";
-import { FullPageLoader } from "@/features/shared/components/ui/spinner";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 import { useQuery } from "@tanstack/react-query";
 import { ScheduleRequestsTable } from "@/features/schedule/components/ScheduleRequestsTable";
 
@@ -73,7 +73,7 @@ export default function WorkScheduleManagementPage() {
   };
 
   if (isLoadingStaff) {
-    return <FullPageLoader text="Đang tải dữ liệu nhân viên..." />;
+    return <FullPageLoader />;
   }
 
   return (

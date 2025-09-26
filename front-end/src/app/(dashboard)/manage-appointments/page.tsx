@@ -23,7 +23,7 @@ import {
   SheetTrigger,
 } from "@/features/shared/components/ui/sheet";
 import { BarChart2 } from "lucide-react";
-import { FullPageLoader } from "@/features/shared/components/ui/spinner";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 
 function createAppointment(variables: void): Promise<unknown> {
   throw new Error("Function not implemented.");
@@ -122,7 +122,7 @@ export default function AppointmentsManagementPage() {
     loadingServices ||
     loadingStaff
   ) {
-    return <FullPageLoader text="Đang tải dữ liệu trang quản lý..." />;
+    return <FullPageLoader />;
   }
 
   return (

@@ -23,6 +23,7 @@ import { useAuth } from "@/contexts/AuthContexts";
 import { toast } from "sonner";
 import { getCustomers } from "@/features/customer/api/customer.api";
 import { FullCustomerProfile } from "@/features/customer/types";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 
 export default function CustomerDashboard() {
   const queryClient = useQueryClient();
@@ -83,7 +84,7 @@ export default function CustomerDashboard() {
   const isLoading =
     loadingCustomers || loadingAppointments || loadingServices || loadingStaff;
 
-  if (isLoading) return <div className="p-6">Đang tải lịch hẹn...</div>;
+  if (isLoading) return <FullPageLoader />;
 
   const upcomingAppointments = appointments.filter(
     (a) => a.status === "upcoming"

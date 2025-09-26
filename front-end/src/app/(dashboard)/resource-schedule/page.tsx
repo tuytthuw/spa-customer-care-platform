@@ -6,7 +6,7 @@ import { useCustomers } from "@/features/customer/hooks/useCustomers";
 import { useStaffs } from "@/features/staff/hooks/useStaffs";
 import { useAppointments } from "@/features/appointment/hooks/useAppointments";
 import { useResources } from "@/features/resource/hooks/useResources";
-
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 export default function ResourceSchedulePage() {
   // Fetch tất cả dữ liệu cần thiết
   const { data: resources = [], isLoading: loadingResources } = useResources();
@@ -22,7 +22,7 @@ export default function ResourceSchedulePage() {
     loadingResources || loadingAppointments || loadingCustomers || loadingStaff;
 
   if (isLoading) {
-    return <div className="p-8">Đang tải dữ liệu lịch trình...</div>;
+    return <FullPageLoader />;
   }
 
   return (

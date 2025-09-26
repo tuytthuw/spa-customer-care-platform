@@ -1,29 +1,31 @@
 "use client";
 
 import { useAuth } from "@/contexts/AuthContexts";
+import CustomerDashboard from "@/features/dashboard/components/CustomerDashboard";
 import ManagerDashboard from "@/features/dashboard/components/ManagerDashboard";
 import TechnicianDashboard from "@/features/dashboard/components/TechnicianDashboard";
-import CustomerDashboard from "@/features/dashboard/components/CustomerDashboard";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 
 export default function DashboardPage() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
-  // Hiển thị trạng thái tải trong khi chờ thông tin người dùng
-  if (!user) {
-    return <div>Đang tải thông tin...</div>;
+  if (loading || !user) {
+    return <FullPageLoader />;
   }
 
-  // Dựa vào vai trò để hiển thị component dashboard tương ứng
   switch (user.role) {
     case "manager":
     case "receptionist":
-      return <ManagerDashboard />; // Giao diện cho quản lý và lễ tân
+      return <ManagerDashboard />;
     case "technician":
-      return <TechnicianDashboard />; // Giao diện cho kỹ thuật viên
+      return <TechnicianDashboard />;
     case "customer":
-      return <CustomerDashboard />; // Giao diện cho khách hàng
+      return <CustomerDashboard />;
     default:
-      // Fallback trong trường hợp vai trò không xác định
-      return <div>Vai trò của bạn không được hỗ trợ để xem trang này.</div>;
+      return (
+        <div className="flex items-center justify-center h-full">
+          <p>Vai trò của bạn không được hỗ trợ.</p>
+        </div>
+      );
   }
 }

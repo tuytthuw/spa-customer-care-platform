@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/features/shared/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Staff } from "@/features/staff/types";
 import { useStaffs } from "@/features/staff/hooks/useStaffs"; // SỬA 1: Import hook để lấy dữ liệu thật
-import { FullPageLoader } from "@/features/shared/components/ui/spinner"; // SỬA 2: Import component loading
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 
 interface TechnicianStepProps {
   onNextStep: (technicianId?: string) => void;
@@ -36,7 +36,7 @@ export default function TechnicianStep({
 
   // SỬA 4: Thêm trạng thái loading
   if (isLoading) {
-    return <FullPageLoader text="Đang tải danh sách kỹ thuật viên..." />;
+    return <FullPageLoader />;
   }
 
   return (
