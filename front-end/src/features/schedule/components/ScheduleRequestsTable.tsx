@@ -30,12 +30,14 @@ interface ScheduleRequestsTableProps {
     weekOf: string,
     newStatus: "approved" | "rejected"
   ) => void;
+  isUpdating: boolean;
 }
 
 export const ScheduleRequestsTable = ({
   requests,
   staff, // SỬA 3: Nhận staff từ props
   onUpdateRequest,
+  isUpdating,
 }: ScheduleRequestsTableProps) => {
   return (
     <Card>
@@ -88,7 +90,7 @@ export const ScheduleRequestsTable = ({
                         <Button
                           size="icon"
                           variant="outline"
-                          className="text-green-600"
+                          disabled={isUpdating}
                           onClick={() =>
                             onUpdateRequest(
                               staffMember!.id,
@@ -102,6 +104,7 @@ export const ScheduleRequestsTable = ({
                         <Button
                           size="icon"
                           variant="destructive"
+                          disabled={isUpdating}
                           onClick={() =>
                             onUpdateRequest(
                               staffMember!.id,
