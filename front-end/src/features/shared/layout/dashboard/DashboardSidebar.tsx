@@ -184,7 +184,7 @@ export default function Sidebar() {
   const { user } = useAuth();
 
   const accessibleNavLinks = allNavLinks.filter((link) =>
-    user?.permissions[link.requiredFeature]?.includes("read")
+    user?.permissions?.[link.requiredFeature]?.includes("read")
   );
 
   return (
