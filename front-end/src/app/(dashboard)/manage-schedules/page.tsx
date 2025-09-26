@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import {
   Select,
   SelectContent,
@@ -16,21 +18,67 @@ import {
 } from "@/features/shared/components/ui/tabs";
 import ScheduleForm from "@/features/schedule/components/ScheduleForm";
 import { WorkSchedule } from "@/features/schedule/types";
-import { toast } from "sonner";
 import { useStaffs } from "@/features/staff/hooks/useStaffs";
 import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
-import { useQuery } from "@tanstack/react-query";
 import { ScheduleRequestsTable } from "@/features/schedule/components/ScheduleRequestsTable";
+import { getWorkSchedules } from "@/features/schedule/api/schedule.api"; // Giả sử có API này
+import { useState } from "react";
+
+// --- MOCK API FUNCTION (Sẽ được thay thế bằng API thật) ---
+async function updateScheduleStatus(
+  staffId: string,
+  weekOf: string,
+  status: "approved" | "rejected"
+) {
+  console.log(
+    `Updating schedule for ${staffId}, week of ${weekOf} to ${status}`
+  );
+  // Giả lập độ trễ mạng
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  return { success: true };
+}
+// --- KẾT THÚC MOCK ---
 
 export default function WorkScheduleManagementPage() {
+  const queryClient = useQueryClient();
   const [selectedStaffId, setSelectedStaffId] = useState<string | null>(null);
 
+  // 1. Tải dữ liệu thật bằng useQuery
   const { data: staff = [], isLoading: isLoadingStaff } = useStaffs();
+  const { data: workSchedules = [], isLoading: isLoadingSchedules } = useQuery({
+    queryKey: ["workSchedules"],
+    queryFn: getWorkSchedules,
+  });
 
-  // Tạm thời vẫn dùng mock data cho requests và schedules vì chưa có API
-  // Sẽ cần thay thế bằng useQuery khi có API tương ứng
-  const [requests, setRequests] = useState<WorkSchedule[]>([]); // Khởi tạo rỗng
-  const [workSchedules, setWorkSchedules] = useState<WorkSchedule[]>([]); // Khởi tạo rỗng
+  // 2. Tạo mutation để xử lý cập nhật
+  const { mutate: handleUpdateRequest, isPending: isUpdating } = useMutation({
+    mutationFn: ({
+      staffId,
+      weekOf,
+      newStatus,
+    }: {
+      staffId: string;
+      weekOf: string;
+      newStatus: "approved" | "rejected";
+    }) => updateScheduleStatus(staffId, weekOf, newStatus),
+    onSuccess: (_, variables) => {
+      if (variables.newStatus === "approved") {
+        toast.success("Yêu cầu đã được phê duyệt.");
+      } else {
+        toast.info("Yêu cầu đã bị từ chối.");
+      }
+      queryClient.invalidateQueries({ queryKey: ["workSchedules"] });
+    },
+    onError: (error) => {
+      toast.error(`Có lỗi xảy ra: ${error.message}`);
+    },
+  });
+
+  // 3. Lọc ra các yêu cầu đang chờ từ dữ liệu thật
+  const pendingRequests = useMemo(
+    () => workSchedules.filter((req) => req.status === "pending"),
+    [workSchedules]
+  );
 
   const selectedSchedule = workSchedules.find(
     (s) => s.staffId === selectedStaffId
@@ -49,30 +97,7 @@ export default function WorkScheduleManagementPage() {
     },
   };
 
-  const handleUpdateRequest = (
-    staffId: string,
-    weekOf: string,
-    newStatus: "approved" | "rejected"
-  ) => {
-    // Logic này sẽ được thay bằng mutation khi có API
-    console.log(
-      `Updating request for ${staffId} for week ${weekOf} to ${newStatus}`
-    );
-    setRequests((currentRequests) =>
-      currentRequests.map((req) =>
-        req.staffId === staffId && req.weekOf === weekOf
-          ? { ...req, status: newStatus }
-          : req
-      )
-    );
-    if (newStatus === "approved") {
-      toast.success("Yêu cầu đã được phê duyệt.");
-    } else {
-      toast.info("Yêu cầu đã bị từ chối.");
-    }
-  };
-
-  if (isLoadingStaff) {
+  if (isLoadingStaff || isLoadingSchedules) {
     return <FullPageLoader />;
   }
 
@@ -84,16 +109,18 @@ export default function WorkScheduleManagementPage() {
 
       <Tabs defaultValue="requests">
         <TabsList className="grid w-full grid-cols-2 md:w-[400px]">
-          <TabsTrigger value="requests">Yêu cầu đang chờ</TabsTrigger>
+          <TabsTrigger value="requests">
+            Yêu cầu đang chờ ({pendingRequests.length})
+          </TabsTrigger>
           <TabsTrigger value="config">Cấu hình lịch nhân viên</TabsTrigger>
         </TabsList>
 
         <TabsContent value="requests" className="mt-4">
-          {/* THÊM COMPONENT VÀO ĐÂY */}
           <ScheduleRequestsTable
-            requests={requests}
+            requests={pendingRequests}
             staff={staff}
-            onUpdateRequest={handleUpdateRequest}
+            onUpdateRequest={handleUpdateRequest as any}
+            isUpdating={isUpdating}
           />
         </TabsContent>
         <TabsContent value="config" className="mt-4">
@@ -106,7 +133,6 @@ export default function WorkScheduleManagementPage() {
                 <SelectValue placeholder="Chọn một nhân viên để cấu hình..." />
               </SelectTrigger>
               <SelectContent>
-                {/* BƯỚC 5: SỬ DỤNG DỮ LIỆU NHÂN VIÊN THẬT */}
                 {staff.map((staffMember) => (
                   <SelectItem key={staffMember.id} value={staffMember.id}>
                     {staffMember.name} ({staffMember.role})

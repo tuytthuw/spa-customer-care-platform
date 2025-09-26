@@ -50,15 +50,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const login = async (credentials: LoginCredentials) => {
     setLoading(true);
     try {
-      // API trả về User, không phải ActionResult
-      const authenticatedUser = await apiLogin(credentials);
+      // SỬA LỖI: Nhận về kết quả là ActionResult
+      const result = await apiLogin(credentials);
 
-      if (
-        authenticatedUser &&
-        typeof authenticatedUser === "object" &&
-        "id" in authenticatedUser
-      ) {
-        const userObject = authenticatedUser as User;
+      // SỬA LỖI: Kiểm tra `result.success` và `result.user`
+      if (result.success && result.user) {
+        const userObject = result.user as User;
         setUser(userObject);
         localStorage.setItem(
           LOCAL_STORAGE_USER_KEY,
@@ -84,10 +81,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const register = async (userData: RegisterData) => {
     setLoading(true);
     try {
-      const newUser = await apiRegister(userData);
+      // SỬA LỖI: Nhận về kết quả là ActionResult
+      const result = await apiRegister(userData);
 
-      if (newUser && typeof newUser === "object" && "id" in newUser) {
-        const userObject = newUser as User;
+      // SỬA LỖI: Kiểm tra `result.success` và `result.user`
+      if (result.success && result.user) {
+        const userObject = result.user as User;
         setUser(userObject);
         localStorage.setItem(
           LOCAL_STORAGE_USER_KEY,
