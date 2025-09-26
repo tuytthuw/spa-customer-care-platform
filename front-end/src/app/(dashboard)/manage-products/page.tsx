@@ -16,7 +16,7 @@ import { FormDialog } from "@/features/shared/components/common/FormDialog";
 import ProductFormFields from "@/features/product/components/ProductForm";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FullPageLoader } from "@/features/shared/components/ui/spinner";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 import AddStockFormFields from "@/features/product/components/AddStockFormFields";
 import {
   productFormSchema,
@@ -141,8 +141,7 @@ export default function ManageProductsPage() {
     updateProductStatusMutation.mutate({ productId, newStatus });
   };
 
-  if (isLoading)
-    return <FullPageLoader text="Đang tải danh sách sản phẩm..." />;
+  if (isLoading) return <FullPageLoader />;
   if (error) return <div>Đã xảy ra lỗi: {error.message}</div>;
 
   return (

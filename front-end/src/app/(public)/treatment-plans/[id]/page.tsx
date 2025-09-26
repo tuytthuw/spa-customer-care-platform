@@ -8,7 +8,7 @@ import TreatmentSteps from "@/features/treatment/components/TreatmentSteps";
 import { notFound } from "next/navigation";
 import { PackageCheck, Tag } from "lucide-react";
 import { useState, useEffect } from "react";
-import { FullPageLoader } from "@/features/shared/components/ui/spinner";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 import { useReviews } from "@/features/review/hooks/useReviews";
 import { useServices } from "@/features/service/hooks/useServices";
 import { PurchaseActions } from "@/features/shared/components/common/PurchaseActions";
@@ -48,7 +48,7 @@ export default function TreatmentPlanDetailPage({
   const isLoading = isLoadingPlan || isLoadingReviews || isLoadingServices;
 
   if (isLoading) {
-    return <FullPageLoader text="Đang tải chi tiết liệu trình..." />;
+    return <FullPageLoader />;
   }
 
   if (error || !plan) {

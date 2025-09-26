@@ -4,7 +4,8 @@ export type AppointmentStatus =
   | "cancelled"
   | "checked-in"
   | "in-progress"
-  | "no-show";
+  | "no-show"
+  | "paused";
 
 export type PaymentStatus = "paid" | "unpaid";
 

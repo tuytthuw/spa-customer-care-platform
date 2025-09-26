@@ -15,7 +15,7 @@ import { toast } from "sonner";
 import { columns } from "./columns";
 import { PageHeader } from "@/features/shared/components/common/PageHeader";
 import { FormDialog } from "@/features/shared/components/common/FormDialog";
-import { FullPageLoader } from "@/features/shared/components/ui/spinner";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 import RoleFormFields from "@/features/roles/components/RoleFormFields";
 
 export default function ManageRolesPage() {
@@ -85,8 +85,7 @@ export default function ManageRolesPage() {
     }
   };
 
-  if (isLoading)
-    return <FullPageLoader text="Đang tải dữ liệu phân quyền..." />;
+  if (isLoading) return <FullPageLoader />;
   if (error) return <div>Đã xảy ra lỗi: {error.message}</div>;
 
   return (

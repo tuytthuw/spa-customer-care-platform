@@ -25,7 +25,7 @@ import { FormDialog } from "@/features/shared/components/common/FormDialog";
 import { columns } from "./columns";
 import { toast } from "sonner";
 import CustomerFormFields from "@/features/customer/components/CustomerForm"; // Đổi tên import
-import { FullPageLoader } from "@/features/shared/components/ui/spinner";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 import { sendBulkEmails } from "@/features/marketing/api/marketing.api";
 import {
   marketingEmailSchema,
@@ -175,8 +175,7 @@ export default function CustomersPage() {
     setFilters({ name: "", status: "all" });
   };
 
-  if (isLoading)
-    return <FullPageLoader text="Đang tải danh sách khách hàng..." />;
+  if (isLoading) return <FullPageLoader />;
   if (error) return <div>Đã xảy ra lỗi: {error.message}</div>;
 
   return (

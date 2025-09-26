@@ -8,7 +8,7 @@ import { getPrepaidCardByCustomerId } from "@/features/prepaid-card/api/prepaid-
 import { PrepaidCard } from "@/features/prepaid-card/types";
 
 import { PageHeader } from "@/features/shared/components/common/PageHeader";
-import { FullPageLoader } from "@/features/shared/components/ui/spinner";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 import PrepaidCardDisplay from "@/features/prepaid-card/components/PrepaidCardDisplay";
 import TransactionHistory from "@/features/prepaid-card/components/TransactionHistory";
 import { Button } from "@/features/shared/components/ui/button";
@@ -34,7 +34,7 @@ export default function PrepaidCardPage() {
   const isLoading = loadingCustomers || loadingCards;
 
   if (isLoading) {
-    return <FullPageLoader text="Đang tải thông tin thẻ của bạn..." />;
+    return <FullPageLoader />;
   }
 
   if (error) {

@@ -2,7 +2,7 @@
 "use client";
 
 import { PageHeader } from "@/features/shared/components/common/PageHeader";
-import { FullPageLoader } from "@/features/shared/components/ui/spinner";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 import LoyaltySettingsForm from "@/features/loyalty/components/LoyaltySettingsForm";
 import { LoyaltySettings } from "@/features/loyalty/types";
 import { useQuery } from "@tanstack/react-query";
@@ -51,7 +51,7 @@ export default function ManageLoyaltyPage() {
   });
 
   if (isLoading) {
-    return <FullPageLoader text="Đang tải cài đặt..." />;
+    return <FullPageLoader />;
   }
 
   if (error || !settings) {

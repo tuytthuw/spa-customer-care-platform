@@ -4,7 +4,7 @@ import { Service } from "@/features/service/types";
 import { Button } from "@/features/shared/components/ui/button";
 import Image from "next/image";
 import { Clock, Tag } from "lucide-react";
-
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 interface ServiceSelectionStepProps {
   onServiceSelect: (service: Service) => void;
 }
@@ -18,7 +18,7 @@ export default function ServiceSelectionStep({
   });
 
   if (isLoading) {
-    return <div>Đang tải danh sách dịch vụ...</div>;
+    return <FullPageLoader />;
   }
 
   return (

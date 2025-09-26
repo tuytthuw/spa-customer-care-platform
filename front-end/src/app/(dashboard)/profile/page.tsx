@@ -26,7 +26,7 @@ import { toast } from "sonner";
 import { PersonFormValues } from "@/lib/schemas";
 import { Customer } from "@/features/customer/types";
 import { Staff } from "@/features/staff/types";
-import { FullPageLoader } from "@/features/shared/components/ui/spinner";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 import NotificationSettingsForm from "@/features/customer/components/NotificationSettingsForm"; // ✅ MỚI
 import { LoyaltyCard } from "@/features/customer/components/LoyaltyCard";
 
@@ -92,7 +92,7 @@ export default function ProfilePage() {
   const isLoading = loadingCustomers || loadingStaff;
 
   if (!user || isLoading) {
-    return <FullPageLoader text="Đang tải thông tin hồ sơ..." />;
+    return <FullPageLoader />;
   }
 
   if (!userProfile) {

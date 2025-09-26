@@ -39,6 +39,7 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCustomers } from "@/features/customer/hooks/useCustomers";
 import { useTreatmentPlans } from "@/features/treatment/hooks/useTreatmentPlans";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 
 export default function NewTreatmentPage() {
   const router = useRouter();
@@ -113,7 +114,7 @@ export default function NewTreatmentPage() {
   const selectedPlan = treatmentPlans.find((p) => p.id === selectedPlanId);
 
   if (loadingCustomers || loadingPlans) {
-    return <div className="p-8">Đang tải dữ liệu...</div>;
+    return <FullPageLoader />;
   }
 
   return (

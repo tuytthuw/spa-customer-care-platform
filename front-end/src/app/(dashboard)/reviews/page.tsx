@@ -32,7 +32,7 @@ import TreatmentReviewCard from "@/features/review/components/TreatmentReviewCar
 import ProductReviewCard from "@/features/review/components/ProductReviewCard";
 import { ReviewModal } from "@/features/review/components/ReviewModal";
 import { PageHeader } from "@/features/shared/components/common/PageHeader";
-import { FullPageLoader } from "@/features/shared/components/ui/spinner";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 import { Service } from "@/features/service/types";
 import { TreatmentPlan } from "@/features/treatment/types";
 
@@ -178,7 +178,7 @@ const ReviewsPage = () => {
     loadingProducts ||
     loadingInvoices;
 
-  if (isLoading) return <FullPageLoader text="Đang tải dữ liệu đánh giá..." />;
+  if (isLoading) return <FullPageLoader />;
 
   const appointmentsToReview = appointments.filter(
     (a) =>

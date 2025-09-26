@@ -22,7 +22,7 @@ import { PageHeader } from "@/features/shared/components/common/PageHeader";
 import { DataTable } from "@/features/shared/components/ui/data-table";
 import { Button } from "@/features/shared/components/ui/button";
 import { PlusCircle } from "lucide-react";
-import { FullPageLoader } from "@/features/shared/components/ui/spinner";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 import { FormDialog } from "@/features/shared/components/common/FormDialog";
 import PromotionFormFields from "@/features/promotion/components/PromotionFormFields";
 import { columns } from "./columns";
@@ -108,8 +108,7 @@ export default function ManagePromotionsPage() {
     }
   };
 
-  if (isLoading)
-    return <FullPageLoader text="Đang tải danh sách khuyến mãi..." />;
+  if (isLoading) return <FullPageLoader />;
   if (error) return <div>Đã xảy ra lỗi: {error.message}</div>;
 
   return (

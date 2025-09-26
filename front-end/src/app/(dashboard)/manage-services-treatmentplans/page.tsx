@@ -41,8 +41,8 @@ import { FormDialog } from "@/features/shared/components/common/FormDialog";
 import ServiceFormFields from "@/features/service/components/ServiceForm";
 import TreatmentPlanFormFields from "@/features/treatment/components/TreatmentPlanForm";
 import { columns as serviceColumns } from "./service-columns";
-import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 import { PlusCircle } from "lucide-react";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 
 export default function ServicesManagementPage() {
   const [isServiceDialogOpen, setIsServiceDialogOpen] = useState(false);
@@ -230,8 +230,7 @@ export default function ServicesManagementPage() {
     updatePlanStatusMutation.mutate({ planId, newStatus });
   };
 
-  if (isLoadingServices || isLoadingPlans)
-    return <FullPageLoader text="Đang tải dữ liệu..." />;
+  if (isLoadingServices || isLoadingPlans) return <FullPageLoader />;
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">

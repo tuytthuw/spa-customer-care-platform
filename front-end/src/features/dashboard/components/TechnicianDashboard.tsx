@@ -11,7 +11,7 @@ import { getServices } from "@/features/service/api/service.api";
 import { useAuth } from "@/contexts/AuthContexts";
 import { getStaffProfiles } from "@/features/staff/api/staff.api";
 import { FullStaffProfile } from "@/features/staff/types";
-import { FullPageLoader } from "@/features/shared/components/ui/spinner";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 
 export default function TechnicianDashboard() {
   const { user } = useAuth(); // Lấy thông tin user đang đăng nhập
@@ -72,7 +72,7 @@ export default function TechnicianDashboard() {
   });
 
   if (isLoading) {
-    return <FullPageLoader text="Đang tải lịch hẹn hôm nay..." />;
+    return <FullPageLoader />;
   }
 
   // Lọc các lịch hẹn cho kỹ thuật viên đang đăng nhập và trong ngày hôm nay

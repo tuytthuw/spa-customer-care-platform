@@ -10,6 +10,8 @@ import {
   AvatarImage,
 } from "@/features/shared/components/ui/avatar";
 import StarRating from "./StarRating";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
+
 interface ReviewListProps {
   reviews: Review[];
 }
@@ -54,7 +56,7 @@ export const ReviewList = ({ reviews }: ReviewListProps) => {
   });
 
   if (isLoading) {
-    return <div>Đang tải đánh giá...</div>;
+    return <FullPageLoader />;
   }
 
   return (

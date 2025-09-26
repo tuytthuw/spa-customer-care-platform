@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useCustomerScheduleData } from "@/features/customer-schedules/hooks/useCustomerScheduleData";
-
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 // Import components và types
 import { PageHeader } from "@/features/shared/components/common/PageHeader";
 import {
@@ -14,7 +14,6 @@ import {
   ToggleGroupItem,
 } from "@/features/shared/components/ui/toggle-group";
 import { LayoutGrid, List } from "lucide-react";
-import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 import ScheduleListView from "@/features/customer-schedules/components/ScheduleListView";
 import ScheduleCalendarView from "@/features/customer-schedules/components/ScheduleCalendarView";
 import { ReviewModal } from "@/features/review/components/ReviewModal";
@@ -103,7 +102,7 @@ export default function SchedulePage() {
   };
 
   if (isLoading) {
-    return <FullPageLoader text="Đang tải lịch trình của bạn..." />;
+    return <FullPageLoader />;
   }
 
   if (!currentUserProfile) {

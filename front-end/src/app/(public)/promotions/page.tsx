@@ -3,9 +3,8 @@
 import { usePromotions } from "@/features/promotion/hooks/usePromotions";
 import { PromotionCard } from "@/features/promotion/components/PromotionCard";
 import { PageHeader } from "@/features/shared/components/common/PageHeader";
-import { FullPageLoader } from "@/features/shared/components/ui/spinner";
 import { useMemo } from "react";
-
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
 export default function PromotionsPage() {
   const { data: promotions, isLoading, error } = usePromotions();
 
@@ -14,9 +13,7 @@ export default function PromotionsPage() {
   }, [promotions]);
 
   if (isLoading) {
-    return (
-      <FullPageLoader text="Đang tải dữ liệu khuyến mãi.."></FullPageLoader>
-    );
+    return <FullPageLoader />;
   }
 
   if (error) {

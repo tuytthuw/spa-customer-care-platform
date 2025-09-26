@@ -1,88 +1,103 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useEffect,
-} from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { User } from "@/features/user/types";
-import { Role } from "@/features/roles/types";
+import {
+  login as apiLogin,
+  register as apiRegister,
+} from "@/features/auth/api/auth.api";
+import { loginSchema, registerSchema } from "@/features/auth/schemas";
+import { z } from "zod";
 
-export type AuthUser = User & {
-  permissions: Role["permissions"];
-  name?: string;
-  phone?: string;
-  avatar?: string;
-};
+// Create types by inferring from the Zod schemas
+type LoginCredentials = z.infer<typeof loginSchema>;
+type RegisterData = z.infer<typeof registerSchema>;
 
-interface AuthContextType {
-  user: AuthUser | null;
-  login: (userData: User & { name?: string; phone?: string }) => void;
+export interface AuthContextType {
+  user: User | null;
+  loading: boolean;
+  login: (credentials: LoginCredentials) => Promise<User | null>;
   logout: () => void;
+  register: (userData: RegisterData) => Promise<User | null>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [roles, setRoles] = useState<Role[]>([]);
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
-    const fetchRoles = async () => {
-      try {
-        const response = await fetch("http://localhost:3001/roles");
-        const data = await response.json();
-        setRoles(data);
-      } catch (error) {
-        console.error("Failed to fetch roles:", error);
-      }
-    };
-
-    fetchRoles();
-
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
+    try {
+      const storedUser = localStorage.getItem("spa-user");
+      if (storedUser) {
         setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error("Failed to parse user from localStorage", error);
-        localStorage.removeItem("user");
       }
+    } catch (error) {
+      console.error("Failed to parse user from localStorage", error);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
-  const login = (userData: User & { name?: string; phone?: string }) => {
-    // ✅ Tìm quyền hạn tương ứng với vai trò của người dùng
-    const userRole = roles.find((r) => r.id === userData.role);
+  const login = async (credentials: LoginCredentials) => {
+    setLoading(true);
+    try {
+      const result: any = await apiLogin(credentials);
 
-    const userToStore: AuthUser = {
-      ...userData,
-      // Gán object permissions, hoặc một object rỗng nếu không tìm thấy
-      permissions: userRole?.permissions || {},
-    };
-    setUser(userToStore);
-    localStorage.setItem("user", JSON.stringify(userToStore));
+      const authenticatedUser: User | null = result?.data || result || null;
+
+      if (authenticatedUser && authenticatedUser.id) {
+        setUser(authenticatedUser);
+        localStorage.setItem("spa-user", JSON.stringify(authenticatedUser));
+        return authenticatedUser;
+      }
+      return null;
+    } catch (error) {
+      console.error("Login failed:", error);
+      return null;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("user");
-    window.location.href = "/auth/login";
+    localStorage.removeItem("spa-user");
+    router.push("/auth/login");
   };
 
-  return (
-    <AuthContext.Provider value={{ user, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
-}
+  const register = async (userData: RegisterData) => {
+    setLoading(true);
+    try {
+      const result: any = await apiRegister(userData);
+      const newUser: User | null = result?.data || result || null;
 
-export function useAuth() {
+      if (newUser && newUser.id) {
+        setUser(newUser);
+        localStorage.setItem("spa-user", JSON.stringify(newUser));
+        return newUser;
+      }
+      return null;
+    } catch (error) {
+      console.error("Registration failed:", error);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const value = { user, loading, login, logout, register };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+
+export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth phải được sử dụng bên trong một AuthProvider");
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
-}
+};

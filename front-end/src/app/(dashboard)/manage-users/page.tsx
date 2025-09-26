@@ -7,6 +7,8 @@ import { DataTable } from "@/features/shared/components/ui/data-table";
 import { getUsers, updateUserStatus } from "@/features/user/api/user.api";
 import { toast } from "sonner";
 import { PageHeader } from "@/features/shared/components/common/PageHeader";
+import FullPageLoader from "@/features/shared/components/common/FullPageLoader";
+
 export default function ManageUsersPage() {
   const queryClient = useQueryClient();
 
@@ -43,7 +45,7 @@ export default function ManageUsersPage() {
     updateStatusMutation.mutate({ userId, newStatus });
   };
 
-  if (isLoading) return <div>Đang tải danh sách người dùng...</div>;
+  if (isLoading) return <FullPageLoader />;
   if (error) return <div>Đã xảy ra lỗi: {error.message}</div>;
 
   return (
