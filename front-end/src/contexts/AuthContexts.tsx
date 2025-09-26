@@ -10,7 +10,8 @@ import {
 import { loginSchema, registerSchema } from "@/features/auth/schemas";
 import { z } from "zod";
 
-// Create types by inferring from the Zod schemas
+const LOCAL_STORAGE_USER_KEY = "user";
+
 type LoginCredentials = z.infer<typeof loginSchema>;
 type RegisterData = z.infer<typeof registerSchema>;
 
@@ -31,12 +32,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     try {
-      const storedUser = localStorage.getItem("spa-user");
+      const storedUser = localStorage.getItem(LOCAL_STORAGE_USER_KEY);
       if (storedUser) {
-        setUser(JSON.parse(storedUser));
+        const parsedUser = JSON.parse(storedUser);
+        if (parsedUser && parsedUser.id) {
+          setUser(parsedUser);
+        }
       }
     } catch (error) {
       console.error("Failed to parse user from localStorage", error);
+      localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
     } finally {
       setLoading(false);
     }
@@ -45,14 +50,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const login = async (credentials: LoginCredentials) => {
     setLoading(true);
     try {
-      const result: any = await apiLogin(credentials);
+      // API trả về User, không phải ActionResult
+      const authenticatedUser = await apiLogin(credentials);
 
-      const authenticatedUser: User | null = result?.data || result || null;
-
-      if (authenticatedUser && authenticatedUser.id) {
-        setUser(authenticatedUser);
-        localStorage.setItem("spa-user", JSON.stringify(authenticatedUser));
-        return authenticatedUser;
+      if (
+        authenticatedUser &&
+        typeof authenticatedUser === "object" &&
+        "id" in authenticatedUser
+      ) {
+        const userObject = authenticatedUser as User;
+        setUser(userObject);
+        localStorage.setItem(
+          LOCAL_STORAGE_USER_KEY,
+          JSON.stringify(userObject)
+        );
+        return userObject;
       }
       return null;
     } catch (error) {
@@ -65,20 +77,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("spa-user");
+    localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
     router.push("/auth/login");
   };
 
   const register = async (userData: RegisterData) => {
     setLoading(true);
     try {
-      const result: any = await apiRegister(userData);
-      const newUser: User | null = result?.data || result || null;
+      const newUser = await apiRegister(userData);
 
-      if (newUser && newUser.id) {
-        setUser(newUser);
-        localStorage.setItem("spa-user", JSON.stringify(newUser));
-        return newUser;
+      if (newUser && typeof newUser === "object" && "id" in newUser) {
+        const userObject = newUser as User;
+        setUser(userObject);
+        localStorage.setItem(
+          LOCAL_STORAGE_USER_KEY,
+          JSON.stringify(userObject)
+        );
+        return userObject;
       }
       return null;
     } catch (error) {
