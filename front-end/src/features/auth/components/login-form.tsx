@@ -31,7 +31,7 @@ import { toast } from "sonner";
 
 export function LoginForm() {
   const router = useRouter();
-  const { login } = useAuth();
+  const { login: setAuthUser } = useAuth();
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -44,13 +44,16 @@ export function LoginForm() {
 
   function onSubmit(values: z.infer<typeof loginSchema>) {
     startTransition(() => {
-      login(values).then((user) => {
-        if (user) {
+      loginAction(values).then((result) => {
+        if (result.error) {
+          toast.error(result.error);
+          return;
+        }
+
+        if (result.success && result.user) {
           toast.success("Đăng nhập thành công!");
+          setAuthUser(result.user);
           router.push("/dashboard");
-        } else {
-          // Lỗi đã được xử lý và thông báo trong API/Context, ở đây có thể thêm logic nếu cần
-          toast.error("Email hoặc mật khẩu không chính xác.");
         }
       });
     });

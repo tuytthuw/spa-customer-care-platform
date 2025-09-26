@@ -1,117 +1,88 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { User } from "@/features/user/types";
 import {
-  login as apiLogin,
-  register as apiRegister,
-} from "@/features/auth/api/auth.api";
-import { loginSchema, registerSchema } from "@/features/auth/schemas";
-import { z } from "zod";
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
+import { User } from "@/features/user/types";
+import { Role } from "@/features/roles/types";
 
-const LOCAL_STORAGE_USER_KEY = "user";
+export type AuthUser = User & {
+  permissions: Role["permissions"];
+  name?: string;
+  phone?: string;
+  avatar?: string;
+};
 
-type LoginCredentials = z.infer<typeof loginSchema>;
-type RegisterData = z.infer<typeof registerSchema>;
-
-export interface AuthContextType {
-  user: User | null;
-  loading: boolean;
-  login: (credentials: LoginCredentials) => Promise<User | null>;
+interface AuthContextType {
+  user: AuthUser | null;
+  login: (userData: User & { name?: string; phone?: string }) => void;
   logout: () => void;
-  register: (userData: RegisterData) => Promise<User | null>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [roles, setRoles] = useState<Role[]>([]);
 
   useEffect(() => {
-    try {
-      const storedUser = localStorage.getItem(LOCAL_STORAGE_USER_KEY);
-      if (storedUser) {
-        const parsedUser = JSON.parse(storedUser);
-        if (parsedUser && parsedUser.id) {
-          setUser(parsedUser);
-        }
+    const fetchRoles = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/roles");
+        const data = await response.json();
+        setRoles(data);
+      } catch (error) {
+        console.error("Failed to fetch roles:", error);
       }
-    } catch (error) {
-      console.error("Failed to parse user from localStorage", error);
-      localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
-    } finally {
-      setLoading(false);
+    };
+
+    fetchRoles();
+
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error("Failed to parse user from localStorage", error);
+        localStorage.removeItem("user");
+      }
     }
   }, []);
 
-  const login = async (credentials: LoginCredentials) => {
-    setLoading(true);
-    try {
-      // SỬA LỖI: Nhận về kết quả là ActionResult
-      const result = await apiLogin(credentials);
+  const login = (userData: User & { name?: string; phone?: string }) => {
+    // ✅ Tìm quyền hạn tương ứng với vai trò của người dùng
+    const userRole = roles.find((r) => r.id === userData.role);
 
-      // SỬA LỖI: Kiểm tra `result.success` và `result.user`
-      if (result.success && result.user) {
-        const userObject = result.user as User;
-        setUser(userObject);
-        localStorage.setItem(
-          LOCAL_STORAGE_USER_KEY,
-          JSON.stringify(userObject)
-        );
-        return userObject;
-      }
-      return null;
-    } catch (error) {
-      console.error("Login failed:", error);
-      return null;
-    } finally {
-      setLoading(false);
-    }
+    const userToStore: AuthUser = {
+      ...userData,
+      // Gán object permissions, hoặc một object rỗng nếu không tìm thấy
+      permissions: userRole?.permissions || {},
+    };
+    setUser(userToStore);
+    localStorage.setItem("user", JSON.stringify(userToStore));
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
-    router.push("/auth/login");
+    localStorage.removeItem("user");
+    window.location.href = "/auth/login";
   };
 
-  const register = async (userData: RegisterData) => {
-    setLoading(true);
-    try {
-      // SỬA LỖI: Nhận về kết quả là ActionResult
-      const result = await apiRegister(userData);
+  return (
+    <AuthContext.Provider value={{ user, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
 
-      // SỬA LỖI: Kiểm tra `result.success` và `result.user`
-      if (result.success && result.user) {
-        const userObject = result.user as User;
-        setUser(userObject);
-        localStorage.setItem(
-          LOCAL_STORAGE_USER_KEY,
-          JSON.stringify(userObject)
-        );
-        return userObject;
-      }
-      return null;
-    } catch (error) {
-      console.error("Registration failed:", error);
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const value = { user, loading, login, logout, register };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-};
-
-export const useAuth = () => {
+export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error("useAuth phải được sử dụng bên trong một AuthProvider");
   }
   return context;
-};
+}
